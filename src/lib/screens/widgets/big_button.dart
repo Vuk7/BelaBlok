@@ -5,12 +5,14 @@ class BigButton extends StatelessWidget {
   final Color bgColor;
   final TextStyle textStyle;
   final Function() onTap;
+  final double textPadding;
   const BigButton({
     super.key,
     required this.text,
     required this.textStyle,
     required this.bgColor,
     required this.onTap,
+    this.textPadding = 20.0,
   });
 
   @override
@@ -25,7 +27,7 @@ class BigButton extends StatelessWidget {
           borderRadius: BorderRadius.circular(20),
         ),
         child: Padding(
-          padding: const EdgeInsets.all(20.0),
+          padding: EdgeInsets.all(textPadding),
           child: Center(
             child: Text(
               text,

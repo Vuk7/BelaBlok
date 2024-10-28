@@ -2,6 +2,7 @@ import 'package:bela_blok/screens/main_screen/widgets/history_list_item.dart';
 import 'package:bela_blok/screens/widgets/big_button.dart';
 import 'package:bela_blok/themes/app_theme.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -74,7 +75,9 @@ class _MainScreenState extends State<MainScreen> {
                     fontSize: 36,
                     fontWeight: FontWeight.bold),
                 bgColor: AppTheme.green,
-                onTap: () {},
+                onTap: () {
+                  context.goNamed("newgame");
+                },
               ),
             ),
             const SizedBox(
