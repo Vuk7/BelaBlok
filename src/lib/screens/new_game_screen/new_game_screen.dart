@@ -1,4 +1,3 @@
-import 'package:bela_blok/routes/routes.dart';
 import 'package:bela_blok/screens/new_game_screen/widgets/game_type_choice.dart';
 import 'package:bela_blok/screens/new_game_screen/widgets/play_direction_choice.dart';
 import 'package:bela_blok/screens/widgets/big_button.dart';
