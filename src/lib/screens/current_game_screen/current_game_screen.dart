@@ -1,3 +1,5 @@
+import 'package:bela_blok/enums/caller_enum.dart';
+import 'package:bela_blok/screens/current_game_screen/widgets/round_score_list_item.dart';
 import 'package:flutter/material.dart';
 
 class CurrentGameScreen extends StatefulWidget {
@@ -61,8 +63,23 @@ class _CurrentGameScreenState extends State<CurrentGameScreen> {
                     color: Theme.of(context).colorScheme.secondary,
                     fontSize: 36),
               ),
+              const SizedBox(
+                height: 10,
+              ),
               const Spacer(),
             ],
+          ),
+          Padding(
+            padding: const EdgeInsets.all(5.0),
+            child: RoundScoreListItem(
+              teamOneCallAmount: 20,
+              teamTwoCallAmount: 0,
+              teamOneScore: 100,
+              teamTwoScore: 82,
+              roundID: 0,
+              teamCalled: Caller.teamOne,
+              onTap: () {},
+            ),
           ),
         ]),
       ),
