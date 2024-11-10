@@ -4,7 +4,6 @@ import 'package:bela_blok/screens/add_round_screen/widgets/choose_caller.dart';
 import 'package:bela_blok/screens/add_round_screen/widgets/choose_input_type.dart';
 import 'package:bela_blok/screens/add_round_screen/widgets/show_lost_text.dart';
 import 'package:bela_blok/screens/add_round_screen/widgets/top_score.dart';
-import 'package:bela_blok/screens/current_game_screen/current_game_screen.dart';
 import 'package:bela_blok/screens/widgets/big_button.dart';
 import 'package:bela_blok/screens/widgets/big_button_input_number.dart';
 import 'package:bela_blok/screens/widgets/player_shuffling.dart';
