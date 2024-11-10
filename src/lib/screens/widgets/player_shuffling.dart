@@ -9,7 +9,7 @@ class PlayerShuffling extends StatelessWidget {
       {super.key,
       required this.onTap,
       required this.selectedColor,
-      this.selected = 0});
+      required this.selected});
 
   @override
   Widget build(BuildContext context) {

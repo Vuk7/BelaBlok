@@ -6,6 +6,9 @@ class BigButton extends StatelessWidget {
   final TextStyle textStyle;
   final Function() onTap;
   final double textPadding;
+
+  final double? width;
+  final double? height;
   const BigButton({
     super.key,
     required this.text,
@@ -13,6 +16,8 @@ class BigButton extends StatelessWidget {
     required this.bgColor,
     required this.onTap,
     this.textPadding = 20.0,
+    this.width,
+    this.height,
   });
 
   @override
@@ -20,7 +25,8 @@ class BigButton extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        width: double.infinity,
+        width: width ?? double.infinity,
+        height: height,
         decoration: BoxDecoration(
           color: bgColor,
           border: Border.all(color: bgColor),
