@@ -40,9 +40,9 @@ class GameModel {
       'teamOneScore': _teamOneScore,
       'teamTwoScore': _teamTwoScore,
       'gameType': _gameType,
-      'gameDirection': _gameDirection,
+      'gameDirection': _gameDirection.index,
       'currentlyShuffling': _currentlyShuffling,
-      'winner': _winner,
+      'winner': _winner.index,
       'finished': _finished,
     };
   }
@@ -53,9 +53,9 @@ class GameModel {
     _teamOneScore = map['teamOneScore'];
     _teamTwoScore = map['teamTwoScore'];
     _gameType = map['gameType'];
-    _gameDirection = map['gameDirection'];
+    _gameDirection = PlayDirection.values[map['gameDirection']];
     _currentlyShuffling = map['currentlyShuffling'];
-    _winner = map['winner'];
+    _winner = Team.values[map['winner']];
     _finished = map['finished'];
   }
 }
