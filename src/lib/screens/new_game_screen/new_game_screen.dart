@@ -4,6 +4,7 @@ import 'package:bela_blok/screens/widgets/big_button.dart';
 import 'package:bela_blok/screens/widgets/player_shuffling.dart';
 import 'package:bela_blok/themes/app_theme.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class NewGameScreen extends StatefulWidget {
   const NewGameScreen({super.key});
@@ -96,7 +97,9 @@ class _NewGameScreenState extends State<NewGameScreen> {
                     fontSize: 36,
                     fontWeight: FontWeight.bold),
                 bgColor: AppTheme.green,
-                onTap: () {},
+                onTap: () {
+                  context.goNamed("currentgame");
+                },
                 textPadding: 15,
               ),
             ),
