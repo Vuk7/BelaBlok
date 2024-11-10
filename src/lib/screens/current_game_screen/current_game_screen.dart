@@ -1,5 +1,4 @@
 import 'package:bela_blok/enums/caller_enum.dart';
-import 'package:bela_blok/routes/routes.dart';
 import 'package:bela_blok/screens/current_game_screen/widgets/round_score_list_item.dart';
 import 'package:bela_blok/screens/current_game_screen/widgets/top_score_details.dart';
 import 'package:bela_blok/screens/widgets/big_button.dart';
