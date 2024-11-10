@@ -4,6 +4,7 @@ import 'package:bela_blok/screens/current_game_screen/widgets/top_score_details.
 import 'package:bela_blok/screens/widgets/big_button.dart';
 import 'package:bela_blok/themes/app_theme.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class CurrentGameScreen extends StatefulWidget {
   const CurrentGameScreen({super.key});
@@ -104,9 +105,12 @@ class _CurrentGameScreenState extends State<CurrentGameScreen> {
                   fontWeight: FontWeight.bold),
               bgColor: AppTheme.green,
               onTap: () {
+                context.goNamed("addround");
+                /*
+                to be used
                 WidgetsBinding.instance.addPostFrameCallback((_) {
                   _scrollToEnd();
-                });
+                });*/
               },
               textPadding: 15,
             ),

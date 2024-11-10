@@ -8,20 +8,21 @@ class BigButtonInputNumber extends StatelessWidget {
   final Function() onTap;
   final TextEditingController inputController;
   final double textPadding;
-  const BigButtonInputNumber({
-    super.key,
-    required this.text,
-    required this.textStyle,
-    required this.bgColor,
-    required this.onTap,
-    required this.inputController,
-    this.textPadding = 20.0,
-  });
+  final double? width;
+  const BigButtonInputNumber(
+      {super.key,
+      required this.text,
+      required this.textStyle,
+      required this.bgColor,
+      required this.onTap,
+      required this.inputController,
+      this.textPadding = 20.0,
+      this.width});
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: double.infinity,
+      width: width ?? double.infinity,
       decoration: BoxDecoration(
         color: bgColor,
         border: Border.all(color: bgColor),

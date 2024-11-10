@@ -1,3 +1,4 @@
+import 'package:bela_blok/screens/add_round_screen/add_round_screen.dart';
 import 'package:bela_blok/screens/current_game_screen/current_game_screen.dart';
 import 'package:bela_blok/screens/main_screen/main_screen.dart';
 import 'package:bela_blok/screens/new_game_screen/new_game_screen.dart';
@@ -21,12 +22,20 @@ final GoRouter appRouter = GoRouter(
             },
           ),
           GoRoute(
-            path: '/currentgame',
-            name: 'currentgame',
-            builder: (BuildContext context, GoRouterState state) {
-              return const CurrentGameScreen();
-            },
-          ),
+              path: '/currentgame',
+              name: 'currentgame',
+              builder: (BuildContext context, GoRouterState state) {
+                return const CurrentGameScreen();
+              },
+              routes: [
+                GoRoute(
+                  path: '/addround',
+                  name: 'addround',
+                  builder: (BuildContext context, GoRouterState state) {
+                    return const AddRoundScreen();
+                  },
+                ),
+              ]),
         ]),
   ],
 );
