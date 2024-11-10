@@ -1,1 +1,0 @@
-enum Caller { teamOne, teamTwo }
