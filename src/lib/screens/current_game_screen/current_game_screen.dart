@@ -1,4 +1,4 @@
-import 'package:bela_blok/enums/caller_enum.dart';
+import 'package:bela_blok/enums/team_enum.dart';
 import 'package:bela_blok/screens/current_game_screen/widgets/round_score_list_item.dart';
 import 'package:bela_blok/screens/current_game_screen/widgets/top_score_details.dart';
 import 'package:bela_blok/screens/widgets/big_button.dart';
@@ -16,9 +16,9 @@ class CurrentGameScreen extends StatefulWidget {
 class _CurrentGameScreenState extends State<CurrentGameScreen> {
   final ScrollController _scrollController = ScrollController();
 
-  Map<Caller, int> teamScore = {
-    Caller.teamOne: 980,
-    Caller.teamTwo: 990,
+  Map<Team, int> teamScore = {
+    Team.teamOne: 980,
+    Team.teamTwo: 990,
   };
 
   List<Map<String, dynamic>> dummyRoundData = List.generate(10, (index) {
@@ -28,7 +28,7 @@ class _CurrentGameScreenState extends State<CurrentGameScreen> {
       'teamOneScore': 62,
       'teamTwoScore': 100,
       'roundID': index,
-      'teamCalled': Caller.teamTwo
+      'teamCalled': Team.teamTwo
     };
   });
 
@@ -60,13 +60,13 @@ class _CurrentGameScreenState extends State<CurrentGameScreen> {
             height: 10,
           ),
           TopScoreDetails(
-              teamOneScore: teamScore[Caller.teamOne]!,
-              teamTwoScore: teamScore[Caller.teamTwo]!,
+              teamOneScore: teamScore[Team.teamOne]!,
+              teamTwoScore: teamScore[Team.teamTwo]!,
               scoreDifference:
-                  teamScore[Caller.teamTwo]! - teamScore[Caller.teamOne]!,
-              teamInLead: Caller.teamOne,
-              teamOneLeftToWin: 1001 - teamScore[Caller.teamOne]!,
-              teamTwoLeftToWin: 1001 - teamScore[Caller.teamTwo]!),
+                  teamScore[Team.teamTwo]! - teamScore[Team.teamOne]!,
+              teamInLead: Team.teamOne,
+              teamOneLeftToWin: 1001 - teamScore[Team.teamOne]!,
+              teamTwoLeftToWin: 1001 - teamScore[Team.teamTwo]!),
           const SizedBox(
             height: 10,
           ),

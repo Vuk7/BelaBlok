@@ -1,4 +1,4 @@
-import 'package:bela_blok/enums/caller_enum.dart';
+import 'package:bela_blok/enums/team_enum.dart';
 import 'package:bela_blok/screens/add_round_screen/widgets/calculated_score_show.dart';
 import 'package:bela_blok/screens/add_round_screen/widgets/choose_caller.dart';
 import 'package:bela_blok/screens/add_round_screen/widgets/choose_input_type.dart';
@@ -108,7 +108,7 @@ class _AddRoundScreenState extends State<AddRoundScreen> {
                   height: 20,
                 ),
                 const CalculatedScoreShow(teamOneScore: 102, teamTwoScore: 98),
-                const ShowLostText(show: true, teamLost: Caller.teamTwo),
+                const ShowLostText(show: true, teamLost: Team.teamTwo),
                 const Spacer(),
                 Text(
                   "TRENUTNO MIJEŠA",

@@ -1,10 +1,10 @@
-import 'package:bela_blok/enums/caller_enum.dart';
+import 'package:bela_blok/enums/team_enum.dart';
 import 'package:bela_blok/themes/app_theme.dart';
 import 'package:flutter/material.dart';
 
 class ShowLostText extends StatelessWidget {
   final bool show;
-  final Caller teamLost;
+  final Team teamLost;
   const ShowLostText({
     super.key,
     required this.show,
@@ -16,7 +16,7 @@ class ShowLostText extends StatelessWidget {
     return (show)
         ? Row(children: [
             const Spacer(),
-            (teamLost == Caller.teamOne)
+            (teamLost == Team.teamOne)
                 ? const Text("PAD",
                     style: TextStyle(fontSize: 36, color: AppTheme.red))
                 : const SizedBox(
@@ -27,7 +27,7 @@ class ShowLostText extends StatelessWidget {
               width: 20,
             ),
             const Spacer(),
-            (teamLost == Caller.teamTwo)
+            (teamLost == Team.teamTwo)
                 ? const Text("PAD",
                     style: TextStyle(fontSize: 36, color: AppTheme.red))
                 : const SizedBox(
