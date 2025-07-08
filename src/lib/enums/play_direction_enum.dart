@@ -1,1 +1,0 @@
-enum PlayDirection { clockwise, counterClockwise }

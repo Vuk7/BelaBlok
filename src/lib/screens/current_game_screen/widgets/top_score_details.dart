@@ -1,4 +1,4 @@
-import 'package:bela_blok/enums/team_enum.dart';
+import 'package:bela_blok/enums/caller_enum.dart';
 import 'package:flutter/material.dart';
 
 class TopScoreDetails extends StatelessWidget {
@@ -6,7 +6,7 @@ class TopScoreDetails extends StatelessWidget {
   final int teamTwoScore;
 
   final int scoreDifference;
-  final Team teamInLead;
+  final Caller teamInLead;
 
   final int teamOneLeftToWin;
   final int teamTwoLeftToWin;
@@ -74,7 +74,7 @@ class TopScoreDetails extends StatelessWidget {
               "( + $scoreDifference )",
               style: TextStyle(
                   fontWeight: FontWeight.normal,
-                  color: (teamInLead == Team.teamOne)
+                  color: (teamInLead == Caller.teamOne)
                       ? Theme.of(context).colorScheme.primary
                       : Theme.of(context).colorScheme.secondary,
                   fontSize: 24),

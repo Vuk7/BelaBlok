@@ -1,4 +1,4 @@
-import 'package:bela_blok/enums/team_enum.dart';
+import 'package:bela_blok/enums/caller_enum.dart';
 import 'package:bela_blok/themes/app_theme.dart';
 import 'package:flutter/material.dart';
 
@@ -8,7 +8,7 @@ class RoundScoreListItem extends StatelessWidget {
   final int teamOneScore;
   final int teamTwoScore;
   final int roundID;
-  final Team teamCalled;
+  final Caller teamCalled;
   final Function() onTap;
   const RoundScoreListItem({
     super.key,
@@ -39,7 +39,7 @@ class RoundScoreListItem extends StatelessWidget {
                 const Spacer(),
                 Column(
                   children: [
-                    (teamCalled == Team.teamOne)
+                    (teamCalled == Caller.teamOne)
                         ? const Text("ZVAO",
                             style: TextStyle(
                                 color: AppTheme.red,
@@ -81,7 +81,7 @@ class RoundScoreListItem extends StatelessWidget {
                 const Spacer(),
                 Column(
                   children: [
-                    (teamCalled == Team.teamTwo)
+                    (teamCalled == Caller.teamTwo)
                         ? const Text("ZVAO",
                             style: TextStyle(
                                 color: AppTheme.red,

@@ -1,1 +1,0 @@
-enum Team { teamOne, teamTwo }
