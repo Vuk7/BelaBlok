@@ -8,28 +8,22 @@ class GameDao {
   
   GameDao(this._db);
 
-  // Dohvati sve igre
   Future<List<Game>> getAllGames() => 
       (_db.select(_db.games)).get();
 
-  // Dohvati igru po ID-u
   Future<Game?> getGameById(int id) =>
       (_db.select(_db.games)..where((g) => g.id.equals(id))).getSingleOrNull();
 
-  // Dohvati aktivnu igru (nedovršenu)
   Future<Game?> getActiveGame() =>
       (_db.select(_db.games)..where((g) => g.finished.equals(false)))
           .getSingleOrNull();
 
-  // Dohvati sve dovršene igre
   Future<List<Game>> getFinishedGames() =>
       (_db.select(_db.games)..where((g) => g.finished.equals(true))).get();
 
-  // Dohvati igre sortirane po datumu (najnovije prvo)
   Future<List<Game>> getGamesSortedByDate() =>
       (_db.select(_db.games)..orderBy([(g) => OrderingTerm.desc(g.gameDateTime)])).get();
 
-  // Stvori novu igru
   Future<int> createGame({
     required int gameType,
     required PlayDirection gameDirection,
@@ -45,7 +39,6 @@ class GameDao {
     );
   }
 
-  // Ažuriraj rezultat igre
   Future<bool> updateGameScore({
     required int gameId,
     required int teamOneScore,
@@ -63,7 +56,6 @@ class GameDao {
     return rowsAffected > 0;
   }
 
-  // Završi igru
   Future<bool> finishGame({
     required int gameId,
     required Team winner,
@@ -80,7 +72,6 @@ class GameDao {
     return rowsAffected > 0;
   }
 
-  // Ažuriraj koji igrač dijeli
   Future<bool> updateCurrentlyShuffling({
     required int gameId,
     required int currentlyShuffling,
@@ -96,11 +87,9 @@ class GameDao {
     return rowsAffected > 0;
   }
 
-  // Obriši igru
   Future<int> deleteGame(int gameId) =>
       (_db.delete(_db.games)..where((g) => g.id.equals(gameId))).go();
 
-  // Dohvati statistike
   Future<Map<String, dynamic>> getGameStatistics() async {
     final allGames = await getAllGames();
     final finishedGames = allGames.where((g) => g.finished).toList();

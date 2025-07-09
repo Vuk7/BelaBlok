@@ -2,7 +2,6 @@ import '../db/database.dart';
 import '../enums/team_enum.dart';
 import '../enums/play_direction_enum.dart';
 
-/// Singleton servis za upravljanje bazom podataka
 class DatabaseService {
   static DatabaseService? _instance;
   static AppDatabase? _database;
@@ -14,20 +13,16 @@ class DatabaseService {
     return _instance!;
   }
 
-  /// Getter za bazu podataka
   AppDatabase get database {
     _database ??= AppDatabase();
     return _database!;
   }
 
-  /// Inicijalizacija baze (pozovi na početku aplikacije)
   Future<void> initialize() async {
     _database = AppDatabase();
-    // Test konekcije
     await _database!.customSelect('SELECT 1').get();
   }
 
-  /// Zatvaranje baze (pozovi pri zatvaranju aplikacije)
   Future<void> close() async {
     if (_database != null) {
       await _database!.close();
@@ -35,9 +30,7 @@ class DatabaseService {
     }
   }
 
-  // --- Metode za igre ---
   
-  /// Stvori novu igru
   Future<int> createNewGame({
     required int gameType,
     required PlayDirection gameDirection,
@@ -50,22 +43,18 @@ class DatabaseService {
     );
   }
 
-  /// Dohvati aktivnu igru
   Future<Game?> getActiveGame() async {
     return await database.gameDao.getActiveGame();
   }
 
-  /// Dohvati sve igre
   Future<List<Game>> getAllGames() async {
     return await database.gameDao.getAllGames();
   }
 
-  /// Dohvati igru po ID-u
   Future<Game?> getGameById(int gameId) async {
     return await database.gameDao.getGameById(gameId);
   }
 
-  /// Ažuriraj rezultat igre
   Future<bool> updateGameScore({
     required int gameId,
     required int teamOneScore,
@@ -78,7 +67,6 @@ class DatabaseService {
     );
   }
 
-  /// Završi igru
   Future<bool> finishGame({
     required int gameId,
     required Team winner,
@@ -89,14 +77,11 @@ class DatabaseService {
     );
   }
 
-  /// Dohvati statistike igara
   Future<Map<String, dynamic>> getGameStatistics() async {
     return await database.gameDao.getGameStatistics();
   }
 
-  // --- Metode za runde ---
 
-  /// Stvori novu rundu
   Future<int> createNewRound({
     required int gameId,
     required Team teamCalled,
@@ -119,17 +104,14 @@ class DatabaseService {
     );
   }
 
-  /// Dohvati runde za igru
   Future<List<Round>> getRoundsForGame(int gameId) async {
     return await database.roundDao.getRoundsForGameSorted(gameId);
   }
 
-  /// Dohvati zadnju rundu za igru
   Future<Round?> getLastRoundForGame(int gameId) async {
     return await database.roundDao.getLastRoundForGame(gameId);
   }
 
-  /// Ažuriraj rundu
   Future<bool> updateRound({
     required int roundId,
     int? teamOneScore,
@@ -150,17 +132,13 @@ class DatabaseService {
     );
   }
 
-  /// Dohvati statistike rundi za igru
   Future<Map<String, dynamic>> getRoundStatisticsForGame(int gameId) async {
     return await database.roundDao.getRoundStatisticsForGame(gameId);
   }
 
-  /// Obriši igru i sve povezane runde
   Future<bool> deleteGameWithRounds(int gameId) async {
     try {
-      // Obriši sve runde za igru
       await database.roundDao.deleteRoundsForGame(gameId);
-      // Obriši igru
       final deletedRows = await database.gameDao.deleteGame(gameId);
       return deletedRows > 0;
     } catch (e) {
@@ -168,7 +146,6 @@ class DatabaseService {
     }
   }
 
-  /// Test konekcije baze
   Future<bool> testConnection() async {
     try {
       await database.customSelect('SELECT 1').get();

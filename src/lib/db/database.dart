@@ -8,7 +8,6 @@ import 'dao/round_dao.dart';
 
 part 'database.g.dart';
 
-// Definicija GameTable
 class Games extends Table {
   IntColumn get id => integer().autoIncrement()();
   DateTimeColumn get gameDateTime => dateTime()();
@@ -23,7 +22,6 @@ class Games extends Table {
   DateTimeColumn get updatedAt => dateTime().withDefault(currentDateAndTime)();
 }
 
-// Definicija RoundTable
 class Rounds extends Table {
   IntColumn get id => integer().autoIncrement()();
   IntColumn get gameId => integer().references(Games, #id)();
@@ -39,7 +37,6 @@ class Rounds extends Table {
 
 @DriftDatabase(tables: [Games, Rounds])
 class AppDatabase extends _$AppDatabase {
-  // DAOs
   late final GameDao gameDao = GameDao(this);
   late final RoundDao roundDao = RoundDao(this);
 
@@ -56,7 +53,7 @@ class AppDatabase extends _$AppDatabase {
       },
       onUpgrade: (Migrator m, int from, int to) async {
         if (from < 2) {
-          // Buduće migracije
+          
         }
       },
     );
