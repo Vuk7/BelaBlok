@@ -2,18 +2,7 @@
 
 Card game "Bela" (Belot) score tracking application developed in Flutter with Drift ORM database.
 
-## 📋 ## 🔍 Working with Drift ORM
-
-### Using DAO classes
-
-DAO (Data Access Object) classes contain methods for working with the database. Usage examples:
-
-```dart
-// Get active game
-final activeGame = await DatabaseService().getActiveGame();
-
-// Get all rounds for a game
-final rounds = await DatabaseService().getRoundsForGame(gameId);s
+## 📋 Prerequisites
 
 Before running the project, make sure you have the following components installed:
 
@@ -145,17 +134,17 @@ lib/
 - **DatabaseService** - singleton service that encapsulates database operations
 - **Models** - UI models (will be refactored to use entities)
 
-## � Rad s Drift ORM-om
+## 🔍 Working with Drift ORM
 
-### Korištenje DAO klasa
+### Using DAO classes
 
-DAO (Data Access Object) klase sadrže metode za rad s bazom. Primjeri korištenja:
+DAO (Data Access Object) classes contain methods for working with the database. Usage examples:
 
 ```dart
-// Dohvat aktivne igre
+// Get active game
 final activeGame = await DatabaseService().getActiveGame();
 
-// Dohvati sve runde za igru
+// Get all rounds for a game
 final rounds = await DatabaseService().getRoundsForGame(gameId);
 
 // Create new game
@@ -209,15 +198,15 @@ flutter pub run build_runner build --delete-conflicting-outputs
 
 Generated code is located in `database.g.dart` file and contains all necessary classes and methods for database operations.
 
-## � Migracije baze podataka
+## 📊 Database migrations
 
-### Stvaranje nove migracije
+### Creating new migration
 
-Kada trebate promijeniti shemu baze:
+When you need to change the database schema:
 
-1. Ažurirajte definiciju tablice u `lib/db/entities/`
-2. Povećajte `schemaVersion` u `database.dart`
-3. Dodajte migraciju u `migration.onUpgrade`:
+1. Update table definition in `lib/db/entities/`
+2. Increase `schemaVersion` in `database.dart`
+3. Add migration in `migration.onUpgrade`:
 
 ```dart
 onUpgrade: (Migrator m, int from, int to) async {
@@ -227,14 +216,14 @@ onUpgrade: (Migrator m, int from, int to) async {
 }
 ```
 
-4. Regenerirajte kod:
+4. Regenerate code:
 ```bash
 flutter pub run build_runner build --delete-conflicting-outputs
 ```
 
-### Resetiranje baze podataka
+### Database reset
 
-Za potpuno resetiranje baze (PAŽNJA - briše sve podatke):
+For complete database reset (WARNING - deletes all data):
 
 ```bash
 flutter clean
@@ -242,72 +231,72 @@ flutter pub get
 flutter pub run build_runner build
 ```
 
-## � Razvoj
+## 🔧 Development
 
-### Dodavanje novih metoda u DAO
+### Adding new methods to DAO
 
-1. Otvorite odgovarajući DAO file (`game_dao.dart` ili `round_dao.dart`)
-2. Dodajte novu metodu
-3. Ažurirajte `DatabaseService` ako je potrebno
+1. Open the appropriate DAO file (`game_dao.dart` or `round_dao.dart`)
+2. Add new method
+3. Update `DatabaseService` if needed
 
-Primjer dodavanja nove metode:
+Example of adding new method:
 
 ```dart
-// U game_dao.dart
+// In game_dao.dart
 Future<List<Game>> getGamesByType(int gameType) =>
     (_db.select(_db.games)..where((g) => g.gameType.equals(gameType))).get();
 
-// U database_service.dart
+// In database_service.dart
 Future<List<Game>> getGamesByType(int gameType) async {
   return await database.gameDao.getGamesByType(gameType);
 }
 ```
 
-### Debugging baze podataka
+### Database debugging
 
-Za provjeru sadržaja baze možete koristiti:
+To check database content you can use:
 
 ```dart
-// Test konekcije
+// Test connection
 final testResult = await DatabaseService().testConnection();
 print('Database connection: $testResult');
 
-// Pregled svih igara
+// Review all games
 final games = await DatabaseService().getAllGames();
 print('Total games: ${games.length}');
 ```
 
-## � Korisne naredbe
+## 🔍 Useful commands
 
 ```bash
-# Instaliranje dependencies
+# Install dependencies
 flutter pub get
 
-# Čišćenje build-a
+# Clean build
 flutter clean
 
-# Generiranje koda za bazu
+# Generate database code
 flutter pub run build_runner build
 
-# Regeneriranje s brisanjem postojećih datoteka
+# Regenerate with deleting existing files
 flutter pub run build_runner build --delete-conflicting-outputs
 
-# Pokretanje aplikacije u debug modu
+# Run application in debug mode
 flutter run
 
-# Pokretanje testova
+# Run tests
 flutter test
 
-# Analiza koda
+# Code analysis
 flutter analyze
 
-# Formatiranje koda
+# Code formatting
 dart format .
 ```
 
-## � Platforme
+## 📱 Platforms
 
-Aplikacija je konfigurirana za rad na:
+The application is configured to work on:
 - ✅ Android
 - ✅ iOS  
 - ✅ Web
@@ -315,39 +304,37 @@ Aplikacija je konfigurirana za rad na:
 - ✅ macOS
 - ✅ Linux
 
-## � Problemi i rješenja
+## 🐛 Problems and solutions
 
 ### Problem: "Target of URI hasn't been generated"
-**Rješenje:** Pokrenite `flutter pub run build_runner build`
+**Solution:** Run `flutter pub run build_runner build`
 
-### Problem: Database se ne stvara
-**Rješenje:** 
-1. Provjerite imaju li sve tablice ispravne definicije
-2. Regenerirajte kod: `flutter pub run build_runner build --delete-conflicting-outputs`
+### Problem: Database is not created
+**Solution:** 
+1. Check if all tables have correct definitions
+2. Regenerate code: `flutter pub run build_runner build --delete-conflicting-outputs`
 
-### Problem: Aplikacija se ruši pri pristupanju bazi
-**Rješenje:**
-1. Provjerite je li `DatabaseService().initialize()` pozvan u `main.dart`
-2. Provjerite konzolu za SQL greške
+### Problem: Application crashes when accessing database
+**Solution:**
+1. Check if `DatabaseService().initialize()` is called in `main.dart`
+2. Check console for SQL errors
 
-## �📝 Sljedeći koraci
+## 📝 Next steps
 
-1. Refaktorirati postojeće `models/` da koriste nove entitete
-2. Ažurirati `repositories/` da koriste nove DAO-e
-3. Dodati više metoda u DAO-e prema potrebama UI-a
-4. Implementirati export/import funkcionalnost
-5. Dodati više statistika i analitiku igara
+1. Refactor existing `models/` to use new entities
+2. Update `repositories/` to use new DAOs
+3. Add more methods to DAOs according to UI needs
+4. Implement export/import functionality
+5. Add more statistics and game analytics
 
-## 🤝 Doprinos
+## 🤝 Contributing
 
-1. Fork repozitorija
-2. Stvorite feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commite promjene (`git commit -m 'Add some AmazingFeature'`)
+1. Fork the repository
+2. Create feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit changes (`git commit -m 'Add some AmazingFeature'`)
 4. Push branch (`git push origin feature/AmazingFeature`)
-5. Otvorite Pull Request
-4. Push branch (`git push origin feature/AmazingFeature`)
-5. Otvorite Pull Request
+5. Open Pull Request
 
 ---
 
-**Napomena:** Ovaj README će biti ažuriran kako se projekt razvija. Za najnovije informacije provjerite dokumentaciju u kodu.
+**Note:** This README will be updated as the project develops. For the latest information, check the documentation in the code.
