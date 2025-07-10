@@ -17,11 +17,11 @@ class HistoryListItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.symmetric(vertical: 4),
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      margin: const EdgeInsets.symmetric(vertical: 6),
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
       decoration: BoxDecoration(
         color: Theme.of(context).brightness == Brightness.dark 
-          ? Colors.grey[800] 
+          ? Colors.grey[700] 
           : Colors.grey[200],
         borderRadius: BorderRadius.circular(12),
       ),

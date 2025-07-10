@@ -27,12 +27,22 @@ class TopScoreDetails extends StatelessWidget {
         Row(
           children: [
             const Spacer(),
-            Text(
-              "MI",
-              style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: Theme.of(context).colorScheme.primary,
-                  fontSize: 36),
+            Row(
+              children: [
+                Icon(
+                  Icons.person,
+                  color: Colors.orange,
+                  size: 28,
+                ),
+                const SizedBox(width: 8),
+                Text(
+                  "MI",
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.orange,
+                      fontSize: 36),
+                ),
+              ],
             ),
             const Spacer(),
             Opacity(
@@ -46,12 +56,22 @@ class TopScoreDetails extends StatelessWidget {
               ),
             ),
             const Spacer(),
-            Text(
-              "VI",
-              style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: Theme.of(context).colorScheme.secondary,
-                  fontSize: 36),
+            Row(
+              children: [
+                Text(
+                  "VI",
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.blue,
+                      fontSize: 36),
+                ),
+                const SizedBox(width: 8),
+                Icon(
+                  Icons.person,
+                  color: Colors.blue,
+                  size: 28,
+                ),
+              ],
             ),
             const Spacer(),
           ],
@@ -74,9 +94,7 @@ class TopScoreDetails extends StatelessWidget {
               "( + $scoreDifference )",
               style: TextStyle(
                   fontWeight: FontWeight.normal,
-                  color: (teamInLead == Team.teamOne)
-                      ? Theme.of(context).colorScheme.primary
-                      : Theme.of(context).colorScheme.secondary,
+                  color: Colors.red,
                   fontSize: 24),
             ),
             const Spacer(),

@@ -76,18 +76,18 @@ class _AnimatedButtonState extends State<AnimatedButton> {
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
+                Text(
+                  widget.text,
+                  style: widget.textStyle,
+                ),
                 if (widget.icon != null) ...[
+                  const SizedBox(width: 12),
                   Icon(
                     widget.icon,
                     color: widget.textStyle.color,
                     size: widget.textStyle.fontSize! * 0.8,
                   ),
-                  const SizedBox(width: 12),
                 ],
-                Text(
-                  widget.text,
-                  style: widget.textStyle,
-                ),
               ],
             ),
           ),

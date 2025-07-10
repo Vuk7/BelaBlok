@@ -27,84 +27,191 @@ class RoundScoreListItem extends StatelessWidget {
       onTap: onTap,
       child: Container(
         width: double.infinity,
+        margin: const EdgeInsets.symmetric(vertical: 6),
         decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.primary,
-          border: Border.all(color: Theme.of(context).colorScheme.primary),
-          borderRadius: BorderRadius.circular(20),
+          color: const Color(0xFFD4B896), // svjetlo smeđa boja
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.1),
+              blurRadius: 4,
+              offset: const Offset(0, 2),
+            ),
+          ],
         ),
         child: Padding(
-            padding: const EdgeInsets.all(2.0),
-            child: Row(
-              children: [
-                const Spacer(),
-                Column(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          child: Row(
+            children: [
+              // Lijevi tim (MI)
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    (teamCalled == Team.teamOne)
-                        ? const Text("ZVAO",
-                            style: TextStyle(
-                                color: AppTheme.red,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 14))
-                        : const SizedBox(
-                            height: 14,
+                    Row(
+                      children: [
+                        Icon(
+                          Icons.person,
+                          color: Colors.orange,
+                          size: 18,
+                        ),
+                        const SizedBox(width: 4),
+                        Text(
+                          "MI",
+                          style: const TextStyle(
+                            color: Colors.orange,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
                           ),
-                    Text("$teamOneScore",
-                        style: const TextStyle(
-                            color: Colors.black,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 36)),
-                    Text("(+ $teamOneCallAmount)",
-                        style: const TextStyle(
-                            color: Colors.black,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 14)),
-                  ],
-                ),
-                const Spacer(),
-                Column(
-                  children: [
-                    Text("${(roundID + 1)}.",
-                        style: const TextStyle(
-                            color: Colors.black,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 14)),
-                    const SizedBox(
-                      height: 48,
+                        ),
+                      ],
                     ),
-                    Text("${(teamOneScore + teamTwoScore)}",
-                        style: const TextStyle(
-                            color: Colors.black,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 14)),
-                  ],
-                ),
-                const Spacer(),
-                Column(
-                  children: [
-                    (teamCalled == Team.teamTwo)
-                        ? const Text("ZVAO",
-                            style: TextStyle(
-                                color: AppTheme.red,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 14))
-                        : const SizedBox(
-                            height: 14,
+                    const SizedBox(height: 8),
+                    Row(
+                      children: [
+                        if (teamCalled == Team.teamOne)
+                          Icon(
+                            Icons.mic,
+                            color: AppTheme.red,
+                            size: 16,
                           ),
-                    Text("$teamTwoScore",
-                        style: const TextStyle(
-                            color: Colors.black,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 36)),
-                    Text("(+ $teamTwoCallAmount)",
-                        style: const TextStyle(
-                            color: Colors.black,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 14)),
+                        if (teamCalled == Team.teamOne)
+                          const SizedBox(width: 4),
+                        if (teamCalled == Team.teamOne)
+                          Text(
+                            "ZVAO",
+                            style: const TextStyle(
+                              color: AppTheme.red,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 14,
+                            ),
+                          ),
+                        if (teamCalled != Team.teamOne)
+                          Icon(
+                            Icons.mic,
+                            color: Colors.grey,
+                            size: 16,
+                          ),
+                      ],
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      "$teamOneScore",
+                      style: const TextStyle(
+                        color: Color(0xFF2C3E50),
+                        fontWeight: FontWeight.bold,
+                        fontSize: 36,
+                      ),
+                    ),
+                    Text(
+                      "(+$teamOneCallAmount)",
+                      style: const TextStyle(
+                        color: Color(0xFF2C3E50),
+                        fontWeight: FontWeight.w600,
+                        fontSize: 14,
+                      ),
+                    ),
                   ],
                 ),
-                const Spacer(),
-              ],
-            )),
+              ),
+              // Srednji dio - broj runde i ukupno
+              Column(
+                children: [
+                  Text(
+                    "${(roundID + 1)}.",
+                    style: const TextStyle(
+                      color: Color(0xFF2C3E50),
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    "${(teamOneScore + teamTwoScore)}",
+                    style: const TextStyle(
+                      color: Color(0xFF2C3E50),
+                      fontWeight: FontWeight.w600,
+                      fontSize: 16,
+                    ),
+                  ),
+                ],
+              ),
+              // Desni tim (VI)
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        Text(
+                          "VI",
+                          style: const TextStyle(
+                            color: Colors.blue,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                          ),
+                        ),
+                        const SizedBox(width: 4),
+                        Icon(
+                          Icons.person,
+                          color: Colors.blue,
+                          size: 18,
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 8),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        if (teamCalled == Team.teamTwo)
+                          Text(
+                            "ZVAO",
+                            style: const TextStyle(
+                              color: AppTheme.red,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 14,
+                            ),
+                          ),
+                        if (teamCalled == Team.teamTwo)
+                          const SizedBox(width: 4),
+                        if (teamCalled == Team.teamTwo)
+                          Icon(
+                            Icons.mic,
+                            color: AppTheme.red,
+                            size: 16,
+                          ),
+                        if (teamCalled != Team.teamTwo)
+                          Icon(
+                            Icons.mic,
+                            color: Colors.grey,
+                            size: 16,
+                          ),
+                      ],
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      "$teamTwoScore",
+                      style: const TextStyle(
+                        color: Color(0xFF2C3E50),
+                        fontWeight: FontWeight.bold,
+                        fontSize: 36,
+                      ),
+                    ),
+                    Text(
+                      "(+$teamTwoCallAmount)",
+                      style: const TextStyle(
+                        color: Color(0xFF2C3E50),
+                        fontWeight: FontWeight.w600,
+                        fontSize: 14,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

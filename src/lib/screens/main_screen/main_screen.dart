@@ -18,7 +18,9 @@ class _MainScreenState extends State<MainScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      backgroundColor: Theme.of(context).brightness == Brightness.dark 
+        ? Theme.of(context).scaffoldBackgroundColor 
+        : const Color(0xFFF5E6D3), // boja kože
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(20.0),
@@ -46,6 +48,9 @@ class _MainScreenState extends State<MainScreen> {
               ),
               Card(
                 elevation: 4,
+                color: Theme.of(context).brightness == Brightness.dark 
+                  ? Colors.grey[800] 
+                  : Colors.white,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(16),
                 ),
@@ -103,7 +108,7 @@ class _MainScreenState extends State<MainScreen> {
                       color: Colors.white,
                       fontSize: 32,
                       fontWeight: FontWeight.bold),
-                  bgColor: const Color(0xFFFF9500), // narančasta kao na slici
+                  bgColor: const Color(0xFFFF9500), 
                   onTap: () {
                     context.goNamed("newgame");
                   },

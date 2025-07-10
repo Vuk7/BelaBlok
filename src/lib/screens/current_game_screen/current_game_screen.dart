@@ -51,6 +51,9 @@ class _CurrentGameScreenState extends State<CurrentGameScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        backgroundColor: Theme.of(context).brightness == Brightness.dark 
+          ? const Color(0xFF2C3E50) 
+          : const Color(0xFFF5E6D3), // boja kože
         body: SafeArea(
             child: Padding(
       padding: const EdgeInsets.all(20.0),
@@ -99,6 +102,7 @@ class _CurrentGameScreenState extends State<CurrentGameScreen> {
             padding: const EdgeInsets.all(5.0),
             child: BigButton(
               text: "DODAJ",
+              icon: Icons.add,
               textStyle: const TextStyle(
                   color: Colors.black,
                   fontSize: 36,
