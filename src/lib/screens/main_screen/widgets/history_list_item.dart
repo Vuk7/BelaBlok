@@ -16,30 +16,56 @@ class HistoryListItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTap: onTap,
-      child: Column(
-        children: [
-          Row(
-            children: [
-              Text(
-                date,
-                style: const TextStyle(fontSize: 15),
+    return Container(
+      margin: const EdgeInsets.symmetric(vertical: 4),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      decoration: BoxDecoration(
+        color: Theme.of(context).brightness == Brightness.dark 
+          ? Colors.grey[800] 
+          : Colors.grey[200],
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: InkWell(
+        onTap: onTap,
+        child: Row(
+          children: [
+            Icon(
+              Icons.access_time,
+              size: 18,
+              color: Theme.of(context).brightness == Brightness.dark 
+                ? Colors.white 
+                : Colors.black,
+            ),
+            const SizedBox(width: 8),
+            Text(
+              date,
+              style: TextStyle(
+                fontSize: 15, 
+                color: Theme.of(context).brightness == Brightness.dark 
+                  ? Colors.white 
+                  : Colors.black
               ),
-              const Spacer(),
-              Text(
-                "$teamOneScore - $teamTwoScore",
-                style: const TextStyle(fontSize: 20),
+            ),
+            const Spacer(),
+            Icon(
+              Icons.emoji_events,
+              size: 20,
+              color: Theme.of(context).brightness == Brightness.dark 
+                ? Colors.white 
+                : Colors.black,
+            ),
+            const SizedBox(width: 8),
+            Text(
+              "$teamOneScore : $teamTwoScore",
+              style: TextStyle(
+                fontSize: 20, 
+                color: Theme.of(context).brightness == Brightness.dark 
+                  ? Colors.white 
+                  : Colors.black
               ),
-              const Spacer(),
-              const Text(
-                ">",
-                style: TextStyle(fontSize: 20),
-              ),
-            ],
-          ),
-          const Divider()
-        ],
+            ),
+          ],
+        ),
       ),
     );
   }

@@ -3,6 +3,9 @@ import 'package:bela_blok/screens/widgets/big_button.dart';
 import 'package:bela_blok/themes/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:bela_blok/screens/main_screen/widgets/animated_button.dart';
+import 'package:provider/provider.dart';
+import 'package:bela_blok/main.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -15,77 +18,127 @@ class _MainScreenState extends State<MainScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: SafeArea(
-            child: Padding(
-      padding: const EdgeInsets.all(20.0),
-      child: Center(
-        child: Column(
-          children: [
-            Text(
-              "BELA BLOK",
-              style: TextStyle(
-                  fontSize: 38,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(20.0),
+          child: Column(
+            children: [
+              const SizedBox(height: 40),
+              Text(
+                "BELA BLOK",
+                style: TextStyle(
+                  fontSize: 44,
                   fontWeight: FontWeight.bold,
-                  color: Theme.of(context).colorScheme.primary),
-            ),
-            const SizedBox(
-              height: 20,
-            ),
-            const Text(
-              "Povijest:",
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(
-              height: 20,
-            ),
-            HistoryListItem(
-                gameID: 0,
-                date: "21.10.2024 19:44",
-                teamOneScore: 1030,
-                teamTwoScore: 560,
-                onTap: () {}),
-            HistoryListItem(
-                gameID: 0,
-                date: "21.10.2024 19:44",
-                teamOneScore: 1030,
-                teamTwoScore: 560,
-                onTap: () {}),
-            const Spacer(),
-            Padding(
-              padding: const EdgeInsets.all(5.0),
-              child: BigButton(
-                text: "NASTAVI",
-                textStyle: const TextStyle(
-                    color: Colors.black,
-                    fontSize: 36,
-                    fontWeight: FontWeight.bold),
-                bgColor: AppTheme.red,
-                onTap: () {},
+                  color: Theme.of(context).colorScheme.primary, // koristi primary boju iz teme
+                  letterSpacing: 2,
+                  shadows: [
+                    Shadow(
+                      color: Colors.brown.withOpacity(0.3),
+                      blurRadius: 8,
+                      offset: Offset(0, 4),
+                    ),
+                  ],
+                ),
               ),
-            ),
-            const SizedBox(
-              height: 20,
-            ),
-            Padding(
-              padding: const EdgeInsets.all(5.0),
-              child: BigButton(
-                text: "NOVA IGRA",
-                textStyle: const TextStyle(
-                    color: Colors.black,
-                    fontSize: 36,
-                    fontWeight: FontWeight.bold),
-                bgColor: AppTheme.green,
-                onTap: () {
-                  context.goNamed("newgame");
-                },
+              const SizedBox(
+                height: 40,
               ),
-            ),
-            const SizedBox(
-              height: 30,
-            ),
-          ],
+              Card(
+                elevation: 4,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(20.0),
+                  child: Column(
+                    children: [
+                      Text(
+                        "Povijest:",
+                        style: TextStyle(
+                          fontSize: 22,
+                          fontWeight: FontWeight.bold,
+                          color: Theme.of(context).colorScheme.onBackground,
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+                      HistoryListItem(
+                          gameID: 0,
+                          date: "21.10.2024",
+                          teamOneScore: 1030,
+                          teamTwoScore: 560,
+                          onTap: () {}),
+                      const SizedBox(height: 10),
+                      HistoryListItem(
+                          gameID: 1,
+                          date: "21.10.2024",
+                          teamOneScore: 1030,
+                          teamTwoScore: 560,
+                          onTap: () {}),
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(height: 10),
+              Padding(
+                padding: const EdgeInsets.all(5.0),
+                child: AnimatedButton(
+                  text: "NASTAVI",
+                  icon: Icons.play_arrow,
+                  textStyle: TextStyle(
+                      color: Colors.white,
+                      fontSize: 32,
+                      fontWeight: FontWeight.bold),
+                  bgColor: const Color(0xFF3DB328),
+                  onTap: () {},
+                ),
+              ),
+              const SizedBox(height: 10),
+              Padding(
+                padding: const EdgeInsets.all(5.0),
+                child: AnimatedButton(
+                  text: "NOVA IGRA",
+                  icon: Icons.refresh,
+                  textStyle: TextStyle(
+                      color: Colors.white,
+                      fontSize: 32,
+                      fontWeight: FontWeight.bold),
+                  bgColor: const Color(0xFFFF9500), // narančasta kao na slici
+                  onTap: () {
+                    context.goNamed("newgame");
+                  },
+                ),
+              ),
+              const SizedBox(height: 50),
+            ],
+          ),
         ),
       ),
-    )));
+      floatingActionButton: IconButton(
+        icon: Icon(
+          Theme.of(context).brightness == Brightness.dark
+              ? Icons.nightlight_round
+              : Icons.wb_sunny,
+          color: Colors.amber,
+        ),
+        onPressed: () {
+          Provider.of<ThemeNotifier>(context, listen: false).toggleTheme();
+        },
+      ),
+    );
   }
+}
+
+class AppRouter {
+  static final router = GoRouter(
+    routes: [
+      GoRoute(
+        path: '/',
+        builder: (BuildContext context, GoRouterState state) {
+          return const MainScreen();
+        },
+      ),
+      // Add other routes here
+    ],
+  );
 }
