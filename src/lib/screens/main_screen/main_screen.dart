@@ -1,5 +1,6 @@
 import 'package:bela_blok/screens/main_screen/widgets/history_list_item.dart';
 import 'package:bela_blok/screens/widgets/big_button.dart';
+import 'package:bela_blok/screens/widgets/rules_widget.dart';
 import 'package:bela_blok/themes/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -22,7 +23,7 @@ class _MainScreenState extends State<MainScreen> {
         ? Theme.of(context).scaffoldBackgroundColor 
         : const Color(0xFFF5E6D3), // boja kože
       body: SafeArea(
-        child: Padding(
+        child: SingleChildScrollView(
           padding: const EdgeInsets.all(20.0),
           child: Column(
             children: [
@@ -84,7 +85,12 @@ class _MainScreenState extends State<MainScreen> {
                   ),
                 ),
               ),
-              const SizedBox(height: 10),
+              const SizedBox(height: 20),
+              
+              // Dodajemo PRAVILA widget
+              const RulesWidget(),
+              const SizedBox(height: 20),
+              
               Padding(
                 padding: const EdgeInsets.all(5.0),
                 child: AnimatedButton(
