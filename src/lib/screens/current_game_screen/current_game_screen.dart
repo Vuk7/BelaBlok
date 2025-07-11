@@ -2,6 +2,7 @@ import 'package:bela_blok/enums/team_enum.dart';
 import 'package:bela_blok/screens/current_game_screen/widgets/round_score_list_item.dart';
 import 'package:bela_blok/screens/current_game_screen/widgets/top_score_details.dart';
 import 'package:bela_blok/screens/widgets/big_button.dart';
+import 'package:bela_blok/screens/widgets/game_stats_widget.dart';
 import 'package:bela_blok/themes/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -20,6 +21,19 @@ class _CurrentGameScreenState extends State<CurrentGameScreen> {
     Team.teamOne: 980,
     Team.teamTwo: 990,
   };
+
+  // Dodajemo statistike
+  Map<String, dynamic> gameStats = {
+    'teamOneCalls': 5,     // koliko puta je tim 1 zvao
+    'teamTwoCalls': 7,     // koliko puta je tim 2 zvao
+    'teamOneFails': 1,     // koliko puta je tim 1 pao
+    'teamTwoFails': 2,     // koliko puta je tim 2 pao
+    'teamOneDeclarations': 3, // koliko zvanja je tim 1 imao
+    'teamTwoDeclarations': 4, // koliko zvanja je tim 2 imao
+  };
+
+  // Provjeri da li je igra završena (za testiranje uvijek true)
+  bool get isGameFinished => true; // teamScore[Team.teamOne]! >= 1001 || teamScore[Team.teamTwo]! >= 1001;
 
   List<Map<String, dynamic>> dummyRoundData = List.generate(10, (index) {
     return {
@@ -73,6 +87,11 @@ class _CurrentGameScreenState extends State<CurrentGameScreen> {
           const SizedBox(
             height: 10,
           ),
+          // Statistike box - samo se prikazuje kada je igra završena
+          if (isGameFinished) ...[
+            GameStatsWidget(gameStats: gameStats),
+            const SizedBox(height: 10),
+          ],
           Expanded(
             child: ListView.builder(
               controller: _scrollController,
@@ -126,4 +145,6 @@ class _CurrentGameScreenState extends State<CurrentGameScreen> {
       ),
     )));
   }
+
+
 }
