@@ -17,26 +17,66 @@ class ShowLostText extends StatelessWidget {
         ? Row(children: [
             const Spacer(),
             (teamLost == Team.teamOne)
-                ? const Text("PAD",
-                    style: TextStyle(fontSize: 36, color: AppTheme.red))
-                : const SizedBox(
-                    width: 60,
-                  ),
+                ? Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                    decoration: BoxDecoration(
+                      color: AppTheme.red,
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          Icons.trending_down,
+                          color: Colors.white,
+                          size: 20,
+                        ),
+                        const SizedBox(width: 4),
+                        Text(
+                          "PAD",
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ],
+                    ),
+                  )
+                : const SizedBox(width: 80),
             const Spacer(),
-            const SizedBox(
-              width: 20,
-            ),
+            const SizedBox(width: 20),
             const Spacer(),
             (teamLost == Team.teamTwo)
-                ? const Text("PAD",
-                    style: TextStyle(fontSize: 36, color: AppTheme.red))
-                : const SizedBox(
-                    width: 36,
-                  ),
+                ? Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                    decoration: BoxDecoration(
+                      color: AppTheme.red,
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          Icons.trending_down,
+                          color: Colors.white,
+                          size: 20,
+                        ),
+                        const SizedBox(width: 4),
+                        Text(
+                          "PAD",
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ],
+                    ),
+                  )
+                : const SizedBox(width: 80),
             const Spacer(),
           ])
-        : const SizedBox(
-            height: 36,
-          );
+        : const SizedBox(height: 50);
   }
 }

@@ -22,18 +22,22 @@ class ChooseInputType extends StatelessWidget {
       children: [
         BigButton(
           text: "IGRA",
-          textStyle: const TextStyle(
-              color: Colors.black, fontSize: 24, fontWeight: FontWeight.bold),
-          bgColor: (selectedChoice == 0) ? selectedColor : notSelectedColor,
+          textStyle: TextStyle(
+              color: (selectedChoice == 0) ? Colors.white : Colors.black, 
+              fontSize: 24, 
+              fontWeight: FontWeight.bold),
+          bgColor: (selectedChoice == 0) ? const Color(0xFF4CAF50) : notSelectedColor, // Zelena boja
           onTap: () => onTap(0),
           textPadding: 4,
           width: boxWidth,
         ),
         BigButton(
           text: "ZVANJE",
-          textStyle: const TextStyle(
-              color: Colors.black, fontSize: 24, fontWeight: FontWeight.bold),
-          bgColor: (selectedChoice == 1) ? selectedColor : notSelectedColor,
+          textStyle: TextStyle(
+              color: (selectedChoice == 1) ? Colors.white : Colors.black, 
+              fontSize: 24, 
+              fontWeight: FontWeight.bold),
+          bgColor: (selectedChoice == 1) ? Colors.red : notSelectedColor,
           onTap: () => onTap(1),
           textPadding: 4,
           width: boxWidth,
