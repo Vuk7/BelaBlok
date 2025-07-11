@@ -1,6 +1,7 @@
 import 'package:bela_blok/screens/add_round_screen/widgets/choose_caller.dart';
 import 'package:bela_blok/screens/add_round_screen/widgets/choose_input_type.dart';
 import 'package:bela_blok/screens/widgets/big_button_input_number.dart';
+import 'package:bela_blok/screens/widgets/help_dialog.dart';
 import 'package:bela_blok/screens/widgets/player_shuffling.dart';
 import 'package:bela_blok/themes/app_theme.dart';
 import 'package:flutter/material.dart';
@@ -32,16 +33,43 @@ class _AddRoundScreenState extends State<AddRoundScreen> {
           ? const Color(0xFF1e2a38) 
           : const Color(0xFFF5E6D3), // boja kože
         resizeToAvoidBottomInset: false,
-        floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            context.pop();
-          },
-          backgroundColor: AppTheme.green,
-          child: const Icon(
-            Icons.save,
-            color: Colors.white,
-            size: 28,
-          ),
+        floatingActionButton: Stack(
+          children: [
+            // Help button u lijevom kutu
+            Positioned(
+              left: 30,
+              bottom: 0,
+              child: FloatingActionButton(
+                heroTag: "help_btn",
+                onPressed: () {
+                  ZvanjaHelpDialog.show(context);
+                },
+                backgroundColor: Colors.red,
+                child: const Icon(
+                  Icons.quiz,
+                  color: Colors.white,
+                  size: 28,
+                ),
+              ),
+            ),
+            // Save button u desnom kutu (default pozicija)
+            Positioned(
+              right: 0,
+              bottom: 0,
+              child: FloatingActionButton(
+                heroTag: "save_btn",
+                onPressed: () {
+                  context.pop();
+                },
+                backgroundColor: AppTheme.green,
+                child: const Icon(
+                  Icons.save,
+                  color: Colors.white,
+                  size: 28,
+                ),
+              ),
+            ),
+          ],
         ),
         body: SafeArea(
           child: Padding(
@@ -89,7 +117,7 @@ class _AddRoundScreenState extends State<AddRoundScreen> {
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             Text(
-                              showGameScore ? "MI/VI rezultat" : "sakrij rezultat",
+                              showGameScore ? "MI/VI rezultat" : "MI/VI rezultat",
                               style: TextStyle(
                                 fontSize: 12,
                                 color: Theme.of(context).colorScheme.onBackground.withOpacity(0.6),
