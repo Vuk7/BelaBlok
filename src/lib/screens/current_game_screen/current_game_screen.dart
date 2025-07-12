@@ -1,6 +1,7 @@
 import 'package:bela_blok/enums/team_enum.dart';
 import 'package:bela_blok/screens/current_game_screen/widgets/round_score_list_item.dart';
 import 'package:bela_blok/screens/current_game_screen/widgets/top_score_details.dart';
+import 'package:bela_blok/screens/widgets/animated_list_item.dart';
 import 'package:bela_blok/screens/widgets/big_button.dart';
 import 'package:bela_blok/screens/widgets/game_stats_widget.dart';
 import 'package:bela_blok/themes/app_theme.dart';
@@ -99,16 +100,19 @@ class _CurrentGameScreenState extends State<CurrentGameScreen> {
               itemCount: dummyRoundData.length,
               itemBuilder: (context, index) {
                 final round = dummyRoundData[index];
-                return Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 5.0),
-                  child: RoundScoreListItem(
-                    teamOneCallAmount: round['teamOneCallAmount'],
-                    teamTwoCallAmount: round['teamTwoCallAmount'],
-                    teamOneScore: round['teamOneScore'],
-                    teamTwoScore: round['teamTwoScore'],
-                    roundID: round['roundID'],
-                    teamCalled: round['teamCalled'],
-                    onTap: () {},
+                return AnimatedListItem(
+                  index: index,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 5.0),
+                    child: RoundScoreListItem(
+                      teamOneCallAmount: round['teamOneCallAmount'],
+                      teamTwoCallAmount: round['teamTwoCallAmount'],
+                      teamOneScore: round['teamOneScore'],
+                      teamTwoScore: round['teamTwoScore'],
+                      roundID: round['roundID'],
+                      teamCalled: round['teamCalled'],
+                      onTap: () {},
+                    ),
                   ),
                 );
               },
@@ -119,23 +123,26 @@ class _CurrentGameScreenState extends State<CurrentGameScreen> {
           ),
           Padding(
             padding: const EdgeInsets.all(5.0),
-            child: BigButton(
-              text: "DODAJ",
-              icon: Icons.add,
-              textStyle: const TextStyle(
-                  color: Colors.black,
-                  fontSize: 36,
-                  fontWeight: FontWeight.bold),
-              bgColor: AppTheme.green,
-              onTap: () {
-                context.goNamed("addround");
-                /*
-                to be used
-                WidgetsBinding.instance.addPostFrameCallback((_) {
-                  _scrollToEnd();
-                });*/
-              },
-              textPadding: 15,
+            child: Hero(
+              tag: "add_round_button",
+              child: BigButton(
+                text: "DODAJ",
+                icon: Icons.add,
+                textStyle: const TextStyle(
+                    color: Colors.black,
+                    fontSize: 36,
+                    fontWeight: FontWeight.bold),
+                bgColor: AppTheme.green,
+                onTap: () {
+                  context.goNamed("addround");
+                  /*
+                  to be used
+                  WidgetsBinding.instance.addPostFrameCallback((_) {
+                    _scrollToEnd();
+                  });*/
+                },
+                textPadding: 15,
+              ),
             ),
           ),
           const SizedBox(

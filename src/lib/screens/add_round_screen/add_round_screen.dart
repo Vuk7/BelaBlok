@@ -3,6 +3,7 @@ import 'package:bela_blok/screens/add_round_screen/widgets/choose_input_type.dar
 import 'package:bela_blok/screens/widgets/big_button_input_number.dart';
 import 'package:bela_blok/screens/widgets/help_dialog.dart';
 import 'package:bela_blok/screens/widgets/player_shuffling.dart';
+import 'package:bela_blok/screens/widgets/pulsing_fab.dart';
 import 'package:bela_blok/themes/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -69,6 +70,13 @@ class _AddRoundScreenState extends State<AddRoundScreen>
     super.dispose();
   }
 
+  // Check if all required data is filled for save button pulsing
+  bool get isReadyToSave {
+    return selectedCaller >= 0 && 
+           focusedInput >= 0 && 
+           (inputTeamOne.text.isNotEmpty || inputTeamTwo.text.isNotEmpty);
+  }
+
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
@@ -101,12 +109,13 @@ class _AddRoundScreenState extends State<AddRoundScreen>
             Positioned(
               right: 0,
               bottom: 0,
-              child: FloatingActionButton(
+              child: PulsingFloatingActionButton(
                 heroTag: "save_btn",
                 onPressed: () {
                   context.pop();
                 },
                 backgroundColor: AppTheme.green,
+                isPulsing: isReadyToSave,
                 child: const Icon(
                   Icons.save,
                   color: Colors.white,

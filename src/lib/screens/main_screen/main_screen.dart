@@ -91,31 +91,37 @@ class _MainScreenState extends State<MainScreen> {
               
               Padding(
                 padding: const EdgeInsets.all(5.0),
-                child: AnimatedButton(
-                  text: "NASTAVI",
-                  icon: Icons.play_arrow,
-                  textStyle: TextStyle(
-                      color: Colors.white,
-                      fontSize: 32,
-                      fontWeight: FontWeight.bold),
-                  bgColor: const Color(0xFF3DB328),
-                  onTap: () {},
+                child: Hero(
+                  tag: "continue_button",
+                  child: AnimatedButton(
+                    text: "NASTAVI",
+                    icon: Icons.play_arrow,
+                    textStyle: TextStyle(
+                        color: Colors.white,
+                        fontSize: 32,
+                        fontWeight: FontWeight.bold),
+                    bgColor: const Color(0xFF3DB328),
+                    onTap: () {},
+                  ),
                 ),
               ),
               const SizedBox(height: 10),
               Padding(
                 padding: const EdgeInsets.all(5.0),
-                child: AnimatedButton(
-                  text: "NOVA IGRA",
-                  icon: Icons.refresh,
-                  textStyle: TextStyle(
-                      color: Colors.white,
-                      fontSize: 32,
-                      fontWeight: FontWeight.bold),
-                  bgColor: const Color(0xFFFF9500), 
-                  onTap: () {
-                    context.goNamed("newgame");
-                  },
+                child: Hero(
+                  tag: "new_game_button",
+                  child: AnimatedButton(
+                    text: "NOVA IGRA",
+                    icon: Icons.refresh,
+                    textStyle: TextStyle(
+                        color: Colors.white,
+                        fontSize: 32,
+                        fontWeight: FontWeight.bold),
+                    bgColor: const Color(0xFFFF9500), 
+                    onTap: () {
+                      context.goNamed("newgame");
+                    },
+                  ),
                 ),
               ),
               const SizedBox(height: 50),
