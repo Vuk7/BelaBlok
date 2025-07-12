@@ -14,7 +14,8 @@ class AddRoundScreen extends StatefulWidget {
   State<AddRoundScreen> createState() => _AddRoundScreenState();
 }
 
-class _AddRoundScreenState extends State<AddRoundScreen> {
+class _AddRoundScreenState extends State<AddRoundScreen> 
+    with TickerProviderStateMixin {
   int selectedCaller = 0;
 
   TextEditingController inputTeamOne = TextEditingController();
@@ -23,6 +24,50 @@ class _AddRoundScreenState extends State<AddRoundScreen> {
   int selectedInputType = 0;
   bool showGameScore = true; // Nova varijabla za kontrolu prikaza rezultata
   int focusedInput = -1; // -1 = nema fokusa, 0 = prvi input, 1 = drugi input
+
+  // Animation controllers
+  late AnimationController _bounceController1;
+  late AnimationController _bounceController2;
+  late Animation<double> _bounceAnimation1;
+  late Animation<double> _bounceAnimation2;
+
+  @override
+  void initState() {
+    super.initState();
+    
+    // Initialize bounce animations
+    _bounceController1 = AnimationController(
+      duration: const Duration(milliseconds: 200),
+      vsync: this,
+    );
+    _bounceController2 = AnimationController(
+      duration: const Duration(milliseconds: 200),
+      vsync: this,
+    );
+    
+    _bounceAnimation1 = Tween<double>(
+      begin: 1.0,
+      end: 1.1,
+    ).animate(CurvedAnimation(
+      parent: _bounceController1,
+      curve: Curves.elasticOut,
+    ));
+    
+    _bounceAnimation2 = Tween<double>(
+      begin: 1.0,
+      end: 1.1,
+    ).animate(CurvedAnimation(
+      parent: _bounceController2,
+      curve: Curves.elasticOut,
+    ));
+  }
+
+  @override
+  void dispose() {
+    _bounceController1.dispose();
+    _bounceController2.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -329,49 +374,71 @@ class _AddRoundScreenState extends State<AddRoundScreen> {
                       Row(
                           mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: [
-                            BigButtonInputNumber(
-                              text: "0",
-                              textStyle: TextStyle(
-                                  color: focusedInput == 0 ? Colors.white : Colors.black,
-                                  fontSize: 30,
-                                  fontWeight: FontWeight.bold),
-                              bgColor: focusedInput == 0 
-                                ? AppTheme.green 
-                                : (focusedInput == 1 
-                                  ? Colors.red 
-                                  : (Theme.of(context).brightness == Brightness.dark 
-                                    ? Colors.grey[700]! 
-                                    : const Color(0xFFE0E0E0))),
-                              onTap: () {
-                                setState(() {
-                                  focusedInput = 0;
-                                });
+                            AnimatedBuilder(
+                              animation: _bounceAnimation1,
+                              builder: (context, child) {
+                                return Transform.scale(
+                                  scale: _bounceAnimation1.value,
+                                  child: BigButtonInputNumber(
+                                    text: "0",
+                                    textStyle: TextStyle(
+                                        color: focusedInput == 0 ? Colors.white : Colors.black,
+                                        fontSize: 30,
+                                        fontWeight: FontWeight.bold),
+                                    bgColor: focusedInput == 0 
+                                      ? AppTheme.green 
+                                      : (focusedInput == 1 
+                                        ? Colors.red 
+                                        : (Theme.of(context).brightness == Brightness.dark 
+                                          ? Colors.grey[700]! 
+                                          : const Color(0xFFE0E0E0))),
+                                    onTap: () {
+                                      _bounceController1.forward().then((_) {
+                                        _bounceController1.reverse();
+                                      });
+                                      setState(() {
+                                        focusedInput = 0;
+                                      });
+                                    },
+                                    inputController: inputTeamOne,
+                                    textPadding: 10,
+                                    width: screenWidth / 3,
+                                  ),
+                                );
                               },
-                              inputController: inputTeamOne,
-                              textPadding: 10,
-                              width: screenWidth / 3,
                             ),
-                            BigButtonInputNumber(
-                              text: "0",
-                              textStyle: TextStyle(
-                                  color: focusedInput == 1 ? Colors.white : Colors.black,
-                                  fontSize: 30,
-                                  fontWeight: FontWeight.bold),
-                              bgColor: focusedInput == 1 
-                                ? AppTheme.green 
-                                : (focusedInput == 0 
-                                  ? Colors.red 
-                                  : (Theme.of(context).brightness == Brightness.dark 
-                                    ? Colors.grey[700]! 
-                                    : const Color(0xFFE0E0E0))),
-                              onTap: () {
-                                setState(() {
-                                  focusedInput = 1;
-                                });
+                            AnimatedBuilder(
+                              animation: _bounceAnimation2,
+                              builder: (context, child) {
+                                return Transform.scale(
+                                  scale: _bounceAnimation2.value,
+                                  child: BigButtonInputNumber(
+                                    text: "0",
+                                    textStyle: TextStyle(
+                                        color: focusedInput == 1 ? Colors.white : Colors.black,
+                                        fontSize: 30,
+                                        fontWeight: FontWeight.bold),
+                                    bgColor: focusedInput == 1 
+                                      ? AppTheme.green 
+                                      : (focusedInput == 0 
+                                        ? Colors.red 
+                                        : (Theme.of(context).brightness == Brightness.dark 
+                                          ? Colors.grey[700]! 
+                                          : const Color(0xFFE0E0E0))),
+                                    onTap: () {
+                                      _bounceController2.forward().then((_) {
+                                        _bounceController2.reverse();
+                                      });
+                                      setState(() {
+                                        focusedInput = 1;
+                                      });
+                                    },
+                                    inputController: inputTeamTwo,
+                                    textPadding: 10,
+                                    width: screenWidth / 3,
+                                  ),
+                                );
                               },
-                              inputController: inputTeamTwo,
-                              textPadding: 10,
-                              width: screenWidth / 3,
                             ),
                           ]),
                       const SizedBox(height: 16),

@@ -1,7 +1,5 @@
 import 'package:bela_blok/screens/main_screen/widgets/history_list_item.dart';
-import 'package:bela_blok/screens/widgets/big_button.dart';
 import 'package:bela_blok/screens/widgets/rules_widget.dart';
-import 'package:bela_blok/themes/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:bela_blok/screens/main_screen/widgets/animated_button.dart';

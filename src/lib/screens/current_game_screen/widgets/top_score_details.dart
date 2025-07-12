@@ -1,4 +1,5 @@
 import 'package:bela_blok/enums/team_enum.dart';
+import 'package:bela_blok/screens/widgets/animated_counter.dart';
 import 'package:flutter/material.dart';
 
 class TopScoreDetails extends StatelessWidget {
@@ -82,9 +83,9 @@ class TopScoreDetails extends StatelessWidget {
         Row(
           children: [
             const Spacer(),
-            Text(
-              "$teamOneScore",
-              style: TextStyle(
+            AnimatedCounter(
+              value: teamOneScore,
+              textStyle: TextStyle(
                   fontWeight: FontWeight.normal,
                   color: Theme.of(context).colorScheme.secondary,
                   fontSize: 36),
@@ -98,9 +99,9 @@ class TopScoreDetails extends StatelessWidget {
                   fontSize: 24),
             ),
             const Spacer(),
-            Text(
-              "$teamTwoScore",
-              style: TextStyle(
+            AnimatedCounter(
+              value: teamTwoScore,
+              textStyle: TextStyle(
                   fontWeight: FontWeight.normal,
                   color: Theme.of(context).colorScheme.secondary,
                   fontSize: 36),
