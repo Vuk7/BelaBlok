@@ -1,8 +1,8 @@
 import 'package:bela_blok/enums/team_enum.dart';
 import 'package:bela_blok/screens/current_game_screen/widgets/round_score_list_item.dart';
 import 'package:bela_blok/screens/current_game_screen/widgets/top_score_details.dart';
+import 'package:bela_blok/screens/widgets/animated_big_button.dart' as button;
 import 'package:bela_blok/screens/widgets/animated_list_item.dart';
-import 'package:bela_blok/screens/widgets/big_button.dart';
 import 'package:bela_blok/screens/widgets/confetti_animation.dart';
 import 'package:bela_blok/screens/widgets/game_stats_widget.dart';
 import 'package:bela_blok/screens/widgets/morphing_widgets.dart';
@@ -164,9 +164,10 @@ class _CurrentGameScreenState extends State<CurrentGameScreen> {
                       padding: const EdgeInsets.all(5.0),
                       child: Hero(
                         tag: "add_round_button",
-                        child: BigButton(
+                        child: button.AnimatedBigButton(
                           text: "DODAJ",
                           icon: Icons.add,
+                          iconAnimationType: button.AnimationType.scale,
                           textStyle: const TextStyle(
                               color: Colors.black,
                               fontSize: 36,

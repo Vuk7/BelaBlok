@@ -1,8 +1,8 @@
-import 'package:bela_blok/screens/main_screen/widgets/history_list_item.dart';
+import 'package:bela_blok/screens/main_screen/widgets/animated_history_list_item.dart';
 import 'package:bela_blok/screens/widgets/rules_widget.dart';
+import 'package:bela_blok/screens/widgets/animated_big_button.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:bela_blok/screens/main_screen/widgets/animated_button.dart';
 import 'package:provider/provider.dart';
 import 'package:bela_blok/main.dart';
 
@@ -66,19 +66,27 @@ class _MainScreenState extends State<MainScreen> {
                         ),
                       ),
                       const SizedBox(height: 20),
-                      HistoryListItem(
+                      AnimatedHistoryListItem(
+                          index: 0,
                           gameID: 0,
                           date: "21.10.2024",
                           teamOneScore: 1030,
                           teamTwoScore: 560,
-                          onTap: () {}),
+                          onTap: () {
+                            // Možete dodati navigaciju na detalje igre
+                            print("Otvaranje povijesti igre ID: 0");
+                          }),
                       const SizedBox(height: 10),
-                      HistoryListItem(
+                      AnimatedHistoryListItem(
+                          index: 1,
                           gameID: 1,
                           date: "21.10.2024",
                           teamOneScore: 1030,
                           teamTwoScore: 560,
-                          onTap: () {}),
+                          onTap: () {
+                            // Možete dodati navigaciju na detalje igre
+                            print("Otvaranje povijesti igre ID: 1");
+                          }),
                     ],
                   ),
                 ),
@@ -93,15 +101,18 @@ class _MainScreenState extends State<MainScreen> {
                 padding: const EdgeInsets.all(5.0),
                 child: Hero(
                   tag: "continue_button",
-                  child: AnimatedButton(
+                  child: AnimatedBigButton(
                     text: "NASTAVI",
                     icon: Icons.play_arrow,
-                    textStyle: TextStyle(
+                    iconAnimationType: AnimationType.slideRight,
+                    textStyle: const TextStyle(
                         color: Colors.white,
                         fontSize: 32,
                         fontWeight: FontWeight.bold),
                     bgColor: const Color(0xFF3DB328),
-                    onTap: () {},
+                    onTap: () {
+                      context.goNamed("currentgame");
+                    },
                   ),
                 ),
               ),
@@ -110,14 +121,15 @@ class _MainScreenState extends State<MainScreen> {
                 padding: const EdgeInsets.all(5.0),
                 child: Hero(
                   tag: "new_game_button",
-                  child: AnimatedButton(
+                  child: AnimatedBigButton(
                     text: "NOVA IGRA",
                     icon: Icons.refresh,
-                    textStyle: TextStyle(
+                    iconAnimationType: AnimationType.rotate,
+                    textStyle: const TextStyle(
                         color: Colors.white,
                         fontSize: 32,
                         fontWeight: FontWeight.bold),
-                    bgColor: const Color(0xFFFF9500), 
+                    bgColor: const Color(0xFFFF9500),
                     onTap: () {
                       context.goNamed("newgame");
                     },

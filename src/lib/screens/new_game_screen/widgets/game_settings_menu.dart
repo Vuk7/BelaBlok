@@ -1,4 +1,4 @@
-import 'package:bela_blok/screens/new_game_screen/widgets/play_direction_choice.dart';
+import 'package:bela_blok/screens/new_game_screen/widgets/animated_play_direction_choice.dart';
 import 'package:bela_blok/themes/app_theme.dart';
 import 'package:flutter/material.dart';
 
@@ -98,7 +98,7 @@ class _GameSettingsMenuState extends State<GameSettingsMenu> {
                           ),
                         ),
                         const SizedBox(height: 12),
-                        PlayDirectionChoice(
+                        AnimatedPlayDirectionChoice(
                           selectedChoice: widget.playDirectionSelect,
                           selectedColor: AppTheme.green,
                           notSelectedColor: Theme.of(context).colorScheme.onBackground,

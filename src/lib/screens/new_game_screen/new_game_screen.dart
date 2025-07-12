@@ -1,5 +1,6 @@
 import 'package:bela_blok/screens/new_game_screen/widgets/game_settings_menu.dart';
 import 'package:bela_blok/screens/main_screen/widgets/animated_button.dart';
+import 'package:bela_blok/screens/widgets/animated_big_button.dart';
 import 'package:bela_blok/screens/widgets/player_shuffling.dart';
 import 'package:bela_blok/themes/app_theme.dart';
 import 'package:flutter/material.dart';
@@ -171,14 +172,17 @@ class _NewGameScreenState extends State<NewGameScreen> {
             const SizedBox(height: 20), // Veći razmak između "Prvi miješa" i gumba "ZAPOČNI"
             Expanded(child: Container()), // Zamjena za Spacer
             Padding(
-              padding: const EdgeInsets.all(1.0),
-              child: AnimatedButton(
+              padding: const EdgeInsets.all(16.0),
+              child: AnimatedBigButton(
                 text: "ZAPOČNI",
+                icon: Icons.play_circle_filled,
+                iconAnimationType: AnimationType.scale,
                 textStyle: const TextStyle(
                     color: Colors.black,
-                    fontSize: 20,
+                    fontSize: 28,
                     fontWeight: FontWeight.bold),
                 bgColor: AppTheme.green,
+                textPadding: 20,
                 onTap: () {
                   context.goNamed("currentgame");
                 },
