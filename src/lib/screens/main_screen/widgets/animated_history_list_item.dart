@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:bela_blok/screens/main_screen/widgets/history_list_item.dart';
 
 class AnimatedHistoryListItem extends StatefulWidget {
-  final String date;
-  final int gameID, teamOneScore, teamTwoScore;
+  final String date, gameID;
+  final int teamOneScore, teamTwoScore;
   final Function() onTap;
   final int index;
   final Duration delay;
@@ -92,11 +92,14 @@ class _AnimatedHistoryListItemState extends State<AnimatedHistoryListItem>
 
   void _handleTapUp() {
     _scaleController.reverse();
-    widget.onTap();
   }
 
   void _handleTapCancel() {
     _scaleController.reverse();
+  }
+
+  void _handleOnTap() {
+    widget.onTap();
   }
 
   @override
@@ -119,7 +122,7 @@ class _AnimatedHistoryListItemState extends State<AnimatedHistoryListItem>
                   date: widget.date,
                   teamOneScore: widget.teamOneScore,
                   teamTwoScore: widget.teamTwoScore,
-                  onTap: () {}, // Empty since we handle tap in wrapper
+                  onTap: _handleOnTap,
                 ),
               ),
             ),
