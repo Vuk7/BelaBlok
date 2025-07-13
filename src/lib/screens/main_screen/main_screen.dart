@@ -1,6 +1,9 @@
+import 'package:bela_blok/db/models/game_model.dart';
 import 'package:bela_blok/screens/main_screen/widgets/history_list_item.dart';
 import 'package:bela_blok/screens/widgets/big_button.dart';
+import 'package:bela_blok/services/games_service.dart';
 import 'package:bela_blok/themes/app_theme.dart';
+import 'package:bela_blok/utils/date_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -12,6 +15,21 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
+  late GamesService gamesService;
+  List<Game> gamesHistory = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _initGames();
+  }
+
+  Future<void> _initGames() async {
+    gamesService = await GamesService.create();
+    gamesHistory = await gamesService.getAllGames();
+    setState(() {}); // Trigger UI rebuild
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -38,18 +56,27 @@ class _MainScreenState extends State<MainScreen> {
             const SizedBox(
               height: 20,
             ),
-            HistoryListItem(
-                gameID: 0,
-                date: "21.10.2024 19:44",
-                teamOneScore: 1030,
-                teamTwoScore: 560,
-                onTap: () {}),
-            HistoryListItem(
-                gameID: 0,
-                date: "21.10.2024 19:44",
-                teamOneScore: 1030,
-                teamTwoScore: 560,
-                onTap: () {}),
+            gamesHistory.isEmpty
+                ? const Center(child: CircularProgressIndicator())
+                : SizedBox(
+                    height: 200,
+                    child: ListView.builder(
+                      itemCount: gamesHistory.length,
+                      itemBuilder: (context, index) {
+                        final game = gamesHistory[index];
+
+                        return HistoryListItem(
+                          gameID: game.id ?? "N/A",
+                          date: formatDate(game.createdAt),
+                          teamOneScore: game.teamOneScore ?? 0,
+                          teamTwoScore: game.teamTwoScore ?? 0,
+                          onTap: () {
+                            print("Tap: ${game.id}");
+                          },
+                        );
+                      },
+                    ),
+                  ),
             const Spacer(),
             Padding(
               padding: const EdgeInsets.all(5.0),
@@ -60,7 +87,7 @@ class _MainScreenState extends State<MainScreen> {
                     fontSize: 36,
                     fontWeight: FontWeight.bold),
                 bgColor: AppTheme.red,
-                onTap: () {},
+                onTap: () async {},
               ),
             ),
             const SizedBox(
@@ -75,7 +102,7 @@ class _MainScreenState extends State<MainScreen> {
                     fontSize: 36,
                     fontWeight: FontWeight.bold),
                 bgColor: AppTheme.green,
-                onTap: () {
+                onTap: () async {
                   context.goNamed("newgame");
                 },
               ),

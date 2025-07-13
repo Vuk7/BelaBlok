@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
 class HistoryListItem extends StatelessWidget {
-  final String date;
-  final int gameID, teamOneScore, teamTwoScore;
+  final String date, gameID;
+  final int teamOneScore, teamTwoScore;
   final Function() onTap;
 
   const HistoryListItem({
