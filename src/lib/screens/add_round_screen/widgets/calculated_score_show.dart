@@ -9,10 +9,10 @@ class CalculatedScoreShow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
-      Text("U: $teamOneScore",
+      Text("MI: $teamOneScore",
           style: TextStyle(
               fontSize: 30, color: Theme.of(context).colorScheme.secondary)),
-      Text("U: $teamTwoScore",
+      Text("VI: $teamTwoScore",
           style: TextStyle(
               fontSize: 30, color: Theme.of(context).colorScheme.secondary))
     ]);
