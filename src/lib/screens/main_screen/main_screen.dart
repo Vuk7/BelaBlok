@@ -19,6 +19,7 @@ class MainScreen extends StatefulWidget {
 class _MainScreenState extends State<MainScreen> {
   late GamesService gamesService;
   List<Game> gamesHistory = [];
+  var isLoadingGameHistory = true;
 
   @override
   void initState() {
@@ -27,8 +28,10 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   Future<void> _initGames() async {
+    isLoadingGameHistory = true;
     gamesService = await GamesService.create();
     gamesHistory = await gamesService.getAllGames();
+    isLoadingGameHistory = false;
     setState(() {}); // Trigger UI rebuild
   }
 
@@ -86,26 +89,37 @@ class _MainScreenState extends State<MainScreen> {
                         ),
                       ),
                       const SizedBox(height: 20),
-                      gamesHistory.isEmpty
+                      isLoadingGameHistory
                           ? const Center(child: CircularProgressIndicator())
                           : SizedBox(
                               height: 200,
-                              child: ListView.builder(
-                                itemCount: gamesHistory.length,
-                                itemBuilder: (context, index) {
-                                  final game = gamesHistory[index];
+                              child: gamesHistory.isEmpty
+                                  ? Center(
+                                      child: Text(
+                                        "Trenutno nemate dostupnih igri.",
+                                        style: TextStyle(
+                                            fontSize: 15,
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .error),
+                                      ),
+                                    )
+                                  : ListView.builder(
+                                      itemCount: gamesHistory.length,
+                                      itemBuilder: (context, index) {
+                                        final game = gamesHistory[index];
 
-                                  return AnimatedHistoryListItem(
-                                    gameID: game.id ?? "N/A",
-                                    date: formatDate(game.createdAt),
-                                    teamOneScore: game.teamOneScore ?? 0,
-                                    teamTwoScore: game.teamTwoScore ?? 0,
-                                    onTap: () {
-                                      print("Tap: ${game.id}");
-                                    },
-                                  );
-                                },
-                              ),
+                                        return AnimatedHistoryListItem(
+                                          gameID: game.id ?? "N/A",
+                                          date: formatDate(game.createdAt),
+                                          teamOneScore: game.teamOneScore ?? 0,
+                                          teamTwoScore: game.teamTwoScore ?? 0,
+                                          onTap: () {
+                                            print("Tap: ${game.id}");
+                                          },
+                                        );
+                                      },
+                                    ),
                             ),
                     ],
                   ),
