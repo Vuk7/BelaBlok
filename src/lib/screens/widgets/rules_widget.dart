@@ -21,13 +21,13 @@ class _RulesWidgetState extends State<RulesWidget> {
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.1),
+            color: Colors.black.withValues(alpha: 0.1),
             blurRadius: 8,
             offset: const Offset(0, 4),
           ),
         ],
         border: Border.all(
-          color: Colors.red.withOpacity(0.3),
+          color: Colors.red.withValues(alpha: 0.3),
           width: 2,
         ),
       ),
@@ -45,13 +45,13 @@ class _RulesWidgetState extends State<RulesWidget> {
               padding: const EdgeInsets.all(16),
               child: Row(
                 children: [
-                  Icon(
+                  const Icon(
                     Icons.menu_book,
                     color: Colors.red,
                     size: 24,
                   ),
                   const SizedBox(width: 8),
-                  Text(
+                  const Text(
                     'PRAVILA',
                     style: TextStyle(
                       fontSize: 18,
@@ -60,7 +60,7 @@ class _RulesWidgetState extends State<RulesWidget> {
                     ),
                   ),
                   const Spacer(),
-                  Icon(
+                  const Icon(
                     Icons.casino,
                     color: Colors.red,
                     size: 24,
@@ -69,7 +69,7 @@ class _RulesWidgetState extends State<RulesWidget> {
                   AnimatedRotation(
                     turns: isExpanded ? 0.5 : 0,
                     duration: const Duration(milliseconds: 200),
-                    child: Icon(
+                    child: const Icon(
                       Icons.expand_more,
                       color: Colors.red,
                       size: 24,
@@ -116,7 +116,7 @@ class _RulesWidgetState extends State<RulesWidget> {
                   
                   _buildRuleSection(
                     'ZVANJE',
-                    '20 - Tri uzastopne karte iste boje\n50 - Četiri uzastopne karte iste boje\n100 - Pet uzastopnih karata iste boje\n100 -Četiri desetke\,četri kralja\,četri kraljice\n150 - Četiri devetke\,četiri asa\n200 - Četiri dečka',
+                    '20 - Tri uzastopne karte iste boje\n50 - Četiri uzastopne karte iste boje\n100 - Pet uzastopnih karata iste boje\n100 - Četiri desetke, četiri kralja, četiri kraljice\n150 - Četiri devetke, četiri asa\n200 - Četiri dečka',
                     Icons.star,
                     isDark,
                   ),
@@ -173,7 +173,7 @@ class _RulesWidgetState extends State<RulesWidget> {
           color: isDark ? Colors.grey[700] : Colors.grey[50],
           borderRadius: BorderRadius.circular(8),
           border: Border.all(
-            color: Colors.red.withOpacity(0.2),
+            color: Colors.red.withValues(alpha: 0.2),
             width: 1,
           ),
         ),
@@ -191,7 +191,7 @@ class _RulesWidgetState extends State<RulesWidget> {
                 Expanded(
                   child: Text(
                     title,
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.bold,
                       color: Colors.red,

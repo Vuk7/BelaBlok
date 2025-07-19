@@ -105,13 +105,13 @@ class _AnimatedProgressBarState extends State<AnimatedProgressBar>
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.15),
+            color: Colors.black.withValues(alpha: 0.15),
             blurRadius: 12,
             offset: const Offset(0, 6),
           ),
         ],
         border: Border.all(
-          color: Colors.amber.withOpacity(0.3),
+          color: Colors.amber.withValues(alpha: 0.3),
           width: 2,
         ),
       ),
@@ -145,7 +145,7 @@ class _AnimatedProgressBarState extends State<AnimatedProgressBar>
                   color: Colors.amber,
                   borderRadius: BorderRadius.circular(20),
                 ),
-                child: Row(
+                child: const Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Icon(
@@ -153,7 +153,7 @@ class _AnimatedProgressBarState extends State<AnimatedProgressBar>
                       color: Colors.white,
                       size: 20,
                     ),
-                    const SizedBox(width: 4),
+                    SizedBox(width: 4),
                     Text(
                       '1001',
                       style: TextStyle(
@@ -233,14 +233,14 @@ class _AnimatedProgressBarState extends State<AnimatedProgressBar>
                     decoration: BoxDecoration(
                       gradient: LinearGradient(
                         colors: [
-                          widget.teamOneColor.withOpacity(0.8),
+                          widget.teamOneColor.withValues(alpha: 0.8),
                           widget.teamOneColor,
                         ],
                       ),
                       borderRadius: BorderRadius.circular(15),
                       boxShadow: [
                         BoxShadow(
-                          color: widget.teamOneColor.withOpacity(0.3),
+                          color: widget.teamOneColor.withValues(alpha: 0.3),
                           blurRadius: 4,
                           offset: const Offset(0, 2),
                         ),
@@ -262,13 +262,13 @@ class _AnimatedProgressBarState extends State<AnimatedProgressBar>
                         gradient: LinearGradient(
                           colors: [
                             widget.teamTwoColor,
-                            widget.teamTwoColor.withOpacity(0.8),
+                            widget.teamTwoColor.withValues(alpha: 0.8),
                           ],
                         ),
                         borderRadius: BorderRadius.circular(15),
                         boxShadow: [
                           BoxShadow(
-                            color: widget.teamTwoColor.withOpacity(0.3),
+                            color: widget.teamTwoColor.withValues(alpha: 0.3),
                             blurRadius: 4,
                             offset: const Offset(0, 2),
                           ),
@@ -288,7 +288,7 @@ class _AnimatedProgressBarState extends State<AnimatedProgressBar>
                     color: Colors.amber,
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.amber.withOpacity(0.5),
+                        color: Colors.amber.withValues(alpha: 0.5),
                         blurRadius: 4,
                       ),
                     ],

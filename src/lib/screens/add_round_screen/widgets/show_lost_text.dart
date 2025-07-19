@@ -23,7 +23,7 @@ class ShowLostText extends StatelessWidget {
                       color: AppTheme.red,
                       borderRadius: BorderRadius.circular(20),
                     ),
-                    child: Row(
+                    child: const Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Icon(
@@ -31,7 +31,7 @@ class ShowLostText extends StatelessWidget {
                           color: Colors.white,
                           size: 20,
                         ),
-                        const SizedBox(width: 4),
+                        SizedBox(width: 4),
                         Text(
                           "PAD",
                           style: TextStyle(
@@ -54,7 +54,7 @@ class ShowLostText extends StatelessWidget {
                       color: AppTheme.red,
                       borderRadius: BorderRadius.circular(20),
                     ),
-                    child: Row(
+                    child: const Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Icon(
@@ -62,7 +62,7 @@ class ShowLostText extends StatelessWidget {
                           color: Colors.white,
                           size: 20,
                         ),
-                        const SizedBox(width: 4),
+                        SizedBox(width: 4),
                         Text(
                           "PAD",
                           style: TextStyle(

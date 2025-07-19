@@ -115,7 +115,7 @@ class _MainScreenState extends State<MainScreen> {
                                           teamOneScore: game.teamOneScore ?? 0,
                                           teamTwoScore: game.teamTwoScore ?? 0,
                                           onTap: () {
-                                            // TODO: Implement game details navigation
+                                            
                                             debugPrint("Tap: ${game.id}");
                                           },
                                         );

@@ -30,7 +30,7 @@ class _GameSettingsMenuState extends State<GameSettingsMenu> {
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.1),
+            color: Colors.black.withValues(alpha: 0.1),
             blurRadius: 4,
             offset: const Offset(0, 2),
           ),
@@ -50,7 +50,7 @@ class _GameSettingsMenuState extends State<GameSettingsMenu> {
               padding: const EdgeInsets.all(16),
               child: Row(
                 children: [
-                  Icon(
+                  const Icon(
                     Icons.rotate_right,
                     color: AppTheme.green,
                     size: 28,
@@ -62,13 +62,13 @@ class _GameSettingsMenuState extends State<GameSettingsMenu> {
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
-                        color: Theme.of(context).colorScheme.onBackground,
+                        color: Theme.of(context).colorScheme.onSurface,
                       ),
                     ),
                   ),
                   Icon(
                     isExpanded ? Icons.expand_less : Icons.expand_more,
-                    color: Theme.of(context).colorScheme.onBackground,
+                    color: Theme.of(context).colorScheme.onSurface,
                     size: 28,
                   ),
                 ],
@@ -94,14 +94,14 @@ class _GameSettingsMenuState extends State<GameSettingsMenu> {
                           style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
-                            color: Theme.of(context).colorScheme.onBackground,
+                            color: Theme.of(context).colorScheme.onSurface,
                           ),
                         ),
                         const SizedBox(height: 12),
                         AnimatedPlayDirectionChoice(
                           selectedChoice: widget.playDirectionSelect,
                           selectedColor: AppTheme.green,
-                          notSelectedColor: Theme.of(context).colorScheme.onBackground,
+                          notSelectedColor: Theme.of(context).colorScheme.onSurface,
                           onTap: widget.onPlayDirectionChanged,
                         ),
                         const SizedBox(height: 8),
