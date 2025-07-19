@@ -28,7 +28,7 @@ class PlayerShuffling extends StatelessWidget {
                   color: (selected == 2) ? selectedColor : AppTheme.gray,
                   borderRadius: BorderRadius.circular(4),
                 ),
-                child: Center(
+                child: const Center(
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
@@ -61,7 +61,7 @@ class PlayerShuffling extends StatelessWidget {
                   color: (selected == 3) ? selectedColor : AppTheme.gray,
                   borderRadius: BorderRadius.circular(4),
                 ),
-                child: Center(
+                child: const Center(
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
@@ -115,7 +115,7 @@ class PlayerShuffling extends StatelessWidget {
                   color: (selected == 1) ? selectedColor : AppTheme.gray,
                   borderRadius: BorderRadius.circular(4),
                 ),
-                child: Center(
+                child: const Center(
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
@@ -148,7 +148,7 @@ class PlayerShuffling extends StatelessWidget {
                   color: (selected == 4) ? selectedColor : AppTheme.gray,
                   borderRadius: BorderRadius.circular(4),
                 ),
-                child: Center(
+                child: const Center(
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
