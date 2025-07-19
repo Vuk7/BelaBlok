@@ -129,7 +129,7 @@ class _NewGameScreenState extends State<NewGameScreen> {
                 borderRadius: BorderRadius.circular(16),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.1),
+                    color: Colors.black.withValues(alpha: 0.1),
                     blurRadius: 4,
                     offset: const Offset(0, 2),
                   ),
@@ -140,7 +140,7 @@ class _NewGameScreenState extends State<NewGameScreen> {
                 children: [
                   Row(
                     children: [
-                      Icon(
+                      const Icon(
                         Icons.style,  // Ikona karata/špila za miješanje karata
                         color: AppTheme.red,
                         size: 20,
@@ -151,7 +151,7 @@ class _NewGameScreenState extends State<NewGameScreen> {
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
-                          color: Theme.of(context).colorScheme.onBackground,
+                          color: Theme.of(context).colorScheme.onSurface,
                         ),
                       ),
                     ],

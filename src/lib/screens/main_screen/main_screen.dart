@@ -58,9 +58,9 @@ class _MainScreenState extends State<MainScreen> {
                   letterSpacing: 2,
                   shadows: [
                     Shadow(
-                      color: Colors.brown.withOpacity(0.3),
+                      color: Colors.brown.withValues(alpha: 0.3),
                       blurRadius: 8,
-                      offset: Offset(0, 4),
+                      offset: const Offset(0, 4),
                     ),
                   ],
                 ),
@@ -85,7 +85,7 @@ class _MainScreenState extends State<MainScreen> {
                         style: TextStyle(
                           fontSize: 22,
                           fontWeight: FontWeight.bold,
-                          color: Theme.of(context).colorScheme.onBackground,
+                          color: Theme.of(context).colorScheme.onSurface,
                         ),
                       ),
                       const SizedBox(height: 20),
@@ -115,7 +115,8 @@ class _MainScreenState extends State<MainScreen> {
                                           teamOneScore: game.teamOneScore ?? 0,
                                           teamTwoScore: game.teamTwoScore ?? 0,
                                           onTap: () {
-                                            print("Tap: ${game.id}");
+                                            // TODO: Implement game details navigation
+                                            debugPrint("Tap: ${game.id}");
                                           },
                                         );
                                       },

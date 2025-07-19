@@ -30,9 +30,9 @@ class AppTheme {
         elevation: 2,
         titleTextStyle: TextStyle(color: Color(0x00000000)),
       ),
-      colorScheme: ColorScheme.dark(
+      colorScheme: const ColorScheme.dark(
           surface: darkBackground,
-          primary: const Color(0xFFFBB117),
-          secondary: const Color(0xFFFFFFFF),
-          tertiary: const Color(0x00000000)));
+          primary: Color(0xFFFBB117),
+          secondary: Color(0xFFFFFFFF),
+          tertiary: Color(0x00000000)));
 }

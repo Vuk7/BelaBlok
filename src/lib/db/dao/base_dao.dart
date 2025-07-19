@@ -7,7 +7,7 @@ abstract class BaseDao<T extends BaseUUIDModel, D> {
 
   BaseDao(this.database);
 
-  Future<D?> getById<Table, D>(
+  Future<D?> getById<Table>(
       TableInfo<T, D> table, Column<String> idColumn, String id) {
     return (database.select(table)..where((row) => idColumn.equals(id)))
         .getSingleOrNull();

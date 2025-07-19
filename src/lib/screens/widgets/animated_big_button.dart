@@ -183,7 +183,7 @@ class _AnimatedBigButtonState extends State<AnimatedBigButton> {
           borderRadius: BorderRadius.circular(12),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.2),
+              color: Colors.black.withValues(alpha: 0.2),
               blurRadius: 8,
               offset: const Offset(0, 4),
             ),
@@ -206,7 +206,7 @@ class _AnimatedBigButtonState extends State<AnimatedBigButton> {
             Text(
               widget.text,
               style: widget.textStyle ?? 
-                TextStyle(
+                const TextStyle(
                   color: Colors.white,
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
