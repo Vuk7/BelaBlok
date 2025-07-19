@@ -261,13 +261,11 @@ class _AddRoundScreenState extends State<AddRoundScreen>
                   width: double.infinity,
                   padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
-                    color: Theme.of(context).brightness == Brightness.dark 
-                      ? Colors.grey[800] 
-                      : Colors.white,
+                    color: AppTheme.getCardBackgroundColor(context),
                     borderRadius: BorderRadius.circular(16),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withValues(alpha: 0.1),
+                        color: AppTheme.getOverlayColor(context, opacity: 0.1),
                         blurRadius: 4,
                         offset: const Offset(0, 2),
                       ),
@@ -346,13 +344,11 @@ class _AddRoundScreenState extends State<AddRoundScreen>
                   width: double.infinity,
                   padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
-                    color: Theme.of(context).brightness == Brightness.dark 
-                      ? Colors.grey[800] 
-                      : Colors.white,
+                    color: AppTheme.getCardBackgroundColor(context),
                     borderRadius: BorderRadius.circular(16),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withValues(alpha: 0.1),
+                        color: AppTheme.getOverlayColor(context, opacity: 0.1),
                         blurRadius: 4,
                         offset: const Offset(0, 2),
                       ),
@@ -391,7 +387,7 @@ class _AddRoundScreenState extends State<AddRoundScreen>
                                   child: BigButtonInputNumber(
                                     text: "0",
                                     textStyle: TextStyle(
-                                        color: focusedInput == 0 ? Colors.white : Colors.black,
+                                        color: focusedInput == 0 ? AppTheme.getInverseTextColor(context) : AppTheme.getTextColor(context),
                                         fontSize: 30,
                                         fontWeight: FontWeight.bold),
                                     bgColor: focusedInput == 0 
@@ -424,7 +420,7 @@ class _AddRoundScreenState extends State<AddRoundScreen>
                                   child: BigButtonInputNumber(
                                     text: "0",
                                     textStyle: TextStyle(
-                                        color: focusedInput == 1 ? Colors.white : Colors.black,
+                                        color: focusedInput == 1 ? AppTheme.getInverseTextColor(context) : AppTheme.getTextColor(context),
                                         fontSize: 30,
                                         fontWeight: FontWeight.bold),
                                     bgColor: focusedInput == 1 
@@ -474,13 +470,11 @@ class _AddRoundScreenState extends State<AddRoundScreen>
                   width: double.infinity,
                   padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
-                    color: Theme.of(context).brightness == Brightness.dark 
-                      ? Colors.grey[800] 
-                      : Colors.white,
+                    color: AppTheme.getCardBackgroundColor(context),
                     borderRadius: BorderRadius.circular(16),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withValues(alpha: 0.1),
+                        color: AppTheme.getOverlayColor(context, opacity: 0.1),
                         blurRadius: 4,
                         offset: const Offset(0, 2),
                       ),

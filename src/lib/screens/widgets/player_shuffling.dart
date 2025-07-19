@@ -28,19 +28,19 @@ class PlayerShuffling extends StatelessWidget {
                   color: (selected == 2) ? selectedColor : AppTheme.gray,
                   borderRadius: BorderRadius.circular(4),
                 ),
-                child: const Center(
+                child: Center(
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Icon(
                         Icons.chair,
-                        color: Colors.white,
+                        color: AppTheme.getInverseTextColor(context),
                         size: 14,
                       ),
                       Text(
                         "2",
                         style: TextStyle(
-                            color: Colors.white,
+                            color: AppTheme.getInverseTextColor(context),
                             fontWeight: FontWeight.bold,
                             fontSize: 8),
                       ),
@@ -61,19 +61,19 @@ class PlayerShuffling extends StatelessWidget {
                   color: (selected == 3) ? selectedColor : AppTheme.gray,
                   borderRadius: BorderRadius.circular(4),
                 ),
-                child: const Center(
+                child: Center(
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Icon(
                         Icons.chair,
-                        color: Colors.white,
+                        color: AppTheme.getInverseTextColor(context),
                         size: 14,
                       ),
                       Text(
                         "3",
                         style: TextStyle(
-                            color: Colors.white,
+                            color: AppTheme.getInverseTextColor(context),
                             fontWeight: FontWeight.bold,
                             fontSize: 8),
                       ),
@@ -95,9 +95,9 @@ class PlayerShuffling extends StatelessWidget {
                   color: Colors.brown[600],
                   borderRadius: BorderRadius.circular(16),
                 ),
-                child: const Icon(
+                child: Icon(
                   Icons.table_restaurant,
-                  color: Colors.white,
+                  color: AppTheme.getInverseTextColor(context),
                   size: 20,
                 ),
               )
@@ -115,19 +115,19 @@ class PlayerShuffling extends StatelessWidget {
                   color: (selected == 1) ? selectedColor : AppTheme.gray,
                   borderRadius: BorderRadius.circular(4),
                 ),
-                child: const Center(
+                child: Center(
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Icon(
                         Icons.chair,
-                        color: Colors.white,
+                        color: AppTheme.getInverseTextColor(context),
                         size: 14,
                       ),
                       Text(
                         "1",
                         style: TextStyle(
-                            color: Colors.white,
+                            color: AppTheme.getInverseTextColor(context),
                             fontWeight: FontWeight.bold,
                             fontSize: 8),
                       ),
@@ -148,19 +148,19 @@ class PlayerShuffling extends StatelessWidget {
                   color: (selected == 4) ? selectedColor : AppTheme.gray,
                   borderRadius: BorderRadius.circular(4),
                 ),
-                child: const Center(
+                child: Center(
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Icon(
                         Icons.chair,
-                        color: Colors.white,
+                        color: AppTheme.getInverseTextColor(context),
                         size: 14,
                       ),
                       Text(
                         "4",
                         style: TextStyle(
-                            color: Colors.white,
+                            color: AppTheme.getInverseTextColor(context),
                             fontWeight: FontWeight.bold,
                             fontSize: 8),
                       ),

@@ -23,11 +23,11 @@ class _GameStatsWidgetState extends State<GameStatsWidget> {
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
-        color: isDark ? Colors.grey[800] : Colors.white,
+        color: AppTheme.getCardBackgroundColor(context),
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.1),
+            color: AppTheme.getOverlayColor(context, opacity: 0.1),
             blurRadius: 8,
             offset: const Offset(0, 4),
           ),

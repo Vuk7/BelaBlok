@@ -56,10 +56,10 @@ class _NewGameScreenState extends State<NewGameScreen> {
                   child: AnimatedButton(
                     text: "1001",
                     textStyle: TextStyle(
-                        color: selectedGameType == 0 ? Colors.white : Colors.black,
+                        color: selectedGameType == 0 ? AppTheme.getInverseTextColor(context) : AppTheme.getTextColor(context),
                         fontSize: 24,
                         fontWeight: FontWeight.bold),
-                    bgColor: selectedGameType == 0 ? AppTheme.green : Colors.grey[300]!,
+                    bgColor: selectedGameType == 0 ? AppTheme.green : AppTheme.getDisabledButtonColor(context),
                     onTap: () {
                       setState(() {
                         selectedGameType = 0;
@@ -73,10 +73,10 @@ class _NewGameScreenState extends State<NewGameScreen> {
                   child: AnimatedButton(
                     text: "501",
                     textStyle: TextStyle(
-                        color: selectedGameType == 1 ? Colors.white : Colors.black,
+                        color: selectedGameType == 1 ? AppTheme.getInverseTextColor(context) : AppTheme.getTextColor(context),
                         fontSize: 24,
                         fontWeight: FontWeight.bold),
-                    bgColor: selectedGameType == 1 ? AppTheme.green : Colors.grey[300]!,
+                    bgColor: selectedGameType == 1 ? AppTheme.green : AppTheme.getDisabledButtonColor(context),
                     onTap: () {
                       setState(() {
                         selectedGameType = 1;
@@ -92,10 +92,10 @@ class _NewGameScreenState extends State<NewGameScreen> {
             AnimatedButton(
               text: isCustomGame ? "RUČNO (${customGameController.text.isEmpty ? '---' : customGameController.text})" : "RUČNO",
               textStyle: TextStyle(
-                  color: isCustomGame ? Colors.white : Colors.black,
+                  color: isCustomGame ? AppTheme.getInverseTextColor(context) : AppTheme.getTextColor(context),
                   fontSize: 20,
                   fontWeight: FontWeight.bold),
-              bgColor: isCustomGame ? AppTheme.green : Colors.grey[300]!,
+              bgColor: isCustomGame ? AppTheme.green : AppTheme.getDisabledButtonColor(context),
               onTap: () async {
                 final result = await _showCustomGameDialog();
                 if (result != null && result.isNotEmpty) {
