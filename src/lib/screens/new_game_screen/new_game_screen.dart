@@ -184,37 +184,7 @@ class _NewGameScreenState extends State<NewGameScreen> {
                     fontWeight: FontWeight.bold),
                 bgColor: AppTheme.green,
                 textPadding: 20,
-                onTap: () async {
-                  try {
-                    final gamesService = await GamesService.create();
-                    int targetScore;
-                    if (selectedGameType == 0) {
-                      targetScore = 1001;
-                    } else if (selectedGameType == 1) {
-                      targetScore = 501;
-                    } else {
-                     
-                      if (customGameController.text.isEmpty) {
-                        throw Exception('Custom game value is required');
-                      }
-                      targetScore = int.parse(customGameController.text);
-                    }
-                    
-                    await gamesService.createNewGameWithParameters(
-                      gameType: selectedGameType,
-                      targetScore: targetScore,
-                      someOtherSetting: playDirectionSelect == 1,
-                    );
-                    
-                    final currentContext = context;
-                    if (mounted && currentContext.mounted) {
-                      currentContext.goNamed("currentgame");
-                    }
-                  } catch (e) {
-                    print('Error creating game: $e');
-                    
-                  }
-                },
+                onTap: handleCreateNewGame,
               ),
             ),
             const SizedBox(
@@ -225,6 +195,37 @@ class _NewGameScreenState extends State<NewGameScreen> {
       ),
     ),
     ))));
+  }
+
+  Future<void> handleCreateNewGame() async {
+    try {
+      final gamesService = await GamesService.create();
+      int targetScore;
+      
+      if (selectedGameType == 0) {
+        targetScore = 1001;
+      } else if (selectedGameType == 1) {
+        targetScore = 501;
+      } else {
+        if (customGameController.text.isEmpty) {
+          throw Exception('Custom game value is required');
+        }
+        targetScore = int.parse(customGameController.text);
+      }
+      
+      await gamesService.createNewGameWithParameters(
+        gameType: selectedGameType,
+        targetScore: targetScore,
+        someOtherSetting: playDirectionSelect == 1,
+      );
+      
+      final currentContext = context;
+      if (mounted && currentContext.mounted) {
+        currentContext.goNamed("currentgame");
+      }
+    } catch (e) {
+      print('Error creating game: $e');
+    }
   }
 
   Future<String?> _showCustomGameDialog() async {
