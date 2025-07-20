@@ -63,6 +63,20 @@ class _MainScreenState extends State<MainScreen> {
     ) ?? false;
   }
 
+  Future<void> handleDeleteGame(String gameId) async {
+    await gamesService.deleteGame(gameId);
+    await _refreshGameHistory();
+    
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Igra je uspešno obrisana'),
+          backgroundColor: Colors.green,
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -154,18 +168,7 @@ class _MainScreenState extends State<MainScreen> {
                                             return await _showDeleteConfirmationDialog(game.id ?? "");
                                           },
                                           onDismissed: (direction) async {
-                                            await gamesService.deleteGame(game.id ?? "");
-                                            await _refreshGameHistory();
-                                            
-                                            final currentContext = context;
-                                            if (mounted && currentContext.mounted) {
-                                              ScaffoldMessenger.of(currentContext).showSnackBar(
-                                                const SnackBar(
-                                                  content: Text('Igra je uspešno obrisana'),
-                                                  backgroundColor: Colors.green,
-                                                ),
-                                              );
-                                            }
+                                            await handleDeleteGame(game.id ?? "");
                                           },
                                           child: AnimatedHistoryListItem(
                                             gameID: game.id ?? "N/A",
