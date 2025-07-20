@@ -33,7 +33,7 @@ class RoundScoreListItem extends StatelessWidget {
           borderRadius: BorderRadius.circular(16),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.1),
+              color: Colors.black.withValues(alpha: 0.1),
               blurRadius: 4,
               offset: const Offset(0, 2),
             ),
@@ -53,7 +53,7 @@ class RoundScoreListItem extends StatelessWidget {
                     Row(
                       children: [
                         if (teamCalled == Team.teamOne)
-                          Icon(
+                          const Icon(
                             Icons.mic,
                             color: AppTheme.red,
                             size: 16,
@@ -61,16 +61,16 @@ class RoundScoreListItem extends StatelessWidget {
                         if (teamCalled == Team.teamOne)
                           const SizedBox(width: 4),
                         if (teamCalled == Team.teamOne)
-                          Text(
+                          const Text(
                             "ZVAO",
-                            style: const TextStyle(
+                            style: TextStyle(
                               color: AppTheme.red,
                               fontWeight: FontWeight.bold,
                               fontSize: 14,
                             ),
                           ),
                         if (teamCalled != Team.teamOne)
-                          Icon(
+                          const Icon(
                             Icons.mic,
                             color: Colors.grey,
                             size: 16,
@@ -130,9 +130,9 @@ class RoundScoreListItem extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
                         if (teamCalled == Team.teamTwo)
-                          Text(
+                          const Text(
                             "ZVAO",
-                            style: const TextStyle(
+                            style: TextStyle(
                               color: AppTheme.red,
                               fontWeight: FontWeight.bold,
                               fontSize: 14,
@@ -141,13 +141,13 @@ class RoundScoreListItem extends StatelessWidget {
                         if (teamCalled == Team.teamTwo)
                           const SizedBox(width: 4),
                         if (teamCalled == Team.teamTwo)
-                          Icon(
+                          const Icon(
                             Icons.mic,
                             color: AppTheme.red,
                             size: 16,
                           ),
                         if (teamCalled != Team.teamTwo)
-                          Icon(
+                          const Icon(
                             Icons.mic,
                             color: Colors.grey,
                             size: 16,

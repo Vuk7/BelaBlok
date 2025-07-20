@@ -74,7 +74,7 @@ class _GlowEffectState extends State<GlowEffect>
           decoration: widget.isActive ? BoxDecoration(
             boxShadow: [
               BoxShadow(
-                color: widget.glowColor.withOpacity(_glowAnimation.value * 0.6),
+                color: widget.glowColor.withValues(alpha: _glowAnimation.value * 0.6),
                 blurRadius: widget.glowRadius * _glowAnimation.value,
                 spreadRadius: widget.glowRadius * _glowAnimation.value * 0.3,
               ),
@@ -192,7 +192,7 @@ class _AdvancedPulseState extends State<AdvancedPulse>
           scale: widget.isActive ? _scaleAnimation.value : 1.0,
           child: Container(
             decoration: widget.isActive ? BoxDecoration(
-              color: _colorAnimation.value?.withOpacity(0.1),
+              color: _colorAnimation.value?.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(12),
               border: Border.all(
                 color: _colorAnimation.value ?? Colors.transparent,
@@ -304,7 +304,7 @@ class RipplePainter extends CustomPainter {
     if (center == null || animation == 0) return;
 
     final paint = Paint()
-      ..color = color.withOpacity((1 - animation) * 0.3)
+      ..color = color.withValues(alpha: (1 - animation) * 0.3)
       ..style = PaintingStyle.fill;
 
     final radius = animation * size.width;

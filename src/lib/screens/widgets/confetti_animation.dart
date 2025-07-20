@@ -134,7 +134,7 @@ class ConfettiPainter extends CustomPainter {
 
       // Fade out towards the end
       final alpha = progress < 0.8 ? 1.0 : (1.0 - (progress - 0.8) / 0.2);
-      paint.color = particle.color.withOpacity(alpha);
+      paint.color = particle.color.withValues(alpha: alpha);
 
       canvas.save();
       canvas.translate(currentX, currentY);

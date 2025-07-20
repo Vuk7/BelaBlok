@@ -152,7 +152,7 @@ class _AddRoundScreenState extends State<AddRoundScreen>
                     Icon(
                       showGameScore ? Icons.visibility : Icons.visibility_off,
                       size: 16,
-                      color: Theme.of(context).colorScheme.onBackground.withOpacity(0.6),
+                      color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
                     ),
                     const SizedBox(width: 8),
                     GestureDetector(
@@ -174,7 +174,7 @@ class _AddRoundScreenState extends State<AddRoundScreen>
                               showGameScore ? "MI/VI rezultat" : "MI/VI rezultat",
                               style: TextStyle(
                                 fontSize: 12,
-                                color: Theme.of(context).colorScheme.onBackground.withOpacity(0.6),
+                                color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
                                 fontWeight: FontWeight.w500,
                               ),
                             ),
@@ -182,7 +182,7 @@ class _AddRoundScreenState extends State<AddRoundScreen>
                             Icon(
                               showGameScore ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down,
                               size: 16,
-                              color: Theme.of(context).colorScheme.onBackground.withOpacity(0.6),
+                              color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
                             ),
                           ],
                         ),
@@ -211,7 +211,7 @@ class _AddRoundScreenState extends State<AddRoundScreen>
                               style: TextStyle(
                                 fontSize: 10,
                                 fontWeight: FontWeight.w600,
-                                color: Theme.of(context).colorScheme.onBackground.withOpacity(0.6),
+                                color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
                               ),
                             ),
                             Text(
@@ -227,7 +227,7 @@ class _AddRoundScreenState extends State<AddRoundScreen>
                         Container(
                           width: 1,
                           height: 20,
-                          color: Theme.of(context).colorScheme.onBackground.withOpacity(0.3),
+                          color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.3),
                         ),
                         Column(
                           children: [
@@ -236,10 +236,10 @@ class _AddRoundScreenState extends State<AddRoundScreen>
                               style: TextStyle(
                                 fontSize: 10,
                                 fontWeight: FontWeight.w600,
-                                color: Theme.of(context).colorScheme.onBackground.withOpacity(0.6),
+                                color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
                               ),
                             ),
-                            Text(
+                            const Text(
                               "460", // Primjer rezultata - kasnije povezati s pravim podacima
                               style: TextStyle(
                                 fontSize: 14,
@@ -261,13 +261,11 @@ class _AddRoundScreenState extends State<AddRoundScreen>
                   width: double.infinity,
                   padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
-                    color: Theme.of(context).brightness == Brightness.dark 
-                      ? Colors.grey[800] 
-                      : Colors.white,
+                    color: AppTheme.getCardBackgroundColor(context),
                     borderRadius: BorderRadius.circular(16),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withOpacity(0.1),
+                        color: AppTheme.getOverlayColor(context, opacity: 0.1),
                         blurRadius: 4,
                         offset: const Offset(0, 2),
                       ),
@@ -278,7 +276,7 @@ class _AddRoundScreenState extends State<AddRoundScreen>
                     children: [
                       Row(
                         children: [
-                          Icon(
+                          const Icon(
                             Icons.record_voice_over,  // Ikona čovjeka koji govori
                             color: AppTheme.green,
                             size: 20,
@@ -289,7 +287,7 @@ class _AddRoundScreenState extends State<AddRoundScreen>
                             style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
-                              color: Theme.of(context).colorScheme.onBackground,
+                              color: Theme.of(context).colorScheme.onSurface,
                             ),
                           ),
                         ],
@@ -316,7 +314,7 @@ class _AddRoundScreenState extends State<AddRoundScreen>
                               fontWeight: FontWeight.w600,
                               color: selectedCaller == 0 
                                 ? AppTheme.green 
-                                : Theme.of(context).colorScheme.onBackground.withOpacity(0.6),
+                                : Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
                             ),
                           ),
                           const Spacer(),
@@ -329,7 +327,7 @@ class _AddRoundScreenState extends State<AddRoundScreen>
                               fontWeight: FontWeight.w600,
                               color: selectedCaller == 1 
                                 ? AppTheme.green 
-                                : Theme.of(context).colorScheme.onBackground.withOpacity(0.6),
+                                : Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),
                             ),
                           ),
                           const Spacer(),
@@ -346,13 +344,11 @@ class _AddRoundScreenState extends State<AddRoundScreen>
                   width: double.infinity,
                   padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
-                    color: Theme.of(context).brightness == Brightness.dark 
-                      ? Colors.grey[800] 
-                      : Colors.white,
+                    color: AppTheme.getCardBackgroundColor(context),
                     borderRadius: BorderRadius.circular(16),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withOpacity(0.1),
+                        color: AppTheme.getOverlayColor(context, opacity: 0.1),
                         blurRadius: 4,
                         offset: const Offset(0, 2),
                       ),
@@ -363,7 +359,7 @@ class _AddRoundScreenState extends State<AddRoundScreen>
                     children: [
                       Row(
                         children: [
-                          Icon(
+                          const Icon(
                             Icons.edit,  // Ikona za unos/editiranje
                             color: AppTheme.green,
                             size: 20,
@@ -374,7 +370,7 @@ class _AddRoundScreenState extends State<AddRoundScreen>
                             style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
-                              color: Theme.of(context).colorScheme.onBackground,
+                              color: Theme.of(context).colorScheme.onSurface,
                             ),
                           ),
                         ],
@@ -391,7 +387,7 @@ class _AddRoundScreenState extends State<AddRoundScreen>
                                   child: BigButtonInputNumber(
                                     text: "0",
                                     textStyle: TextStyle(
-                                        color: focusedInput == 0 ? Colors.white : Colors.black,
+                                        color: focusedInput == 0 ? AppTheme.getInverseTextColor(context) : AppTheme.getTextColor(context),
                                         fontSize: 30,
                                         fontWeight: FontWeight.bold),
                                     bgColor: focusedInput == 0 
@@ -424,7 +420,7 @@ class _AddRoundScreenState extends State<AddRoundScreen>
                                   child: BigButtonInputNumber(
                                     text: "0",
                                     textStyle: TextStyle(
-                                        color: focusedInput == 1 ? Colors.white : Colors.black,
+                                        color: focusedInput == 1 ? AppTheme.getInverseTextColor(context) : AppTheme.getTextColor(context),
                                         fontSize: 30,
                                         fontWeight: FontWeight.bold),
                                     bgColor: focusedInput == 1 
@@ -474,13 +470,11 @@ class _AddRoundScreenState extends State<AddRoundScreen>
                   width: double.infinity,
                   padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
-                    color: Theme.of(context).brightness == Brightness.dark 
-                      ? Colors.grey[800] 
-                      : Colors.white,
+                    color: AppTheme.getCardBackgroundColor(context),
                     borderRadius: BorderRadius.circular(16),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withOpacity(0.1),
+                        color: AppTheme.getOverlayColor(context, opacity: 0.1),
                         blurRadius: 4,
                         offset: const Offset(0, 2),
                       ),
@@ -491,7 +485,7 @@ class _AddRoundScreenState extends State<AddRoundScreen>
                     children: [
                       Row(
                         children: [
-                          Icon(
+                          const Icon(
                             Icons.style,  // Ikona karata/špila
                             color: AppTheme.green,
                             size: 20,
@@ -502,7 +496,7 @@ class _AddRoundScreenState extends State<AddRoundScreen>
                             style: TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.bold,
-                                color: Theme.of(context).colorScheme.onBackground),
+                                color: Theme.of(context).colorScheme.onSurface),
                           ),
                         ],
                       ),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:bela_blok/themes/app_theme.dart';
 
 class ZvanjaHelpDialog {
   static void show(BuildContext context) {
@@ -22,11 +23,11 @@ class ZvanjaHelpBottomSheet extends StatelessWidget {
     return Container(
       height: MediaQuery.of(context).size.height * 0.85,
       decoration: BoxDecoration(
-        color: isDark ? const Color(0xFF34495E) : Colors.white,
+        color: AppTheme.getCardBackgroundColor(context),
         borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.1),
+            color: AppTheme.getOverlayColor(context, opacity: 0.1),
             blurRadius: 10,
             offset: const Offset(0, -5),
           ),
@@ -245,7 +246,7 @@ class ZvanjaHelpBottomSheet extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
-              color: iconColor.withOpacity(0.1),
+              color: iconColor.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(8),
             ),
             child: svgAsset != null

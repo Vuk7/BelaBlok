@@ -23,17 +23,17 @@ class _GameStatsWidgetState extends State<GameStatsWidget> {
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
-        color: isDark ? Colors.grey[800] : Colors.white,
+        color: AppTheme.getCardBackgroundColor(context),
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.1),
+            color: AppTheme.getOverlayColor(context, opacity: 0.1),
             blurRadius: 8,
             offset: const Offset(0, 4),
           ),
         ],
         border: Border.all(
-          color: AppTheme.green.withOpacity(0.3),
+          color: AppTheme.green.withValues(alpha: 0.3),
           width: 2,
         ),
       ),
@@ -51,13 +51,13 @@ class _GameStatsWidgetState extends State<GameStatsWidget> {
               padding: const EdgeInsets.all(16),
               child: Row(
                 children: [
-                  Icon(
+                  const Icon(
                     Icons.analytics,
                     color: AppTheme.green,
                     size: 24,
                   ),
                   const SizedBox(width: 8),
-                  Text(
+                  const Text(
                     'STATISTIKE IGRE',
                     style: TextStyle(
                       fontSize: 18,
@@ -66,7 +66,7 @@ class _GameStatsWidgetState extends State<GameStatsWidget> {
                     ),
                   ),
                   const Spacer(),
-                  Icon(
+                  const Icon(
                     Icons.emoji_events,
                     color: Colors.amber,
                     size: 24,
@@ -75,7 +75,7 @@ class _GameStatsWidgetState extends State<GameStatsWidget> {
                   AnimatedRotation(
                     turns: isExpanded ? 0.5 : 0,
                     duration: const Duration(milliseconds: 200),
-                    child: Icon(
+                    child: const Icon(
                       Icons.expand_more,
                       color: AppTheme.green,
                       size: 24,
@@ -143,14 +143,14 @@ class _GameStatsWidgetState extends State<GameStatsWidget> {
                       Container(
                         width: 2,
                         height: 120,
-                        color: Theme.of(context).colorScheme.onBackground.withOpacity(0.2),
+                        color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.2),
                       ),
                       
                       // VI tim statistike
                       Expanded(
                         child: Column(
                           children: [
-                            Text(
+                            const Text(
                               'VI',
                               style: TextStyle(
                                 fontSize: 16,

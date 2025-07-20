@@ -50,7 +50,7 @@ class _MorphingContainerState extends State<MorphingContainer>
     
     _colorAnimation = ColorTween(
       begin: Colors.transparent,
-      end: Colors.amber.withOpacity(0.3),
+      end: Colors.amber.withValues(alpha: 0.3),
     ).animate(CurvedAnimation(
       parent: _colorController,
       curve: Curves.easeInOut,

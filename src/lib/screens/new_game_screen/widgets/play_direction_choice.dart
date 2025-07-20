@@ -30,7 +30,7 @@ class PlayDirectionChoice extends StatelessWidget {
                     color: (selectedChoice == 0) ? selectedColor : notSelectedColor,
                     borderRadius: BorderRadius.circular(16),
                   ),
-                  child: Icon(
+                  child: const Icon(
                     Icons.rotate_right,
                     color: Colors.white,
                     size: 20,
@@ -66,7 +66,7 @@ class PlayDirectionChoice extends StatelessWidget {
                     color: (selectedChoice == 1) ? selectedColor : notSelectedColor,
                     borderRadius: BorderRadius.circular(16),
                   ),
-                  child: Icon(
+                  child: const Icon(
                     Icons.rotate_left,
                     color: Colors.white,
                     size: 20,
