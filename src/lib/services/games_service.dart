@@ -1,6 +1,7 @@
 import 'package:bela_blok/db/dao/game_dao.dart';
 import 'package:bela_blok/db/database.dart';
 import 'package:bela_blok/db/models/game_model.dart';
+import 'package:bela_blok/enums/play_direction_enum.dart';
 
 class GamesService {
   final AppDatabase database;
@@ -36,7 +37,7 @@ class GamesService {
   Future<String> createNewGameWithParameters({
     int? gameType,
     int? targetScore, 
-    bool? someOtherSetting
+    PlayDirection? playDirection
   }) async { 
     var newGame = Game(
       teamOneScore: 0,

@@ -4,6 +4,7 @@ import 'package:bela_blok/screens/widgets/animated_big_button.dart';
 import 'package:bela_blok/screens/widgets/player_shuffling.dart';
 import 'package:bela_blok/services/games_service.dart';
 import 'package:bela_blok/themes/app_theme.dart';
+import 'package:bela_blok/enums/play_direction_enum.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -236,7 +237,7 @@ class _NewGameScreenState extends State<NewGameScreen> {
       await gamesService.createNewGameWithParameters(
         gameType: selectedGameType,
         targetScore: targetScore,
-        someOtherSetting: playDirectionSelect == 1,
+        playDirection: playDirectionSelect == 0 ? PlayDirection.clockwise : PlayDirection.counterClockwise,
       );
       
       final currentContext = context;
