@@ -25,7 +25,7 @@ class GamesService {
     return gameRows.map((row) => row.toModel()).toList();
   }
 
-  Future<Game> createNewGameWithParameters({
+  Future<Game?> createNewGameWithParameters({
     int? gameType,
     int? targetScore, 
     PlayDirection? playDirection
@@ -46,8 +46,8 @@ class GamesService {
     if (insertedGame != null) {
       return insertedGame.toModel();
     } else {
-      // Fallback: return the original game object if we can't fetch the inserted one
-      return newGame;
+      // Return null if we can't fetch the inserted game - caller should handle this case
+      return null;
     }
   }
 
