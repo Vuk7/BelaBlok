@@ -34,7 +34,7 @@ class GamesService {
     return gameRows.map((row) => row.toModel()).toList();
   }
 
-  Future<String> createNewGameWithParameters({
+  Future<Game> createNewGameWithParameters({
     int? gameType,
     int? targetScore, 
     PlayDirection? playDirection
@@ -49,7 +49,7 @@ class GamesService {
       finished: false,
     );
     await dao.insert(database.gameTable, newGame.toCompanion());
-    return "game_created_successfully"; 
+    return newGame; 
   }
 
   Future<void> deleteGame(String gameId) async {
