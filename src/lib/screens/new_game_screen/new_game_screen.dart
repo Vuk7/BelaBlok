@@ -199,41 +199,41 @@ class _NewGameScreenState extends State<NewGameScreen> {
   }
 
   Future<void> handleCreateNewGame() async {
-    try {
-      final gamesService = await GamesService.create();
-      int targetScore;
-      
-      if (selectedGameType == 0) {
-        targetScore = 1001;
-      } else if (selectedGameType == 1) {
-        targetScore = 501;
-      } else {
-        if (customGameController.text.isEmpty) {
-          if (mounted) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text('Molimo unesite broj za custom igru'),
-                backgroundColor: Colors.red,
-              ),
-            );
-          }
-          return;
+    final gamesService = await GamesService.create();
+    int targetScore;
+    
+    if (selectedGameType == 0) {
+      targetScore = 1001;
+    } else if (selectedGameType == 1) {
+      targetScore = 501;
+    } else {
+      if (customGameController.text.isEmpty) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Molimo unesite broj za custom igru'),
+              backgroundColor: Colors.red,
+            ),
+          );
         }
-        try {
-          targetScore = int.parse(customGameController.text);
-        } catch (e) {
-          if (mounted) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text('Molimo unesite valjan broj (samo cifre)'),
-                backgroundColor: Colors.red,
-              ),
-            );
-          }
-          return;
-        }
+        return;
       }
-      
+      try {
+        targetScore = int.parse(customGameController.text);
+      } catch (e) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Molimo unesite valjan broj (samo cifre)'),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
+        return;
+      }
+    }
+    
+    try {
       await gamesService.createNewGameWithParameters(
         gameType: selectedGameType,
         targetScore: targetScore,
