@@ -40,7 +40,15 @@ class GamesService {
       finished: false,
     );
     await dao.insert(database.gameTable, newGame.toCompanion());
-    return newGame; 
+    
+    // Fetch the latest inserted game (newest by created_at) to get the complete object with ID
+    final insertedGame = await dao.getLatestGame();
+    if (insertedGame != null) {
+      return insertedGame.toModel();
+    } else {
+      // Fallback: return the original game object if we can't fetch the inserted one
+      return newGame;
+    }
   }
 
   Future<void> deleteGame(String gameId) async {
