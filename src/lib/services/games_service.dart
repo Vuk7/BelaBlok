@@ -23,4 +23,22 @@ class GamesService {
     final gameRows = await dao.getAllGames();
     return gameRows.map((row) => row.toModel()).toList();
   }
+
+  Future<String> createNewGameWithParameters({
+    int? gameType,
+    int? targetScore, 
+    bool? someOtherSetting
+  }) async { 
+    var newGame = Game(
+      teamOneScore: 0,
+      teamTwoScore: 0,
+      gameType: gameType,
+      gameDirection: targetScore,
+      currentlyShuffling: 0,
+      winner: null,
+      finished: false,
+    );
+    await dao.insert(database.gameTable, newGame.toCompanion());
+    return "game_created_successfully"; 
+  }
 }

@@ -2,6 +2,7 @@ import 'package:bela_blok/screens/new_game_screen/widgets/game_settings_menu.dar
 import 'package:bela_blok/screens/main_screen/widgets/animated_button.dart';
 import 'package:bela_blok/screens/widgets/animated_big_button.dart';
 import 'package:bela_blok/screens/widgets/player_shuffling.dart';
+import 'package:bela_blok/services/games_service.dart';
 import 'package:bela_blok/themes/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -169,8 +170,8 @@ class _NewGameScreenState extends State<NewGameScreen> {
                 ],
               ),
             ),
-            const SizedBox(height: 20), // Veći razmak između "Prvi miješa" i gumba "ZAPOČNI"
-            Expanded(child: Container()), // Zamjena za Spacer
+            const SizedBox(height: 20), 
+            Expanded(child: Container()), 
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: AnimatedBigButton(
@@ -183,8 +184,36 @@ class _NewGameScreenState extends State<NewGameScreen> {
                     fontWeight: FontWeight.bold),
                 bgColor: AppTheme.green,
                 textPadding: 20,
-                onTap: () {
-                  context.goNamed("currentgame");
+                onTap: () async {
+                  try {
+                    final gamesService = await GamesService.create();
+                    int targetScore;
+                    if (selectedGameType == 0) {
+                      targetScore = 1001;
+                    } else if (selectedGameType == 1) {
+                      targetScore = 501;
+                    } else {
+                     
+                      if (customGameController.text.isEmpty) {
+                        throw Exception('Custom game value is required');
+                      }
+                      targetScore = int.parse(customGameController.text);
+                    }
+                    
+                    await gamesService.createNewGameWithParameters(
+                      gameType: selectedGameType,
+                      targetScore: targetScore,
+                      someOtherSetting: playDirectionSelect == 1,
+                    );
+                    
+                    final currentContext = context;
+                    if (mounted && currentContext.mounted) {
+                      currentContext.goNamed("currentgame");
+                    }
+                  } catch (e) {
+                    print('Error creating game: $e');
+                    
+                  }
                 },
               ),
             ),
