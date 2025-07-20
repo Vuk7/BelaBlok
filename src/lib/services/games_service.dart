@@ -7,22 +7,13 @@ class GamesService {
   final AppDatabase database;
   final GameDao dao;
 
-  static GamesService? _instance;
-
   GamesService._(this.database, this.dao);
 
   static Future<GamesService> create() async {
-    if (_instance != null) {
-      return _instance!;
-    }
-    
     final db = AppDatabase();
     final dao = GameDao(db);
-    _instance = GamesService._(db, dao);
-    return _instance!;
+    return GamesService._(db, dao);
   }
-
-  static GamesService? get instance => _instance;
 
   Future<void> createGame() async {
     var newGame = Game(teamOneScore: 20, teamTwoScore: 25);
