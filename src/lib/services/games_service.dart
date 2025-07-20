@@ -6,13 +6,22 @@ class GamesService {
   final AppDatabase database;
   final GameDao dao;
 
+  static GamesService? _instance;
+
   GamesService._(this.database, this.dao);
 
   static Future<GamesService> create() async {
+    if (_instance != null) {
+      return _instance!;
+    }
+    
     final db = AppDatabase();
     final dao = GameDao(db);
-    return GamesService._(db, dao);
+    _instance = GamesService._(db, dao);
+    return _instance!;
   }
+
+  static GamesService? get instance => _instance;
 
   Future<void> createGame() async {
     var newGame = Game(teamOneScore: 20, teamTwoScore: 25);
@@ -40,5 +49,9 @@ class GamesService {
     );
     await dao.insert(database.gameTable, newGame.toCompanion());
     return "game_created_successfully"; 
+  }
+
+  Future<void> deleteGame(String gameId) async {
+    await dao.deleteGameById(gameId);
   }
 }

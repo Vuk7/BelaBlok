@@ -35,6 +35,34 @@ class _MainScreenState extends State<MainScreen> {
     setState(() {}); // Trigger UI rebuild
   }
 
+  Future<void> _refreshGameHistory() async {
+    gamesHistory = await gamesService.getAllGames();
+    setState(() {});
+  }
+
+  Future<bool> _showDeleteConfirmationDialog(String gameId) async {
+    return await showDialog<bool>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Potvrda brisanja'),
+          content: const Text('Jeste li sigurni da želite obrisati ovu igru?'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(false),
+              child: const Text('ODUSTANI'),
+            ),
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(true),
+              style: TextButton.styleFrom(foregroundColor: Colors.red),
+              child: const Text('OBRIŠI'),
+            ),
+          ],
+        );
+      },
+    ) ?? false;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -109,15 +137,45 @@ class _MainScreenState extends State<MainScreen> {
                                       itemBuilder: (context, index) {
                                         final game = gamesHistory[index];
 
-                                        return AnimatedHistoryListItem(
-                                          gameID: game.id ?? "N/A",
-                                          date: formatDate(game.createdAt),
-                                          teamOneScore: game.teamOneScore ?? 0,
-                                          teamTwoScore: game.teamTwoScore ?? 0,
-                                          onTap: () {
-                                            
-                                            debugPrint("Tap: ${game.id}");
+                                        return Dismissible(
+                                          key: Key(game.id ?? index.toString()),
+                                          direction: DismissDirection.endToStart,
+                                          background: Container(
+                                            alignment: Alignment.centerRight,
+                                            padding: const EdgeInsets.only(right: 20),
+                                            color: Colors.red,
+                                            child: const Icon(
+                                              Icons.delete,
+                                              color: Colors.white,
+                                              size: 30,
+                                            ),
+                                          ),
+                                          confirmDismiss: (direction) async {
+                                            return await _showDeleteConfirmationDialog(game.id ?? "");
                                           },
+                                          onDismissed: (direction) async {
+                                            await gamesService.deleteGame(game.id ?? "");
+                                            await _refreshGameHistory();
+                                            
+                                            final currentContext = context;
+                                            if (mounted && currentContext.mounted) {
+                                              ScaffoldMessenger.of(currentContext).showSnackBar(
+                                                const SnackBar(
+                                                  content: Text('Igra je uspešno obrisana'),
+                                                  backgroundColor: Colors.green,
+                                                ),
+                                              );
+                                            }
+                                          },
+                                          child: AnimatedHistoryListItem(
+                                            gameID: game.id ?? "N/A",
+                                            date: formatDate(game.createdAt),
+                                            teamOneScore: game.teamOneScore ?? 0,
+                                            teamTwoScore: game.teamTwoScore ?? 0,
+                                            onTap: () {
+                                              debugPrint("Tap: ${game.id}");
+                                            },
+                                          ),
                                         );
                                       },
                                     ),
