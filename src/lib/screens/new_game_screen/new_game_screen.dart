@@ -218,7 +218,19 @@ class _NewGameScreenState extends State<NewGameScreen> {
           }
           return;
         }
-        targetScore = int.parse(customGameController.text);
+        try {
+          targetScore = int.parse(customGameController.text);
+        } catch (e) {
+          if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('Molimo unesite valjan broj (samo cifre)'),
+                backgroundColor: Colors.red,
+              ),
+            );
+          }
+          return;
+        }
       }
       
       await gamesService.createNewGameWithParameters(
