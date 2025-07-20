@@ -509,10 +509,108 @@ class _AddRoundScreenState extends State<AddRoundScreen>
                     ],
                   ),
                 ),
+                const SizedBox(height: 20),
+                // Gumb za pomoć kod računanja - zaseban okvir
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: AppTheme.getCardBackgroundColor(context),
+                    borderRadius: BorderRadius.circular(16),
+                    boxShadow: [
+                      BoxShadow(
+                        color: AppTheme.getOverlayColor(context, opacity: 0.1),
+                        blurRadius: 4,
+                        offset: const Offset(0, 2),
+                      ),
+                    ],
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          const Icon(
+                            Icons.calculate,
+                            color: AppTheme.green,
+                            size: 20,
+                          ),
+                          const SizedBox(width: 8),
+                          Text(
+                            "POMOĆ KOD RAČUNANJA",
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: Theme.of(context).colorScheme.onSurface,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 12),
+                      SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton.icon(
+                          onPressed: () async {
+                            final result = await context.pushNamed('calculator');
+                            if (result != null && result is Map<String, dynamic>) {
+                              _handleCalculatorResult(result);
+                            }
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.blue,
+                            foregroundColor: Colors.white,
+                            padding: const EdgeInsets.symmetric(vertical: 12),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                          ),
+                          icon: const Icon(Icons.calculate, size: 20),
+                          label: const Text(
+                            'Otvori kalkulator',
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
                 const SizedBox(height: 40),
               ]),
             ),
           ),
         ))));
+  }
+
+  void _handleCalculatorResult(Map<String, dynamic> result) {
+    final int score = result['score'] ?? 0;
+    final String team = result['team'] ?? 'vi';
+    
+    setState(() {
+      if (team == 'mi') {
+        inputTeamOne.text = score.toString();
+        focusedInput = 0;
+        _bounceController1.forward().then((_) {
+          _bounceController1.reverse();
+        });
+      } else {
+        inputTeamTwo.text = score.toString();
+        focusedInput = 1;
+        _bounceController2.forward().then((_) {
+          _bounceController2.reverse();
+        });
+      }
+    });
+    
+    // Prikaži poruku korisniku
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Dodano $score bodova za tim ${team.toUpperCase()}'),
+        backgroundColor: Colors.green,
+        duration: const Duration(seconds: 2),
+      ),
+    );
   }
 }

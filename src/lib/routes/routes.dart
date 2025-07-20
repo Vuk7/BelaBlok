@@ -2,6 +2,7 @@ import 'package:bela_blok/screens/add_round_screen/add_round_screen.dart';
 import 'package:bela_blok/screens/current_game_screen/current_game_screen.dart';
 import 'package:bela_blok/screens/main_screen/main_screen.dart';
 import 'package:bela_blok/screens/new_game_screen/new_game_screen.dart';
+import 'package:bela_blok/screens/smart_calculator_screen/smart_calculator_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -67,6 +68,17 @@ final GoRouter appRouter = GoRouter(
                   pageBuilder: (BuildContext context, GoRouterState state) {
                     return _slideTransition(
                       child: const AddRoundScreen(),
+                      state: state,
+                      beginOffset: const Offset(0.0, 1.0), // slide from bottom
+                    );
+                  },
+                ),
+                GoRoute(
+                  path: '/calculator',
+                  name: 'calculator',
+                  pageBuilder: (BuildContext context, GoRouterState state) {
+                    return _slideTransition(
+                      child: const SmartCalculatorScreen(),
                       state: state,
                       beginOffset: const Offset(0.0, 1.0), // slide from bottom
                     );
