@@ -198,14 +198,11 @@ class _NewGameScreenState extends State<NewGameScreen> {
     ))));
   }
 
-  Future<void> handleCreateNewGame() async {
-    final gamesService = await GamesService.create();
-    int targetScore;
-    
+  Future<int?> getSelectedTargetScore() async {
     if (selectedGameType == 0) {
-      targetScore = 1001;
+      return 1001;
     } else if (selectedGameType == 1) {
-      targetScore = 501;
+      return 501;
     } else {
       if (customGameController.text.isEmpty) {
         if (mounted) {
@@ -216,10 +213,10 @@ class _NewGameScreenState extends State<NewGameScreen> {
             ),
           );
         }
-        return;
+        return null;
       }
       try {
-        targetScore = int.parse(customGameController.text);
+        return int.parse(customGameController.text);
       } catch (e) {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
@@ -229,9 +226,18 @@ class _NewGameScreenState extends State<NewGameScreen> {
             ),
           );
         }
-        return;
+        return null;
       }
     }
+  }
+
+  Future<void> handleCreateNewGame() async {
+    final targetScore = await getSelectedTargetScore();
+    if (targetScore == null) {
+      return; 
+    }
+
+    final gamesService = await GamesService.create();
     
     try {
       await gamesService.createNewGameWithParameters(
