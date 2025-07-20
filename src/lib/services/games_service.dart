@@ -1,6 +1,7 @@
 import 'package:bela_blok/db/dao/game_dao.dart';
 import 'package:bela_blok/db/database.dart';
 import 'package:bela_blok/db/models/game_model.dart';
+import 'package:bela_blok/enums/play_direction_enum.dart';
 
 class GamesService {
   final AppDatabase database;
@@ -22,5 +23,35 @@ class GamesService {
   Future<List<Game>> getAllGames() async {
     final gameRows = await dao.getAllGames();
     return gameRows.map((row) => row.toModel()).toList();
+  }
+
+  Future<Game?> createNewGameWithParameters({
+    int? gameType,
+    int? targetScore, 
+    PlayDirection? playDirection
+  }) async { 
+    var newGame = Game(
+      teamOneScore: 0,
+      teamTwoScore: 0,
+      gameType: gameType,
+      gameDirection: targetScore,
+      currentlyShuffling: 0,
+      winner: null,
+      finished: false,
+    );
+    await dao.insert(database.gameTable, newGame.toCompanion());
+    
+    // Fetch the latest inserted game (newest by created_at) to get the complete object with ID
+    final insertedGame = await dao.getLatestGame();
+    if (insertedGame != null) {
+      return insertedGame.toModel();
+    } else {
+      // Return null if we can't fetch the inserted game - caller should handle this case
+      return null;
+    }
+  }
+
+  Future<void> deleteGame(String gameId) async {
+    await dao.deleteGameById(gameId);
   }
 }

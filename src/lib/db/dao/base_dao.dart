@@ -22,4 +22,8 @@ abstract class BaseDao<T extends BaseUUIDModel, D> {
     return (database.update(table)..where((row) => idColumn.equals(id)))
         .write(item);
   }
+
+  Future<int> deleteById(TableInfo<T, D> table, Column<String> idColumn, String id) {
+    return (database.delete(table)..where((row) => idColumn.equals(id))).go();
+  }
 }

@@ -2,7 +2,9 @@ import 'package:bela_blok/screens/new_game_screen/widgets/game_settings_menu.dar
 import 'package:bela_blok/screens/main_screen/widgets/animated_button.dart';
 import 'package:bela_blok/screens/widgets/animated_big_button.dart';
 import 'package:bela_blok/screens/widgets/player_shuffling.dart';
+import 'package:bela_blok/services/games_service.dart';
 import 'package:bela_blok/themes/app_theme.dart';
+import 'package:bela_blok/enums/play_direction_enum.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -169,8 +171,8 @@ class _NewGameScreenState extends State<NewGameScreen> {
                 ],
               ),
             ),
-            const SizedBox(height: 20), // Veći razmak između "Prvi miješa" i gumba "ZAPOČNI"
-            Expanded(child: Container()), // Zamjena za Spacer
+            const SizedBox(height: 20), 
+            Expanded(child: Container()), 
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: AnimatedBigButton(
@@ -183,9 +185,7 @@ class _NewGameScreenState extends State<NewGameScreen> {
                     fontWeight: FontWeight.bold),
                 bgColor: AppTheme.green,
                 textPadding: 20,
-                onTap: () {
-                  context.goNamed("currentgame");
-                },
+                onTap: handleCreateNewGame,
               ),
             ),
             const SizedBox(
@@ -196,6 +196,70 @@ class _NewGameScreenState extends State<NewGameScreen> {
       ),
     ),
     ))));
+  }
+
+  Future<int?> getSelectedTargetScore() async {
+    if (selectedGameType == 0) {
+      return 1001;
+    } else if (selectedGameType == 1) {
+      return 501;
+    } else {
+      if (customGameController.text.isEmpty) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Molimo unesite broj za custom igru'),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
+        return null;
+      }
+      try {
+        return int.parse(customGameController.text);
+      } catch (e) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Molimo unesite valjan broj (samo cifre)'),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
+        return null;
+      }
+    }
+  }
+
+  Future<void> handleCreateNewGame() async {
+    final targetScore = await getSelectedTargetScore();
+    if (targetScore == null) {
+      return; 
+    }
+
+    final gamesService = await GamesService.create();
+    
+    try {
+      await gamesService.createNewGameWithParameters(
+        gameType: selectedGameType,
+        targetScore: targetScore,
+        playDirection: playDirectionSelect == 0 ? PlayDirection.clockwise : PlayDirection.counterClockwise,
+      );
+      
+      final currentContext = context;
+      if (mounted && currentContext.mounted) {
+        currentContext.goNamed("currentgame");
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Greška pri kreiranju igre: $e'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
   }
 
   Future<String?> _showCustomGameDialog() async {
