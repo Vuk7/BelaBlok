@@ -208,7 +208,15 @@ class _NewGameScreenState extends State<NewGameScreen> {
         targetScore = 501;
       } else {
         if (customGameController.text.isEmpty) {
-          throw Exception('Custom game value is required');
+          if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('Molimo unesite broj za custom igru'),
+                backgroundColor: Colors.red,
+              ),
+            );
+          }
+          return;
         }
         targetScore = int.parse(customGameController.text);
       }
@@ -224,7 +232,14 @@ class _NewGameScreenState extends State<NewGameScreen> {
         currentContext.goNamed("currentgame");
       }
     } catch (e) {
-      print('Error creating game: $e');
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Greška pri kreiranju igre: $e'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
     }
   }
 
