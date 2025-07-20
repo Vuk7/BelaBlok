@@ -26,6 +26,6 @@ class GameDao extends BaseDao {
             ..orderBy([(g) => OrderingTerm.desc(g.createdAt)]))
           .get();
 
-  Future<void> deleteGameById(String id) =>
-      (_db.delete(_db.gameTable)..where((g) => g.id.equals(id))).go();
+  Future<int> deleteGameById(String id) =>
+      deleteById(_db.gameTable, _db.gameTable.id, id);
 }
