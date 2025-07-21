@@ -33,8 +33,8 @@ class GamesService {
     var newGame = Game(
       teamOneScore: 0,
       teamTwoScore: 0,
-      gameType: gameType,
-      gameDirection: targetScore,
+      gameType: targetScore, 
+      gameDirection: playDirection?.index, 
       currentlyShuffling: 0,
       winner: null,
       finished: false,
@@ -70,4 +70,11 @@ class GamesService {
     await dao.markGameAsFinished(gameId, winner);
   }
 
+  Future<Game?> getLatestGame() async {
+    final latestGameData = await dao.getLatestGame();
+    if (latestGameData != null) {
+      return latestGameData.toModel();
+    }
+    return null;
+  }
 }
