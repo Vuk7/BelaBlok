@@ -54,4 +54,13 @@ class GamesService {
   Future<void> deleteGame(String gameId) async {
     await dao.deleteGameById(gameId);
   }
+
+  Future<Game?>getCurrentActiveGame()  async {
+    final activeGame = await dao.getActiveGame();
+    if (activeGame != null) {
+      return activeGame.toModel();
+    } else {
+      return null;
+    }
+  }
 }

@@ -34,4 +34,29 @@ class GameDao extends BaseDao {
 
   Future<int> deleteGameById(String id) =>
       deleteById(_db.gameTable, _db.gameTable.id, id);
+
+  Future<int> updateGame(GameTableData game) =>
+      update(_db.gameTable, _db.gameTable.id, game.id, game.toCompanion(false));
+
+  Future<int> updateGameScore(String gameId, int teamOneScore, int teamTwoScore) {
+  return (_db.update(_db.gameTable)
+        ..where((game) => game.id.equals(gameId)))
+      .write(
+        GameTableCompanion(
+          teamOneScore: Value(teamOneScore),
+          teamTwoScore: Value(teamTwoScore),
+        ),
+      );
+}
+
+Future<int> markGameAsFinished(String gameId, int? winner) {
+  return (_db.update(_db.gameTable)
+        ..where((game) => game.id.equals(gameId)))
+      .write(
+        GameTableCompanion(
+          finished: const Value(true),
+          winner: Value(winner),
+        ),
+      );
+}
 }
