@@ -137,13 +137,19 @@ class _CurrentGameScreenState extends State<CurrentGameScreen> {
     Team.teamTwo: currentGame?.teamTwoScore ?? 0,
   };
 
+  int get gameTargetScore => currentGame?.gameType ?? 1001;
+
   Map<String, dynamic> get gameStats => {
     'totalRounds': rounds?.length ?? 0,
     'averageScore': (teamScore[Team.teamOne]! + teamScore[Team.teamTwo]!) / 2,
-    'winner': isGameFinished ? (teamScore[Team.teamOne]! >= 1001 ? 'Tim 1' : 'Tim 2') : null,
+    'winner': isGameFinished
+        ? (teamScore[Team.teamOne]! >= gameTargetScore ? 'Tim 1' : 'Tim 2')
+        : null,
   };
 
-  bool get isGameFinished => teamScore[Team.teamOne]! >= 1001 || teamScore[Team.teamTwo]! >= 1001;
+  bool get isGameFinished =>
+      teamScore[Team.teamOne]! >= gameTargetScore ||
+      teamScore[Team.teamTwo]! >= gameTargetScore;
 
   @override
   Widget build(BuildContext context) {
@@ -211,8 +217,8 @@ class _CurrentGameScreenState extends State<CurrentGameScreen> {
     }
 
     // Game screen content
-    final teamOneWon = teamScore[Team.teamOne]! >= 1001;
-    final teamTwoWon = teamScore[Team.teamTwo]! >= 1001;
+    final teamOneWon = teamScore[Team.teamOne]! >= gameTargetScore;
+    final teamTwoWon = teamScore[Team.teamTwo]! >= gameTargetScore;
     final hasWinner = teamOneWon || teamTwoWon;
     final winnerColor = teamOneWon ? Colors.orange : Colors.blue;
 
@@ -234,8 +240,8 @@ class _CurrentGameScreenState extends State<CurrentGameScreen> {
                       teamTwoScore: teamScore[Team.teamTwo]!,
                       scoreDifference: teamScore[Team.teamTwo]! - teamScore[Team.teamOne]!,
                       teamInLead: Team.teamOne,
-                      teamOneLeftToWin: 1001 - teamScore[Team.teamOne]!,
-                      teamTwoLeftToWin: 1001 - teamScore[Team.teamTwo]!,
+                      teamOneLeftToWin: gameTargetScore - teamScore[Team.teamOne]!,
+                      teamTwoLeftToWin: gameTargetScore - teamScore[Team.teamTwo]!,
                     ),
                   ),
                   const SizedBox(height: 10),
