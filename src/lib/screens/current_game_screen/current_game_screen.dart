@@ -61,9 +61,9 @@ class _CurrentGameScreenState extends State<CurrentGameScreen> {
           currentGame = game;
         });
         await loadRounds(game.id!);
-        showSuccessMessage("Igra uspješno učitana");
+        showSuccessMessage("Igra uspješno kreirana!");
       } else {
-        handleGameError("Nema dostupnih igara");
+        handleGameError("Nema aktivne igre, kreirajte ju!");
       }
     } catch (e) {
       handleGameError("Greška pri učitavanju igre: ${e.toString()}");
@@ -196,7 +196,7 @@ class _CurrentGameScreenState extends State<CurrentGameScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               const Text(
-                'Nema aktivne igre',
+                'Nema aktivne igre, kreirajte ju! ',
                 style: TextStyle(fontSize: 18),
               ),
               const SizedBox(height: 20),

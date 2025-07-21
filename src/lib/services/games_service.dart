@@ -52,15 +52,14 @@ class GamesService {
   Future<void> deleteGame(String gameId) async {
     await dao.deleteGameById(gameId);
   }
-
-  Future<Game?> getOrCreateActiveGame() async{ 
-    final activeGame = await dao.getActiveGame();
-    if (activeGame != null) {
-      return activeGame.toModel();
-    } else {
-      return await createNewGameWithParameters();
+  Future<Game?> getLatestGame() async {
+    final latestGameData = await dao.getLatestGame();
+    if (latestGameData != null) {
+      return latestGameData.toModel();
     }
+    return null;
   }
+ 
  
   Future<void> updateGameScore(String gameId, int teamOneScore, int teamTwoScore) async {
     await dao.updateGameScore(gameId, teamOneScore, teamTwoScore);
@@ -70,11 +69,5 @@ class GamesService {
     await dao.markGameAsFinished(gameId, winner);
   }
 
-  Future<Game?> getLatestGame() async {
-    final latestGameData = await dao.getLatestGame();
-    if (latestGameData != null) {
-      return latestGameData.toModel();
-    }
-    return null;
-  }
+ 
 }
