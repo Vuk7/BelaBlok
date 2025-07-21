@@ -41,12 +41,10 @@ class GamesService {
     );
     await dao.insert(database.gameTable, newGame.toCompanion());
     
-    // Fetch the latest inserted game (newest by created_at) to get the complete object with ID
     final insertedGame = await dao.getLatestGame();
     if (insertedGame != null) {
       return insertedGame.toModel();
     } else {
-      // Return null if we can't fetch the inserted game - caller should handle this case
       return null;
     }
   }
@@ -55,12 +53,21 @@ class GamesService {
     await dao.deleteGameById(gameId);
   }
 
-  Future<Game?>getCurrentActiveGame()  async {
+  Future<Game?> getOrCreateActiveGame() async{ 
     final activeGame = await dao.getActiveGame();
     if (activeGame != null) {
       return activeGame.toModel();
     } else {
-      return null;
+      return await createNewGameWithParameters();
     }
   }
+ 
+  Future<void> updateGameScore(String gameId, int teamOneScore, int teamTwoScore) async {
+    await dao.updateGameScore(gameId, teamOneScore, teamTwoScore);
+  }
+
+  Future<void> markGameAsFinished(String gameId, int? winner) async {
+    await dao.markGameAsFinished(gameId, winner);
+  }
+
 }
