@@ -242,6 +242,7 @@ class _CurrentGameScreenState extends State<CurrentGameScreen> {
                       teamInLead: Team.teamOne,
                       teamOneLeftToWin: gameTargetScore - teamScore[Team.teamOne]!,
                       teamTwoLeftToWin: gameTargetScore - teamScore[Team.teamTwo]!,
+                      gameTargetScore: gameTargetScore, 
                     ),
                   ),
                   const SizedBox(height: 10),

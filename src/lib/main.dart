@@ -1,4 +1,4 @@
-import 'package:bela_blok/routes/routes.dart';
+
 import 'package:bela_blok/themes/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -31,7 +31,6 @@ class MyApp extends StatelessWidget {
     return MaterialApp.router(
       title: 'Bela Blok',
       debugShowCheckedModeBanner: false,
-      routerConfig: appRouter,
       theme: AppTheme.lightTheme,
       darkTheme: AppTheme.darkTheme,
       themeMode: themeNotifier.themeMode,
