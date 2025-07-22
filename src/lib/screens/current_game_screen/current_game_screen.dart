@@ -15,10 +15,11 @@ import 'package:bela_blok/themes/app_theme.dart';
 import 'package:flutter/material.dart';
 
 
-import 'package:go_router/go_router.dart';
 
 class CurrentGameScreen extends StatefulWidget {
-  const CurrentGameScreen({super.key});
+  final String? gameId;
+
+  const CurrentGameScreen({super.key, this.gameId});
 
   @override
   State<CurrentGameScreen> createState() => _CurrentGameScreenState();
@@ -40,7 +41,7 @@ class _CurrentGameScreenState extends State<CurrentGameScreen> {
   @override
   void initState() {
     super.initState();
-    handleInitializeGame();
+    Future.microtask(() => handleInitializeGame(gameId: widget.gameId)); 
   }
 
   @override
@@ -50,7 +51,7 @@ class _CurrentGameScreenState extends State<CurrentGameScreen> {
   }
 
   // Handle function for initializing game
-  Future<void> handleInitializeGame() async {
+  Future<void> handleInitializeGame({String? gameId}) async { 
     try {
       setState(() {
         isLoadingGame = true;
@@ -58,19 +59,31 @@ class _CurrentGameScreenState extends State<CurrentGameScreen> {
       });
 
       gamesService = await GamesService.create();
-      roundDao = RoundDao(gamesService!.database); 
+      roundDao = RoundDao(gamesService!.database);
 
-      final game = await gamesService!.getLatestGame();
+      Game? game;
 
-      if (game != null) {
-        setState(() {
-          currentGame = game;
-        });
-        await loadRounds(game.id!);
-        showSuccessMessage("Igra uspješno kreirana!");
+      if (gameId != null) {
+        final gameData = await gamesService!.dao.getGameById(gameId);
+        game = gameData?.toModel();
+        if (game == null) {
+          handleGameError("Igra s ID-om $gameId nije pronađena.");
+          return;
+        }
       } else {
-        handleGameError("Nema aktivne igre, kreirajte ju!");
+
+        game = await gamesService!.getLatestGame();
+        if (game == null) {
+          handleGameError("Nema aktivne igre, kreirajte ju!");
+          return;
+        }
       }
+
+      setState(() {
+        currentGame = game;
+      });
+
+      await loadRounds(game.id!);
     } catch (e) {
       handleGameError("Greška pri učitavanju igre: ${e.toString()}");
     } finally {
@@ -103,7 +116,7 @@ class _CurrentGameScreenState extends State<CurrentGameScreen> {
       return;
     }
 
-    context.goNamed("addround", extra: currentGame!.id!);
+   
   }
 
   // Handle function for game errors

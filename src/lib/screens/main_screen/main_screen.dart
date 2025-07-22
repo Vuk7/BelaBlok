@@ -70,7 +70,7 @@ class _MainScreenState extends State<MainScreen> {
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Igra je uspešno obrisana'),
+          content: Text('Igra je uspiješno obrisana'),
           backgroundColor: Colors.green,
         ),
       );
@@ -176,7 +176,10 @@ class _MainScreenState extends State<MainScreen> {
                                             teamOneScore: game.teamOneScore ?? 0,
                                             teamTwoScore: game.teamTwoScore ?? 0,
                                             onTap: () {
-                                              debugPrint("Tap: ${game.id}");
+                                              context.goNamed(
+                                                "currentgame",
+                                                queryParameters: {'id': game.id},
+                                              );
                                             },
                                           ),
                                         );
@@ -207,7 +210,21 @@ class _MainScreenState extends State<MainScreen> {
                         fontWeight: FontWeight.bold),
                     bgColor: const Color(0xFF3DB328),
                     onTap: () {
-                      context.goNamed("currentgame");
+                      // Popravak: koristi najnoviju igru iz povijesti
+                      if (gamesHistory.isNotEmpty) {
+                        final latestGame = gamesHistory.first;
+                        context.goNamed(
+                          "currentgame",
+                          queryParameters: {'id': latestGame.id},
+                        );
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text('Nema dostupnih igri za nastavak.'),
+                            backgroundColor: Colors.red,
+                          ),
+                        );
+                      }
                     },
                   ),
                 ),

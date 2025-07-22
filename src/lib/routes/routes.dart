@@ -51,28 +51,31 @@ final GoRouter appRouter = GoRouter(
             },
           ),
           GoRoute(
-              path: '/currentgame',
-              name: 'currentgame',
-              pageBuilder: (BuildContext context, GoRouterState state) {
-                return _slideTransition(
-                  child: const CurrentGameScreen(),
-                  state: state,
-                  beginOffset: const Offset(1.0, 0.0), // slide from right
-                );
-              },
-              routes: [
-                GoRoute(
-                  path: '/addround',
-                  name: 'addround',
-                  pageBuilder: (BuildContext context, GoRouterState state) {
-                    return _slideTransition(
-                      child: const AddRoundScreen(),
-                      state: state,
-                      beginOffset: const Offset(0.0, 1.0), // slide from bottom
-                    );
-                  },
-                ),
-              ]),
+            path: '/currentgame',
+            name: 'currentgame',
+            pageBuilder: (BuildContext context, GoRouterState state) {
+              final id = state.uri.queryParameters['id'];
+              return _slideTransition(
+                child: CurrentGameScreen(gameId: id),
+                state: state,
+                beginOffset: const Offset(1.0, 0.0),
+              );
+            },
+            routes: [
+              GoRoute(
+                path: '/addround',
+                name: 'addround',
+                pageBuilder: (BuildContext context, GoRouterState state) {
+                  return _slideTransition(
+                    child: const AddRoundScreen(),
+                    state: state,
+                    beginOffset: const Offset(0.0, 1.0), // slide from bottom
+                  );
+                },
+              ),
+            ],
+          ),
         ]),
   ],
 );
+
