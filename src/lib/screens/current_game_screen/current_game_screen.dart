@@ -6,12 +6,15 @@ import 'package:bela_blok/screens/widgets/animated_list_item.dart';
 import 'package:bela_blok/screens/widgets/confetti_animation.dart';
 import 'package:bela_blok/screens/widgets/game_stats_widget.dart';
 import 'package:bela_blok/screens/widgets/morphing_widgets.dart';
+import 'package:bela_blok/screens/widgets/error_message_widget.dart';
 import 'package:bela_blok/services/games_service.dart';
 import 'package:bela_blok/db/models/game_model.dart';   
 import 'package:bela_blok/db/dao/round_dao.dart';
 import 'package:bela_blok/db/models/round_model.dart';
 import 'package:bela_blok/themes/app_theme.dart';
 import 'package:flutter/material.dart';
+
+
 import 'package:go_router/go_router.dart';
 
 class CurrentGameScreen extends StatefulWidget {
@@ -177,28 +180,15 @@ class _CurrentGameScreenState extends State<CurrentGameScreen> {
       );
     }
 
-    // Error state
+    // Zamijenjeni error blok:
     if (errorMessage != null) {
       return Scaffold(
-        backgroundColor: Theme.of(context).brightness == Brightness.dark 
-          ? const Color(0xFF2C3E50) 
-          : const Color(0xFFF5E6D3),
-        body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                errorMessage!,
-                style: const TextStyle(fontSize: 18, color: Colors.red),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: handleInitializeGame,
-                child: const Text('Pokušaj ponovo'),
-              ),
-            ],
-          ),
+        backgroundColor: Theme.of(context).brightness == Brightness.dark
+            ? const Color(0xFF2C3E50)
+            : const Color(0xFFF5E6D3),
+        body: ErrorMessageWidget(
+          message: errorMessage!,
+          onRetry: handleInitializeGame,
         ),
       );
     }
