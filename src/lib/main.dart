@@ -1,7 +1,7 @@
-
 import 'package:bela_blok/themes/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:go_router/go_router.dart';
 
 class ThemeNotifier extends ChangeNotifier {
   ThemeMode _themeMode = ThemeMode.light;
@@ -12,6 +12,13 @@ class ThemeNotifier extends ChangeNotifier {
     notifyListeners();
   }
 }
+
+final GoRouter appRouter = GoRouter(
+  routes: [
+    
+    // GoRoute(path: '/', builder: (context, state) => HomeScreen()),
+  ],
+);
 
 void main() {
   runApp(
@@ -31,6 +38,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp.router(
       title: 'Bela Blok',
       debugShowCheckedModeBanner: false,
+      routerConfig: appRouter,
       theme: AppTheme.lightTheme,
       darkTheme: AppTheme.darkTheme,
       themeMode: themeNotifier.themeMode,
