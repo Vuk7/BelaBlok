@@ -139,12 +139,24 @@ class _CurrentGameScreenState extends State<CurrentGameScreen> {
 
   int get gameTargetScore => currentGame?.gameType ?? 1001;
 
+  int get totalRounds => rounds?.length ?? 0;
+
+  double get averageScore {
+    final teamOne = teamScore[Team.teamOne];
+    final teamTwo = teamScore[Team.teamTwo];
+    if (teamOne == null || teamTwo == null) return 0;
+    return (teamOne + teamTwo) / 2;
+  }
+
+  String? get winningTeam {
+    if (!isGameFinished) return null;
+    return teamScore[Team.teamOne]! >= gameTargetScore ? 'Tim 1' : 'Tim 2';
+  }
+
   Map<String, dynamic> get gameStats => {
-    'totalRounds': rounds?.length ?? 0,
-    'averageScore': (teamScore[Team.teamOne]! + teamScore[Team.teamTwo]!) / 2,
-    'winner': isGameFinished
-        ? (teamScore[Team.teamOne]! >= gameTargetScore ? 'Tim 1' : 'Tim 2')
-        : null,
+    'totalRounds': totalRounds,
+    'averageScore': averageScore,
+    'winner': winningTeam,
   };
 
   bool get isGameFinished =>
