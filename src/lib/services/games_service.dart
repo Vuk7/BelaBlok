@@ -2,6 +2,7 @@ import 'package:bela_blok/db/dao/game_dao.dart';
 import 'package:bela_blok/db/database.dart';
 import 'package:bela_blok/db/models/game_model.dart';
 import 'package:bela_blok/enums/play_direction_enum.dart';
+import 'package:drift/drift.dart'; 
 
 class GamesService {
   final AppDatabase database;
@@ -59,15 +60,15 @@ class GamesService {
     }
     return null;
   }
- 
- 
-  Future<void> updateGameScore(String gameId, int teamOneScore, int teamTwoScore) async {
-    await dao.updateGameScore(gameId, teamOneScore, teamTwoScore);
-  }
 
-  Future<void> markGameAsFinished(String gameId, int? winner) async {
-    await dao.markGameAsFinished(gameId, winner);
-  }
 
- 
+  Future<void> updateGame(String gameId, int noviScore1, int noviScore2, int? winner) async {
+    final update = GameTableCompanion(
+      teamOneScore: Value(noviScore1),
+      teamTwoScore: Value(noviScore2),
+      finished: const Value(true),
+      winner: Value(winner),
+    );
+    await dao.updateGame(update, gameId);
+  }
 }
