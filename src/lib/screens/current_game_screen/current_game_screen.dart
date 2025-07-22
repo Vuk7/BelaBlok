@@ -29,6 +29,7 @@ class _CurrentGameScreenState extends State<CurrentGameScreen> {
   bool _wobbleTrigger = false;
 
   GamesService? gamesService;
+  late RoundDao roundDao; 
   Game? currentGame;
   bool isLoadingGame = true;
   String? errorMessage;
@@ -57,6 +58,8 @@ class _CurrentGameScreenState extends State<CurrentGameScreen> {
       });
 
       gamesService = await GamesService.create();
+      roundDao = RoundDao(gamesService!.database); 
+
       final game = await gamesService!.getLatestGame();
 
       if (game != null) {
@@ -81,8 +84,7 @@ class _CurrentGameScreenState extends State<CurrentGameScreen> {
     setState(() {
       isLoadingRounds = true;
     });
-    final roundDao = RoundDao(gamesService!.database);
-    final roundRows = await roundDao.getRoundsForGameSorted(gameId);
+    final roundRows = await roundDao.getRoundsForGameSorted(gameId); 
     setState(() {
       rounds = roundRows.map((r) => r.toModel()).toList();
       isLoadingRounds = false;
