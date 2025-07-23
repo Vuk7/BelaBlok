@@ -16,294 +16,271 @@ class NewGameScreen extends StatefulWidget {
 }
 
 class _NewGameScreenState extends State<NewGameScreen> {
-  TextEditingController inputGameTypeController = TextEditingController();
-  TextEditingController customGameController = TextEditingController();
+  final TextEditingController customGameController = TextEditingController();
   int selectedGameType = 0;
   bool isCustomGame = false;
-
   int playDirectionSelect = 0;
   int playerShufflingSelect = 1;
 
   @override
   Widget build(BuildContext context) {
+    final bg = Theme.of(context).scaffoldBackgroundColor;
+
     return Scaffold(
-        backgroundColor: Theme.of(context).brightness == Brightness.dark 
-          ? const Color(0xFF2C3E50) 
-          : const Color(0xFFF5E6D3), // boja kože
-        body: SafeArea(
-            child: Padding(
-      padding: const EdgeInsets.all(20.0),
-      child: SingleChildScrollView(
-        child: ConstrainedBox(
-          constraints: BoxConstraints(
-            minHeight: MediaQuery.of(context).size.height - 
-                      MediaQuery.of(context).padding.top - 
-                      MediaQuery.of(context).padding.bottom - 40,
-          ),
-          child: IntrinsicHeight(
-            child: Column(
-              children: [
-            Text(
-              "NOVA IGRA",
-              style: TextStyle(
-                  fontSize: 38,
-                  fontWeight: FontWeight.bold,
-                  color: Theme.of(context).colorScheme.primary),
-            ),
-            const SizedBox(height: 20),
-            // Okviri za 1001 i 501
-            Row(
-              children: [
-                Expanded(
-                  child: AnimatedButton(
-                    text: "1001",
-                    textStyle: TextStyle(
-                        color: selectedGameType == 0 ? AppTheme.getInverseTextColor(context) : AppTheme.getTextColor(context),
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold),
-                    bgColor: selectedGameType == 0 ? AppTheme.green : AppTheme.getDisabledButtonColor(context),
-                    onTap: () {
-                      setState(() {
-                        selectedGameType = 0;
-                        isCustomGame = false;
-                      });
-                    },
-                  ),
-                ),
-                const SizedBox(width: 20),
-                Expanded(
-                  child: AnimatedButton(
-                    text: "501",
-                    textStyle: TextStyle(
-                        color: selectedGameType == 1 ? AppTheme.getInverseTextColor(context) : AppTheme.getTextColor(context),
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold),
-                    bgColor: selectedGameType == 1 ? AppTheme.green : AppTheme.getDisabledButtonColor(context),
-                    onTap: () {
-                      setState(() {
-                        selectedGameType = 1;
-                        isCustomGame = false;
-                      });
-                    },
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 20),
-            // Ručno
-            AnimatedButton(
-              text: isCustomGame ? "RUČNO (${customGameController.text.isEmpty ? '---' : customGameController.text})" : "RUČNO",
-              textStyle: TextStyle(
-                  color: isCustomGame ? AppTheme.getInverseTextColor(context) : AppTheme.getTextColor(context),
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold),
-              bgColor: isCustomGame ? AppTheme.green : AppTheme.getDisabledButtonColor(context),
-              onTap: () async {
-                final result = await _showCustomGameDialog();
-                if (result != null && result.isNotEmpty) {
-                  setState(() {
-                    isCustomGame = true;
-                    selectedGameType = 2;
-                    customGameController.text = result;
-                  });
-                }
-              },
-            ),
-            const SizedBox(height: 5),
-            // Settings menu
-            GameSettingsMenu(
-              playDirectionSelect: playDirectionSelect,
-              onPlayDirectionChanged: (int id) {
-                setState(() {
-                  playDirectionSelect = id;
-                });
-              },
-            ),
-            const SizedBox(height: 15),
-            // Prvi miješa sekcija
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: Theme.of(context).brightness == Brightness.dark 
-                  ? Colors.grey[800] 
-                  : Colors.white,
-                borderRadius: BorderRadius.circular(16),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.1),
-                    blurRadius: 4,
-                    offset: const Offset(0, 2),
-                  ),
-                ],
+      backgroundColor: bg,
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(20.0),
+          child: SingleChildScrollView(
+            child: ConstrainedBox(
+              constraints: BoxConstraints(
+                minHeight: MediaQuery.of(context).size.height -
+                    MediaQuery.of(context).padding.top -
+                    MediaQuery.of(context).padding.bottom -
+                    40,
               ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      const Icon(
-                        Icons.style,  // Ikona karata/špila za miješanje karata
-                        color: AppTheme.red,
-                        size: 20,
-                      ),
-                      const SizedBox(width: 8),
-                      Text(
-                        "PRVI MIJEŠA",
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: Theme.of(context).colorScheme.onSurface,
+              child: IntrinsicHeight(
+                child: Column(
+                  children: [
+                    const Text(
+                      "NOVA IGRA",
+                      style: AppTheme.screenTitleTextStyle,
+                    ),
+                    const SizedBox(height: 20),
+                    // Okviri za 1001 i 501
+                    Row(
+                      children: [
+                        Expanded(
+                          child: AnimatedButton(
+                            text: "1001",
+                            textStyle: AppTheme.optionButtonTextStyle.copyWith(
+                              color: selectedGameType == 0
+                                  ? AppTheme.getInverseTextColor(context)
+                                  : AppTheme.getTextColor(context),
+                            ),
+                            bgColor: selectedGameType == 0
+                                ? AppTheme.green
+                                : AppTheme.getDisabledButtonColor(context),
+                            onTap: () {
+                              setState(() {
+                                selectedGameType = 0;
+                                isCustomGame = false;
+                              });
+                            },
+                          ),
                         ),
+                        const SizedBox(width: 20),
+                        Expanded(
+                          child: AnimatedButton(
+                            text: "501",
+                            textStyle: AppTheme.optionButtonTextStyle.copyWith(
+                              color: selectedGameType == 1
+                                  ? AppTheme.getInverseTextColor(context)
+                                  : AppTheme.getTextColor(context),
+                            ),
+                            bgColor: selectedGameType == 1
+                                ? AppTheme.green
+                                : AppTheme.getDisabledButtonColor(context),
+                            onTap: () {
+                              setState(() {
+                                selectedGameType = 1;
+                                isCustomGame = false;
+                              });
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 20),
+                    // Ručno
+                    AnimatedButton(
+                      text: isCustomGame
+                          ? "RUČNO (${customGameController.text.isEmpty ? '---' : customGameController.text})"
+                          : "RUČNO",
+                      textStyle: AppTheme.manualOptionTextStyle.copyWith(
+                        color: isCustomGame
+                            ? AppTheme.getInverseTextColor(context)
+                            : AppTheme.getTextColor(context),
                       ),
-                    ],
-                  ),
-                  const SizedBox(height: 12),
-                  PlayerShuffling(
-                    onTap: (int id) {
-                      setState(() {
-                        playerShufflingSelect = id;
-                      });
-                    },
-                    selectedColor: AppTheme.red,
-                    selected: playerShufflingSelect,
-                  ),
-                ],
+                      bgColor: isCustomGame
+                          ? AppTheme.green
+                          : AppTheme.getDisabledButtonColor(context),
+                      onTap: () async {
+                        final result = await _showCustomGameDialog();
+                        if (result != null && result.isNotEmpty) {
+                          setState(() {
+                            isCustomGame = true;
+                            selectedGameType = 2;
+                            customGameController.text = result;
+                          });
+                        }
+                      },
+                    ),
+                    const SizedBox(height: 5),
+                    // Settings menu
+                    GameSettingsMenu(
+                      playDirectionSelect: playDirectionSelect,
+                      onPlayDirectionChanged: (id) =>
+                          setState(() => playDirectionSelect = id),
+                    ),
+                    const SizedBox(height: 15),
+                    // Prvi miješa sekcija
+                    Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color: AppTheme.getCardBackgroundColor(context),
+                        borderRadius: BorderRadius.circular(16),
+                        boxShadow: [
+                          BoxShadow(
+                            color: AppTheme.getOverlayColor(context, opacity: 0.1),
+                            blurRadius: 4,
+                            offset: const Offset(0, 2),
+                          ),
+                        ],
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              const Icon(
+                                Icons.style,
+                                color: AppTheme.red,
+                                size: 20,
+                              ),
+                              const SizedBox(width: 8),
+                              Text(
+                                "PRVI MIJEŠA",
+                                style: AppTheme.sectionHeaderTextStyle.copyWith(
+                                  color: Theme.of(context).colorScheme.onSurface,
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 12),
+                          PlayerShuffling(
+                            onTap: (id) => setState(() => playerShufflingSelect = id),
+                            selectedColor: AppTheme.red,
+                            selected: playerShufflingSelect,
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                   const Expanded(child: SizedBox()),
+                    Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: AnimatedBigButton(
+                        text: "ZAPOČNI",
+                        icon: Icons.play_circle_filled,
+                        iconAnimationType: AnimationType.scale,
+                        textStyle: AppTheme.bigButtonText28.copyWith(
+                          color: AppTheme.getInverseTextColor(context),
+                        ),
+                        bgColor: AppTheme.green,
+                        textPadding: 20,
+                        onTap: handleCreateNewGame,
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                  ],
+                ),
               ),
             ),
-            const SizedBox(height: 20), 
-            Expanded(child: Container()), 
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: AnimatedBigButton(
-                text: "ZAPOČNI",
-                icon: Icons.play_circle_filled,
-                iconAnimationType: AnimationType.scale,
-                textStyle: const TextStyle(
-                    color: Colors.black,
-                    fontSize: 28,
-                    fontWeight: FontWeight.bold),
-                bgColor: AppTheme.green,
-                textPadding: 20,
-                onTap: handleCreateNewGame,
-              ),
-            ),
-            const SizedBox(
-              height: 20,
-            ),
-          ],
+          ),
         ),
       ),
-    ),
-    ))));
+    );
   }
 
   Future<int?> getSelectedTargetScore() async {
-    if (selectedGameType == 0) {
-      return 1001;
-    } else if (selectedGameType == 1) {
-      return 501;
-    } else {
-      if (customGameController.text.isEmpty) {
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Molimo unesite broj za custom igru'),
-              backgroundColor: Colors.red,
-            ),
-          );
-        }
-        return null;
-      }
-      try {
-        return int.parse(customGameController.text);
-      } catch (e) {
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Molimo unesite valjan broj (samo cifre)'),
-              backgroundColor: Colors.red,
-            ),
-          );
-        }
-        return null;
-      }
+    if (selectedGameType == 0) return 1001;
+    if (selectedGameType == 1) return 501;
+
+    if (customGameController.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Molimo unesite broj za custom igru'),
+          backgroundColor: AppTheme.red,
+        ),
+      );
+      return null;
+    }
+    try {
+      return int.parse(customGameController.text);
+    } catch (_) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Molimo unesite valjan broj (samo cifre)'),
+          backgroundColor: AppTheme.red,
+        ),
+      );
+      return null;
     }
   }
 
   Future<void> handleCreateNewGame() async {
     final targetScore = await getSelectedTargetScore();
-    if (targetScore == null) {
-      return; 
-    }
+    if (targetScore == null) return;
 
     final gamesService = await GamesService.create();
-    
     try {
       await gamesService.createNewGameWithParameters(
         gameType: selectedGameType,
         targetScore: targetScore,
-        playDirection: playDirectionSelect == 0 ? PlayDirection.clockwise : PlayDirection.counterClockwise,
+        playDirection: playDirectionSelect == 0
+            ? PlayDirection.clockwise
+            : PlayDirection.counterClockwise,
       );
-      
-      final currentContext = context;
-      if (mounted && currentContext.mounted) {
-        currentContext.goNamed("currentgame");
-      }
+      if (mounted) context.goNamed("currentgame");
     } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Greška pri kreiranju igre: $e'),
-            backgroundColor: Colors.red,
-          ),
-        );
-      }
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Greška pri kreiranju igre: $e'),
+          backgroundColor: AppTheme.red,
+        ),
+      );
     }
   }
 
   Future<String?> _showCustomGameDialog() async {
     final TextEditingController dialogController = TextEditingController();
-    
     return showDialog<String>(
       context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Unesite broj za igru'),
-          content: TextField(
-            controller: dialogController,
-            keyboardType: TextInputType.number,
-            decoration: const InputDecoration(
-              hintText: 'Npr. 751',
-              border: OutlineInputBorder(),
-            ),
-            autofocus: true,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Unesite broj za igru'),
+        content: TextField(
+          controller: dialogController,
+          keyboardType: TextInputType.number,
+          decoration: const InputDecoration(
+            hintText: 'Npr. 751',
+            border: OutlineInputBorder(),
           ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: const Text('ODUSTANI'),
-            ),
-            TextButton(
-              onPressed: () {
-                if (dialogController.text.isNotEmpty) {
-                  Navigator.of(context).pop(dialogController.text);
-                }
-              },
-              child: const Text('POTVRDI'),
-            ),
-          ],
-        );
-      },
+          autofocus: true,
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(),
+            child: const Text('ODUSTANI'),
+          ),
+          TextButton(
+            onPressed: () {
+              if (dialogController.text.isNotEmpty) {
+                Navigator.of(ctx).pop(dialogController.text);
+              }
+            },
+            child: const Text('POTVRDI'),
+          ),
+        ],
+      ),
     );
   }
 
   @override
   void dispose() {
-    inputGameTypeController.dispose();
     customGameController.dispose();
     super.dispose();
   }
 }
-
-class PlayerShuffeling {}

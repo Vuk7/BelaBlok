@@ -75,13 +75,34 @@ class AppTheme {
     ],
   );
 
-  static const TextStyle subtitleTextStyle = TextStyle(
-    fontSize: 22,
+  static const TextStyle screenTitleTextStyle = TextStyle(
+    fontSize: 38,
+    fontWeight: FontWeight.bold,
+    color: primary,
+  );
+
+  static const TextStyle optionButtonTextStyle = TextStyle(
+    fontSize: 24,
+    fontWeight: FontWeight.bold,
+  );
+
+  static const TextStyle manualOptionTextStyle = TextStyle(
+    fontSize: 20,
+    fontWeight: FontWeight.bold,
+  );
+
+  static const TextStyle sectionHeaderTextStyle = TextStyle(
+    fontSize: 16,
     fontWeight: FontWeight.bold,
   );
 
   static const TextStyle defaultButtonTextStyle = TextStyle(
     fontSize: 32,
+    fontWeight: FontWeight.bold,
+  );
+
+  static const TextStyle bigButtonText28 = TextStyle(
+    fontSize: 28,
     fontWeight: FontWeight.bold,
   );
 
