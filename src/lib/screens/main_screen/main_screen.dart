@@ -32,7 +32,7 @@ class _MainScreenState extends State<MainScreen> {
     gamesService = await GamesService.create();
     gamesHistory = await gamesService.getAllGames();
     isLoadingGameHistory = false;
-    setState(() {}); // Trigger UI rebuild
+    setState(() {}); 
   }
 
   Future<void> _refreshGameHistory() async {
@@ -82,7 +82,7 @@ class _MainScreenState extends State<MainScreen> {
     return Scaffold(
       backgroundColor: Theme.of(context).brightness == Brightness.dark
           ? Theme.of(context).scaffoldBackgroundColor
-          : const Color(0xFFF5E6D3), // boja kože
+          : const Color(0xFFF5E6D3), 
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(20.0),
@@ -96,7 +96,7 @@ class _MainScreenState extends State<MainScreen> {
                   fontWeight: FontWeight.bold,
                   color: Theme.of(context)
                       .colorScheme
-                      .primary, // koristi primary boju iz teme
+                      .primary, 
                   letterSpacing: 2,
                   shadows: [
                     Shadow(
@@ -192,44 +192,44 @@ class _MainScreenState extends State<MainScreen> {
               ),
               const SizedBox(height: 20),
 
-              // Dodajemo PRAVILA widget
+              
               const RulesWidget(),
               const SizedBox(height: 20),
 
-              Padding(
-                padding: const EdgeInsets.all(5.0),
-                child: Hero(
-                  tag: "continue_button",
-                  child: AnimatedBigButton(
-                    text: "NASTAVI",
-                    icon: Icons.play_arrow,
-                    iconAnimationType: AnimationType.slideRight,
-                    textStyle: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 32,
-                        fontWeight: FontWeight.bold),
-                    bgColor: const Color(0xFF3DB328),
-                    onTap: () {
-                      // Popravak: koristi najnoviju igru iz povijesti
-                      if (gamesHistory.isNotEmpty) {
-                        final latestGame = gamesHistory.first;
-                        context.goNamed(
-                          "currentgame",
-                          queryParameters: {'id': latestGame.id},
-                        );
-                      } else {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text('Nema dostupnih igri za nastavak.'),
-                            backgroundColor: Colors.red,
-                          ),
-                        );
-                      }
-                    },
-                  ),
-                ),
+              // Find the latest unfinished game, if any
+              FutureBuilder<Game?>(
+                future: gamesService.getLatestUnfinishedGame(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const CircularProgressIndicator();
+                  }
+                  final latestUnfinishedGame = snapshot.data;
+                  if (latestUnfinishedGame == null) return const SizedBox.shrink();
+
+                  return Padding(
+                    padding: const EdgeInsets.all(5.0),
+                    child: Hero(
+                      tag: "continue_button",
+                      child: AnimatedBigButton(
+                        text: "NASTAVI",
+                        icon: Icons.play_arrow,
+                        iconAnimationType: AnimationType.slideRight,
+                        textStyle: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 32,
+                            fontWeight: FontWeight.bold),
+                        bgColor: const Color(0xFF3DB328),
+                        onTap: () {
+                          context.goNamed(
+                            "currentgame",
+                            queryParameters: {'id': latestUnfinishedGame.id},
+                          );
+                        },
+                      ),
+                    ),
+                  );
+                },
               ),
-              const SizedBox(height: 10),
               Padding(
                 padding: const EdgeInsets.all(5.0),
                 child: Hero(
@@ -278,7 +278,7 @@ class AppRouter {
           return const MainScreen();
         },
       ),
-      // Add other routes here
+      
     ],
   );
 }

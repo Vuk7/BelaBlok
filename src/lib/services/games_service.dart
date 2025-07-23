@@ -76,4 +76,9 @@ class GamesService {
       update,
     );
   }
+
+  Future<Game?> getLatestUnfinishedGame() async {
+    final data = await dao.getLatestUnfinishedGame();
+    return data?.toModel();
+  }
 }

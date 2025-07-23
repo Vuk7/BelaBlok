@@ -32,6 +32,13 @@ class GameDao extends BaseDao {
             ..limit(1))
           .getSingleOrNull();
 
+  Future<GameTableData?> getLatestUnfinishedGame() =>
+      (_db.select(_db.gameTable)
+            ..where((g) => g.finished.equals(false))
+            ..orderBy([(g) => OrderingTerm.desc(g.createdAt)])
+            ..limit(1))
+          .getSingleOrNull();
+
   Future<int> deleteGameById(String id) =>
       deleteById(_db.gameTable, _db.gameTable.id, id);
 }
