@@ -64,11 +64,13 @@ class _NewGameScreenState extends State<NewGameScreen> {
             : PlayDirection.counterClockwise,
       );
       if (mounted) context.goNamed('currentgame');
-    } catch (e) {
+    } catch (e, stack) {
+      // Log error for developers
+      debugPrint('Greška pri kreiranju igre: $e\n$stack');
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Greška pri kreiranju igre: $e'),
+        const SnackBar(
+          content: Text('Došlo je do greške. Pokušajte ponovno.'),
           backgroundColor: AppTheme.red,
         ),
       );
