@@ -41,7 +41,9 @@ class _CurrentGameScreenState extends State<CurrentGameScreen> {
   @override
   void initState() {
     super.initState();
-    Future.microtask(() => handleInitializeGame(gameId: widget.gameId)); 
+    () async {
+      await handleInitializeGame(gameId: widget.gameId);
+    }();
   }
 
   @override
@@ -195,7 +197,7 @@ class _CurrentGameScreenState extends State<CurrentGameScreen> {
       );
     }
 
-    // Zamijenjeni error blok:
+    
     if (errorMessage != null) {
       return Scaffold(
         backgroundColor: Theme.of(context).brightness == Brightness.dark
@@ -208,7 +210,7 @@ class _CurrentGameScreenState extends State<CurrentGameScreen> {
       );
     }
 
-    // No game state
+
     if (currentGame == null) {
       return Scaffold(
         backgroundColor: Theme.of(context).brightness == Brightness.dark 
