@@ -33,7 +33,7 @@ class _MainScreenState extends State<MainScreen> {
     gamesService = await GamesService.create();
     gamesHistory = await gamesService.getAllGames();
     isLoadingGameHistory = false;
-    setState(() {}); 
+    setState(() {});
   }
 
   Future<void> _refreshGameHistory() async {
@@ -67,7 +67,7 @@ class _MainScreenState extends State<MainScreen> {
   Future<void> handleDeleteGame(String gameId) async {
     await gamesService.deleteGame(gameId);
     await _refreshGameHistory();
-    
+
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
