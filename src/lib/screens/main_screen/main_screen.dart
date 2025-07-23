@@ -197,7 +197,7 @@ class _MainScreenState extends State<MainScreen> {
                               text: "NASTAVI",
                               icon: Icons.play_arrow,
                               iconAnimationType: AnimationType.slideRight,
-                              textStyle: AppTheme.buttonTextStyle,
+                              textStyle: AppTheme.defaultButtonTextStyle,
                               bgColor: AppTheme.green,
                               onTap: () {
                                 context.goNamed(
@@ -218,7 +218,7 @@ class _MainScreenState extends State<MainScreen> {
                           text: "NOVA IGRA",
                           icon: Icons.refresh,
                           iconAnimationType: AnimationType.rotate,
-                          textStyle: AppTheme.buttonTextStyle,
+                          textStyle: AppTheme.defaultButtonTextStyle,
                           bgColor: AppTheme.orange,
                           onTap: () {
                             context.goNamed("newgame");

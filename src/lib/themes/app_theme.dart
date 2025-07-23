@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 class AppTheme {
+  // Boje
   static const Color red = Color(0xFFFF0000);
   static const Color green = Color(0xFF3DB328);
   static const Color gray = Color(0xFFD9D9D9);
@@ -8,6 +9,8 @@ class AppTheme {
   static const Color primary = Color(0xFFFBB117);
   static const Color lightBackground = Color(0xFFF5E6D3);
   static const Color orange = Color(0xFFFF9500);
+  static const Color blue = Color(0xFF2196F3);
+  static const Color black = Color(0xFF000000);
   static const Color accent = Colors.amber;
   static const Color brownShadow = Colors.brown;
 
@@ -16,22 +19,23 @@ class AppTheme {
   static const Color mediumOverlay = Color(0x33000000);
   static const Color heavyOverlay = Color(0x66000000);
 
+  // Tematski Data
   static final ThemeData lightTheme = ThemeData(
     primaryColor: primary,
     scaffoldBackgroundColor: lightBackground,
     appBarTheme: const AppBarTheme(
       color: primary,
       elevation: 2,
-      titleTextStyle: TextStyle(color: Color(0xFF000000)),
+      titleTextStyle: TextStyle(color: black),
     ),
     colorScheme: const ColorScheme.light(
       surface: Colors.white,
       primary: primary,
-      secondary: Color(0xFF000000),
-      tertiary: Color(0xFFFFFFFF),
+      secondary: black,
+      tertiary: Colors.white,
       outline: Color(0xFFE0E0E0),
       outlineVariant: Color(0xFFF5F5F5),
-      surfaceContainerHighest: Color(0xFF000000),
+      surfaceContainerHighest: black,
       error: red,
     ),
   );
@@ -42,16 +46,16 @@ class AppTheme {
     appBarTheme: const AppBarTheme(
       color: primary,
       elevation: 2,
-      titleTextStyle: TextStyle(color: Color(0xFF000000)),
+      titleTextStyle: TextStyle(color: black),
     ),
     colorScheme: const ColorScheme.dark(
       surface: darkBackground,
       primary: primary,
-      secondary: Color(0xFFFFFFFF),
-      tertiary: Color(0xFF000000),
+      secondary: Colors.white,
+      tertiary: black,
       outline: Color(0xFF424242),
       outlineVariant: Color(0xFF1E1E1E),
-      surfaceContainerHighest: Color(0xFFFFFFFF),
+      surfaceContainerHighest: Colors.white,
       error: red,
     ),
   );
@@ -76,19 +80,19 @@ class AppTheme {
     fontWeight: FontWeight.bold,
   );
 
-  static const TextStyle buttonTextStyle = TextStyle(
-    color: Colors.white,
+  static const TextStyle defaultButtonTextStyle = TextStyle(
     fontSize: 32,
     fontWeight: FontWeight.bold,
   );
 
+  // Pomoćne metode za boje prema temi
   static Color getTextColor(BuildContext context) {
     return Theme.of(context).colorScheme.surfaceContainerHighest;
   }
 
   static Color getInverseTextColor(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    return isDark ? Colors.black : Colors.white;
+    return isDark ? black : Colors.white;
   }
 
   static Color getDisabledButtonColor(BuildContext context) {
@@ -103,6 +107,6 @@ class AppTheme {
 
   static Color getOverlayColor(BuildContext context, {double opacity = 0.1}) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    return (isDark ? Colors.white : Colors.black).withValues(alpha: (opacity * 255).toDouble());
+    return (isDark ? Colors.white : black).withValues(alpha: (opacity * 255).toDouble());
   }
 }
