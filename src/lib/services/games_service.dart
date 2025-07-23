@@ -127,7 +127,7 @@ class GamesService {
   }
 
   Future<List<RoundTableData>> getRoundsForGameSorted(String gameId) async {
-    // RoundDao koristiš samo unutar servisa!
+   
     final roundDao = RoundDao(database);
     return await roundDao.getRoundsForGameSorted(gameId);
   }
