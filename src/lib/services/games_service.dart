@@ -77,6 +77,44 @@ class GamesService {
     );
   }
 
+  Future<void> updateTeamScores(String gameId, int noviScore1, int noviScore2) async {
+    final update = GameTableCompanion(
+      teamOneScore: Value(noviScore1),
+      teamTwoScore: Value(noviScore2),
+    );
+    await dao.update(
+      database.gameTable,
+      database.gameTable.id,
+      gameId,
+      update,
+    );
+  }
+
+  Future<void> setGameWinner(String gameId, int? winner) async {
+    final update = GameTableCompanion(
+      winner: Value(winner),
+      finished: const Value(true),
+    );
+    await dao.update(
+      database.gameTable,
+      database.gameTable.id,
+      gameId,
+      update,
+    );
+  }
+
+  Future<void> finishGame(String gameId) async {
+    const update = GameTableCompanion(
+      finished: Value(true),
+    );
+    await dao.update(
+      database.gameTable,
+      database.gameTable.id,
+      gameId,
+      update,
+    );
+  }
+
   Future<Game?> getLatestUnfinishedGame() async {
     final data = await dao.getLatestUnfinishedGame();
     return data?.toModel();
