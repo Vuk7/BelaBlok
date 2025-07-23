@@ -1,4 +1,3 @@
-
 import 'package:bela_blok/screens/add_round_screen/widgets/choose_caller.dart';
 import 'package:bela_blok/screens/add_round_screen/widgets/choose_input_type.dart';
 import 'package:bela_blok/screens/widgets/big_button_input_number.dart';
@@ -64,7 +63,19 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
 
 
   void handleSaveRound() {
+    try {
+ 
+    } catch (e, stack) {
    
+      debugPrint('Greška pri kreiranju igre: $e\n$stack');
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Došlo je do greške. Pokušajte ponovno.'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
   }
 
   void handleHelpDialog() {
