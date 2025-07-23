@@ -63,9 +63,14 @@ class _NewGameScreenState extends State<NewGameScreen> {
             ? PlayDirection.clockwise
             : PlayDirection.counterClockwise,
       );
-      if (mounted) context.goNamed('currentgame');
+      // Dohvati najnoviju igru i pošalji ID na currentgame screen
+      final latestGame = await gamesService.getLatestGame();
+      if (latestGame != null && latestGame.id != null && mounted) {
+        context.goNamed('currentgame', queryParameters: {'id': latestGame.id});
+      } else if (mounted) {
+        Navigator.of(context).pop(); 
+      }
     } catch (e, stack) {
-      // Log error for developers
       debugPrint('Greška pri kreiranju igre: $e\n$stack');
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
