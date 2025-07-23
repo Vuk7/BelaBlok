@@ -34,8 +34,4 @@ class GameDao extends BaseDao {
 
   Future<int> deleteGameById(String id) =>
       deleteById(_db.gameTable, _db.gameTable.id, id);
-
-  Future<int> updateGame(GameTableCompanion updatedFields, String gameId) =>
-    update(_db.gameTable, _db.gameTable.id, gameId, updatedFields);
-
 }

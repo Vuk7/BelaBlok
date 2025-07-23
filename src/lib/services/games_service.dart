@@ -69,6 +69,11 @@ class GamesService {
       finished: const Value(true),
       winner: Value(winner),
     );
-    await dao.updateGame(update, gameId);
+    await dao.update(
+      database.gameTable,
+      database.gameTable.id,
+      gameId,
+      update,
+    );
   }
 }
