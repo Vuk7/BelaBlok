@@ -123,11 +123,14 @@ class _CurrentGameScreenState extends State<CurrentGameScreen> {
   }
 
   void showErrorMessage(String message) {
+    
+    debugPrint('Greška: $message');
+    if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
+      const SnackBar(
+        content: Text('Došlo je do greške. Pokušajte ponovno.'),
         backgroundColor: AppTheme.red,
-        duration: const Duration(seconds: 3),
+        duration: Duration(seconds: 3),
       ),
     );
   }
