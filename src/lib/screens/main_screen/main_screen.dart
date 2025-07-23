@@ -82,177 +82,179 @@ class _MainScreenState extends State<MainScreen> {
     return Scaffold(
       backgroundColor: Theme.of(context).brightness == Brightness.dark
           ? Theme.of(context).scaffoldBackgroundColor
-          : const Color(0xFFF5E6D3), 
+          : const Color(0xFFF5E6D3),
       body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(20.0),
-          child: Column(
-            children: [
-              const SizedBox(height: 40),
-              Text(
-                "BELA BLOK",
-                style: TextStyle(
-                  fontSize: 44,
-                  fontWeight: FontWeight.bold,
-                  color: Theme.of(context)
-                      .colorScheme
-                      .primary, 
-                  letterSpacing: 2,
-                  shadows: [
-                    Shadow(
-                      color: Colors.brown.withValues(alpha: 0.3),
-                      blurRadius: 8,
-                      offset: const Offset(0, 4),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(
-                height: 40,
-              ),
-              Card(
-                elevation: 4,
-                color: Theme.of(context).brightness == Brightness.dark
-                    ? Colors.grey[800]
-                    : Colors.white,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(20.0),
-                  child: Column(
-                    children: [
-                      Text(
-                        "Povijest:",
-                        style: TextStyle(
-                          fontSize: 22,
-                          fontWeight: FontWeight.bold,
-                          color: Theme.of(context).colorScheme.onSurface,
-                        ),
+        child: isLoadingGameHistory
+            ? const Center(child: CircularProgressIndicator())
+            : SingleChildScrollView(
+                padding: const EdgeInsets.all(20.0),
+                child: Column(
+                  children: [
+                    const SizedBox(height: 40),
+                    Text(
+                      "BELA BLOK",
+                      style: TextStyle(
+                        fontSize: 44,
+                        fontWeight: FontWeight.bold,
+                        color: Theme.of(context)
+                            .colorScheme
+                            .primary, 
+                        letterSpacing: 2,
+                        shadows: [
+                          Shadow(
+                            color: Colors.brown.withValues(alpha: 0.3),
+                            blurRadius: 8,
+                            offset: const Offset(0, 4),
+                          ),
+                        ],
                       ),
-                      const SizedBox(height: 20),
-                      isLoadingGameHistory
-                          ? const Center(child: CircularProgressIndicator())
-                          : SizedBox(
-                              height: 200,
-                              child: gamesHistory.isEmpty
-                                  ? Center(
-                                      child: Text(
-                                        "Trenutno nemate dostupnih igri.",
-                                        style: TextStyle(
-                                            fontSize: 15,
-                                            color: Theme.of(context)
-                                                .colorScheme
-                                                .error),
-                                      ),
-                                    )
-                                  : ListView.builder(
-                                      itemCount: gamesHistory.length,
-                                      itemBuilder: (context, index) {
-                                        final game = gamesHistory[index];
-
-                                        return Dismissible(
-                                          key: Key(game.id ?? index.toString()),
-                                          direction: DismissDirection.endToStart,
-                                          background: Container(
-                                            alignment: Alignment.centerRight,
-                                            padding: const EdgeInsets.only(right: 20),
-                                            color: Colors.red,
-                                            child: const Icon(
-                                              Icons.delete,
-                                              color: Colors.white,
-                                              size: 30,
+                    ),
+                    const SizedBox(
+                      height: 40,
+                    ),
+                    Card(
+                      elevation: 4,
+                      color: Theme.of(context).brightness == Brightness.dark
+                          ? Colors.grey[800]
+                          : Colors.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(20.0),
+                        child: Column(
+                          children: [
+                            Text(
+                              "Povijest:",
+                              style: TextStyle(
+                                fontSize: 22,
+                                fontWeight: FontWeight.bold,
+                                color: Theme.of(context).colorScheme.onSurface,
+                              ),
+                            ),
+                            const SizedBox(height: 20),
+                            isLoadingGameHistory
+                                ? const Center(child: CircularProgressIndicator())
+                                : SizedBox(
+                                    height: 200,
+                                    child: gamesHistory.isEmpty
+                                        ? Center(
+                                            child: Text(
+                                              "Trenutno nemate dostupnih igri.",
+                                              style: TextStyle(
+                                                  fontSize: 15,
+                                                  color: Theme.of(context)
+                                                      .colorScheme
+                                                      .error),
                                             ),
-                                          ),
-                                          confirmDismiss: (direction) async {
-                                            return await _showDeleteConfirmationDialog(game.id ?? "");
-                                          },
-                                          onDismissed: (direction) async {
-                                            await handleDeleteGame(game.id ?? "");
-                                          },
-                                          child: AnimatedHistoryListItem(
-                                            gameID: game.id ?? "N/A",
-                                            date: formatDate(game.createdAt),
-                                            teamOneScore: game.teamOneScore ?? 0,
-                                            teamTwoScore: game.teamTwoScore ?? 0,
-                                            onTap: () {
-                                              context.goNamed(
-                                                "currentgame",
-                                                queryParameters: {'id': game.id},
+                                          )
+                                        : ListView.builder(
+                                            itemCount: gamesHistory.length,
+                                            itemBuilder: (context, index) {
+                                              final game = gamesHistory[index];
+
+                                              return Dismissible(
+                                                key: Key(game.id ?? index.toString()),
+                                                direction: DismissDirection.endToStart,
+                                                background: Container(
+                                                  alignment: Alignment.centerRight,
+                                                  padding: const EdgeInsets.only(right: 20),
+                                                  color: Colors.red,
+                                                  child: const Icon(
+                                                    Icons.delete,
+                                                    color: Colors.white,
+                                                    size: 30,
+                                                  ),
+                                                ),
+                                                confirmDismiss: (direction) async {
+                                                  return await _showDeleteConfirmationDialog(game.id ?? "");
+                                                },
+                                                onDismissed: (direction) async {
+                                                  await handleDeleteGame(game.id ?? "");
+                                                },
+                                                child: AnimatedHistoryListItem(
+                                                  gameID: game.id ?? "N/A",
+                                                  date: formatDate(game.createdAt),
+                                                  teamOneScore: game.teamOneScore ?? 0,
+                                                  teamTwoScore: game.teamTwoScore ?? 0,
+                                                  onTap: () {
+                                                    context.goNamed(
+                                                      "currentgame",
+                                                      queryParameters: {'id': game.id},
+                                                    );
+                                                  },
+                                                ),
                                               );
                                             },
                                           ),
-                                        );
-                                      },
-                                    ),
-                            ),
-                    ],
-                  ),
-                ),
-              ),
-              const SizedBox(height: 20),
-
-              
-              const RulesWidget(),
-              const SizedBox(height: 20),
-
-              // Find the latest unfinished game, if any
-              FutureBuilder<Game?>(
-                future: gamesService.getLatestUnfinishedGame(),
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const CircularProgressIndicator();
-                  }
-                  final latestUnfinishedGame = snapshot.data;
-                  if (latestUnfinishedGame == null) return const SizedBox.shrink();
-
-                  return Padding(
-                    padding: const EdgeInsets.all(5.0),
-                    child: Hero(
-                      tag: "continue_button",
-                      child: AnimatedBigButton(
-                        text: "NASTAVI",
-                        icon: Icons.play_arrow,
-                        iconAnimationType: AnimationType.slideRight,
-                        textStyle: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 32,
-                            fontWeight: FontWeight.bold),
-                        bgColor: const Color(0xFF3DB328),
-                        onTap: () {
-                          context.goNamed(
-                            "currentgame",
-                            queryParameters: {'id': latestUnfinishedGame.id},
-                          );
-                        },
+                              ),
+                          ],
+                        ),
                       ),
                     ),
-                  );
-                },
-              ),
-              Padding(
-                padding: const EdgeInsets.all(5.0),
-                child: Hero(
-                  tag: "new_game_button",
-                  child: AnimatedBigButton(
-                    text: "NOVA IGRA",
-                    icon: Icons.refresh,
-                    iconAnimationType: AnimationType.rotate,
-                    textStyle: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 32,
-                        fontWeight: FontWeight.bold),
-                    bgColor: const Color(0xFFFF9500),
-                    onTap: () {
-                      context.goNamed("newgame");
-                    },
-                  ),
+                    const SizedBox(height: 20),
+
+                    
+                    const RulesWidget(),
+                    const SizedBox(height: 20),
+
+                    // Find the latest unfinished game, if any
+                    FutureBuilder<Game?>(
+                      future: gamesService.getLatestUnfinishedGame(),
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState == ConnectionState.waiting) {
+                          return const CircularProgressIndicator();
+                        }
+                        final latestUnfinishedGame = snapshot.data;
+                        if (latestUnfinishedGame == null) return const SizedBox.shrink();
+
+                        return Padding(
+                          padding: const EdgeInsets.all(5.0),
+                          child: Hero(
+                            tag: "continue_button",
+                            child: AnimatedBigButton(
+                              text: "NASTAVI",
+                              icon: Icons.play_arrow,
+                              iconAnimationType: AnimationType.slideRight,
+                              textStyle: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 32,
+                                  fontWeight: FontWeight.bold),
+                              bgColor: const Color(0xFF3DB328),
+                              onTap: () {
+                                context.goNamed(
+                                  "currentgame",
+                                  queryParameters: {'id': latestUnfinishedGame.id},
+                                );
+                              },
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(5.0),
+                      child: Hero(
+                        tag: "new_game_button",
+                        child: AnimatedBigButton(
+                          text: "NOVA IGRA",
+                          icon: Icons.refresh,
+                          iconAnimationType: AnimationType.rotate,
+                          textStyle: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 32,
+                              fontWeight: FontWeight.bold),
+                          bgColor: const Color(0xFFFF9500),
+                          onTap: () {
+                            context.goNamed("newgame");
+                          },
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 50),
+                  ],
                 ),
               ),
-              const SizedBox(height: 50),
-            ],
-          ),
-        ),
       ),
       floatingActionButton: IconButton(
         icon: Icon(
