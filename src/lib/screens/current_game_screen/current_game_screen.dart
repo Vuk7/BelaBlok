@@ -9,7 +9,6 @@ import 'package:bela_blok/screens/widgets/morphing_widgets.dart';
 import 'package:bela_blok/screens/widgets/error_message_widget.dart';
 import 'package:bela_blok/services/games_service.dart';
 import 'package:bela_blok/db/models/game_model.dart';
-import 'package:bela_blok/db/dao/round_dao.dart';
 import 'package:bela_blok/db/models/round_model.dart';
 import 'package:bela_blok/themes/app_theme.dart';
 import 'package:flutter/material.dart';
@@ -27,15 +26,12 @@ class _CurrentGameScreenState extends State<CurrentGameScreen> {
   bool _wobbleTrigger = false;
 
   GamesService? gamesService;
-  late RoundDao roundDao;
   Game? currentGame;
   bool isLoadingGame = true;
   String? errorMessage;
 
   List<Round>? rounds;
   bool isLoadingRounds = true;
-
- 
 
   @override
   void initState() {
@@ -59,12 +55,10 @@ class _CurrentGameScreenState extends State<CurrentGameScreen> {
       });
 
       gamesService = await GamesService.create();
-      roundDao = RoundDao(gamesService!.database);
 
       Game? game;
       if (gameId != null) {
-        final gameData = await gamesService!.dao.getGameById(gameId);
-        game = gameData?.toModel();
+        game = await gamesService!.getGameById(gameId);
         if (game == null) {
           handleGameError("Igra s ID-om $gameId nije pronađena.");
           return;
@@ -88,7 +82,7 @@ class _CurrentGameScreenState extends State<CurrentGameScreen> {
 
   Future<void> loadRounds(String gameId) async {
     setState(() => isLoadingRounds = true);
-    final roundRows = await roundDao.getRoundsForGameSorted(gameId);
+    final roundRows = await gamesService!.getRoundsForGameSorted(gameId);
     setState(() {
       rounds = roundRows.map((r) => r.toModel()).toList();
       isLoadingRounds = false;

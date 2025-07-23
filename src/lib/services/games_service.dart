@@ -1,4 +1,5 @@
 import 'package:bela_blok/db/dao/game_dao.dart';
+import 'package:bela_blok/db/dao/round_dao.dart';
 import 'package:bela_blok/db/database.dart';
 import 'package:bela_blok/db/models/game_model.dart';
 import 'package:bela_blok/enums/play_direction_enum.dart';
@@ -118,5 +119,16 @@ class GamesService {
   Future<Game?> getLatestUnfinishedGame() async {
     final data = await dao.getLatestUnfinishedGame();
     return data?.toModel();
+  }
+
+  Future<Game?> getGameById(String gameId) async {
+    final data = await dao.getGameById(gameId);
+    return data?.toModel();
+  }
+
+  Future<List<RoundTableData>> getRoundsForGameSorted(String gameId) async {
+    // RoundDao koristiš samo unutar servisa!
+    final roundDao = RoundDao(database);
+    return await roundDao.getRoundsForGameSorted(gameId);
   }
 }
