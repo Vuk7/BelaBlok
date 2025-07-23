@@ -32,7 +32,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp.router(
       title: 'Bela Blok',
       debugShowCheckedModeBanner: false,
-      routerConfig: appRouter, // koristi iz routes.dart
+      routerConfig: appRouter,
       theme: AppTheme.lightTheme,
       darkTheme: AppTheme.darkTheme,
       themeMode: themeNotifier.themeMode,
