@@ -22,6 +22,98 @@ class _NewGameScreenState extends State<NewGameScreen> {
   int playDirectionSelect = 0;
   int playerShufflingSelect = 1;
 
+  // === STAVI SVE HANDLER FUNKCIJE I FUTURE-OVE OVDJE ===
+
+  Future<int?> getSelectedTargetScore() async {
+    if (selectedGameType == 0) return 1001;
+    if (selectedGameType == 1) return 501;
+
+    if (customGameController.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Molimo unesite broj za custom igru'),
+          backgroundColor: AppTheme.red,
+        ),
+      );
+      return null;
+    }
+    try {
+      return int.parse(customGameController.text);
+    } catch (_) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Molimo unesite valjan broj (samo cifre)'),
+          backgroundColor: AppTheme.red,
+        ),
+      );
+      return null;
+    }
+  }
+
+  Future<void> handleCreateNewGame() async {
+    final targetScore = await getSelectedTargetScore();
+    if (targetScore == null) return;
+
+    final gamesService = await GamesService.create();
+    try {
+      await gamesService.createNewGameWithParameters(
+        gameType: selectedGameType,
+        targetScore: targetScore,
+        playDirection: playDirectionSelect == 0
+            ? PlayDirection.clockwise
+            : PlayDirection.counterClockwise,
+      );
+      if (mounted) context.goNamed('currentgame');
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Greška pri kreiranju igre: $e'),
+          backgroundColor: AppTheme.red,
+        ),
+      );
+    }
+  }
+
+  Future<String?> _showCustomGameDialog() async {
+    final TextEditingController dialogController = TextEditingController();
+    return showDialog<String>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Unesite broj za igru'),
+        content: TextField(
+          controller: dialogController,
+          keyboardType: TextInputType.number,
+          decoration: const InputDecoration(
+            hintText: 'Npr. 751',
+            border: OutlineInputBorder(),
+          ),
+          autofocus: true,
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(),
+            child: const Text('ODUSTANI'),
+          ),
+          TextButton(
+            onPressed: () {
+              if (dialogController.text.isNotEmpty) {
+                Navigator.of(ctx).pop(dialogController.text);
+              }
+            },
+            child: const Text('POTVRDI'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  @override
+  void dispose() {
+    customGameController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     final bg = AppTheme.getScreenBackground(context);
@@ -188,95 +280,5 @@ class _NewGameScreenState extends State<NewGameScreen> {
         ),
       ),
     );
-  }
-
-  Future<int?> getSelectedTargetScore() async {
-    if (selectedGameType == 0) return 1001;
-    if (selectedGameType == 1) return 501;
-
-    if (customGameController.text.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Molimo unesite broj za custom igru'),
-          backgroundColor: AppTheme.red,
-        ),
-      );
-      return null;
-    }
-    try {
-      return int.parse(customGameController.text);
-    } catch (_) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Molimo unesite valjan broj (samo cifre)'),
-          backgroundColor: AppTheme.red,
-        ),
-      );
-      return null;
-    }
-  }
-
-  Future<void> handleCreateNewGame() async {
-    final targetScore = await getSelectedTargetScore();
-    if (targetScore == null) return;
-
-    final gamesService = await GamesService.create();
-    try {
-      await gamesService.createNewGameWithParameters(
-        gameType: selectedGameType,
-        targetScore: targetScore,
-        playDirection: playDirectionSelect == 0
-            ? PlayDirection.clockwise
-            : PlayDirection.counterClockwise,
-      );
-      if (mounted) context.goNamed('currentgame');
-    } catch (e) {
-      if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Greška pri kreiranju igre: $e'),
-          backgroundColor: AppTheme.red,
-        ),
-      );
-    }
-  }
-
-  Future<String?> _showCustomGameDialog() async {
-    final TextEditingController dialogController = TextEditingController();
-    return showDialog<String>(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        title: const Text('Unesite broj za igru'),
-        content: TextField(
-          controller: dialogController,
-          keyboardType: TextInputType.number,
-          decoration: const InputDecoration(
-            hintText: 'Npr. 751',
-            border: OutlineInputBorder(),
-          ),
-          autofocus: true,
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(ctx).pop(),
-            child: const Text('ODUSTANI'),
-          ),
-          TextButton(
-            onPressed: () {
-              if (dialogController.text.isNotEmpty) {
-                Navigator.of(ctx).pop(dialogController.text);
-              }
-            },
-            child: const Text('POTVRDI'),
-          ),
-        ],
-      ),
-    );
-  }
-
-  @override
-  void dispose() {
-    customGameController.dispose();
-    super.dispose();
   }
 }
