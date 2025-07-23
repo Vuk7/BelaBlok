@@ -24,7 +24,7 @@ class _NewGameScreenState extends State<NewGameScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final bg = Theme.of(context).scaffoldBackgroundColor;
+    final bg = AppTheme.getScreenBackground(context);
 
     return Scaffold(
       backgroundColor: bg,
@@ -42,8 +42,8 @@ class _NewGameScreenState extends State<NewGameScreen> {
               child: IntrinsicHeight(
                 child: Column(
                   children: [
-                    const Text(
-                      "NOVA IGRA",
+                   const Text(
+                      'NOVA IGRA',
                       style: AppTheme.screenTitleTextStyle,
                     ),
                     const SizedBox(height: 20),
@@ -52,7 +52,7 @@ class _NewGameScreenState extends State<NewGameScreen> {
                       children: [
                         Expanded(
                           child: AnimatedButton(
-                            text: "1001",
+                            text: '1001',
                             textStyle: AppTheme.optionButtonTextStyle.copyWith(
                               color: selectedGameType == 0
                                   ? AppTheme.getInverseTextColor(context)
@@ -61,18 +61,16 @@ class _NewGameScreenState extends State<NewGameScreen> {
                             bgColor: selectedGameType == 0
                                 ? AppTheme.green
                                 : AppTheme.getDisabledButtonColor(context),
-                            onTap: () {
-                              setState(() {
-                                selectedGameType = 0;
-                                isCustomGame = false;
-                              });
-                            },
+                            onTap: () => setState(() {
+                              selectedGameType = 0;
+                              isCustomGame = false;
+                            }),
                           ),
                         ),
                         const SizedBox(width: 20),
                         Expanded(
                           child: AnimatedButton(
-                            text: "501",
+                            text: '501',
                             textStyle: AppTheme.optionButtonTextStyle.copyWith(
                               color: selectedGameType == 1
                                   ? AppTheme.getInverseTextColor(context)
@@ -81,12 +79,10 @@ class _NewGameScreenState extends State<NewGameScreen> {
                             bgColor: selectedGameType == 1
                                 ? AppTheme.green
                                 : AppTheme.getDisabledButtonColor(context),
-                            onTap: () {
-                              setState(() {
-                                selectedGameType = 1;
-                                isCustomGame = false;
-                              });
-                            },
+                            onTap: () => setState(() {
+                              selectedGameType = 1;
+                              isCustomGame = false;
+                            }),
                           ),
                         ),
                       ],
@@ -110,8 +106,8 @@ class _NewGameScreenState extends State<NewGameScreen> {
                         if (result != null && result.isNotEmpty) {
                           setState(() {
                             isCustomGame = true;
-                            selectedGameType = 2;
                             customGameController.text = result;
+                            selectedGameType = 2;
                           });
                         }
                       },
@@ -151,7 +147,7 @@ class _NewGameScreenState extends State<NewGameScreen> {
                               ),
                               const SizedBox(width: 8),
                               Text(
-                                "PRVI MIJEŠA",
+                                'PRVI MIJEŠA',
                                 style: AppTheme.sectionHeaderTextStyle.copyWith(
                                   color: Theme.of(context).colorScheme.onSurface,
                                 ),
@@ -160,19 +156,19 @@ class _NewGameScreenState extends State<NewGameScreen> {
                           ),
                           const SizedBox(height: 12),
                           PlayerShuffling(
-                            onTap: (id) => setState(() => playerShufflingSelect = id),
-                            selectedColor: AppTheme.red,
                             selected: playerShufflingSelect,
+                            selectedColor: AppTheme.red,
+                            onTap: (id) => setState(() => playerShufflingSelect = id),
                           ),
                         ],
                       ),
                     ),
                     const SizedBox(height: 20),
-                   const Expanded(child: SizedBox()),
+                    const Expanded(child: SizedBox()),
                     Padding(
                       padding: const EdgeInsets.all(16.0),
                       child: AnimatedBigButton(
-                        text: "ZAPOČNI",
+                        text: 'ZAPOČNI',
                         icon: Icons.play_circle_filled,
                         iconAnimationType: AnimationType.scale,
                         textStyle: AppTheme.bigButtonText28.copyWith(
@@ -233,7 +229,7 @@ class _NewGameScreenState extends State<NewGameScreen> {
             ? PlayDirection.clockwise
             : PlayDirection.counterClockwise,
       );
-      if (mounted) context.goNamed("currentgame");
+      if (mounted) context.goNamed('currentgame');
     } catch (e) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
