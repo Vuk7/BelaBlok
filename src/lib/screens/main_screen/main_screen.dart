@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:bela_blok/main.dart';
+import 'package:bela_blok/themes/app_theme.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -54,7 +55,7 @@ class _MainScreenState extends State<MainScreen> {
             ),
             TextButton(
               onPressed: () => Navigator.of(context).pop(true),
-              style: TextButton.styleFrom(foregroundColor: Colors.red),
+              style: TextButton.styleFrom(foregroundColor: AppTheme.red),
               child: const Text('OBRIŠI'),
             ),
           ],
@@ -71,7 +72,7 @@ class _MainScreenState extends State<MainScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Igra je uspiješno obrisana'),
-          backgroundColor: Colors.green,
+          backgroundColor: AppTheme.green,
         ),
       );
     }
@@ -80,9 +81,7 @@ class _MainScreenState extends State<MainScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Theme.of(context).brightness == Brightness.dark
-          ? Theme.of(context).scaffoldBackgroundColor
-          : const Color(0xFFF5E6D3),
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: SafeArea(
         child: isLoadingGameHistory
             ? const Center(child: CircularProgressIndicator())
@@ -91,34 +90,18 @@ class _MainScreenState extends State<MainScreen> {
                 child: Column(
                   children: [
                     const SizedBox(height: 40),
-                    Text(
+                   const Text(
                       "BELA BLOK",
-                      style: TextStyle(
-                        fontSize: 44,
-                        fontWeight: FontWeight.bold,
-                        color: Theme.of(context)
-                            .colorScheme
-                            .primary, 
-                        letterSpacing: 2,
-                        shadows: [
-                          Shadow(
-                            color: Colors.brown.withValues(alpha: 0.3),
-                            blurRadius: 8,
-                            offset: const Offset(0, 4),
-                          ),
-                        ],
-                      ),
+                      style: AppTheme.titleTextStyle,
                     ),
                     const SizedBox(
                       height: 40,
                     ),
                     Card(
                       elevation: 4,
-                      color: Theme.of(context).brightness == Brightness.dark
-                          ? Colors.grey[800]
-                          : Colors.white,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16),
+                      color: AppTheme.getCardBackgroundColor(context),
+                      shape: const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(16)),
                       ),
                       child: Padding(
                         padding: const EdgeInsets.all(20.0),
@@ -157,9 +140,7 @@ class _MainScreenState extends State<MainScreen> {
                                                 key: Key(game.id ?? index.toString()),
                                                 direction: DismissDirection.endToStart,
                                                 background: Container(
-                                                  alignment: Alignment.centerRight,
-                                                  padding: const EdgeInsets.only(right: 20),
-                                                  color: Colors.red,
+                                                  color: AppTheme.red,
                                                   child: const Icon(
                                                     Icons.delete,
                                                     color: Colors.white,
@@ -216,11 +197,8 @@ class _MainScreenState extends State<MainScreen> {
                               text: "NASTAVI",
                               icon: Icons.play_arrow,
                               iconAnimationType: AnimationType.slideRight,
-                              textStyle: const TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 32,
-                                  fontWeight: FontWeight.bold),
-                              bgColor: const Color(0xFF3DB328),
+                              textStyle: AppTheme.buttonTextStyle,
+                              bgColor: AppTheme.green,
                               onTap: () {
                                 context.goNamed(
                                   "currentgame",
@@ -240,11 +218,8 @@ class _MainScreenState extends State<MainScreen> {
                           text: "NOVA IGRA",
                           icon: Icons.refresh,
                           iconAnimationType: AnimationType.rotate,
-                          textStyle: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 32,
-                              fontWeight: FontWeight.bold),
-                          bgColor: const Color(0xFFFF9500),
+                          textStyle: AppTheme.buttonTextStyle,
+                          bgColor: AppTheme.orange,
                           onTap: () {
                             context.goNamed("newgame");
                           },
