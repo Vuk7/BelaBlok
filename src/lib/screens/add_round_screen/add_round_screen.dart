@@ -62,10 +62,9 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
         (inputTeamOne.text.isNotEmpty || inputTeamTwo.text.isNotEmpty);
   }
 
-  // === STAVI SVE HANDLER FUNKCIJE I FUTURE-OVE IZNAD build ===
+
   void handleSaveRound() {
-    // Ovdje ide logika za spremanje runde
-    // npr. validacija, pozivanje servisa, prikaz poruka itd.
+   
   }
 
   void handleHelpDialog() {

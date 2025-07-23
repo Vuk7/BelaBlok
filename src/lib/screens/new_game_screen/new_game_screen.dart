@@ -22,7 +22,7 @@ class _NewGameScreenState extends State<NewGameScreen> {
   int playDirectionSelect = 0;
   int playerShufflingSelect = 1;
 
-  // === STAVI SVE HANDLER FUNKCIJE I FUTURE-OVE OVDJE ===
+
 
   Future<int?> getSelectedTargetScore() async {
     if (selectedGameType == 0) return 1001;
