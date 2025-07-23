@@ -62,6 +62,34 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
         (inputTeamOne.text.isNotEmpty || inputTeamTwo.text.isNotEmpty);
   }
 
+  // === STAVI SVE HANDLER FUNKCIJE I FUTURE-OVE IZNAD build ===
+  void handleSaveRound() {
+    // Ovdje ide logika za spremanje runde
+    // npr. validacija, pozivanje servisa, prikaz poruka itd.
+  }
+
+  void handleHelpDialog() {
+    ZvanjaHelpDialog.show(context);
+  }
+
+  void handleInputTap(int i) {
+    final controller = i == 0 ? _bounceController1 : _bounceController2;
+    controller.forward().then((_) => controller.reverse());
+    setState(() => focusedInput = i);
+  }
+
+  void handleCallerChange(int id) {
+    setState(() => selectedCaller = id);
+  }
+
+  void handleInputTypeChange(int id) {
+    setState(() => selectedInputType = id);
+  }
+
+  void handleToggleScore() {
+    setState(() => showGameScore = !showGameScore);
+  }
+
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
