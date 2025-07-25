@@ -1,3 +1,4 @@
+import 'package:bela_blok/db/database.dart'; // Dodaj ovaj import!
 import 'package:bela_blok/screens/new_game_screen/widgets/game_settings_menu.dart';
 import 'package:bela_blok/screens/main_screen/widgets/animated_button.dart';
 import 'package:bela_blok/screens/widgets/animated_big_button.dart';
@@ -16,59 +17,50 @@ class NewGameScreen extends StatefulWidget {
 }
 
 class _NewGameScreenState extends State<NewGameScreen> {
+  late final AppDatabase _db;
+  late final GamesService _gamesService;
   final TextEditingController customGameController = TextEditingController();
   int selectedGameType = 0;
   bool isCustomGame = false;
   int playDirectionSelect = 0;
   int playerShufflingSelect = 1;
 
-
+  @override
+  void initState() {
+    super.initState();
+    _db = AppDatabase(); // Singleton ili vlastita instanca
+    _gamesService = GamesService(_db);
+  }
 
   Future<int?> getSelectedTargetScore() async {
     if (selectedGameType == 0) return 1001;
     if (selectedGameType == 1) return 501;
-
-    if (customGameController.text.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Molimo unesite broj za custom igru'),
-          backgroundColor: AppTheme.red,
-        ),
-      );
-      return null;
+    // Custom
+    if (customGameController.text.isNotEmpty) {
+      return int.tryParse(customGameController.text);
     }
-    try {
-      return int.parse(customGameController.text);
-    } catch (_) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Molimo unesite valjan broj (samo cifre)'),
-          backgroundColor: AppTheme.red,
-        ),
-      );
-      return null;
-    }
+    return null;
   }
 
   Future<void> handleCreateNewGame() async {
     final targetScore = await getSelectedTargetScore();
     if (targetScore == null) return;
 
-    final gamesService = await GamesService.create();
+    debugPrint('Šaljem broj u bazu: $targetScore');
+
     try {
-      await gamesService.createNewGameWithParameters(
-        gameType: selectedGameType,
-        targetScore: targetScore,
+      await _gamesService.createNewGameWithParameters(
+        gameType: targetScore, // OVDJE šalješ broj, NE selectedGameType!
         playDirection: playDirectionSelect == 0
             ? PlayDirection.clockwise
             : PlayDirection.counterClockwise,
       );
-      
-      final latestGame = await gamesService.getLatestGame();
+
+      final latestGame = await _gamesService.getLatestGame();
       if (latestGame != null && latestGame.id != null && mounted) {
-        context.goNamed('currentgame', queryParameters: {'id': latestGame.id});
+        context.goNamed('currentgame', queryParameters: {'id': latestGame.id!});
       } else if (mounted) {
-        Navigator.of(context).pop(); 
+        Navigator.of(context).pop();
       }
     } catch (e, stack) {
       debugPrint('Greška pri kreiranju igre: $e\n$stack');
@@ -117,7 +109,9 @@ class _NewGameScreenState extends State<NewGameScreen> {
 
   @override
   void dispose() {
-    customGameController.dispose();
+    // Ako koristiš singleton, _db.close() možeš izostaviti!
+    // Ako koristiš vlastitu instancu, ostavi:
+    _db.close();
     super.dispose();
   }
 

@@ -10,7 +10,7 @@ class TopScoreDetails extends StatelessWidget {
   final Team teamInLead;
   final int teamOneLeftToWin;
   final int teamTwoLeftToWin;
-  final int gameTargetScore; // Dodaj ovo
+  final int gameTargetScore; 
 
   const TopScoreDetails({
     super.key,
@@ -41,6 +41,7 @@ class TopScoreDetails extends StatelessWidget {
           teamTwoColor: Colors.blue,
           teamOneScore: teamOneScore,
           teamTwoScore: teamTwoScore,
+          gameTargetScore: gameTargetScore,
         ),
       ),
     );

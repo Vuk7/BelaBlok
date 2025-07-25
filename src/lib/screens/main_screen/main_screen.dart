@@ -1,3 +1,4 @@
+import 'package:bela_blok/db/database.dart';
 import 'package:bela_blok/db/models/game_model.dart';
 import 'package:bela_blok/screens/main_screen/widgets/animated_history_list_item.dart';
 import 'package:bela_blok/screens/widgets/rules_widget.dart';
@@ -30,7 +31,7 @@ class _MainScreenState extends State<MainScreen> {
 
   Future<void> _initGames() async {
     isLoadingGameHistory = true;
-    gamesService = await GamesService.create();
+    gamesService = GamesService(AppDatabase());
     gamesHistory = await gamesService.getAllGames();
     isLoadingGameHistory = false;
     setState(() {});

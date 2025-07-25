@@ -9,7 +9,14 @@ part 'database.g.dart';
 
 @DriftDatabase(tables: [GameTable, RoundTable])
 class AppDatabase extends _$AppDatabase {
-  AppDatabase([QueryExecutor? executor]) : super(executor ?? _openConnection());
+  static AppDatabase? _instance;
+
+  factory AppDatabase() {
+    _instance ??= AppDatabase._internal();
+    return _instance!;
+  }
+
+  AppDatabase._internal() : super(_openConnection());
 
   @override
   int get schemaVersion => 1;

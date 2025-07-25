@@ -7,6 +7,7 @@ class AnimatedProgressBar extends StatefulWidget {
   final Color teamTwoColor;
   final int teamOneScore;
   final int teamTwoScore;
+  final int gameTargetScore;
 
   const AnimatedProgressBar({
     super.key,
@@ -16,6 +17,7 @@ class AnimatedProgressBar extends StatefulWidget {
     required this.teamTwoColor,
     required this.teamOneScore,
     required this.teamTwoScore,
+    required this.gameTargetScore,
   });
 
   @override
@@ -117,7 +119,7 @@ class _AnimatedProgressBarState extends State<AnimatedProgressBar>
       ),
       child: Column(
         children: [
-          // Header s ikonama i imenima timova
+          
           Row(
             children: [
               Row(
@@ -145,18 +147,18 @@ class _AnimatedProgressBarState extends State<AnimatedProgressBar>
                   color: Colors.amber,
                   borderRadius: BorderRadius.circular(20),
                 ),
-                child: const Row(
+                child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Icon(
+                    const Icon(
                       Icons.flag,
                       color: Colors.white,
                       size: 20,
                     ),
-                    SizedBox(width: 4),
+                    const SizedBox(width: 4),
                     Text(
-                      '1001',
-                      style: TextStyle(
+                      '${widget.gameTargetScore}', 
+                      style: const TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
                         color: Colors.white,
@@ -188,7 +190,7 @@ class _AnimatedProgressBarState extends State<AnimatedProgressBar>
           ),
           const SizedBox(height: 16),
           
-          // Veliki brojevi bodova
+          
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -278,7 +280,7 @@ class _AnimatedProgressBarState extends State<AnimatedProgressBar>
                   },
                 ),
               ),
-              // Center line at 50% (za 1001)
+           
               Positioned(
                 left: (MediaQuery.of(context).size.width - 88) * 0.5 - 1,
                 child: Container(
@@ -299,7 +301,17 @@ class _AnimatedProgressBarState extends State<AnimatedProgressBar>
           ),
           const SizedBox(height: 12),
           
-          // Postoci i ostalo do pobjede
+          Text(
+            '${widget.gameTargetScore}', 
+            style: const TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+            ),
+          ),
+          const SizedBox(height: 8),
+          
+          
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -315,7 +327,7 @@ class _AnimatedProgressBarState extends State<AnimatedProgressBar>
                     ),
                   ),
                   Text(
-                    'Ostalo: ${1001 - widget.teamOneScore}',
+                    'Ostalo: ${widget.gameTargetScore - widget.teamOneScore}',
                     style: TextStyle(
                       fontSize: 12,
                       color: isDark ? Colors.grey[400] : Colors.grey[600],
@@ -335,7 +347,7 @@ class _AnimatedProgressBarState extends State<AnimatedProgressBar>
                     ),
                   ),
                   Text(
-                    'Ostalo: ${1001 - widget.teamTwoScore}',
+                    'Ostalo: ${widget.gameTargetScore - widget.teamTwoScore}',
                     style: TextStyle(
                       fontSize: 12,
                       color: isDark ? Colors.grey[400] : Colors.grey[600],
