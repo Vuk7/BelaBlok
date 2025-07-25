@@ -46,7 +46,7 @@ class _NewGameScreenState extends State<NewGameScreen> {
     final targetScore = await getSelectedTargetScore();
     if (targetScore == null) return;
 
-    debugPrint('Šaljem broj u bazu: $targetScore');
+    
 
     try {
       await _gamesService.createNewGameWithParameters(
@@ -110,7 +110,7 @@ class _NewGameScreenState extends State<NewGameScreen> {
   @override
   void dispose() {
    
-    _db.close();
+
     super.dispose();
   }
 

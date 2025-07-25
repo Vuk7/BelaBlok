@@ -4,7 +4,7 @@ import 'package:bela_blok/db/database.dart';
 import 'package:bela_blok/db/models/game_model.dart';
 import 'package:bela_blok/enums/play_direction_enum.dart';
 import 'package:drift/drift.dart';
-import 'package:flutter/foundation.dart'; 
+
 
 class GamesService {
   final AppDatabase database;
@@ -30,7 +30,6 @@ class GamesService {
     PlayDirection? playDirection,
     int? currentlyShuffling,
   }) async {
-    debugPrint('Spremam gameType: $gameType');
     var newGame = Game(
       teamOneScore: 0,
       teamTwoScore: 0,
@@ -42,7 +41,7 @@ class GamesService {
     );
     await dao.insert(database.gameTable, newGame.toCompanion());
     final insertedGame = await dao.getLatestGame();
-    return insertedGame?.toModel();
+    return insertedGame?.toModel(); 
   }
 
   Future<void> deleteGame(String gameId) async {

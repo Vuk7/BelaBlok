@@ -71,8 +71,6 @@ class _CurrentGameScreenState extends State<CurrentGameScreen> {
       }
     }
 
-    debugPrint('CurrentGameScreen: učitani gameType iz baze: ${game.gameType}'); 
-
     setState(() => currentGame = game);
     await loadRounds(game.id!);
 
@@ -117,7 +115,6 @@ class _CurrentGameScreenState extends State<CurrentGameScreen> {
 
   void showErrorMessage(String message) {
     
-    debugPrint('Greška: $message');
     if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
