@@ -30,19 +30,19 @@ class GamesService {
   Future<Game?> createNewGameWithParameters({
     int? gameType,
     int? targetScore, 
-    PlayDirection? playDirection
+    PlayDirection? playDirection,
+    int? currentlyShuffling, 
   }) async { 
     var newGame = Game(
       teamOneScore: 0,
       teamTwoScore: 0,
-      gameType: targetScore, 
+      gameType: gameType, 
       gameDirection: playDirection?.index, 
-      currentlyShuffling: 0,
+      currentlyShuffling: currentlyShuffling, 
       winner: null,
       finished: false,
     );
     await dao.insert(database.gameTable, newGame.toCompanion());
-    
     final insertedGame = await dao.getLatestGame();
     if (insertedGame != null) {
       return insertedGame.toModel();
