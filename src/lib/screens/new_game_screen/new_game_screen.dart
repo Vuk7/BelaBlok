@@ -1,4 +1,4 @@
-import 'package:bela_blok/db/database.dart'; // Dodaj ovaj import!
+import 'package:bela_blok/db/database.dart'; 
 import 'package:bela_blok/screens/new_game_screen/widgets/game_settings_menu.dart';
 import 'package:bela_blok/screens/main_screen/widgets/animated_button.dart';
 import 'package:bela_blok/screens/widgets/animated_big_button.dart';
@@ -50,7 +50,7 @@ class _NewGameScreenState extends State<NewGameScreen> {
 
     try {
       await _gamesService.createNewGameWithParameters(
-        gameType: targetScore, // OVDJE šalješ broj, NE selectedGameType!
+        gameType: targetScore, 
         playDirection: playDirectionSelect == 0
             ? PlayDirection.clockwise
             : PlayDirection.counterClockwise,
@@ -109,8 +109,7 @@ class _NewGameScreenState extends State<NewGameScreen> {
 
   @override
   void dispose() {
-    // Ako koristiš singleton, _db.close() možeš izostaviti!
-    // Ako koristiš vlastitu instancu, ostavi:
+   
     _db.close();
     super.dispose();
   }
