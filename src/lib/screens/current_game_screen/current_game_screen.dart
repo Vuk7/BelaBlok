@@ -6,12 +6,16 @@ import 'package:bela_blok/screens/widgets/animated_list_item.dart';
 import 'package:bela_blok/screens/widgets/confetti_animation.dart';
 import 'package:bela_blok/screens/widgets/game_stats_widget.dart';
 import 'package:bela_blok/screens/widgets/morphing_widgets.dart';
+import 'package:bela_blok/screens/widgets/error_message_widget.dart';
+import 'package:bela_blok/services/games_service.dart';
+import 'package:bela_blok/db/models/game_model.dart';
+import 'package:bela_blok/db/models/round_model.dart';
 import 'package:bela_blok/themes/app_theme.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 
 class CurrentGameScreen extends StatefulWidget {
-  const CurrentGameScreen({super.key});
+  final String? gameId;
+  const CurrentGameScreen({super.key, this.gameId});
 
   @override
   State<CurrentGameScreen> createState() => _CurrentGameScreenState();
@@ -19,58 +23,22 @@ class CurrentGameScreen extends StatefulWidget {
 
 class _CurrentGameScreenState extends State<CurrentGameScreen> {
   final ScrollController _scrollController = ScrollController();
-  bool _wobbleTrigger = false; // Dodano za wobble efekt
+  bool _wobbleTrigger = false;
 
-  Map<Team, int> teamScore = {
-    Team.teamOne: 1005,  // Povećano da možete vidjeti glow efekt
-    Team.teamTwo: 890,
-  };
+  GamesService? gamesService;
+  Game? currentGame;
+  bool isLoadingGame = true;
+  String? errorMessage;
 
-  // Dodajemo statistike
-  Map<String, dynamic> gameStats = {
-    'teamOneCalls': 5,     // koliko puta je tim 1 zvao
-    'teamTwoCalls': 7,     // koliko puta je tim 2 zvao
-    'teamOneFails': 1,     // koliko puta je tim 1 pao
-    'teamTwoFails': 2,     // koliko puta je tim 2 pao
-    'teamOneDeclarations': 3, // koliko zvanja je tim 1 imao
-    'teamTwoDeclarations': 4, // koliko zvanja je tim 2 imao
-  };
-
-  // Provjeri da li je igra završena
-  bool get isGameFinished => teamScore[Team.teamOne]! >= 1001 || teamScore[Team.teamTwo]! >= 1001;
-
-  List<Map<String, dynamic>> dummyRoundData = List.generate(10, (index) {
-    return {
-      'teamOneCallAmount': 0,
-      'teamTwoCallAmount': 20,
-      'teamOneScore': 62,
-      'teamTwoScore': 100,
-      'roundID': index,
-      'teamCalled': Team.teamTwo
-    };
-  });
+  List<Round>? rounds;
+  bool isLoadingRounds = true;
 
   @override
   void initState() {
     super.initState();
-    
-    // Trigger wobble when widget loads and there's a winner
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (isGameFinished) {
-        setState(() {
-          _wobbleTrigger = true;
-        });
-        
-        // Reset trigger after animation
-        Future.delayed(const Duration(milliseconds: 500), () {
-          if (mounted) {
-            setState(() {
-              _wobbleTrigger = false;
-            });
-          }
-        });
-      }
-    });
+    () async {
+      await handleInitializeGame(gameId: widget.gameId);
+    }();
   }
 
   @override
@@ -79,77 +47,224 @@ class _CurrentGameScreenState extends State<CurrentGameScreen> {
     super.dispose();
   }
 
+  Future<void> handleInitializeGame({String? gameId}) async {
+    try {
+      setState(() {
+        isLoadingGame = true;
+        errorMessage = null;
+      });
+
+      gamesService = await GamesService.create();
+
+      Game? game;
+      if (gameId != null) {
+        game = await gamesService!.getGameById(gameId);
+        if (game == null) {
+          handleGameError("Igra s ID-om $gameId nije pronađena.");
+          return;
+        }
+      } else {
+        game = await gamesService!.getLatestGame();
+        if (game == null) {
+          handleGameError("Nema aktivne igre, kreirajte ju!");
+          return;
+        }
+      }
+
+      setState(() => currentGame = game);
+      await loadRounds(game.id!);
+    } catch (e) {
+      handleGameError("Greška pri učitavanju igre: ${e.toString()}");
+    } finally {
+      setState(() => isLoadingGame = false);
+    }
+  }
+
+  Future<void> loadRounds(String gameId) async {
+    setState(() => isLoadingRounds = true);
+    final roundRows = await gamesService!.getRoundsForGameSorted(gameId);
+    setState(() {
+      rounds = roundRows.map((r) => r.toModel()).toList();
+      isLoadingRounds = false;
+    });
+  }
+
+  void handleAddRound() {
+    if (currentGame?.id == null) {
+      showErrorMessage("Nema aktivne igre");
+      return;
+    }
+    if (isGameFinished) {
+      showErrorMessage("Igra je već završena");
+      return;
+    }
+    // navigacija na dodavanje runde...
+  }
+
+  void handleGameError(String error) {
+    setState(() => errorMessage = error);
+    showErrorMessage(error);
+  }
+
+  void showSuccessMessage(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: AppTheme.green,
+        duration: const Duration(seconds: 2),
+      ),
+    );
+  }
+
+  void showErrorMessage(String message) {
+    
+    debugPrint('Greška: $message');
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Došlo je do greške. Pokušajte ponovno.'),
+        backgroundColor: AppTheme.red,
+        duration: Duration(seconds: 3),
+      ),
+    );
+  }
+
+  Map<Team, int> get teamScore => {
+        Team.teamOne: currentGame?.teamOneScore ?? 0,
+        Team.teamTwo: currentGame?.teamTwoScore ?? 0,
+      };
+
+  int get gameTargetScore => currentGame?.gameType ?? 1001;
+  int get totalRounds => rounds?.length ?? 0;
+  double get averageScore {
+    final one = teamScore[Team.teamOne]!;
+    final two = teamScore[Team.teamTwo]!;
+    return (one + two) / 2;
+  }
+
+  String? get winningTeam {
+    if (!isGameFinished) return null;
+    return teamScore[Team.teamOne]! >= gameTargetScore ? 'Tim 1' : 'Tim 2';
+  }
+
+  Map<String, dynamic> get gameStats => {
+        'totalRounds': totalRounds,
+        'averageScore': averageScore,
+        'winner': winningTeam,
+      };
+
+  bool get isGameFinished =>
+      teamScore[Team.teamOne]! >= gameTargetScore ||
+      teamScore[Team.teamTwo]! >= gameTargetScore;
+
   @override
   Widget build(BuildContext context) {
-    // Determine if someone won
-    final teamOneWon = teamScore[Team.teamOne]! >= 1001;
-    final teamTwoWon = teamScore[Team.teamTwo]! >= 1001;
-    final hasWinner = teamOneWon || teamTwoWon;
-    final winnerColor = teamOneWon ? Colors.orange : Colors.blue;
+    final bg = Theme.of(context).scaffoldBackgroundColor;
+    if (isLoadingGame) {
+      return Scaffold(
+        backgroundColor: bg,
+        body: const Center(child: CircularProgressIndicator()),
+      );
+    }
+    if (errorMessage != null) {
+      return Scaffold(
+        backgroundColor: bg,
+        body: ErrorMessageWidget(
+          message: errorMessage!,
+          onRetry: handleInitializeGame,
+        ),
+      );
+    }
+    if (currentGame == null) {
+      return Scaffold(
+        backgroundColor: bg,
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Text(
+                'Nema aktivne igre, kreirajte ju!',
+                style: TextStyle(fontSize: 18),
+              ),
+              const SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: handleInitializeGame,
+                child: const Text('Kreiraj novu igru'),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
+    final teamOneWon = teamScore[Team.teamOne]! >= gameTargetScore;
+    final winnerColor = teamOneWon ? AppTheme.orange : AppTheme.blue;
 
     return Scaffold(
-        backgroundColor: Theme.of(context).brightness == Brightness.dark 
-          ? const Color(0xFF2C3E50) 
-          : const Color(0xFFF5E6D3), // boja kože
-        body: Stack(
-          children: [
-            SafeArea(
-              child: Padding(
-                padding: const EdgeInsets.all(20.0),
-                child: Center(
-                  child: Column(children: [
-                    const SizedBox(
-                      height: 10,
+      backgroundColor: bg,
+      body: Stack(
+        children: [
+          SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: Column(
+                children: [
+                  const SizedBox(height: 10),
+                  MorphingContainer(
+                    child: TopScoreDetails(
+                      teamOneScore: teamScore[Team.teamOne]!,
+                      teamTwoScore: teamScore[Team.teamTwo]!,
+                      scoreDifference:
+                          teamScore[Team.teamTwo]! - teamScore[Team.teamOne]!,
+                      teamInLead: Team.teamOne,
+                      teamOneLeftToWin:
+                          gameTargetScore - teamScore[Team.teamOne]!,
+                      teamTwoLeftToWin:
+                          gameTargetScore - teamScore[Team.teamTwo]!,
+                      gameTargetScore: gameTargetScore,
                     ),
-                    MorphingContainer(
-                      child: TopScoreDetails(
-                          teamOneScore: teamScore[Team.teamOne]!,
-                          teamTwoScore: teamScore[Team.teamTwo]!,
-                          scoreDifference:
-                              teamScore[Team.teamTwo]! - teamScore[Team.teamOne]!,
-                          teamInLead: Team.teamOne,
-                          teamOneLeftToWin: 1001 - teamScore[Team.teamOne]!,
-                          teamTwoLeftToWin: 1001 - teamScore[Team.teamTwo]!),
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    // Statistike box - samo se prikazuje kada je igra završena
-                    if (isGameFinished) ...[
-                      GestureDetector(
-                        onTap: () {
-                          // Ručno triggeriranje wobble-a
-                          setState(() {
-                            _wobbleTrigger = !_wobbleTrigger;
-                          });
-                        },
-                        child: WobbleWidget(
-                          triggerWobble: _wobbleTrigger,
-                          child: GameStatsWidget(gameStats: gameStats),
-                        ),
+                  ),
+                  const SizedBox(height: 10),
+                  if (isGameFinished) ...[
+                    GestureDetector(
+                      onTap: () => setState(
+                          () => _wobbleTrigger = !_wobbleTrigger),
+                      child: WobbleWidget(
+                        triggerWobble: _wobbleTrigger,
+                        child: GameStatsWidget(gameStats: gameStats),
                       ),
-                      const SizedBox(height: 10),
-                    ],
+                    ),
+                    const SizedBox(height: 10),
+                  ],
+                  if (isLoadingRounds)
+                    const Center(child: CircularProgressIndicator())
+                  else
                     Expanded(
                       child: ListView.builder(
                         controller: _scrollController,
                         padding: const EdgeInsets.all(5.0),
-                        itemCount: dummyRoundData.length,
+                        itemCount: rounds?.length ?? 0,
                         itemBuilder: (context, index) {
-                          final round = dummyRoundData[index];
+                          final round = rounds![index];
                           return AnimatedListItem(
                             index: index,
                             animationType: AnimationType.slideUp,
-                            staggerDelay: 80, // Enhanced staggered delay
+                            staggerDelay: 80,
                             child: Padding(
-                              padding: const EdgeInsets.symmetric(vertical: 5.0),
+                              padding:
+                                  const EdgeInsets.symmetric(vertical: 5.0),
                               child: RoundScoreListItem(
-                                teamOneCallAmount: round['teamOneCallAmount'],
-                                teamTwoCallAmount: round['teamTwoCallAmount'],
-                                teamOneScore: round['teamOneScore'],
-                                teamTwoScore: round['teamTwoScore'],
-                                roundID: round['roundID'],
-                                teamCalled: round['teamCalled'],
+                                teamOneCallAmount:
+                                    round.teamOneCallAmount ?? 0,
+                                teamTwoCallAmount:
+                                    round.teamTwoCallAmount ?? 0,
+                                teamOneScore: round.teamOneScore ?? 0,
+                                teamTwoScore: round.teamTwoScore ?? 0,
+                                roundID:
+                                    int.tryParse(round.id ?? '') ?? 0,
+                                teamCalled: Team.values[
+                                    round.teamCalled ??
+                                        Team.teamOne.index],
                                 onTap: () {},
                               ),
                             ),
@@ -157,45 +272,40 @@ class _CurrentGameScreenState extends State<CurrentGameScreen> {
                         },
                       ),
                     ),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(5.0),
-                      child: Hero(
-                        tag: "add_round_button",
-                        child: button.AnimatedBigButton(
-                          text: "DODAJ",
-                          icon: Icons.add,
-                          iconAnimationType: button.AnimationType.scale,
-                          textStyle: const TextStyle(
-                              color: Colors.black,
-                              fontSize: 36,
-                              fontWeight: FontWeight.bold),
-                          bgColor: AppTheme.green,
-                          onTap: () {
-                            context.goNamed("addround");
-                          },
-                          textPadding: 15,
+                  const SizedBox(height: 20),
+                  Padding(
+                    padding: const EdgeInsets.all(5.0),
+                    child: Hero(
+                      tag: "add_round_button",
+                      child: button.AnimatedBigButton(
+                        text: "DODAJ",
+                        icon: Icons.add,
+                        iconAnimationType: button.AnimationType.scale,
+                        textStyle: TextStyle(
+                          color: AppTheme.getInverseTextColor(context),
+                          fontSize:
+                              AppTheme.defaultButtonTextStyle.fontSize,
+                          fontWeight: AppTheme
+                              .defaultButtonTextStyle.fontWeight,
                         ),
+                        bgColor: AppTheme.green,
+                        onTap: handleAddRound,
+                        textPadding: 15,
                       ),
                     ),
-                    const SizedBox(
-                      height: 10,
-                    )
-                  ]),
-                ),
+                  ),
+                  const SizedBox(height: 10),
+                ],
               ),
             ),
-            // Confetti overlay
-            ConfettiAnimation(
-              isActive: hasWinner,
-              primaryColor: winnerColor,
-              secondaryColor: Colors.amber,
-            ),
-          ],
-        ));
+          ),
+          ConfettiAnimation(
+            isActive: isGameFinished,
+            primaryColor: winnerColor,
+            secondaryColor: AppTheme.accent,
+          ),
+        ],
+      ),
+    );
   }
-
-
 }
