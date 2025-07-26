@@ -31,14 +31,15 @@ class RoundDao extends BaseDao {
     int teamOneScore,
     int teamTwoScore,
     int teamCalled,
-    
   ) async {
-    await (_db.update(_db.roundTable)..where((tbl) => tbl.id.equals(roundId))).write(
+    await update(
+      _db.roundTable,
+      _db.roundTable.id,
+      roundId,
       RoundTableCompanion(
         teamOneScore: Value(teamOneScore),
         teamTwoScore: Value(teamTwoScore),
         teamCalled: Value(teamCalled),
-        
       ),
     );
   }
