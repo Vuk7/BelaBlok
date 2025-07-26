@@ -86,13 +86,15 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
       final gamesService = GamesService(db);
 
       if (widget.roundToEdit != null) {
-        
-        await gamesService.roundDao.updateRound(
+        await gamesService.roundDao.update(
+          db.roundTable,
+          db.roundTable.id,
           widget.roundToEdit.id,
-          int.tryParse(inputTeamOne.text) ?? 0,
-          int.tryParse(inputTeamTwo.text) ?? 0,
-          selectedCaller,
-          
+          RoundTableCompanion(
+            teamOneScore: drift.Value(int.tryParse(inputTeamOne.text) ?? 0),
+            teamTwoScore: drift.Value(int.tryParse(inputTeamTwo.text) ?? 0),
+            teamCalled: drift.Value(selectedCaller),
+          ),
         );
       } else {
         
