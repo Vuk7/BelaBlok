@@ -4,7 +4,7 @@ import 'package:bela_blok/db/database.dart';
 import 'package:bela_blok/db/models/game_model.dart';
 import 'package:bela_blok/db/models/round_model.dart';
 import 'package:bela_blok/enums/play_direction_enum.dart';
-import 'package:drift/drift.dart';
+
 
 
 class GamesService {
@@ -54,55 +54,12 @@ class GamesService {
     return latestGameData?.toModel();
   }
 
-  Future<void> updateGame(String gameId, int noviScore1, int noviScore2, int? winner) async {
-    final update = GameTableCompanion(
-      teamOneScore: Value(noviScore1),
-      teamTwoScore: Value(noviScore2),
-      finished: const Value(true),
-      winner: Value(winner),
-    );
+  Future<void> updateGame(Game game) async {
+    final update = game.toCompanion();
     await dao.update(
       database.gameTable,
       database.gameTable.id,
-      gameId,
-      update,
-    );
-  }
-
-  Future<void> updateTeamScores(String gameId, int noviScore1, int noviScore2) async {
-    final update = GameTableCompanion(
-      teamOneScore: Value(noviScore1),
-      teamTwoScore: Value(noviScore2),
-    );
-    await dao.update(
-      database.gameTable,
-      database.gameTable.id,
-      gameId,
-      update,
-    );
-  }
-
-  Future<void> setGameWinner(String gameId, int? winner) async {
-    final update = GameTableCompanion(
-      winner: Value(winner),
-      finished: const Value(true),
-    );
-    await dao.update(
-      database.gameTable,
-      database.gameTable.id,
-      gameId,
-      update,
-    );
-  }
-
-  Future<void> finishGame(String gameId) async {
-    const update = GameTableCompanion(
-      finished: Value(true),
-    );
-    await dao.update(
-      database.gameTable,
-      database.gameTable.id,
-      gameId,
+      game.id!,
       update,
     );
   }

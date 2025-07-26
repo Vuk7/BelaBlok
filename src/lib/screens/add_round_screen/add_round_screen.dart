@@ -122,7 +122,14 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
         newScoreTeamOne += r.teamOneScore ?? 0;
         newScoreTeamTwo += r.teamTwoScore ?? 0;
       }
-      await gamesService.updateTeamScores(widget.gameId!, newScoreTeamOne, newScoreTeamTwo);
+
+      
+      final game = await gamesService.getGameById(widget.gameId!);
+      if (game != null) {
+        game.teamOneScore = newScoreTeamOne;
+        game.teamTwoScore = newScoreTeamTwo;
+        await gamesService.updateGame(game);
+      }
      
 
       if (!mounted) return;
