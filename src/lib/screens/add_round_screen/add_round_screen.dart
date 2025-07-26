@@ -109,13 +109,13 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
       }
 
       final rounds = await gamesService.getRoundsForGameSorted(widget.gameId!);
-      int noviScore1 = 0;
-      int noviScore2 = 0;
+      int newScoreTeamOne = 0;
+      int newScoreTeamTwo = 0;
       for (final r in rounds) {
-        noviScore1 += r.teamOneScore ?? 0;
-        noviScore2 += r.teamTwoScore ?? 0;
+        newScoreTeamOne += r.teamOneScore ?? 0;
+        newScoreTeamTwo += r.teamTwoScore ?? 0;
       }
-      await gamesService.updateTeamScores(widget.gameId!, noviScore1, noviScore2);
+      await gamesService.updateTeamScores(widget.gameId!, newScoreTeamOne, newScoreTeamTwo);
      
 
       if (!mounted) return;
