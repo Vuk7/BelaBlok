@@ -35,9 +35,16 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
   late final Animation<double> _bounceAnimation1;
   late final Animation<double> _bounceAnimation2;
 
+  
+  late final AppDatabase db;
+  late final GamesService gamesService;
+
   @override
   void initState() {
     super.initState();
+    db = AppDatabase();
+    gamesService = GamesService(db);
+
     _bounceController1 = AnimationController(
       duration: const Duration(milliseconds: 200),
       vsync: this,
@@ -53,7 +60,6 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
       CurvedAnimation(parent: _bounceController2, curve: Curves.elasticOut),
     );
 
-    
     inputTeamOne.addListener(() => setState(() {}));
     inputTeamTwo.addListener(() => setState(() {}));
 
@@ -61,7 +67,6 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
       inputTeamOne.text = (widget.roundToEdit.teamOneScore ?? 0).toString();
       inputTeamTwo.text = (widget.roundToEdit.teamTwoScore ?? 0).toString();
       selectedCaller = widget.roundToEdit.teamCalled ?? 0;
-    
     }
   }
 
@@ -79,12 +84,8 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
         (inputTeamOne.text.isNotEmpty || inputTeamTwo.text.isNotEmpty);
   }
 
-
   void handleSaveRound() async {
     try {
-      final db = AppDatabase();
-      final gamesService = GamesService(db);
-
       if (widget.roundToEdit != null) {
         await gamesService.roundDao.update(
           db.roundTable,
@@ -97,7 +98,6 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
           ),
         );
       } else {
-        
         final round = RoundTableCompanion(
           gameId: drift.Value(widget.gameId!),
           teamOneScore: drift.Value(int.tryParse(inputTeamOne.text) ?? 0),
