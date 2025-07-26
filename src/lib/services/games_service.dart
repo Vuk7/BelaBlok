@@ -3,19 +3,17 @@ import 'package:bela_blok/db/dao/round_dao.dart';
 import 'package:bela_blok/db/database.dart';
 import 'package:bela_blok/db/models/game_model.dart';
 import 'package:bela_blok/enums/play_direction_enum.dart';
-import 'package:drift/drift.dart'; 
+import 'package:drift/drift.dart';
+
 
 class GamesService {
   final AppDatabase database;
   final GameDao dao;
+  final RoundDao roundDao;
 
-  GamesService._(this.database, this.dao);
-
-  static Future<GamesService> create() async {
-    final db = AppDatabase();
-    final dao = GameDao(db);
-    return GamesService._(db, dao);
-  }
+  GamesService(this.database)
+      : dao = GameDao(database),
+        roundDao = RoundDao(database);
 
   Future<void> createGame() async {
     var newGame = Game(teamOneScore: 20, teamTwoScore: 25);
@@ -29,39 +27,31 @@ class GamesService {
 
   Future<Game?> createNewGameWithParameters({
     int? gameType,
-    int? targetScore, 
-    PlayDirection? playDirection
-  }) async { 
+    PlayDirection? playDirection,
+    int? currentlyShuffling,
+  }) async {
     var newGame = Game(
       teamOneScore: 0,
       teamTwoScore: 0,
-      gameType: targetScore, 
-      gameDirection: playDirection?.index, 
-      currentlyShuffling: 0,
+      gameType: gameType, 
+      gameDirection: playDirection?.index,
+      currentlyShuffling: currentlyShuffling,
       winner: null,
       finished: false,
     );
     await dao.insert(database.gameTable, newGame.toCompanion());
-    
     final insertedGame = await dao.getLatestGame();
-    if (insertedGame != null) {
-      return insertedGame.toModel();
-    } else {
-      return null;
-    }
+    return insertedGame?.toModel(); 
   }
 
   Future<void> deleteGame(String gameId) async {
     await dao.deleteGameById(gameId);
   }
+
   Future<Game?> getLatestGame() async {
     final latestGameData = await dao.getLatestGame();
-    if (latestGameData != null) {
-      return latestGameData.toModel();
-    }
-    return null;
+    return latestGameData?.toModel();
   }
-
 
   Future<void> updateGame(String gameId, int noviScore1, int noviScore2, int? winner) async {
     final update = GameTableCompanion(
@@ -127,8 +117,6 @@ class GamesService {
   }
 
   Future<List<RoundTableData>> getRoundsForGameSorted(String gameId) async {
-   
-    final roundDao = RoundDao(database);
     return await roundDao.getRoundsForGameSorted(gameId);
   }
 }

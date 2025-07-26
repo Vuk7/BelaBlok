@@ -1,3 +1,4 @@
+import 'package:bela_blok/db/database.dart'; 
 import 'package:bela_blok/enums/team_enum.dart';
 import 'package:bela_blok/screens/current_game_screen/widgets/round_score_list_item.dart';
 import 'package:bela_blok/screens/current_game_screen/widgets/top_score_details.dart';
@@ -48,36 +49,32 @@ class _CurrentGameScreenState extends State<CurrentGameScreen> {
   }
 
   Future<void> handleInitializeGame({String? gameId}) async {
-    try {
-      setState(() {
-        isLoadingGame = true;
-        errorMessage = null;
-      });
+    setState(() {
+      isLoadingGame = true;
+      errorMessage = null;
+    });
 
-      gamesService = await GamesService.create();
+    gamesService = GamesService(AppDatabase());
 
-      Game? game;
-      if (gameId != null) {
-        game = await gamesService!.getGameById(gameId);
-        if (game == null) {
-          handleGameError("Igra s ID-om $gameId nije pronađena.");
-          return;
-        }
-      } else {
-        game = await gamesService!.getLatestGame();
-        if (game == null) {
-          handleGameError("Nema aktivne igre, kreirajte ju!");
-          return;
-        }
+    Game? game;
+    if (gameId != null) {
+      game = await gamesService!.getGameById(gameId);
+      if (game == null) {
+        handleGameError("Igra s ID-om $gameId nije pronađena.");
+        return;
       }
-
-      setState(() => currentGame = game);
-      await loadRounds(game.id!);
-    } catch (e) {
-      handleGameError("Greška pri učitavanju igre: ${e.toString()}");
-    } finally {
-      setState(() => isLoadingGame = false);
+    } else {
+      game = await gamesService!.getLatestGame();
+      if (game == null) {
+        handleGameError("Nema aktivne igre, kreirajte ju!");
+        return;
+      }
     }
+
+    setState(() => currentGame = game);
+    await loadRounds(game.id!);
+
+    setState(() => isLoadingGame = false);
   }
 
   Future<void> loadRounds(String gameId) async {
@@ -98,7 +95,7 @@ class _CurrentGameScreenState extends State<CurrentGameScreen> {
       showErrorMessage("Igra je već završena");
       return;
     }
-    // navigacija na dodavanje runde...
+    
   }
 
   void handleGameError(String error) {
@@ -118,7 +115,6 @@ class _CurrentGameScreenState extends State<CurrentGameScreen> {
 
   void showErrorMessage(String message) {
     
-    debugPrint('Greška: $message');
     if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
