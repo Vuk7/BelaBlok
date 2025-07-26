@@ -157,7 +157,11 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
   }
 
   void handleCallerChange(int id) {
-    setState(() => selectedCaller = id);
+    setState(() {
+      selectedCaller = id;
+      
+      focusedInput = id; 
+    });
   }
 
   void handleInputTypeChange(int id) {
@@ -357,9 +361,8 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
                           ChooseCaller(
                             selectedChoice: selectedCaller,
                             selectedColor: AppTheme.green,
-                            notSelectedColor:
-                                Theme.of(context).colorScheme.primary,
-                            onTap: (id) => setState(() => selectedCaller = id),
+                            notSelectedColor: Theme.of(context).colorScheme.primary,
+                            onTap: handleCallerChange,
                           ),
                           const SizedBox(height: 8),
                           Row(
