@@ -1,4 +1,5 @@
 import 'package:bela_blok/db/database.dart'; 
+import 'package:bela_blok/db/models/round_model.dart'; 
 import 'package:bela_blok/services/games_service.dart'; 
 import 'package:drift/drift.dart' as drift;
 import 'package:bela_blok/screens/add_round_screen/widgets/choose_caller.dart';
@@ -98,13 +99,16 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
           ),
         );
       } else {
-        final round = RoundTableCompanion(
-          gameId: drift.Value(widget.gameId!),
-          teamOneScore: drift.Value(int.tryParse(inputTeamOne.text) ?? 0),
-          teamTwoScore: drift.Value(int.tryParse(inputTeamTwo.text) ?? 0),
-          teamCalled: drift.Value(selectedCaller),
+        final round = Round(
+          gameId: widget.gameId!,
+          teamCalled: selectedCaller,
+          teamOneScore: int.tryParse(inputTeamOne.text) ?? 0,
+          teamTwoScore: int.tryParse(inputTeamTwo.text) ?? 0,
         );
-        await gamesService.roundDao.insert(db.roundTable, round);
+        await gamesService.roundDao.insert(
+          db.roundTable,
+          round.toCompanion(),
+        );
       }
 
       final rounds = await gamesService.getRoundsForGameSorted(widget.gameId!);
