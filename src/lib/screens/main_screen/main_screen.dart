@@ -180,7 +180,7 @@ class _MainScreenState extends State<MainScreen> {
                     const RulesWidget(),
                     const SizedBox(height: 20),
 
-                    // Find the latest unfinished game, if any
+                    
                     FutureBuilder<Game?>(
                       future: gamesService.getLatestUnfinishedGame(),
                       builder: (context, snapshot) {
