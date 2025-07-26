@@ -253,21 +253,27 @@ class _CurrentGameScreenState extends State<CurrentGameScreen> {
                             animationType: AnimationType.slideUp,
                             staggerDelay: 80,
                             child: Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(vertical: 5.0),
+                              padding: const EdgeInsets.symmetric(vertical: 5.0),
                               child: RoundScoreListItem(
-                                teamOneCallAmount:
-                                    round.teamOneCallAmount ?? 0,
-                                teamTwoCallAmount:
-                                    round.teamTwoCallAmount ?? 0,
+                                teamOneCallAmount: round.teamOneCallAmount ?? 0,
+                                teamTwoCallAmount: round.teamTwoCallAmount ?? 0,
                                 teamOneScore: round.teamOneScore ?? 0,
                                 teamTwoScore: round.teamTwoScore ?? 0,
-                                roundID:
-                                    int.tryParse(round.id ?? '') ?? 0,
+                                roundID: index, 
                                 teamCalled: Team.values[
                                     round.teamCalled ??
                                         Team.teamOne.index],
-                                onTap: () {},
+                                onTap: () async {
+                                  await context.pushNamed(
+                                    'addround',
+                                    queryParameters: {
+                                      'id': currentGame!.id!,
+                                      'roundId': round.id ?? '',
+                                    },
+                                    extra: round, 
+                                  );
+                                  await handleInitializeGame(gameId: currentGame!.id!);
+                                },
                               ),
                             ),
                           );

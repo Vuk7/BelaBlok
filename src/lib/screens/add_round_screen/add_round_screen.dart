@@ -13,7 +13,10 @@ import 'package:go_router/go_router.dart';
 
 class AddRoundScreen extends StatefulWidget {
   final String? gameId;
-  const AddRoundScreen({super.key, this.gameId});
+  final String? roundId;
+  final dynamic roundToEdit; 
+
+  const AddRoundScreen({super.key, this.gameId, this.roundId, this.roundToEdit});
 
   @override
   State<AddRoundScreen> createState() => _AddRoundScreenState();
@@ -53,6 +56,13 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
     
     inputTeamOne.addListener(() => setState(() {}));
     inputTeamTwo.addListener(() => setState(() {}));
+
+    if (widget.roundToEdit != null) {
+      inputTeamOne.text = (widget.roundToEdit.teamOneScore ?? 0).toString();
+      inputTeamTwo.text = (widget.roundToEdit.teamTwoScore ?? 0).toString();
+      selectedCaller = widget.roundToEdit.teamCalled ?? 0;
+    
+    }
   }
 
   @override
@@ -75,15 +85,25 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
       final db = AppDatabase();
       final gamesService = GamesService(db);
 
-      final round = RoundTableCompanion(
-        gameId: drift.Value(widget.gameId!),
-        teamOneScore: drift.Value(int.tryParse(inputTeamOne.text) ?? 0),
-        teamTwoScore: drift.Value(int.tryParse(inputTeamTwo.text) ?? 0),
-        teamCalled: drift.Value(selectedCaller),
-      );
-
-      await gamesService.roundDao.insert(db.roundTable, round);
-
+      if (widget.roundToEdit != null) {
+        
+        await gamesService.roundDao.updateRound(
+          widget.roundToEdit.id,
+          int.tryParse(inputTeamOne.text) ?? 0,
+          int.tryParse(inputTeamTwo.text) ?? 0,
+          selectedCaller,
+          
+        );
+      } else {
+        
+        final round = RoundTableCompanion(
+          gameId: drift.Value(widget.gameId!),
+          teamOneScore: drift.Value(int.tryParse(inputTeamOne.text) ?? 0),
+          teamTwoScore: drift.Value(int.tryParse(inputTeamTwo.text) ?? 0),
+          teamCalled: drift.Value(selectedCaller),
+        );
+        await gamesService.roundDao.insert(db.roundTable, round);
+      }
 
       final rounds = await gamesService.getRoundsForGameSorted(widget.gameId!);
       int noviScore1 = 0;

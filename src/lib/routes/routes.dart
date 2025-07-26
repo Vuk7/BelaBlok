@@ -67,8 +67,14 @@ final GoRouter appRouter = GoRouter(
                 name: 'addround',
                 pageBuilder: (BuildContext context, GoRouterState state) {
                   final id = state.uri.queryParameters['id'];
+                  final roundId = state.uri.queryParameters['roundId'];
+                  final roundToEdit = state.extra; // može biti null ili Round
                   return _slideTransition(
-                    child: AddRoundScreen(gameId: id),
+                    child: AddRoundScreen(
+                      gameId: id,
+                      roundId: roundId,
+                      roundToEdit: roundToEdit,
+                    ),
                     state: state,
                     beginOffset: const Offset(0.0, 1.0),
                   );
