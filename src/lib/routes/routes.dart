@@ -66,10 +66,11 @@ final GoRouter appRouter = GoRouter(
                 path: '/addround',
                 name: 'addround',
                 pageBuilder: (BuildContext context, GoRouterState state) {
+                  final id = state.uri.queryParameters['id'];
                   return _slideTransition(
-                    child: const AddRoundScreen(),
+                    child: AddRoundScreen(gameId: id),
                     state: state,
-                    beginOffset: const Offset(0.0, 1.0), // slide from bottom
+                    beginOffset: const Offset(0.0, 1.0),
                   );
                 },
               ),

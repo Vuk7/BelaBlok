@@ -1,3 +1,6 @@
+import 'package:bela_blok/db/database.dart'; 
+import 'package:bela_blok/services/games_service.dart'; 
+import 'package:drift/drift.dart' as drift;
 import 'package:bela_blok/screens/add_round_screen/widgets/choose_caller.dart';
 import 'package:bela_blok/screens/add_round_screen/widgets/choose_input_type.dart';
 import 'package:bela_blok/screens/widgets/big_button_input_number.dart';
@@ -9,7 +12,8 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 class AddRoundScreen extends StatefulWidget {
-  const AddRoundScreen({super.key});
+  final String? gameId;
+  const AddRoundScreen({super.key, this.gameId});
 
   @override
   State<AddRoundScreen> createState() => _AddRoundScreenState();
@@ -62,12 +66,26 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
   }
 
 
-  void handleSaveRound() {
+  void handleSaveRound() async {
     try {
- 
+      final db = AppDatabase();
+      final gamesService = GamesService(db);
+
+     
+      final round = RoundTableCompanion(
+        gameId: drift.Value(widget.gameId!),
+        teamOneScore: drift.Value(int.tryParse(inputTeamOne.text) ?? 0),
+        teamTwoScore: drift.Value(int.tryParse(inputTeamTwo.text) ?? 0),
+        teamCalled: drift.Value(selectedCaller),
+       
+      );
+
+      await gamesService.roundDao.insert(db.roundTable, round);
+
+      if (!mounted) return;
+      context.pop(); 
     } catch (e, stack) {
-   
-      debugPrint('Greška pri kreiranju igre: $e\n$stack');
+      debugPrint('Greška pri spremanju runde: $e\n$stack');
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -123,7 +141,7 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
             bottom: 0,
             child: PulsingFloatingActionButton(
               heroTag: 'save_btn',
-              onPressed: () => context.pop(),
+              onPressed: isReadyToSave ? handleSaveRound : null,
               backgroundColor: AppTheme.green,
               isPulsing: isReadyToSave,
               child: const Icon(Icons.save, color: AppTheme.black, size: 28),

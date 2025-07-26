@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class PulsingFloatingActionButton extends StatefulWidget {
-  final VoidCallback onPressed;
+  final VoidCallback? onPressed; 
   final Widget child;
   final Color backgroundColor;
   final String heroTag;
@@ -9,7 +9,7 @@ class PulsingFloatingActionButton extends StatefulWidget {
 
   const PulsingFloatingActionButton({
     super.key,
-    required this.onPressed,
+    required this.onPressed, 
     required this.child,
     required this.backgroundColor,
     required this.heroTag,

@@ -13,6 +13,7 @@ import 'package:bela_blok/db/models/game_model.dart';
 import 'package:bela_blok/db/models/round_model.dart';
 import 'package:bela_blok/themes/app_theme.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class CurrentGameScreen extends StatefulWidget {
   final String? gameId;
@@ -86,7 +87,7 @@ class _CurrentGameScreenState extends State<CurrentGameScreen> {
     });
   }
 
-  void handleAddRound() {
+  void handleAddRound() async {
     if (currentGame?.id == null) {
       showErrorMessage("Nema aktivne igre");
       return;
@@ -95,7 +96,11 @@ class _CurrentGameScreenState extends State<CurrentGameScreen> {
       showErrorMessage("Igra je već završena");
       return;
     }
-    
+    await context.pushNamed(
+      'addround',
+      queryParameters: {'id': currentGame!.id!},
+    );
+    await loadRounds(currentGame!.id!); 
   }
 
   void handleGameError(String error) {
