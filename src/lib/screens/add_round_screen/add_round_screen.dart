@@ -49,6 +49,10 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
     _bounceAnimation2 = Tween<double>(begin: 1.0, end: 1.1).animate(
       CurvedAnimation(parent: _bounceController2, curve: Curves.elasticOut),
     );
+
+    
+    inputTeamOne.addListener(() => setState(() {}));
+    inputTeamTwo.addListener(() => setState(() {}));
   }
 
   @override
@@ -71,16 +75,25 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
       final db = AppDatabase();
       final gamesService = GamesService(db);
 
-     
       final round = RoundTableCompanion(
         gameId: drift.Value(widget.gameId!),
         teamOneScore: drift.Value(int.tryParse(inputTeamOne.text) ?? 0),
         teamTwoScore: drift.Value(int.tryParse(inputTeamTwo.text) ?? 0),
         teamCalled: drift.Value(selectedCaller),
-       
       );
 
       await gamesService.roundDao.insert(db.roundTable, round);
+
+
+      final rounds = await gamesService.getRoundsForGameSorted(widget.gameId!);
+      int noviScore1 = 0;
+      int noviScore2 = 0;
+      for (final r in rounds) {
+        noviScore1 += r.teamOneScore ?? 0;
+        noviScore2 += r.teamTwoScore ?? 0;
+      }
+      await gamesService.updateTeamScores(widget.gameId!, noviScore1, noviScore2);
+     
 
       if (!mounted) return;
       context.pop(); 
@@ -242,12 +255,11 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
                                   ),
                                 ),
                                 Text(
-                                  '540',
+                                  inputTeamOne.text.isNotEmpty ? inputTeamOne.text : '0',
                                   style: TextStyle(
                                     fontSize: 14,
                                     fontWeight: FontWeight.bold,
-                                    color:
-                                        Theme.of(context).colorScheme.primary,
+                                    color: Theme.of(context).colorScheme.primary,
                                   ),
                                 ),
                               ],
@@ -271,9 +283,9 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
                                         .withValues(alpha: (0.6 * 255).toDouble()),
                                   ),
                                 ),
-                              const  Text(
-                                  '460',
-                                  style: TextStyle(
+                                Text(
+                                  inputTeamTwo.text.isNotEmpty ? inputTeamTwo.text : '0',
+                                  style:const TextStyle(
                                     fontSize: 14,
                                     fontWeight: FontWeight.bold,
                                     color: AppTheme.green,

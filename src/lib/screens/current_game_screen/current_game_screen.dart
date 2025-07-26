@@ -100,7 +100,8 @@ class _CurrentGameScreenState extends State<CurrentGameScreen> {
       'addround',
       queryParameters: {'id': currentGame!.id!},
     );
-    await loadRounds(currentGame!.id!); 
+    
+    await handleInitializeGame(gameId: currentGame!.id!);
   }
 
   void handleGameError(String error) {
