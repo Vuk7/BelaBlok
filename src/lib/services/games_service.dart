@@ -2,6 +2,7 @@ import 'package:bela_blok/db/dao/game_dao.dart';
 import 'package:bela_blok/db/dao/round_dao.dart';
 import 'package:bela_blok/db/database.dart';
 import 'package:bela_blok/db/models/game_model.dart';
+import 'package:bela_blok/db/models/round_model.dart';
 import 'package:bela_blok/enums/play_direction_enum.dart';
 import 'package:drift/drift.dart';
 
@@ -118,5 +119,9 @@ class GamesService {
 
   Future<List<RoundTableData>> getRoundsForGameSorted(String gameId) async {
     return await roundDao.getRoundsForGameSorted(gameId);
+  }
+
+  Future<void> createRound(Round round) async {
+    await roundDao.insert(database.roundTable, round.toCompanion());
   }
 }

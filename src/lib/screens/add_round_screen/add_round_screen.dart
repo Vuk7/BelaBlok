@@ -105,10 +105,7 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
           teamOneScore: int.tryParse(inputTeamOne.text) ?? 0,
           teamTwoScore: int.tryParse(inputTeamTwo.text) ?? 0,
         );
-        await gamesService.roundDao.insert(
-          db.roundTable,
-          round.toCompanion(),
-        );
+        await gamesService.createRound(round);
       }
 
       final rounds = await gamesService.getRoundsForGameSorted(widget.gameId!);
