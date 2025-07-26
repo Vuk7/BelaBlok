@@ -80,10 +80,17 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
     super.dispose();
   }
 
-  bool get isReadyToSave {
-    return selectedCaller >= 0 && focusedInput >= 0 &&
-        (inputTeamOne.text.isNotEmpty || inputTeamTwo.text.isNotEmpty);
+  /// Returns null if ready, otherwise a message why not ready.
+  String? get isReadyToSaveMessage {
+    if (selectedCaller < 0) return 'Odaberite tko je zvao.';
+    if (focusedInput < 0) return 'Odaberite unos bodova.';
+    if (inputTeamOne.text.isEmpty && inputTeamTwo.text.isEmpty) {
+      return 'Unesite bodove za barem jednu ekipu.';
+    }
+    return null;
   }
+
+  bool get isReadyToSave => isReadyToSaveMessage == null;
 
   void handleSaveRound() async {
     try {
@@ -177,9 +184,21 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
             bottom: 0,
             child: PulsingFloatingActionButton(
               heroTag: 'save_btn',
-              onPressed: isReadyToSave ? handleSaveRound : null,
+              onPressed: () {
+                final msg = isReadyToSaveMessage;
+                if (msg == null) {
+                  handleSaveRound();
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(msg),
+                      backgroundColor: Colors.red,
+                    ),
+                  );
+                }
+              },
               backgroundColor: AppTheme.green,
-              isPulsing: isReadyToSave,
+              isPulsing: isReadyToSaveMessage == null,
               child: const Icon(Icons.save, color: AppTheme.black, size: 28),
             ),
           ),
