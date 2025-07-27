@@ -9,6 +9,7 @@ import 'package:bela_blok/screens/widgets/game_stats_widget.dart';
 import 'package:bela_blok/screens/widgets/morphing_widgets.dart';
 import 'package:bela_blok/screens/widgets/error_message_widget.dart';
 import 'package:bela_blok/services/games_service.dart';
+import 'package:bela_blok/services/rounds_service.dart'; 
 import 'package:bela_blok/db/models/game_model.dart';
 import 'package:bela_blok/db/models/round_model.dart';
 import 'package:bela_blok/themes/app_theme.dart';
@@ -28,6 +29,7 @@ class _CurrentGameScreenState extends State<CurrentGameScreen> {
   bool _wobbleTrigger = false;
 
   GamesService? gamesService;
+  RoundsService? roundsService; 
   Game? currentGame;
   bool isLoadingGame = true;
   String? errorMessage;
@@ -38,6 +40,8 @@ class _CurrentGameScreenState extends State<CurrentGameScreen> {
   @override
   void initState() {
     super.initState();
+    gamesService = GamesService(AppDatabase());
+    roundsService = RoundsService(AppDatabase()); 
     () async {
       await handleInitializeGame(gameId: widget.gameId);
     }();
@@ -54,8 +58,6 @@ class _CurrentGameScreenState extends State<CurrentGameScreen> {
       isLoadingGame = true;
       errorMessage = null;
     });
-
-    gamesService = GamesService(AppDatabase());
 
     Game? game;
     if (gameId != null) {
@@ -80,7 +82,7 @@ class _CurrentGameScreenState extends State<CurrentGameScreen> {
 
   Future<void> loadRounds(String gameId) async {
     setState(() => isLoadingRounds = true);
-    final roundRows = await gamesService!.getRoundsForGameSorted(gameId);
+    final roundRows = await roundsService!.getRoundsForGameSorted(gameId); 
     setState(() {
       rounds = roundRows.map((r) => r.toModel()).toList();
       isLoadingRounds = false;

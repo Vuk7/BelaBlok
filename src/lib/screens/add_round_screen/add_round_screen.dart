@@ -1,6 +1,7 @@
 import 'package:bela_blok/db/database.dart'; 
 import 'package:bela_blok/db/models/round_model.dart'; 
 import 'package:bela_blok/services/games_service.dart'; 
+import 'package:bela_blok/services/rounds_service.dart'; 
 import 'package:bela_blok/screens/add_round_screen/widgets/choose_caller.dart';
 import 'package:bela_blok/screens/add_round_screen/widgets/choose_input_type.dart';
 import 'package:bela_blok/screens/widgets/big_button_input_number.dart';
@@ -38,12 +39,14 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
   
   late final AppDatabase db;
   late final GamesService gamesService;
+  late final RoundsService roundsService;
 
   @override
   void initState() {
     super.initState();
     db = AppDatabase();
     gamesService = GamesService(db);
+    roundsService = RoundsService(db);
 
     _bounceController1 = AnimationController(
       duration: const Duration(milliseconds: 200),
@@ -79,7 +82,7 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
     super.dispose();
   }
 
-  /// Returns null if ready, otherwise a message why not ready.
+
   String? get isReadyToSaveMessage {
     if (selectedCaller < 0) return 'Odaberite tko je zvao.';
     if (focusedInput < 0) return 'Odaberite unos bodova.';
@@ -98,7 +101,7 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
         updatedRound.teamCalled = selectedCaller;
         updatedRound.teamOneScore = int.tryParse(inputTeamOne.text) ?? 0;
         updatedRound.teamTwoScore = int.tryParse(inputTeamTwo.text) ?? 0;
-        await gamesService.updateRound(updatedRound);
+        await roundsService.updateRound(updatedRound);
       } else {
         final round = Round(
           gameId: widget.gameId!,
@@ -106,10 +109,10 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
           teamOneScore: int.tryParse(inputTeamOne.text) ?? 0,
           teamTwoScore: int.tryParse(inputTeamTwo.text) ?? 0,
         );
-        await gamesService.createRound(round);
+        await roundsService.createRound(round); 
       }
 
-      final rounds = await gamesService.getRoundsForGameSorted(widget.gameId!);
+      final rounds = await roundsService.getRoundsForGameSorted(widget.gameId!); 
       int newScoreTeamOne = 0;
       int newScoreTeamTwo = 0;
       for (final r in rounds) {

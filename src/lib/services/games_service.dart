@@ -1,20 +1,13 @@
 import 'package:bela_blok/db/dao/game_dao.dart';
-import 'package:bela_blok/db/dao/round_dao.dart';
 import 'package:bela_blok/db/database.dart';
 import 'package:bela_blok/db/models/game_model.dart';
-import 'package:bela_blok/db/models/round_model.dart';
 import 'package:bela_blok/enums/play_direction_enum.dart';
-
-
 
 class GamesService {
   final AppDatabase database;
   final GameDao dao;
-  final RoundDao daoRound; 
 
-  GamesService(this.database)
-      : dao = GameDao(database),
-        daoRound = RoundDao(database);
+  GamesService(this.database) : dao = GameDao(database);
 
   Future<void> createGame() async {
     var newGame = Game(teamOneScore: 20, teamTwoScore: 25);
@@ -34,7 +27,7 @@ class GamesService {
     var newGame = Game(
       teamOneScore: 0,
       teamTwoScore: 0,
-      gameType: gameType, 
+      gameType: gameType,
       gameDirection: playDirection?.index,
       currentlyShuffling: currentlyShuffling,
       winner: null,
@@ -42,7 +35,7 @@ class GamesService {
     );
     await dao.insert(database.gameTable, newGame.toCompanion());
     final insertedGame = await dao.getLatestGame();
-    return insertedGame?.toModel(); 
+    return insertedGame?.toModel();
   }
 
   Future<void> deleteGame(String gameId) async {
@@ -72,22 +65,5 @@ class GamesService {
   Future<Game?> getGameById(String gameId) async {
     final data = await dao.getById(database.gameTable, database.gameTable.id, gameId);
     return data?.toModel();
-  }
-
-  Future<List<RoundTableData>> getRoundsForGameSorted(String gameId) async {
-    return await daoRound.getRoundsForGameSorted(gameId); 
-  }
-
-  Future<void> createRound(Round round) async {
-    await daoRound.insert(database.roundTable, round.toCompanion()); 
-  }
-
-  Future<void> updateRound(Round round) async {
-    await daoRound.update(
-      database.roundTable,
-      database.roundTable.id,
-      round.id!,
-      round.toCompanion(),
-    );
   }
 }
