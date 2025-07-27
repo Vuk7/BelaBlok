@@ -129,11 +129,18 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
     try {
       int teamOne = int.tryParse(inputTeamOne.text) ?? 0;
       int teamTwo = int.tryParse(inputTeamTwo.text) ?? 0;
-      
+
+      // Stiglju logika: ako je jednoj ekipi upisano točno 0 bodova, drugoj se upisuje 252
+      if (teamOne == 0 && teamTwo > 0) {
+        teamTwo = 252;
+      } else if (teamTwo == 0 && teamOne > 0) {
+        teamOne = 252;
+      }
+
       int callerScore = selectedCaller == 0 ? teamOne : teamTwo;
       int otherScore = selectedCaller == 0 ? teamTwo : teamOne;
 
-      
+      // Pad logika
       if (callerScore <= otherScore || callerScore < 82) {
         if (selectedCaller == 0) {
           teamOne = 0;
