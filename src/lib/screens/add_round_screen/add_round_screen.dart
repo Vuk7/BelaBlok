@@ -127,18 +127,33 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
 
   void handleSaveRound() async {
     try {
+      int teamOne = int.tryParse(inputTeamOne.text) ?? 0;
+      int teamTwo = int.tryParse(inputTeamTwo.text) ?? 0;
+      
+      int callerScore = selectedCaller == 0 ? teamOne : teamTwo;
+      int otherScore = selectedCaller == 0 ? teamTwo : teamOne;
+    
+      if (callerScore <= otherScore || callerScore < 82) {
+        if (selectedCaller == 0) {
+          teamOne = 0;
+          teamTwo = _maxScore;
+        } else {
+          teamOne = _maxScore;
+          teamTwo = 0;
+        }
+      }
       if (widget.roundToEdit != null) {
         final updatedRound = widget.roundToEdit;
         updatedRound.teamCalled = selectedCaller;
-        updatedRound.teamOneScore = int.tryParse(inputTeamOne.text) ?? 0;
-        updatedRound.teamTwoScore = int.tryParse(inputTeamTwo.text) ?? 0;
+        updatedRound.teamOneScore = teamOne;
+        updatedRound.teamTwoScore = teamTwo;
         await roundsService.updateRound(updatedRound);
       } else {
         final round = Round(
           gameId: widget.gameId!,
           teamCalled: selectedCaller,
-          teamOneScore: int.tryParse(inputTeamOne.text) ?? 0,
-          teamTwoScore: int.tryParse(inputTeamTwo.text) ?? 0,
+          teamOneScore: teamOne,
+          teamTwoScore: teamTwo,
         );
         await roundsService.createRound(round); 
       }
