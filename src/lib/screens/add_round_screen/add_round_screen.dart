@@ -27,6 +27,8 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
   int selectedCaller = 0;
   final TextEditingController inputTeamOne = TextEditingController();
   final TextEditingController inputTeamTwo = TextEditingController();
+  static const int _maxScore = 162;
+  bool _isAutoCompleting = false;
   int selectedInputType = 0;
   bool showGameScore = true;
   int focusedInput = -1;
@@ -68,8 +70,8 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
       CurvedAnimation(parent: _bounceController2, curve: Curves.elasticOut),
     );
 
-    inputTeamOne.addListener(() => setState(() {}));
-    inputTeamTwo.addListener(() => setState(() {}));
+    inputTeamOne.addListener(_handleTeamOneInput);
+    inputTeamTwo.addListener(_handleTeamTwoInput);
 
     if (widget.roundToEdit != null) {
       inputTeamOne.text = (widget.roundToEdit.teamOneScore ?? 0).toString();
@@ -197,6 +199,38 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
     setState(() => showGameScore = !showGameScore);
   }
 
+  void _handleTeamOneInput() {
+    if (_isAutoCompleting) return;
+    _isAutoCompleting = true;
+    final value = int.tryParse(inputTeamOne.text);
+    if (value != null && value >= 0 && value <= _maxScore) {
+      final other = _maxScore - value;
+      if (inputTeamTwo.text != other.toString()) {
+        inputTeamTwo.text = other.toString();
+      }
+    } else if (inputTeamOne.text.isEmpty) {
+      inputTeamTwo.text = '';
+    }
+    _isAutoCompleting = false;
+    setState(() {});
+  }
+
+  void _handleTeamTwoInput() {
+    if (_isAutoCompleting) return;
+    _isAutoCompleting = true;
+    final value = int.tryParse(inputTeamTwo.text);
+    if (value != null && value >= 0 && value <= _maxScore) {
+      final other = _maxScore - value;
+      if (inputTeamOne.text != other.toString()) {
+        inputTeamOne.text = other.toString();
+      }
+    } else if (inputTeamTwo.text.isEmpty) {
+      inputTeamOne.text = '';
+    }
+    _isAutoCompleting = false;
+    setState(() {});
+  }
+
   
   void handleSaveButtonPressed() {
     final msg = isReadyToSaveMessage;
@@ -256,7 +290,7 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
                 child: Column(
                   children: [
                     Text(
-                      '6. RUNDA',
+                      '${roundsCount + 1}. RUNDA',
                       style: AppTheme.roundTitleTextStyle.copyWith(
                         color: Theme.of(context).colorScheme.primary,
                       ),
