@@ -9,10 +9,12 @@ import 'package:bela_blok/screens/widgets/game_stats_widget.dart';
 import 'package:bela_blok/screens/widgets/morphing_widgets.dart';
 import 'package:bela_blok/screens/widgets/error_message_widget.dart';
 import 'package:bela_blok/services/games_service.dart';
+import 'package:bela_blok/services/rounds_service.dart'; 
 import 'package:bela_blok/db/models/game_model.dart';
 import 'package:bela_blok/db/models/round_model.dart';
 import 'package:bela_blok/themes/app_theme.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class CurrentGameScreen extends StatefulWidget {
   final String? gameId;
@@ -27,6 +29,7 @@ class _CurrentGameScreenState extends State<CurrentGameScreen> {
   bool _wobbleTrigger = false;
 
   GamesService? gamesService;
+  RoundsService? roundsService; 
   Game? currentGame;
   bool isLoadingGame = true;
   String? errorMessage;
@@ -37,6 +40,8 @@ class _CurrentGameScreenState extends State<CurrentGameScreen> {
   @override
   void initState() {
     super.initState();
+    gamesService = GamesService(AppDatabase());
+    roundsService = RoundsService(AppDatabase()); 
     () async {
       await handleInitializeGame(gameId: widget.gameId);
     }();
@@ -53,8 +58,6 @@ class _CurrentGameScreenState extends State<CurrentGameScreen> {
       isLoadingGame = true;
       errorMessage = null;
     });
-
-    gamesService = GamesService(AppDatabase());
 
     Game? game;
     if (gameId != null) {
@@ -79,14 +82,14 @@ class _CurrentGameScreenState extends State<CurrentGameScreen> {
 
   Future<void> loadRounds(String gameId) async {
     setState(() => isLoadingRounds = true);
-    final roundRows = await gamesService!.getRoundsForGameSorted(gameId);
+    final roundRows = await roundsService!.getRoundsForGameSorted(gameId); 
     setState(() {
       rounds = roundRows.map((r) => r.toModel()).toList();
       isLoadingRounds = false;
     });
   }
 
-  void handleAddRound() {
+  void handleAddRound() async {
     if (currentGame?.id == null) {
       showErrorMessage("Nema aktivne igre");
       return;
@@ -95,7 +98,12 @@ class _CurrentGameScreenState extends State<CurrentGameScreen> {
       showErrorMessage("Igra je već završena");
       return;
     }
+    await context.pushNamed(
+      'addround',
+      queryParameters: {'id': currentGame!.id!},
+    );
     
+    await handleInitializeGame(gameId: currentGame!.id!);
   }
 
   void handleGameError(String error) {
@@ -247,21 +255,27 @@ class _CurrentGameScreenState extends State<CurrentGameScreen> {
                             animationType: AnimationType.slideUp,
                             staggerDelay: 80,
                             child: Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(vertical: 5.0),
+                              padding: const EdgeInsets.symmetric(vertical: 5.0),
                               child: RoundScoreListItem(
-                                teamOneCallAmount:
-                                    round.teamOneCallAmount ?? 0,
-                                teamTwoCallAmount:
-                                    round.teamTwoCallAmount ?? 0,
+                                teamOneCallAmount: round.teamOneCallAmount ?? 0,
+                                teamTwoCallAmount: round.teamTwoCallAmount ?? 0,
                                 teamOneScore: round.teamOneScore ?? 0,
                                 teamTwoScore: round.teamTwoScore ?? 0,
-                                roundID:
-                                    int.tryParse(round.id ?? '') ?? 0,
+                                roundID: index, 
                                 teamCalled: Team.values[
                                     round.teamCalled ??
                                         Team.teamOne.index],
-                                onTap: () {},
+                                onTap: () async {
+                                  await context.pushNamed(
+                                    'addround',
+                                    queryParameters: {
+                                      'id': currentGame!.id!,
+                                      'roundId': round.id ?? '',
+                                    },
+                                    extra: round, 
+                                  );
+                                  await handleInitializeGame(gameId: currentGame!.id!);
+                                },
                               ),
                             ),
                           );

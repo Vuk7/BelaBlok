@@ -1,19 +1,13 @@
 import 'package:bela_blok/db/dao/game_dao.dart';
-import 'package:bela_blok/db/dao/round_dao.dart';
 import 'package:bela_blok/db/database.dart';
 import 'package:bela_blok/db/models/game_model.dart';
 import 'package:bela_blok/enums/play_direction_enum.dart';
-import 'package:drift/drift.dart';
-
 
 class GamesService {
   final AppDatabase database;
   final GameDao dao;
-  final RoundDao roundDao;
 
-  GamesService(this.database)
-      : dao = GameDao(database),
-        roundDao = RoundDao(database);
+  GamesService(this.database) : dao = GameDao(database);
 
   Future<void> createGame() async {
     var newGame = Game(teamOneScore: 20, teamTwoScore: 25);
@@ -33,7 +27,7 @@ class GamesService {
     var newGame = Game(
       teamOneScore: 0,
       teamTwoScore: 0,
-      gameType: gameType, 
+      gameType: gameType,
       gameDirection: playDirection?.index,
       currentlyShuffling: currentlyShuffling,
       winner: null,
@@ -41,7 +35,7 @@ class GamesService {
     );
     await dao.insert(database.gameTable, newGame.toCompanion());
     final insertedGame = await dao.getLatestGame();
-    return insertedGame?.toModel(); 
+    return insertedGame?.toModel();
   }
 
   Future<void> deleteGame(String gameId) async {
@@ -53,55 +47,12 @@ class GamesService {
     return latestGameData?.toModel();
   }
 
-  Future<void> updateGame(String gameId, int noviScore1, int noviScore2, int? winner) async {
-    final update = GameTableCompanion(
-      teamOneScore: Value(noviScore1),
-      teamTwoScore: Value(noviScore2),
-      finished: const Value(true),
-      winner: Value(winner),
-    );
+  Future<void> updateGame(Game game) async {
+    final update = game.toCompanion();
     await dao.update(
       database.gameTable,
       database.gameTable.id,
-      gameId,
-      update,
-    );
-  }
-
-  Future<void> updateTeamScores(String gameId, int noviScore1, int noviScore2) async {
-    final update = GameTableCompanion(
-      teamOneScore: Value(noviScore1),
-      teamTwoScore: Value(noviScore2),
-    );
-    await dao.update(
-      database.gameTable,
-      database.gameTable.id,
-      gameId,
-      update,
-    );
-  }
-
-  Future<void> setGameWinner(String gameId, int? winner) async {
-    final update = GameTableCompanion(
-      winner: Value(winner),
-      finished: const Value(true),
-    );
-    await dao.update(
-      database.gameTable,
-      database.gameTable.id,
-      gameId,
-      update,
-    );
-  }
-
-  Future<void> finishGame(String gameId) async {
-    const update = GameTableCompanion(
-      finished: Value(true),
-    );
-    await dao.update(
-      database.gameTable,
-      database.gameTable.id,
-      gameId,
+      game.id!,
       update,
     );
   }
@@ -114,9 +65,5 @@ class GamesService {
   Future<Game?> getGameById(String gameId) async {
     final data = await dao.getById(database.gameTable, database.gameTable.id, gameId);
     return data?.toModel();
-  }
-
-  Future<List<RoundTableData>> getRoundsForGameSorted(String gameId) async {
-    return await roundDao.getRoundsForGameSorted(gameId);
   }
 }

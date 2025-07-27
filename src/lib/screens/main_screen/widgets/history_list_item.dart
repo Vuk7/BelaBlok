@@ -14,8 +14,27 @@ class HistoryListItem extends StatelessWidget {
     required this.onTap,
   });
 
+  void _showTimeDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (_) => AlertDialog(
+        title: const Text('Vrijeme igre'),
+        content: Text(date), 
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('Zatvori'),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    // "yyyy-MM-dd HH:mm"
+    final dateOnly = date.split(' ').first;
+
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 6),
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
@@ -29,21 +48,28 @@ class HistoryListItem extends StatelessWidget {
         onTap: onTap,
         child: Row(
           children: [
-            Icon(
-              Icons.access_time,
-              size: 18,
-              color: Theme.of(context).brightness == Brightness.dark 
-                ? Colors.white 
-                : Colors.black,
-            ),
-            const SizedBox(width: 8),
-            Text(
-              date,
-              style: TextStyle(
-                fontSize: 15, 
+            GestureDetector(
+              onTap: () => _showTimeDialog(context),
+              child: Icon(
+                Icons.access_time,
+                size: 18,
                 color: Theme.of(context).brightness == Brightness.dark 
                   ? Colors.white 
-                  : Colors.black
+                  : Colors.black,
+              ),
+            ),
+            const SizedBox(width: 8),
+            Flexible(
+              flex: 2,
+              child: Text(
+                dateOnly,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  fontSize: 15, 
+                  color: Theme.of(context).brightness == Brightness.dark 
+                    ? Colors.white 
+                    : Colors.black
+                ),
               ),
             ),
             const Spacer(),

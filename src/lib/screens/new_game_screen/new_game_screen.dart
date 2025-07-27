@@ -28,14 +28,14 @@ class _NewGameScreenState extends State<NewGameScreen> {
   @override
   void initState() {
     super.initState();
-    _db = AppDatabase(); // Singleton ili vlastita instanca
+    _db = AppDatabase(); 
     _gamesService = GamesService(_db);
   }
 
   Future<int?> getSelectedTargetScore() async {
     if (selectedGameType == 0) return 1001;
     if (selectedGameType == 1) return 501;
-    // Custom
+    
     if (customGameController.text.isNotEmpty) {
       return int.tryParse(customGameController.text);
     }
@@ -139,7 +139,7 @@ class _NewGameScreenState extends State<NewGameScreen> {
                       style: AppTheme.screenTitleTextStyle,
                     ),
                     const SizedBox(height: 20),
-                    // Okviri za 1001 i 501
+                   
                     Row(
                       children: [
                         Expanded(
@@ -180,7 +180,7 @@ class _NewGameScreenState extends State<NewGameScreen> {
                       ],
                     ),
                     const SizedBox(height: 20),
-                    // Ručno
+                    
                     AnimatedButton(
                       text: isCustomGame
                           ? "RUČNO (${customGameController.text.isEmpty ? '---' : customGameController.text})"
@@ -205,14 +205,14 @@ class _NewGameScreenState extends State<NewGameScreen> {
                       },
                     ),
                     const SizedBox(height: 5),
-                    // Settings menu
+                   
                     GameSettingsMenu(
                       playDirectionSelect: playDirectionSelect,
                       onPlayDirectionChanged: (id) =>
                           setState(() => playDirectionSelect = id),
                     ),
                     const SizedBox(height: 15),
-                    // Prvi miješa sekcija
+                
                     Container(
                       width: double.infinity,
                       padding: const EdgeInsets.all(16),
