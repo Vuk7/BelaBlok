@@ -81,4 +81,13 @@ class GamesService {
   Future<void> createRound(Round round) async {
     await daoRound.insert(database.roundTable, round.toCompanion()); 
   }
+
+  Future<void> updateRound(Round round) async {
+    await daoRound.update(
+      database.roundTable,
+      database.roundTable.id,
+      round.id!,
+      round.toCompanion(),
+    );
+  }
 }

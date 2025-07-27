@@ -1,7 +1,6 @@
 import 'package:bela_blok/db/database.dart'; 
 import 'package:bela_blok/db/models/round_model.dart'; 
 import 'package:bela_blok/services/games_service.dart'; 
-import 'package:drift/drift.dart' as drift;
 import 'package:bela_blok/screens/add_round_screen/widgets/choose_caller.dart';
 import 'package:bela_blok/screens/add_round_screen/widgets/choose_input_type.dart';
 import 'package:bela_blok/screens/widgets/big_button_input_number.dart';
@@ -95,16 +94,16 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
   void handleSaveRound() async {
     try {
       if (widget.roundToEdit != null) {
-        await gamesService.daoRound.update(
-          db.roundTable,
-          db.roundTable.id,
-          widget.roundToEdit.id,
-          RoundTableCompanion(
-            teamOneScore: drift.Value(int.tryParse(inputTeamOne.text) ?? 0),
-            teamTwoScore: drift.Value(int.tryParse(inputTeamTwo.text) ?? 0),
-            teamCalled: drift.Value(selectedCaller),
-          ),
+       
+        final updatedRound = Round(
+          id: widget.roundToEdit.id,
+          gameId: widget.roundToEdit.gameId,
+          teamCalled: selectedCaller,
+          teamOneScore: int.tryParse(inputTeamOne.text) ?? 0,
+          teamTwoScore: int.tryParse(inputTeamTwo.text) ?? 0,
+          createdAt: widget.roundToEdit.createdAt,
         );
+        await gamesService.updateRound(updatedRound);
       } else {
         final round = Round(
           gameId: widget.gameId!,
@@ -123,7 +122,6 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
         newScoreTeamTwo += r.teamTwoScore ?? 0;
       }
 
-      
       final game = await gamesService.getGameById(widget.gameId!);
       if (game != null) {
         game.teamOneScore = newScoreTeamOne;
