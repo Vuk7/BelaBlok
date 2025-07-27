@@ -12,3 +12,5 @@ const String teamTwoDisplayName = "VI";
 // Debug constants
 const bool debugMode = true;
 const String debugTag = "BelaBlok";
+
+const int maxScore = 162;

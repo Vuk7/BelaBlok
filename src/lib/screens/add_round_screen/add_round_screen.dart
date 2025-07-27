@@ -11,6 +11,7 @@ import 'package:bela_blok/screens/widgets/pulsing_fab.dart';
 import 'package:bela_blok/themes/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:bela_blok/common/constants.dart';
 
 class AddRoundScreen extends StatefulWidget {
   final String? gameId;
@@ -27,7 +28,6 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
   int selectedCaller = 0;
   final TextEditingController inputTeamOne = TextEditingController();
   final TextEditingController inputTeamTwo = TextEditingController();
-  static const int _maxScore = 162;
   bool _isAutoCompleting = false;
   int selectedInputType = 0;
   bool showGameScore = true;
@@ -144,9 +144,9 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
       if (callerScore <= otherScore || callerScore < 82) {
         if (selectedCaller == 0) {
           teamOne = 0;
-          teamTwo = _maxScore;
+          teamTwo = maxScore;
         } else {
-          teamOne = _maxScore;
+          teamOne = maxScore;
           teamTwo = 0;
         }
       }
@@ -230,8 +230,8 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
       if (inputTeamTwo.text != '252') {
         inputTeamTwo.text = '252';
       }
-    } else if (value != null && value > 0 && value <= _maxScore) {
-      final other = _maxScore - value;
+    } else if (value != null && value > 0 && value <= maxScore) {
+      final other = maxScore - value;
       if (inputTeamTwo.text != other.toString()) {
         inputTeamTwo.text = other.toString();
       }
@@ -250,8 +250,8 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
       if (inputTeamOne.text != '252') {
         inputTeamOne.text = '252';
       }
-    } else if (value != null && value > 0 && value <= _maxScore) {
-      final other = _maxScore - value;
+    } else if (value != null && value > 0 && value <= maxScore) {
+      final other = maxScore - value;
       if (inputTeamOne.text != other.toString()) {
         inputTeamOne.text = other.toString();
       }
