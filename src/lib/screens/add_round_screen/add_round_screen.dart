@@ -41,6 +41,11 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
   late final GamesService gamesService;
   late final RoundsService roundsService;
 
+  int? currentlyShuffling;
+  int? gameDirection;
+  int totalPlayers = 4; 
+  int roundsCount = 0;
+
   @override
   void initState() {
     super.initState();
@@ -70,6 +75,30 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
       inputTeamOne.text = (widget.roundToEdit.teamOneScore ?? 0).toString();
       inputTeamTwo.text = (widget.roundToEdit.teamTwoScore ?? 0).toString();
       selectedCaller = widget.roundToEdit.teamCalled ?? 0;
+    }
+
+    _loadGameData();
+    _loadRoundsCount();
+  }
+
+  Future<void> _loadGameData() async {
+    if (widget.gameId != null) {
+      final game = await gamesService.getGameById(widget.gameId!);
+      if (game != null) {
+        setState(() {
+          currentlyShuffling = game.currentlyShuffling ?? 1;
+          gameDirection = game.gameDirection ?? 0;
+        });
+      }
+    }
+  }
+
+  Future<void> _loadRoundsCount() async {
+    if (widget.gameId != null) {
+      final rounds = await roundsService.getRoundsForGameSorted(widget.gameId!);
+      setState(() {
+        roundsCount = rounds.length;
+      });
     }
   }
 
@@ -444,9 +473,8 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
                       title: 'TRENUTNO MIJEŠA',
                       child: PlayerShuffling(
                         onTap: (_) {},
-                        selectedColor:
-                            Theme.of(context).colorScheme.primary,
-                        selected: 2,
+                        selectedColor: Theme.of(context).colorScheme.primary,
+                        selected: getNextShuffler(roundsCount),
                       ),
                     ),
                     const SizedBox(height: 40),
@@ -513,4 +541,13 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
                   .withValues(alpha: (0.6 * 255).toDouble()),
         ),
       );
+
+  int getNextShuffler(int roundCount) {
+    if (currentlyShuffling == null || gameDirection == null) return 1;
+    int start = currentlyShuffling! - 1; 
+    int dir = gameDirection == 0 ? 1 : -1;
+    int next = (start + dir * roundCount) % totalPlayers;
+    if (next < 0) next += totalPlayers;
+    return next + 1; 
+  }
 }

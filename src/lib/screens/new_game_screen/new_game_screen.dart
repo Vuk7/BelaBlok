@@ -54,6 +54,7 @@ class _NewGameScreenState extends State<NewGameScreen> {
         playDirection: playDirectionSelect == 0
             ? PlayDirection.clockwise
             : PlayDirection.counterClockwise,
+        currentlyShuffling: playerShufflingSelect, 
       );
 
       final latestGame = await _gamesService.getLatestGame();
