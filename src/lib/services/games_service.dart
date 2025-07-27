@@ -10,11 +10,11 @@ import 'package:bela_blok/enums/play_direction_enum.dart';
 class GamesService {
   final AppDatabase database;
   final GameDao dao;
-  final RoundDao roundDao;
+  final RoundDao daoRound; 
 
   GamesService(this.database)
       : dao = GameDao(database),
-        roundDao = RoundDao(database);
+        daoRound = RoundDao(database);
 
   Future<void> createGame() async {
     var newGame = Game(teamOneScore: 20, teamTwoScore: 25);
@@ -75,10 +75,10 @@ class GamesService {
   }
 
   Future<List<RoundTableData>> getRoundsForGameSorted(String gameId) async {
-    return await roundDao.getRoundsForGameSorted(gameId);
+    return await daoRound.getRoundsForGameSorted(gameId); 
   }
 
   Future<void> createRound(Round round) async {
-    await roundDao.insert(database.roundTable, round.toCompanion());
+    await daoRound.insert(database.roundTable, round.toCompanion()); 
   }
 }

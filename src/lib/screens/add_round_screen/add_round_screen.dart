@@ -95,7 +95,7 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
   void handleSaveRound() async {
     try {
       if (widget.roundToEdit != null) {
-        await gamesService.roundDao.update(
+        await gamesService.daoRound.update(
           db.roundTable,
           db.roundTable.id,
           widget.roundToEdit.id,
@@ -159,7 +159,7 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
   void handleCallerChange(int id) {
     setState(() {
       selectedCaller = id;
-      
+       
       focusedInput = id; 
     });
   }
