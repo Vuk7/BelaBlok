@@ -132,7 +132,8 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
       
       int callerScore = selectedCaller == 0 ? teamOne : teamTwo;
       int otherScore = selectedCaller == 0 ? teamTwo : teamOne;
-    
+
+      
       if (callerScore <= otherScore || callerScore < 82) {
         if (selectedCaller == 0) {
           teamOne = 0;
