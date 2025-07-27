@@ -56,6 +56,7 @@ class GamesService {
 
   Future<void> updateGame(Game game) async {
     final update = game.toCompanion();
+
     await dao.update(
       database.gameTable,
       database.gameTable.id,

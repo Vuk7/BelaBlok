@@ -96,12 +96,14 @@ class _CurrentGameScreenState extends State<CurrentGameScreen> {
       showErrorMessage("Igra je već završena");
       return;
     }
+
     await context.pushNamed(
       'addround',
       queryParameters: {'id': currentGame!.id!},
     );
     
     await handleInitializeGame(gameId: currentGame!.id!);
+
   }
 
   void handleGameError(String error) {

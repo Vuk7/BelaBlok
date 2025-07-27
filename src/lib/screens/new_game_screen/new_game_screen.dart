@@ -28,6 +28,7 @@ class _NewGameScreenState extends State<NewGameScreen> {
   @override
   void initState() {
     super.initState();
+
     _db = AppDatabase(); 
     _gamesService = GamesService(_db);
   }
@@ -35,7 +36,7 @@ class _NewGameScreenState extends State<NewGameScreen> {
   Future<int?> getSelectedTargetScore() async {
     if (selectedGameType == 0) return 1001;
     if (selectedGameType == 1) return 501;
-    
+
     if (customGameController.text.isNotEmpty) {
       return int.tryParse(customGameController.text);
     }
