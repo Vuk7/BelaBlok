@@ -66,4 +66,16 @@ class GamesService {
     final data = await dao.getById(database.gameTable, database.gameTable.id, gameId);
     return data?.toModel();
   }
+
+
+  /// [playerCount] 
+  Future<int> getNextStartingShuffler({int playerCount = 4}) async {
+    final latestGame = await getLatestGame();
+    if (latestGame != null && latestGame.currentlyShuffling != null) {
+
+      return (latestGame.currentlyShuffling! % playerCount) + 1;
+    }
+    
+    return 1;
+  }
 }
