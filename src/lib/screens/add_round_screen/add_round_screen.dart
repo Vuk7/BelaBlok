@@ -226,7 +226,11 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
     if (_isAutoCompleting) return;
     _isAutoCompleting = true;
     final value = int.tryParse(inputTeamOne.text);
-    if (value != null && value >= 0 && value <= _maxScore) {
+    if (value != null && value == 0) {
+      if (inputTeamTwo.text != '252') {
+        inputTeamTwo.text = '252';
+      }
+    } else if (value != null && value > 0 && value <= _maxScore) {
       final other = _maxScore - value;
       if (inputTeamTwo.text != other.toString()) {
         inputTeamTwo.text = other.toString();
@@ -242,7 +246,11 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
     if (_isAutoCompleting) return;
     _isAutoCompleting = true;
     final value = int.tryParse(inputTeamTwo.text);
-    if (value != null && value >= 0 && value <= _maxScore) {
+    if (value != null && value == 0) {
+      if (inputTeamOne.text != '252') {
+        inputTeamOne.text = '252';
+      }
+    } else if (value != null && value > 0 && value <= _maxScore) {
       final other = _maxScore - value;
       if (inputTeamOne.text != other.toString()) {
         inputTeamOne.text = other.toString();
