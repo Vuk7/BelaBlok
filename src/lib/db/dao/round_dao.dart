@@ -25,5 +25,22 @@ class RoundDao extends BaseDao {
             ..orderBy([(r) => OrderingTerm.desc(r.createdAt)])
             ..limit(1))
           .getSingleOrNull();
+
+  Future<void> updateRound(
+    String roundId,
+    int teamOneScore,
+    int teamTwoScore,
+    int teamCalled,
+  ) async {
+    await update(
+      _db.roundTable,
+      _db.roundTable.id,
+      roundId,
+      RoundTableCompanion(
+        teamOneScore: Value(teamOneScore),
+        teamTwoScore: Value(teamTwoScore),
+        teamCalled: Value(teamCalled),
+      ),
+    );
+  }
 }
-R
