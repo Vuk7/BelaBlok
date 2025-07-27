@@ -172,6 +172,21 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
     setState(() => showGameScore = !showGameScore);
   }
 
+  
+  void handleSaveButtonPressed() {
+    final msg = isReadyToSaveMessage;
+    if (msg == null) {
+      handleSaveRound();
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(msg),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
@@ -195,19 +210,7 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
             bottom: 0,
             child: PulsingFloatingActionButton(
               heroTag: 'save_btn',
-              onPressed: () {
-                final msg = isReadyToSaveMessage;
-                if (msg == null) {
-                  handleSaveRound();
-                } else {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(msg),
-                      backgroundColor: Colors.red,
-                    ),
-                  );
-                }
-              },
+              onPressed: handleSaveButtonPressed,
               backgroundColor: AppTheme.green,
               isPulsing: isReadyToSaveMessage == null,
               child: const Icon(Icons.save, color: AppTheme.black, size: 28),
