@@ -70,7 +70,7 @@ class RoundsService {
     required int teamTwoCallAmount,
   }) {
     if (failedTeam == 0) {
-      // Ekipa 1 pala, ekipa 2 dobiva sve zvanje
+     
       return {
         'teamOneTotal': 0,
         'teamTwoTotal': teamTwoBase + teamTwoCallAmount + teamOneCallAmount,
