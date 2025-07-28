@@ -82,6 +82,11 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
       inputTeamOne.text = (widget.roundToEdit.teamOneScore ?? 0).toString();
       inputTeamTwo.text = (widget.roundToEdit.teamTwoScore ?? 0).toString();
       selectedCaller = widget.roundToEdit.teamCalled ?? 0;
+      
+      final t1 = widget.roundToEdit.teamOneCallAmount ?? 0;
+      final t2 = widget.roundToEdit.teamTwoCallAmount ?? 0;
+      _callsTeamOne = t1 > 0 ? [CallEntry(CallType.z20, (t1 / 20).round())] : [];
+      _callsTeamTwo = t2 > 0 ? [CallEntry(CallType.z20, (t2 / 20).round())] : [];
     }
 
     _loadGameData();
@@ -134,6 +139,9 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
     try {
       int teamOne = int.tryParse(inputTeamOne.text) ?? 0;
       int teamTwo = int.tryParse(inputTeamTwo.text) ?? 0;
+   
+      int teamOneCallAmount = _callsTeamOne.fold(0, (prev, c) => prev + _callValue(c.type) * c.count);
+      int teamTwoCallAmount = _callsTeamTwo.fold(0, (prev, c) => prev + _callValue(c.type) * c.count);
 
      
       if (teamOne == 0 && teamTwo > 0) {
@@ -165,6 +173,8 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
         updatedRound.teamOneScore = teamOne;
         updatedRound.teamTwoScore = teamTwo;
         updatedRound.teamFailed = teamFailed;
+        updatedRound.teamOneCallAmount = teamOneCallAmount;
+        updatedRound.teamTwoCallAmount = teamTwoCallAmount;
         await roundsService.updateRound(updatedRound);
       } else {
         final round = Round(
@@ -173,6 +183,8 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
           teamOneScore: teamOne,
           teamTwoScore: teamTwo,
           teamFailed: teamFailed,
+          teamOneCallAmount: teamOneCallAmount,
+          teamTwoCallAmount: teamTwoCallAmount,
         );
         await roundsService.createRound(round);
       }
@@ -284,6 +296,20 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
           backgroundColor: Colors.red,
         ),
       );
+    }
+  }
+
+
+  int _callValue(CallType t) {
+    switch (t) {
+      case CallType.z20:
+        return 20;
+      case CallType.z50:
+        return 50;
+      case CallType.z100:
+        return 100;
+      case CallType.stiglja:
+        return 1001;
     }
   }
 
@@ -582,6 +608,8 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
                                     teamLabel: 'MI',
                                     color: AppTheme.green,
                                     onChanged: (calls) => setState(() => _callsTeamOne = List.from(calls)),
+                                  
+                                    initialCalls: List<CallEntry>.from(_callsTeamOne),
                                   ),
                                 ),
                                 const SizedBox(width: 18),
@@ -590,6 +618,7 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
                                     teamLabel: 'VI',
                                     color: AppTheme.primary,
                                     onChanged: (calls) => setState(() => _callsTeamTwo = List.from(calls)),
+                                    initialCalls: List<CallEntry>.from(_callsTeamTwo),
                                   ),
                                 ),
                               ],

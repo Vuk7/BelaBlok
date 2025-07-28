@@ -12,14 +12,20 @@ class CallShowWidget extends StatefulWidget {
   final String teamLabel;
   final Color color;
   final void Function(List<CallEntry>) onChanged;
-  const CallShowWidget({super.key, required this.teamLabel, required this.color, required this.onChanged});
+  final List<CallEntry>? initialCalls;
+  const CallShowWidget({super.key, required this.teamLabel, required this.color, required this.onChanged, this.initialCalls});
 
   @override
   State<CallShowWidget> createState() => _CallShowWidgetState();
 }
 
 class _CallShowWidgetState extends State<CallShowWidget> {
-  final List<CallEntry> _calls = [];
+  late List<CallEntry> _calls;
+  @override
+  void initState() {
+    super.initState();
+    _calls = widget.initialCalls != null ? List<CallEntry>.from(widget.initialCalls!) : [];
+  }
 
   int get sum => _calls.fold(0, (prev, c) => prev + _callValue(c.type) * c.count);
 
