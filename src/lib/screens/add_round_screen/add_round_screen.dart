@@ -380,8 +380,7 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
         return 50;
       case CallType.z100:
         return 100;
-      case CallType.stiglja:
-        return 1001;
+    
     }
   }
 

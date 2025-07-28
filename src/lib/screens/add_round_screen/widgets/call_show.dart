@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-enum CallType { z20, z50, z100, stiglja }
+enum CallType { z20, z50, z100 }
 enum SpecialCall { belot }
 
 class CallEntry {
@@ -43,7 +43,6 @@ class _CallShowWidgetState extends State<CallShowWidget> {
         case CallType.z20: return 20;
         case CallType.z50: return 50;
         case CallType.z100: return 100;
-        case CallType.stiglja: return 252;
       }
     }
     // Belot nema vrijednost ovdje, rješava se vani
@@ -56,7 +55,6 @@ class _CallShowWidgetState extends State<CallShowWidget> {
         case CallType.z20: return '20';
         case CallType.z50: return '50';
         case CallType.z100: return '100';
-        case CallType.stiglja: return 'ŠTIGLJA';
       }
     }
     if (t == SpecialCall.belot) return 'Belot';
@@ -189,7 +187,6 @@ class _CallShowWidgetState extends State<CallShowWidget> {
             _callButton(CallType.z20),
             _callButton(CallType.z50),
             _callButton(CallType.z100),
-            _callButton(CallType.stiglja),
             _belotButton(),
           ],
         ),
