@@ -27,6 +27,7 @@ class AddRoundScreen extends StatefulWidget {
 }
 
 class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStateMixin {
+  int? _currentGameType;
   List<CallEntry> _callsTeamOne = [];
   List<CallEntry> _callsTeamTwo = [];
   int selectedCaller = 0;
@@ -100,6 +101,7 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
         setState(() {
           currentlyShuffling = game.currentlyShuffling ?? 1;
           gameDirection = game.gameDirection ?? 0;
+          _currentGameType = game.gameType;
         });
       }
     }
@@ -125,6 +127,12 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
 
 
   String? get isReadyToSaveMessage {
+    bool teamOneBelot = _callsTeamOne.any((c) => c.type == SpecialCall.belot);
+    bool teamTwoBelot = _callsTeamTwo.any((c) => c.type == SpecialCall.belot);
+    if (teamOneBelot || teamTwoBelot) {
+     
+      return null;
+    }
     if (selectedCaller < 0) return 'Odaberite tko je zvao.';
     if (focusedInput < 0) return 'Odaberite unos bodova.';
     if (inputTeamOne.text.isEmpty && inputTeamTwo.text.isEmpty) {
@@ -137,23 +145,80 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
 
   void handleSaveRound() async {
     try {
-      int teamOneBase = int.tryParse(inputTeamOne.text) ?? 0;
-      int teamTwoBase = int.tryParse(inputTeamTwo.text) ?? 0;
-      int teamOneCallAmount = _callsTeamOne.fold(0, (prev, c) => prev + _callValue(c.type) * c.count);
-      int teamTwoCallAmount = _callsTeamTwo.fold(0, (prev, c) => prev + _callValue(c.type) * c.count);
+      final game = await gamesService.getGameById(widget.gameId!);
+      final int gameType = _currentGameType ?? game?.gameType ?? 1001;
+      bool teamOneBelot = _callsTeamOne.any((c) => c.type == SpecialCall.belot);
+      bool teamTwoBelot = _callsTeamTwo.any((c) => c.type == SpecialCall.belot);
 
-      
+      int teamOneBase = 0;
+      int teamTwoBase = 0;
+      int teamOneCallAmount = 0;
+      int teamTwoCallAmount = 0;
+      bool teamFailed = false;
+
+      if (teamOneBelot || teamTwoBelot) {
+       
+        if (teamOneBelot) {
+          teamOneCallAmount = gameType;
+        }
+        if (teamTwoBelot) {
+          teamTwoCallAmount = gameType;
+        }
+        if (widget.roundToEdit != null) {
+          final updatedRound = widget.roundToEdit;
+          updatedRound.teamCalled = selectedCaller;
+          updatedRound.teamOneScore = teamOneCallAmount;
+          updatedRound.teamTwoScore = teamTwoCallAmount;
+          updatedRound.teamFailed = false;
+          updatedRound.teamOneCallAmount = teamOneCallAmount;
+          updatedRound.teamTwoCallAmount = teamTwoCallAmount;
+          await roundsService.updateRound(updatedRound);
+        } else {
+          final round = Round(
+            gameId: widget.gameId!,
+            teamCalled: selectedCaller,
+            teamOneScore: teamOneCallAmount,
+            teamTwoScore: teamTwoCallAmount,
+            teamFailed: false,
+            teamOneCallAmount: teamOneCallAmount,
+            teamTwoCallAmount: teamTwoCallAmount,
+          );
+          await roundsService.createRound(round);
+        }
+        final rounds = await roundsService.getRoundsForGameSorted(widget.gameId!);
+        int newScoreTeamOne = 0;
+        int newScoreTeamTwo = 0;
+        for (final r in rounds) {
+          newScoreTeamOne += r.teamOneScore ?? 0;
+          newScoreTeamTwo += r.teamTwoScore ?? 0;
+        }
+        if (game != null) {
+          game.teamOneScore = newScoreTeamOne;
+          game.teamTwoScore = newScoreTeamTwo;
+          await gamesService.updateGame(game);
+        }
+        if (!mounted) return;
+        
+        context.pop();
+        return;
+      }
+
+     
+      teamOneBase = int.tryParse(inputTeamOne.text) ?? 0;
+      teamTwoBase = int.tryParse(inputTeamTwo.text) ?? 0;
+      teamOneCallAmount = _callsTeamOne.fold(0, (prev, c) => prev + _callValue(c.type) * c.count);
+      teamTwoCallAmount = _callsTeamTwo.fold(0, (prev, c) => prev + _callValue(c.type) * c.count);
+
       if (teamOneBase == 0 && teamTwoBase > 0) {
         teamTwoBase = 252;
       } else if (teamTwoBase == 0 && teamOneBase > 0) {
         teamOneBase = 252;
       }
 
-   
       int? failedTeam;
       int callerScore, otherScore;
-      bool teamFailed = false;
-     
+      teamFailed = false;
+
       var scores = roundsService.calculateRoundScores(
         teamOneBase: teamOneBase,
         teamTwoBase: teamTwoBase,
@@ -166,7 +231,6 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
       if (callerScore <= otherScore || callerScore < 82) {
         teamFailed = true;
         failedTeam = selectedCaller;
-        
         scores = roundsService.calculateRoundScores(
           teamOneBase: teamOneBase,
           teamTwoBase: teamTwoBase,
@@ -206,7 +270,6 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
         newScoreTeamTwo += r.teamTwoScore ?? 0;
       }
 
-      final game = await gamesService.getGameById(widget.gameId!);
       if (game != null) {
         game.teamOneScore = newScoreTeamOne;
         game.teamTwoScore = newScoreTeamTwo;
@@ -327,8 +390,8 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
     // Calculate pad (fall) for UI only
     int teamOneVal = int.tryParse(inputTeamOne.text) ?? 0;
     int teamTwoVal = int.tryParse(inputTeamTwo.text) ?? 0;
-    int teamOneCallAmount = _callsTeamOne.fold(0, (prev, c) => prev + _callValue(c.type) * c.count);
-    int teamTwoCallAmount = _callsTeamTwo.fold(0, (prev, c) => prev + _callValue(c.type) * c.count);
+    int teamOneCallAmount = _callsTeamOne.where((c) => c.type is CallType).fold(0, (prev, c) => prev + _callValue(c.type) * c.count) + (_callsTeamOne.any((c) => c.type == SpecialCall.belot) ? 100 : 0);
+    int teamTwoCallAmount = _callsTeamTwo.where((c) => c.type is CallType).fold(0, (prev, c) => prev + _callValue(c.type) * c.count) + (_callsTeamTwo.any((c) => c.type == SpecialCall.belot) ? 100 : 0);
     int teamOneTotal = teamOneVal + teamOneCallAmount;
     int teamTwoTotal = teamTwoVal + teamTwoCallAmount;
     int callerScoreUI = selectedCaller == 0 ? teamOneTotal : teamTwoTotal;
@@ -665,8 +728,8 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
                                     teamLabel: 'MI',
                                     color: AppTheme.green,
                                     onChanged: (calls) => setState(() => _callsTeamOne = List.from(calls)),
-                                  
                                     initialCalls: List<CallEntry>.from(_callsTeamOne),
+                                    gameType: _currentGameType ?? 1001,
                                   ),
                                 ),
                                 const SizedBox(width: 18),
@@ -676,6 +739,7 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
                                     color: AppTheme.primary,
                                     onChanged: (calls) => setState(() => _callsTeamTwo = List.from(calls)),
                                     initialCalls: List<CallEntry>.from(_callsTeamTwo),
+                                    gameType: _currentGameType ?? 1001,
                                   ),
                                 ),
                               ],
