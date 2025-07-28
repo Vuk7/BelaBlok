@@ -28,6 +28,7 @@ class RoundTable extends BaseUUIDModel {
   IntColumn get teamTwoCallAmount => integer().nullable()();
   BoolColumn get isTeamOneCallSuccessful => boolean().nullable()();
   BoolColumn get isTeamTwoCallSuccessful => boolean().nullable()();
+  BoolColumn get teamFailed => boolean().nullable()();
 
   @override
   String get tableName => 'rounds';

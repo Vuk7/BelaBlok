@@ -130,7 +130,7 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
       int teamOne = int.tryParse(inputTeamOne.text) ?? 0;
       int teamTwo = int.tryParse(inputTeamTwo.text) ?? 0;
 
-      
+     
       if (teamOne == 0 && teamTwo > 0) {
         teamTwo = 252;
       } else if (teamTwo == 0 && teamOne > 0) {
@@ -140,21 +140,26 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
       int callerScore = selectedCaller == 0 ? teamOne : teamTwo;
       int otherScore = selectedCaller == 0 ? teamTwo : teamOne;
 
+      bool teamFailed = false;
       
       if (callerScore <= otherScore || callerScore < 82) {
+        teamFailed = true;
+       
         if (selectedCaller == 0) {
           teamOne = 0;
-          teamTwo = maxScore;
+          teamTwo = 162;
         } else {
-          teamOne = maxScore;
+          teamOne = 162;
           teamTwo = 0;
         }
       }
+
       if (widget.roundToEdit != null) {
         final updatedRound = widget.roundToEdit;
         updatedRound.teamCalled = selectedCaller;
         updatedRound.teamOneScore = teamOne;
         updatedRound.teamTwoScore = teamTwo;
+        updatedRound.teamFailed = teamFailed;
         await roundsService.updateRound(updatedRound);
       } else {
         final round = Round(
@@ -162,11 +167,12 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
           teamCalled: selectedCaller,
           teamOneScore: teamOne,
           teamTwoScore: teamTwo,
+          teamFailed: teamFailed,
         );
-        await roundsService.createRound(round); 
+        await roundsService.createRound(round);
       }
 
-      final rounds = await roundsService.getRoundsForGameSorted(widget.gameId!); 
+      final rounds = await roundsService.getRoundsForGameSorted(widget.gameId!);
       int newScoreTeamOne = 0;
       int newScoreTeamTwo = 0;
       for (final r in rounds) {
@@ -180,10 +186,9 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
         game.teamTwoScore = newScoreTeamTwo;
         await gamesService.updateGame(game);
       }
-     
 
       if (!mounted) return;
-      context.pop(); 
+      context.pop();
     } catch (e, stack) {
       debugPrint('Greška pri spremanju runde: $e\n$stack');
       if (!mounted) return;
