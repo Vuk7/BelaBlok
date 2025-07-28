@@ -27,6 +27,7 @@ class RoundsService {
   }
 
   
+ 
   Map<String, int> calculateRoundScores({
     required int teamOneBase,
     required int teamTwoBase,
@@ -35,7 +36,41 @@ class RoundsService {
     int? failedTeam,
   }) {
     if (failedTeam == 0) {
-      
+      return calculateFallScores(
+        failedTeam: 0,
+        teamOneBase: teamOneBase,
+        teamTwoBase: teamTwoBase,
+        teamOneCallAmount: teamOneCallAmount,
+        teamTwoCallAmount: teamTwoCallAmount,
+      );
+    } else if (failedTeam == 1) {
+      return calculateFallScores(
+        failedTeam: 1,
+        teamOneBase: teamOneBase,
+        teamTwoBase: teamTwoBase,
+        teamOneCallAmount: teamOneCallAmount,
+        teamTwoCallAmount: teamTwoCallAmount,
+      );
+    } else {
+      return calculateNormalScores(
+        teamOneBase: teamOneBase,
+        teamTwoBase: teamTwoBase,
+        teamOneCallAmount: teamOneCallAmount,
+        teamTwoCallAmount: teamTwoCallAmount,
+      );
+    }
+  }
+
+
+  Map<String, int> calculateFallScores({
+    required int failedTeam,
+    required int teamOneBase,
+    required int teamTwoBase,
+    required int teamOneCallAmount,
+    required int teamTwoCallAmount,
+  }) {
+    if (failedTeam == 0) {
+      // Ekipa 1 pala, ekipa 2 dobiva sve zvanje
       return {
         'teamOneTotal': 0,
         'teamTwoTotal': teamTwoBase + teamTwoCallAmount + teamOneCallAmount,
@@ -44,8 +79,8 @@ class RoundsService {
         'teamOneCallAmount': teamOneCallAmount,
         'teamTwoCallAmount': teamTwoCallAmount + teamOneCallAmount,
       };
-    } else if (failedTeam == 1) {
-      
+    } else {
+     
       return {
         'teamOneTotal': teamOneBase + teamOneCallAmount + teamTwoCallAmount,
         'teamTwoTotal': 0,
@@ -54,16 +89,23 @@ class RoundsService {
         'teamOneCallAmount': teamOneCallAmount + teamTwoCallAmount,
         'teamTwoCallAmount': teamTwoCallAmount,
       };
-    } else {
-      
-      return {
-        'teamOneTotal': teamOneBase + teamOneCallAmount,
-        'teamTwoTotal': teamTwoBase + teamTwoCallAmount,
-        'teamOneBase': teamOneBase,
-        'teamTwoBase': teamTwoBase,
-        'teamOneCallAmount': teamOneCallAmount,
-        'teamTwoCallAmount': teamTwoCallAmount,
-      };
     }
+  }
+
+ 
+  Map<String, int> calculateNormalScores({
+    required int teamOneBase,
+    required int teamTwoBase,
+    required int teamOneCallAmount,
+    required int teamTwoCallAmount,
+  }) {
+    return {
+      'teamOneTotal': teamOneBase + teamOneCallAmount,
+      'teamTwoTotal': teamTwoBase + teamTwoCallAmount,
+      'teamOneBase': teamOneBase,
+      'teamTwoBase': teamTwoBase,
+      'teamOneCallAmount': teamOneCallAmount,
+      'teamTwoCallAmount': teamTwoCallAmount,
+    };
   }
 }
