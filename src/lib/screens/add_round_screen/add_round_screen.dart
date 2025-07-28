@@ -31,6 +31,7 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
   final TextEditingController inputTeamTwo = TextEditingController();
   bool _isAutoCompleting = false;
   int selectedInputType = 0;
+  int selectedMode = 0; 
   bool showGameScore = true;
   int focusedInput = -1;
 
@@ -285,13 +286,14 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
 
   @override
   Widget build(BuildContext context) {
-    // Calculate pad (fall) for UI onlyS
+    // Calculate pad (fall) for UI only
     int teamOneVal = int.tryParse(inputTeamOne.text) ?? 0;
     int teamTwoVal = int.tryParse(inputTeamTwo.text) ?? 0;
     int callerScoreUI = selectedCaller == 0 ? teamOneVal : teamTwoVal;
     int otherScoreUI = selectedCaller == 0 ? teamTwoVal : teamOneVal;
     bool teamFailedUI = (callerScoreUI <= otherScoreUI || callerScoreUI < 82);
     final screenWidth = MediaQuery.of(context).size.width;
+
     return Scaffold(
       backgroundColor: AppTheme.getScreenBackground(context),
       resizeToAvoidBottomInset: false,
@@ -332,6 +334,7 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
               child: IntrinsicHeight(
                 child: Column(
                   children: [
+
                     Text(
                       '${roundsCount + 1}. RUNDA',
                       style: AppTheme.roundTitleTextStyle.copyWith(
@@ -507,6 +510,7 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
                       ),
                     ),
                     const SizedBox(height: 30),
+                    
                     _buildSection(
                       context: context,
                       icon: Icons.edit,
@@ -514,57 +518,63 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
                       title: 'UNOS BODOVA',
                       child: Column(
                         children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: List.generate(
-                              2,
-                              (i) => AnimatedBuilder(
-                                animation: i == 0
-                                    ? _bounceAnimation1
-                                    : _bounceAnimation2,
-                                builder: (_, __) => Transform.scale(
-                                  scale: i == 0
-                                      ? _bounceAnimation1.value
-                                      : _bounceAnimation2.value,
-                                  child: BigButtonInputNumber(
-                                    text: '0',
-                                    textStyle: TextStyle(
-                                      color: focusedInput == i
-                                          ? AppTheme.getInverseTextColor(context)
-                                          : AppTheme.getTextColor(context),
-                                      fontSize: 30,
-                                      fontWeight: FontWeight.bold,
+                          ChooseInputType(
+                            selectedChoice: selectedMode,
+                            selectedColor: AppTheme.green,
+                            notSelectedColor: AppTheme.getDisabledButtonColor(context),
+                            onTap: (id) => setState(() => selectedMode = id),
+                            boxWidth: screenWidth / 3,
+                          ),
+                          const SizedBox(height: 16),
+                          if (selectedMode == 0) ...[
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              children: List.generate(
+                                2,
+                                (i) => AnimatedBuilder(
+                                  animation: i == 0
+                                      ? _bounceAnimation1
+                                      : _bounceAnimation2,
+                                  builder: (_, __) => Transform.scale(
+                                    scale: i == 0
+                                        ? _bounceAnimation1.value
+                                        : _bounceAnimation2.value,
+                                    child: BigButtonInputNumber(
+                                      text: '0',
+                                      textStyle: TextStyle(
+                                        color: focusedInput == i
+                                            ? AppTheme.getInverseTextColor(context)
+                                            : AppTheme.getTextColor(context),
+                                        fontSize: 30,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                      bgColor: focusedInput == i
+                                          ? AppTheme.green
+                                          : focusedInput == (1 - i)
+                                              ? AppTheme.red
+                                              : AppTheme.getDisabledButtonColor(context),
+                                      onTap: () {
+                                        final controller =
+                                            i == 0 ? _bounceController1 : _bounceController2;
+                                        controller.forward().then((_) => controller.reverse());
+                                        setState(() => focusedInput = i);
+                                      },
+                                      inputController: i == 0
+                                          ? inputTeamOne
+                                          : inputTeamTwo,
+                                      textPadding: 10,
+                                      width: screenWidth / 3,
                                     ),
-                                    bgColor: focusedInput == i
-                                        ? AppTheme.green
-                                        : focusedInput == (1 - i)
-                                            ? AppTheme.red
-                                            : AppTheme.getDisabledButtonColor(context),
-                                    onTap: () {
-                                      final controller =
-                                          i == 0 ? _bounceController1 : _bounceController2;
-                                      controller.forward().then((_) => controller.reverse());
-                                      setState(() => focusedInput = i);
-                                    },
-                                    inputController: i == 0
-                                        ? inputTeamOne
-                                        : inputTeamTwo,
-                                    textPadding: 10,
-                                    width: screenWidth / 3,
                                   ),
                                 ),
                               ),
                             ),
-                          ),
-                          const SizedBox(height: 16),
-                          ChooseInputType(
-                            selectedChoice: selectedInputType,
-                            selectedColor: AppTheme.green,
-                            notSelectedColor:
-                                AppTheme.getDisabledButtonColor(context),
-                            onTap: (id) => setState(() => selectedInputType = id),
-                            boxWidth: screenWidth / 3,
-                          ),
+                          ],
+                          if (selectedMode == 1) ...[
+                          const  Center(
+                              child: Text('Unos zvanja', style: TextStyle(color: AppTheme.green)),
+                            ),
+                          ],
                         ],
                       ),
                     ),
