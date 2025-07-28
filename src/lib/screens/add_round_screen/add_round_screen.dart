@@ -8,6 +8,7 @@ import 'package:bela_blok/screens/widgets/big_button_input_number.dart';
 import 'package:bela_blok/screens/widgets/help_dialog.dart';
 import 'package:bela_blok/screens/widgets/player_shuffling.dart';
 import 'package:bela_blok/screens/widgets/pulsing_fab.dart';
+import 'package:bela_blok/screens/current_game_screen/widgets/falling_arrow_icon.dart';
 import 'package:bela_blok/themes/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -284,6 +285,12 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
 
   @override
   Widget build(BuildContext context) {
+    // Calculate pad (fall) for UI onlyS
+    int teamOneVal = int.tryParse(inputTeamOne.text) ?? 0;
+    int teamTwoVal = int.tryParse(inputTeamTwo.text) ?? 0;
+    int callerScoreUI = selectedCaller == 0 ? teamOneVal : teamTwoVal;
+    int otherScoreUI = selectedCaller == 0 ? teamTwoVal : teamOneVal;
+    bool teamFailedUI = (callerScoreUI <= otherScoreUI || callerScoreUI < 82);
     final screenWidth = MediaQuery.of(context).size.width;
     return Scaffold(
       backgroundColor: AppTheme.getScreenBackground(context),
@@ -405,13 +412,26 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
                                         .withValues(alpha: (0.6 * 255).toDouble()),
                                   ),
                                 ),
-                                Text(
-                                  inputTeamOne.text.isNotEmpty ? inputTeamOne.text : '0',
-                                  style: TextStyle(
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.bold,
-                                    color: Theme.of(context).colorScheme.primary,
-                                  ),
+                                Row(
+                                  children: [
+                                    Text(
+                                      inputTeamOne.text.isNotEmpty ? inputTeamOne.text : '0',
+                                      style: TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.bold,
+                                        color: Theme.of(context).colorScheme.primary,
+                                      ),
+                                    ),
+                                    if (teamFailedUI && selectedCaller == 0)
+                                     const Padding(
+                                        padding:  EdgeInsets.only(left: 4.0),
+                                        child:  SizedBox(
+                                          height: 24,
+                                          width: 24,
+                                          child: FallingArrowIcon(animateOnce: false),
+                                        ),
+                                      ),
+                                  ],
                                 ),
                               ],
                             ),
@@ -434,13 +454,26 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
                                         .withValues(alpha: (0.6 * 255).toDouble()),
                                   ),
                                 ),
-                                Text(
-                                  inputTeamTwo.text.isNotEmpty ? inputTeamTwo.text : '0',
-                                  style:const TextStyle(
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.bold,
-                                    color: AppTheme.green,
-                                  ),
+                                Row(
+                                  children: [
+                                    Text(
+                                      inputTeamTwo.text.isNotEmpty ? inputTeamTwo.text : '0',
+                                      style: const TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.bold,
+                                        color: AppTheme.green,
+                                      ),
+                                    ),
+                                    if (teamFailedUI && selectedCaller == 1)
+                                     const Padding(
+                                        padding:  EdgeInsets.only(left: 4.0),
+                                        child: SizedBox(
+                                          height: 24,
+                                          width: 24,
+                                          child: FallingArrowIcon(animateOnce: false),
+                                        ),
+                                      ),
+                                  ],
                                 ),
                               ],
                             ),
