@@ -26,19 +26,44 @@ class RoundsService {
     );
   }
 
-    Map<String, int> calculateRoundScores({
+  
+  Map<String, int> calculateRoundScores({
     required int teamOneBase,
     required int teamTwoBase,
     required int teamOneCallAmount,
     required int teamTwoCallAmount,
+    int? failedTeam,
   }) {
-    return {
-      'teamOneTotal': teamOneBase + teamOneCallAmount,
-      'teamTwoTotal': teamTwoBase + teamTwoCallAmount,
-      'teamOneBase': teamOneBase,
-      'teamTwoBase': teamTwoBase,
-      'teamOneCallAmount': teamOneCallAmount,
-      'teamTwoCallAmount': teamTwoCallAmount,
-    };
+    if (failedTeam == 0) {
+      
+      return {
+        'teamOneTotal': 0,
+        'teamTwoTotal': teamTwoBase + teamTwoCallAmount + teamOneCallAmount,
+        'teamOneBase': teamOneBase,
+        'teamTwoBase': teamTwoBase,
+        'teamOneCallAmount': teamOneCallAmount,
+        'teamTwoCallAmount': teamTwoCallAmount + teamOneCallAmount,
+      };
+    } else if (failedTeam == 1) {
+      
+      return {
+        'teamOneTotal': teamOneBase + teamOneCallAmount + teamTwoCallAmount,
+        'teamTwoTotal': 0,
+        'teamOneBase': teamOneBase,
+        'teamTwoBase': teamTwoBase,
+        'teamOneCallAmount': teamOneCallAmount + teamTwoCallAmount,
+        'teamTwoCallAmount': teamTwoCallAmount,
+      };
+    } else {
+      
+      return {
+        'teamOneTotal': teamOneBase + teamOneCallAmount,
+        'teamTwoTotal': teamTwoBase + teamTwoCallAmount,
+        'teamOneBase': teamOneBase,
+        'teamTwoBase': teamTwoBase,
+        'teamOneCallAmount': teamOneCallAmount,
+        'teamTwoCallAmount': teamTwoCallAmount,
+      };
+    }
   }
 }

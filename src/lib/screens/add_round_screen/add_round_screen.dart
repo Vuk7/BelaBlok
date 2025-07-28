@@ -150,27 +150,30 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
       }
 
    
-      final scores = roundsService.calculateRoundScores(
+      int? failedTeam;
+      int callerScore, otherScore;
+      bool teamFailed = false;
+     
+      var scores = roundsService.calculateRoundScores(
         teamOneBase: teamOneBase,
         teamTwoBase: teamTwoBase,
         teamOneCallAmount: teamOneCallAmount,
         teamTwoCallAmount: teamTwoCallAmount,
       );
+      callerScore = selectedCaller == 0 ? scores['teamOneTotal']! : scores['teamTwoTotal']!;
+      otherScore = selectedCaller == 0 ? scores['teamTwoTotal']! : scores['teamOneTotal']!;
 
-      int callerScore = selectedCaller == 0 ? scores['teamOneTotal']! : scores['teamTwoTotal']!;
-      int otherScore = selectedCaller == 0 ? scores['teamTwoTotal']! : scores['teamOneTotal']!;
-
-      bool teamFailed = false;
       if (callerScore <= otherScore || callerScore < 82) {
         teamFailed = true;
-        // U slučaju pada, protivnik dobiva sve bodove (osnovni + zvanja)
-        if (selectedCaller == 0) {
-          scores['teamOneTotal'] = 0;
-          scores['teamTwoTotal'] = scores['teamTwoTotal']! + scores['teamOneTotal']!;
-        } else {
-          scores['teamTwoTotal'] = 0;
-          scores['teamOneTotal'] = scores['teamOneTotal']! + scores['teamTwoTotal']!;
-        }
+        failedTeam = selectedCaller;
+        
+        scores = roundsService.calculateRoundScores(
+          teamOneBase: teamOneBase,
+          teamTwoBase: teamTwoBase,
+          teamOneCallAmount: teamOneCallAmount,
+          teamTwoCallAmount: teamTwoCallAmount,
+          failedTeam: failedTeam,
+        );
       }
 
       if (widget.roundToEdit != null) {
