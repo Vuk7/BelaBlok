@@ -1,3 +1,4 @@
+import 'package:bela_blok/screens/add_round_screen/widgets/call_show.dart';
 import 'package:bela_blok/db/database.dart'; 
 import 'package:bela_blok/db/models/round_model.dart'; 
 import 'package:bela_blok/services/games_service.dart'; 
@@ -26,6 +27,8 @@ class AddRoundScreen extends StatefulWidget {
 }
 
 class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStateMixin {
+  List<CallEntry> _callsTeamOne = [];
+  List<CallEntry> _callsTeamTwo = [];
   int selectedCaller = 0;
   final TextEditingController inputTeamOne = TextEditingController();
   final TextEditingController inputTeamTwo = TextEditingController();
@@ -571,8 +574,25 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
                             ),
                           ],
                           if (selectedMode == 1) ...[
-                          const  Center(
-                              child: Text('Unos zvanja', style: TextStyle(color: AppTheme.green)),
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Expanded(
+                                  child: CallShowWidget(
+                                    teamLabel: 'MI',
+                                    color: AppTheme.green,
+                                    onChanged: (calls) => setState(() => _callsTeamOne = List.from(calls)),
+                                  ),
+                                ),
+                                const SizedBox(width: 18),
+                                Expanded(
+                                  child: CallShowWidget(
+                                    teamLabel: 'VI',
+                                    color: AppTheme.primary,
+                                    onChanged: (calls) => setState(() => _callsTeamTwo = List.from(calls)),
+                                  ),
+                                ),
+                              ],
                             ),
                           ],
                         ],
