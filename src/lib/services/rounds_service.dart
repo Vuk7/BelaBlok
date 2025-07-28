@@ -1,3 +1,4 @@
+
 import 'package:bela_blok/db/dao/round_dao.dart';
 import 'package:bela_blok/db/database.dart';
 import 'package:bela_blok/db/models/round_model.dart';
@@ -23,5 +24,21 @@ class RoundsService {
       round.id!,
       round.toCompanion(),
     );
+  }
+
+    Map<String, int> calculateRoundScores({
+    required int teamOneBase,
+    required int teamTwoBase,
+    required int teamOneCallAmount,
+    required int teamTwoCallAmount,
+  }) {
+    return {
+      'teamOneTotal': teamOneBase + teamOneCallAmount,
+      'teamTwoTotal': teamTwoBase + teamTwoCallAmount,
+      'teamOneBase': teamOneBase,
+      'teamTwoBase': teamTwoBase,
+      'teamOneCallAmount': teamOneCallAmount,
+      'teamTwoCallAmount': teamTwoCallAmount,
+    };
   }
 }

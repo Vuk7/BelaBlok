@@ -137,54 +137,60 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
 
   void handleSaveRound() async {
     try {
-      int teamOne = int.tryParse(inputTeamOne.text) ?? 0;
-      int teamTwo = int.tryParse(inputTeamTwo.text) ?? 0;
-   
+      int teamOneBase = int.tryParse(inputTeamOne.text) ?? 0;
+      int teamTwoBase = int.tryParse(inputTeamTwo.text) ?? 0;
       int teamOneCallAmount = _callsTeamOne.fold(0, (prev, c) => prev + _callValue(c.type) * c.count);
       int teamTwoCallAmount = _callsTeamTwo.fold(0, (prev, c) => prev + _callValue(c.type) * c.count);
 
-     
-      if (teamOne == 0 && teamTwo > 0) {
-        teamTwo = 252;
-      } else if (teamTwo == 0 && teamOne > 0) {
-        teamOne = 252;
+      
+      if (teamOneBase == 0 && teamTwoBase > 0) {
+        teamTwoBase = 252;
+      } else if (teamTwoBase == 0 && teamOneBase > 0) {
+        teamOneBase = 252;
       }
 
-      int callerScore = selectedCaller == 0 ? teamOne : teamTwo;
-      int otherScore = selectedCaller == 0 ? teamTwo : teamOne;
+   
+      final scores = roundsService.calculateRoundScores(
+        teamOneBase: teamOneBase,
+        teamTwoBase: teamTwoBase,
+        teamOneCallAmount: teamOneCallAmount,
+        teamTwoCallAmount: teamTwoCallAmount,
+      );
+
+      int callerScore = selectedCaller == 0 ? scores['teamOneTotal']! : scores['teamTwoTotal']!;
+      int otherScore = selectedCaller == 0 ? scores['teamTwoTotal']! : scores['teamOneTotal']!;
 
       bool teamFailed = false;
-      
       if (callerScore <= otherScore || callerScore < 82) {
         teamFailed = true;
-       
+        // U slučaju pada, protivnik dobiva sve bodove (osnovni + zvanja)
         if (selectedCaller == 0) {
-          teamOne = 0;
-          teamTwo = 162;
+          scores['teamOneTotal'] = 0;
+          scores['teamTwoTotal'] = scores['teamTwoTotal']! + scores['teamOneTotal']!;
         } else {
-          teamOne = 162;
-          teamTwo = 0;
+          scores['teamTwoTotal'] = 0;
+          scores['teamOneTotal'] = scores['teamOneTotal']! + scores['teamTwoTotal']!;
         }
       }
 
       if (widget.roundToEdit != null) {
         final updatedRound = widget.roundToEdit;
         updatedRound.teamCalled = selectedCaller;
-        updatedRound.teamOneScore = teamOne;
-        updatedRound.teamTwoScore = teamTwo;
+        updatedRound.teamOneScore = scores['teamOneTotal'];
+        updatedRound.teamTwoScore = scores['teamTwoTotal'];
         updatedRound.teamFailed = teamFailed;
-        updatedRound.teamOneCallAmount = teamOneCallAmount;
-        updatedRound.teamTwoCallAmount = teamTwoCallAmount;
+        updatedRound.teamOneCallAmount = scores['teamOneCallAmount'];
+        updatedRound.teamTwoCallAmount = scores['teamTwoCallAmount'];
         await roundsService.updateRound(updatedRound);
       } else {
         final round = Round(
           gameId: widget.gameId!,
           teamCalled: selectedCaller,
-          teamOneScore: teamOne,
-          teamTwoScore: teamTwo,
+          teamOneScore: scores['teamOneTotal'],
+          teamTwoScore: scores['teamTwoTotal'],
           teamFailed: teamFailed,
-          teamOneCallAmount: teamOneCallAmount,
-          teamTwoCallAmount: teamTwoCallAmount,
+          teamOneCallAmount: scores['teamOneCallAmount'],
+          teamTwoCallAmount: scores['teamTwoCallAmount'],
         );
         await roundsService.createRound(round);
       }
@@ -318,10 +324,26 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
     // Calculate pad (fall) for UI only
     int teamOneVal = int.tryParse(inputTeamOne.text) ?? 0;
     int teamTwoVal = int.tryParse(inputTeamTwo.text) ?? 0;
-    int callerScoreUI = selectedCaller == 0 ? teamOneVal : teamTwoVal;
-    int otherScoreUI = selectedCaller == 0 ? teamTwoVal : teamOneVal;
+    int teamOneCallAmount = _callsTeamOne.fold(0, (prev, c) => prev + _callValue(c.type) * c.count);
+    int teamTwoCallAmount = _callsTeamTwo.fold(0, (prev, c) => prev + _callValue(c.type) * c.count);
+    int teamOneTotal = teamOneVal + teamOneCallAmount;
+    int teamTwoTotal = teamTwoVal + teamTwoCallAmount;
+    int callerScoreUI = selectedCaller == 0 ? teamOneTotal : teamTwoTotal;
+    int otherScoreUI = selectedCaller == 0 ? teamTwoTotal : teamOneTotal;
     bool teamFailedUI = (callerScoreUI <= otherScoreUI || callerScoreUI < 82);
     final screenWidth = MediaQuery.of(context).size.width;
+
+    
+    String getInputSuffix(int i) {
+      final base = i == 0 ? teamOneVal : teamTwoVal;
+      final zvanja = i == 0 ? teamOneCallAmount : teamTwoCallAmount;
+      final ukupno = base + zvanja;
+      if (zvanja > 0) {
+        return '=$ukupno';
+      } else {
+        return '';
+      }
+    }
 
     return Scaffold(
       backgroundColor: AppTheme.getScreenBackground(context),
@@ -447,17 +469,29 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
                                 Row(
                                   children: [
                                     Text(
-                                      inputTeamOne.text.isNotEmpty ? inputTeamOne.text : '0',
+                                      '$teamOneTotal',
                                       style: TextStyle(
-                                        fontSize: 14,
+                                        fontSize: 16,
                                         fontWeight: FontWeight.bold,
                                         color: Theme.of(context).colorScheme.primary,
                                       ),
                                     ),
+                                    if (teamOneCallAmount > 0)
+                                      Padding(
+                                        padding: const EdgeInsets.only(left: 6.0),
+                                        child: Text(
+                                          '+$teamOneCallAmount',
+                                          style: const TextStyle(
+                                            fontSize: 13,
+                                            color: AppTheme.green,
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                        ),
+                                      ),
                                     if (teamFailedUI && selectedCaller == 0)
-                                     const Padding(
-                                        padding:  EdgeInsets.only(left: 4.0),
-                                        child:  SizedBox(
+                                      const Padding(
+                                        padding: EdgeInsets.only(left: 4.0),
+                                        child: SizedBox(
                                           height: 24,
                                           width: 24,
                                           child: FallingArrowIcon(animateOnce: false),
@@ -489,16 +523,28 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
                                 Row(
                                   children: [
                                     Text(
-                                      inputTeamTwo.text.isNotEmpty ? inputTeamTwo.text : '0',
+                                      '$teamTwoTotal',
                                       style: const TextStyle(
-                                        fontSize: 14,
+                                        fontSize: 16,
                                         fontWeight: FontWeight.bold,
                                         color: AppTheme.green,
                                       ),
                                     ),
+                                    if (teamTwoCallAmount > 0)
+                                      Padding(
+                                        padding: const EdgeInsets.only(left: 6.0),
+                                        child: Text(
+                                          '+$teamTwoCallAmount',
+                                          style: const TextStyle(
+                                            fontSize: 13,
+                                            color: AppTheme.primary,
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                        ),
+                                      ),
                                     if (teamFailedUI && selectedCaller == 1)
-                                     const Padding(
-                                        padding:  EdgeInsets.only(left: 4.0),
+                                      const Padding(
+                                        padding: EdgeInsets.only(left: 4.0),
                                         child: SizedBox(
                                           height: 24,
                                           width: 24,
@@ -560,41 +606,49 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
                               mainAxisAlignment: MainAxisAlignment.spaceAround,
                               children: List.generate(
                                 2,
-                                (i) => AnimatedBuilder(
-                                  animation: i == 0
-                                      ? _bounceAnimation1
-                                      : _bounceAnimation2,
-                                  builder: (_, __) => Transform.scale(
-                                    scale: i == 0
-                                        ? _bounceAnimation1.value
-                                        : _bounceAnimation2.value,
-                                    child: BigButtonInputNumber(
-                                      text: '0',
-                                      textStyle: TextStyle(
-                                        color: focusedInput == i
-                                            ? AppTheme.getInverseTextColor(context)
-                                            : AppTheme.getTextColor(context),
-                                        fontSize: 30,
-                                        fontWeight: FontWeight.bold,
+                                (i) => Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    AnimatedBuilder(
+                                      animation: i == 0
+                                          ? _bounceAnimation1
+                                          : _bounceAnimation2,
+                                      builder: (_, __) => Transform.scale(
+                                        scale: i == 0
+                                            ? _bounceAnimation1.value
+                                            : _bounceAnimation2.value,
+                                        child: BigButtonInputNumber(
+                                          text: '0',
+                                          textStyle: TextStyle(
+                                            color: focusedInput == i
+                                                ? AppTheme.getInverseTextColor(context)
+                                                : AppTheme.getTextColor(context),
+                                            fontSize: 30,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                          bgColor: focusedInput == i
+                                              ? AppTheme.green
+                                              : focusedInput == (1 - i)
+                                                  ? AppTheme.red
+                                                  : AppTheme.getDisabledButtonColor(context),
+                                          onTap: () {
+                                            final controller =
+                                                i == 0 ? _bounceController1 : _bounceController2;
+                                            controller.forward().then((_) => controller.reverse());
+                                            setState(() => focusedInput = i);
+                                          },
+                                          inputController: i == 0
+                                              ? inputTeamOne
+                                              : inputTeamTwo,
+                                          textPadding: 10,
+                                          width: screenWidth / 3,
+                                         
+                                          suffixText: getInputSuffix(i),
+                                        ),
                                       ),
-                                      bgColor: focusedInput == i
-                                          ? AppTheme.green
-                                          : focusedInput == (1 - i)
-                                              ? AppTheme.red
-                                              : AppTheme.getDisabledButtonColor(context),
-                                      onTap: () {
-                                        final controller =
-                                            i == 0 ? _bounceController1 : _bounceController2;
-                                        controller.forward().then((_) => controller.reverse());
-                                        setState(() => focusedInput = i);
-                                      },
-                                      inputController: i == 0
-                                          ? inputTeamOne
-                                          : inputTeamTwo,
-                                      textPadding: 10,
-                                      width: screenWidth / 3,
                                     ),
-                                  ),
+                                    
+                                  ],
                                 ),
                               ),
                             ),
