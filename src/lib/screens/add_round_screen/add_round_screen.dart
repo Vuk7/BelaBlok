@@ -109,9 +109,9 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
 
   Future<void> _loadRoundsCount() async {
     if (widget.gameId != null) {
-      final rounds = await roundsService.getRoundsForGameSorted(widget.gameId!);
+      final count = await roundsService.getRoundsForGameCount(widget.gameId!);
       setState(() {
-        roundsCount = rounds.length;
+        roundsCount = count;
       });
     }
   }

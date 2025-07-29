@@ -9,8 +9,13 @@ class RoundsService {
 
   RoundsService(this.database) : dao = RoundDao(database);
 
+
   Future<List<RoundTableData>> getRoundsForGameSorted(String gameId) async {
     return await dao.getRoundsForGameSorted(gameId);
+  }
+
+  Future<int> getRoundsForGameCount(String gameId) async {
+    return await dao.getRoundsForGameCount(gameId);
   }
 
   Future<void> createRound(Round round) async {
