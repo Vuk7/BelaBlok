@@ -1,5 +1,6 @@
 import 'package:bela_blok/themes/app_theme.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 import 'package:bela_blok/routes/routes.dart';
@@ -15,6 +16,12 @@ class ThemeNotifier extends ChangeNotifier {
 }
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  // Lock orientation to portrait only
+  SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown,
+  ]);
   runApp(
     ChangeNotifierProvider(
       create: (_) => ThemeNotifier(),
