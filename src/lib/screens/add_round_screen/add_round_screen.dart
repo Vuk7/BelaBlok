@@ -14,6 +14,7 @@ import 'package:bela_blok/themes/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:bela_blok/common/constants.dart';
+import 'package:bela_blok/enums/call_value_enum.dart';
 
 class AddRoundScreen extends StatefulWidget {
   final String? gameId;
@@ -384,12 +385,11 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
   int _callValue(CallType t) {
     switch (t) {
       case CallType.z20:
-        return 20;
+        return CallValueEnum.z20.value;
       case CallType.z50:
-        return 50;
+        return CallValueEnum.z50.value;
       case CallType.z100:
-        return 100;
-    
+        return CallValueEnum.z100.value;
     }
   }
 
