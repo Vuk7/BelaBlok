@@ -32,13 +32,13 @@ class _MainScreenState extends State<MainScreen> {
   Future<void> _initGames() async {
     isLoadingGameHistory = true;
     gamesService = GamesService(AppDatabase());
-    gamesHistory = await gamesService.getAllGames();
+    gamesHistory = (await gamesService.getAllGames()).reversed.toList();
     isLoadingGameHistory = false;
     setState(() {});
   }
 
   Future<void> _refreshGameHistory() async {
-    gamesHistory = await gamesService.getAllGames();
+    gamesHistory = (await gamesService.getAllGames()).reversed.toList();
     setState(() {});
   }
 
