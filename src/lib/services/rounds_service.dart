@@ -2,6 +2,7 @@
 import 'package:bela_blok/db/dao/round_dao.dart';
 import 'package:bela_blok/db/database.dart';
 import 'package:bela_blok/db/models/round_model.dart';
+import 'package:bela_blok/common/constants.dart';
 
 class RoundsService {
   int getNextShuffler({
@@ -86,25 +87,26 @@ class RoundsService {
     required int teamOneCallAmount,
     required int teamTwoCallAmount,
   }) {
+   
     if (failedTeam == 0) {
-     
+      int allCalls = teamOneCallAmount + teamTwoCallAmount;
       return {
         'teamOneTotal': 0,
-        'teamTwoTotal': teamTwoBase + teamTwoCallAmount + teamOneCallAmount,
-        'teamOneBase': teamOneBase,
-        'teamTwoBase': teamTwoBase,
-        'teamOneCallAmount': teamOneCallAmount,
-        'teamTwoCallAmount': teamTwoCallAmount + teamOneCallAmount,
+        'teamTwoTotal': maxScore + allCalls,
+        'teamOneBase': 0,
+        'teamTwoBase': maxScore,
+        'teamOneCallAmount': 0,
+        'teamTwoCallAmount': allCalls,
       };
     } else {
-     
+      int allCalls = teamOneCallAmount + teamTwoCallAmount;
       return {
-        'teamOneTotal': teamOneBase + teamOneCallAmount + teamTwoCallAmount,
+        'teamOneTotal': maxScore + allCalls,
         'teamTwoTotal': 0,
-        'teamOneBase': teamOneBase,
-        'teamTwoBase': teamTwoBase,
-        'teamOneCallAmount': teamOneCallAmount + teamTwoCallAmount,
-        'teamTwoCallAmount': teamTwoCallAmount,
+        'teamOneBase': maxScore,
+        'teamTwoBase': 0,
+        'teamOneCallAmount': allCalls,
+        'teamTwoCallAmount': 0,
       };
     }
   }
