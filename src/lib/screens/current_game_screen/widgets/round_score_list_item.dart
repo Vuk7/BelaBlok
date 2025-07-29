@@ -1,6 +1,7 @@
 import 'package:bela_blok/enums/team_enum.dart';
 import 'package:bela_blok/themes/app_theme.dart';
 import 'package:flutter/material.dart';
+import 'falling_arrow_icon.dart';
 
 class RoundScoreListItem extends StatelessWidget {
   final int teamOneCallAmount;
@@ -23,13 +24,16 @@ class RoundScoreListItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+  
+    final bool teamOneFell = teamCalled == Team.teamOne && teamOneScore == 0;
+    final bool teamTwoFell = teamCalled == Team.teamTwo && teamTwoScore == 0;
     return GestureDetector(
       onTap: onTap,
       child: Container(
         width: double.infinity,
         margin: const EdgeInsets.symmetric(vertical: 6),
         decoration: BoxDecoration(
-          color: const Color(0xFFD4B896), // svjetlo smeđa boja
+          color: const Color(0xFFD4B896),
           borderRadius: BorderRadius.circular(16),
           boxShadow: [
             BoxShadow(
@@ -48,7 +52,6 @@ class RoundScoreListItem extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    
                     const SizedBox(height: 8),
                     Row(
                       children: [
@@ -78,13 +81,24 @@ class RoundScoreListItem extends StatelessWidget {
                       ],
                     ),
                     const SizedBox(height: 4),
-                    Text(
-                      "$teamOneScore",
-                      style: const TextStyle(
-                        color: Color(0xFF2C3E50),
-                        fontWeight: FontWeight.bold,
-                        fontSize: 36,
-                      ),
+                    Row(
+                      children: [
+                        Text(
+                          "$teamOneScore",
+                          style: const TextStyle(
+                            color: Color(0xFF2C3E50),
+                            fontWeight: FontWeight.bold,
+                            fontSize: 36,
+                          ),
+                        ),
+                        if (teamOneFell) ...[
+                          const SizedBox(width: 6),
+                       const   Tooltip(
+                            message: 'Pad',
+                            child: FallingArrowIcon(animateOnce: true),
+                          ),
+                        ],
+                      ],
                     ),
                     Text(
                       "(+$teamOneCallAmount)",
@@ -124,7 +138,6 @@ class RoundScoreListItem extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
-                    
                     const SizedBox(height: 8),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.end,
@@ -155,13 +168,25 @@ class RoundScoreListItem extends StatelessWidget {
                       ],
                     ),
                     const SizedBox(height: 4),
-                    Text(
-                      "$teamTwoScore",
-                      style: const TextStyle(
-                        color: Color(0xFF2C3E50),
-                        fontWeight: FontWeight.bold,
-                        fontSize: 36,
-                      ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        Text(
+                          "$teamTwoScore",
+                          style: const TextStyle(
+                            color: Color(0xFF2C3E50),
+                            fontWeight: FontWeight.bold,
+                            fontSize: 36,
+                          ),
+                        ),
+                        if (teamTwoFell) ...[
+                          const SizedBox(width: 6),
+                       const   Tooltip(
+                            message: 'Pad',
+                            child: FallingArrowIcon(animateOnce: true),
+                          ),
+                        ],
+                      ],
                     ),
                     Text(
                       "(+$teamTwoCallAmount)",
