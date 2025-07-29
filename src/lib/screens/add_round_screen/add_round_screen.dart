@@ -167,6 +167,7 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
           backgroundColor: Colors.red,
         ),
       );
+      return;
     }
   }
 
@@ -306,17 +307,28 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
     if (_isAutoCompleting) return;
     _isAutoCompleting = true;
     final value = int.tryParse(inputTeamOne.text);
-    if (value != null && value == 0) {
+    if (value == null) {
+      inputTeamTwo.text = '';
+      _isAutoCompleting = false;
+      setState(() {});
+      return;
+    }
+    if (value == 0) {
       if (inputTeamTwo.text != '252') {
         inputTeamTwo.text = '252';
       }
-    } else if (value != null && value > 0 && value <= maxScore) {
+      _isAutoCompleting = false;
+      setState(() {});
+      return;
+    }
+    if (value > 0 && value <= maxScore) {
       final other = maxScore - value;
       if (inputTeamTwo.text != other.toString()) {
         inputTeamTwo.text = other.toString();
       }
-    } else if (inputTeamOne.text.isEmpty) {
-      inputTeamTwo.text = '';
+      _isAutoCompleting = false;
+      setState(() {});
+      return;
     }
     _isAutoCompleting = false;
     setState(() {});
@@ -326,17 +338,28 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
     if (_isAutoCompleting) return;
     _isAutoCompleting = true;
     final value = int.tryParse(inputTeamTwo.text);
-    if (value != null && value == 0) {
+    if (value == null) {
+      inputTeamOne.text = '';
+      _isAutoCompleting = false;
+      setState(() {});
+      return;
+    }
+    if (value == 0) {
       if (inputTeamOne.text != '252') {
         inputTeamOne.text = '252';
       }
-    } else if (value != null && value > 0 && value <= maxScore) {
+      _isAutoCompleting = false;
+      setState(() {});
+      return;
+    }
+    if (value > 0 && value <= maxScore) {
       final other = maxScore - value;
       if (inputTeamOne.text != other.toString()) {
         inputTeamOne.text = other.toString();
       }
-    } else if (inputTeamTwo.text.isEmpty) {
-      inputTeamOne.text = '';
+      _isAutoCompleting = false;
+      setState(() {});
+      return;
     }
     _isAutoCompleting = false;
     setState(() {});
