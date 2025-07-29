@@ -45,7 +45,11 @@ extension RoundMapper on RoundTableData {
       teamTwoCallAmount: teamTwoCallAmount,
       isTeamOneCallSuccessful: isTeamOneCallSuccessful,
       isTeamTwoCallSuccessful: isTeamTwoCallSuccessful,
+
+
       teamFailed: teamFailed,
+
+
     );
   }
 }
