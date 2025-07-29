@@ -14,80 +14,120 @@ class HistoryListItem extends StatelessWidget {
     required this.onTap,
   });
 
-  void _showTimeDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (_) => AlertDialog(
-        title: const Text('Vrijeme igre'),
-        content: Text(date), 
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Zatvori'),
-          ),
-        ],
-      ),
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
-    // "yyyy-MM-dd HH:mm"
-    final dateOnly = date.split(' ').first;
+    // Expecting date in "yyyy-MM-dd HH:mm" format
+    final dateParts = date.split(' ');
+    final dateOnly = dateParts.isNotEmpty ? dateParts[0] : '';
+    final timeOnly = dateParts.length > 1 ? dateParts[1] : '';
+
+    const miColor = Colors.blueAccent;
+    const viColor = Colors.orangeAccent;
+    final bgColor = Theme.of(context).brightness == Brightness.dark ? Colors.grey[850] : Colors.white;
+    final borderColor = Theme.of(context).brightness == Brightness.dark ? Colors.blueGrey : Colors.grey[300];
 
     return Container(
-      margin: const EdgeInsets.symmetric(vertical: 6),
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+      margin: const EdgeInsets.symmetric(vertical: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
       decoration: BoxDecoration(
-        color: Theme.of(context).brightness == Brightness.dark 
-          ? Colors.grey[700] 
-          : Colors.grey[200],
-        borderRadius: BorderRadius.circular(12),
+        color: bgColor,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: borderColor ?? Colors.grey, width: 1.2),
+        boxShadow: [
+          BoxShadow(
+            color: Theme.of(context).brightness == Brightness.dark
+                ? Colors.black26
+                : Colors.grey.withAlpha((0.08 * 255).toInt()),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
       ),
       child: InkWell(
         onTap: onTap,
+        borderRadius: BorderRadius.circular(16),
         child: Row(
           children: [
-            GestureDetector(
-              onTap: () => _showTimeDialog(context),
-              child: Icon(
-                Icons.access_time,
-                size: 18,
-                color: Theme.of(context).brightness == Brightness.dark 
-                  ? Colors.white 
-                  : Colors.black,
-              ),
-            ),
-            const SizedBox(width: 8),
-            Flexible(
-              flex: 2,
-              child: Text(
-                dateOnly,
-                overflow: TextOverflow.ellipsis,
-                style: TextStyle(
-                  fontSize: 15, 
-                  color: Theme.of(context).brightness == Brightness.dark 
-                    ? Colors.white 
-                    : Colors.black
+            // Date & time
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  dateOnly,
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                    color: Theme.of(context).colorScheme.primary,
+                  ),
                 ),
-              ),
+                const SizedBox(height: 2),
+                Text(
+                  timeOnly,
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: Theme.of(context).brightness == Brightness.dark ? Colors.white70 : Colors.black54,
+                  ),
+                ),
+              ],
             ),
             const Spacer(),
-            Icon(
-              Icons.emoji_events,
-              size: 20,
-              color: Theme.of(context).brightness == Brightness.dark 
-                ? Colors.white 
-                : Colors.black,
+            // Score badges
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+              decoration: BoxDecoration(
+        color: miColor.withAlpha((0.15 * 255).toInt()),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Row(
+                children: [
+                  const Text(
+                    "MI",
+                    style:  TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: miColor,
+                      fontSize: 13,
+                    ),
+                  ),
+                  const SizedBox(width: 4),
+                  Text(
+                    "$teamOneScore",
+                    style:const  TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: miColor,
+                      fontSize: 15,
+                    ),
+                  ),
+                ],
+              ),
             ),
-            const SizedBox(width: 8),
-            Text(
-              "$teamOneScore : $teamTwoScore",
-              style: TextStyle(
-                fontSize: 20, 
-                color: Theme.of(context).brightness == Brightness.dark 
-                  ? Colors.white 
-                  : Colors.black
+            const SizedBox(width: 10),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+              decoration: BoxDecoration(
+        color: viColor.withAlpha((0.15 * 255).toInt()),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Row(
+                children: [
+                  Text(
+                    "$teamTwoScore",
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: viColor,
+                      fontSize: 15,
+                    ),
+                  ),
+                  const SizedBox(width: 4),
+                  const Text(
+                    "VI",
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: viColor,
+                      fontSize: 13,
+                    ),
+                  ),
+                ],
               ),
             ),
           ],

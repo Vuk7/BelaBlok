@@ -108,13 +108,24 @@ class _MainScreenState extends State<MainScreen> {
                         padding: const EdgeInsets.all(20.0),
                         child: Column(
                           children: [
-                            Text(
-                              "Povijest:",
-                              style: TextStyle(
-                                fontSize: 22,
-                                fontWeight: FontWeight.bold,
-                                color: Theme.of(context).colorScheme.onSurface,
-                              ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  Icons.history,
+                                  color: Theme.of(context).colorScheme.primary,
+                                  size: 26,
+                                ),
+                                const SizedBox(width: 8),
+                                Text(
+                                  "Povijest:",
+                                  style: TextStyle(
+                                    fontSize: 22,
+                                    fontWeight: FontWeight.bold,
+                                    color: Theme.of(context).colorScheme.onSurface,
+                                  ),
+                                ),
+                              ],
                             ),
                             const SizedBox(height: 20),
                             isLoadingGameHistory
