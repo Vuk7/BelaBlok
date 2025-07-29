@@ -835,10 +835,11 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
 
   int getNextShuffler(int roundCount) {
     if (currentlyShuffling == null || gameDirection == null) return 1;
-    int start = currentlyShuffling! - 1; 
-    int dir = gameDirection == 0 ? 1 : -1;
-    int next = (start + dir * roundCount) % totalPlayers;
-    if (next < 0) next += totalPlayers;
-    return next + 1; 
+    return roundsService.getNextShuffler(
+      roundCount: roundCount,
+      currentlyShuffling: currentlyShuffling!,
+      gameDirection: gameDirection!,
+      totalPlayers: totalPlayers,
+    );
   }
 }

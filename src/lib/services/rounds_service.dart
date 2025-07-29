@@ -4,6 +4,18 @@ import 'package:bela_blok/db/database.dart';
 import 'package:bela_blok/db/models/round_model.dart';
 
 class RoundsService {
+  int getNextShuffler({
+    required int roundCount,
+    required int currentlyShuffling,
+    required int gameDirection,
+    int totalPlayers = 4,
+  }) {
+    int start = currentlyShuffling - 1;
+    int dir = gameDirection == 0 ? 1 : -1;
+    int next = (start + dir * roundCount) % totalPlayers;
+    if (next < 0) next += totalPlayers;
+    return next + 1;
+  }
   final AppDatabase database;
   final RoundDao dao;
 
