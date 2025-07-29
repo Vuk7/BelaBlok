@@ -1,6 +1,7 @@
 import 'package:bela_blok/screens/add_round_screen/widgets/call_show.dart';
 import 'package:bela_blok/db/database.dart'; 
 import 'package:bela_blok/db/models/round_model.dart'; 
+import 'package:bela_blok/db/models/score.model.dart';
 import 'package:bela_blok/services/games_service.dart'; 
 import 'package:bela_blok/services/rounds_service.dart'; 
 import 'package:bela_blok/screens/add_round_screen/widgets/choose_caller.dart';
@@ -14,6 +15,7 @@ import 'package:bela_blok/themes/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:bela_blok/common/constants.dart';
+import 'package:bela_blok/enums/call_value_enum.dart';
 
 class AddRoundScreen extends StatefulWidget {
   final String? gameId;
@@ -109,9 +111,9 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
 
   Future<void> _loadRoundsCount() async {
     if (widget.gameId != null) {
-      final rounds = await roundsService.getRoundsForGameSorted(widget.gameId!);
+      final count = await roundsService.getRoundsForGameCount(widget.gameId!);
       setState(() {
-        roundsCount = rounds.length;
+        roundsCount = count;
       });
     }
   }
@@ -143,141 +145,21 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
 
   bool get isReadyToSave => isReadyToSaveMessage == null;
 
-  void handleSaveRound() async {
+  Future<void> handleSaveRound() async {
     try {
       final game = await gamesService.getGameById(widget.gameId!);
       final int gameType = _currentGameType ?? game?.gameType ?? 1001;
       bool teamOneBelot = _callsTeamOne.any((c) => c.type == SpecialCall.belot);
       bool teamTwoBelot = _callsTeamTwo.any((c) => c.type == SpecialCall.belot);
 
-      int teamOneBase = 0;
-      int teamTwoBase = 0;
-      int teamOneCallAmount = 0;
-      int teamTwoCallAmount = 0;
-      bool teamFailed = false;
-
       if (teamOneBelot || teamTwoBelot) {
-       
-        if (teamOneBelot) {
-          teamOneCallAmount = gameType;
-        }
-        if (teamTwoBelot) {
-          teamTwoCallAmount = gameType;
-        }
-        if (widget.roundToEdit != null) {
-          final updatedRound = widget.roundToEdit;
-          updatedRound.teamCalled = selectedCaller;
-          updatedRound.teamOneScore = teamOneCallAmount;
-          updatedRound.teamTwoScore = teamTwoCallAmount;
-          updatedRound.teamFailed = false;
-          updatedRound.teamOneCallAmount = teamOneCallAmount;
-          updatedRound.teamTwoCallAmount = teamTwoCallAmount;
-          await roundsService.updateRound(updatedRound);
-        } else {
-          final round = Round(
-            gameId: widget.gameId!,
-            teamCalled: selectedCaller,
-            teamOneScore: teamOneCallAmount,
-            teamTwoScore: teamTwoCallAmount,
-            teamFailed: false,
-            teamOneCallAmount: teamOneCallAmount,
-            teamTwoCallAmount: teamTwoCallAmount,
-          );
-          await roundsService.createRound(round);
-        }
-        final rounds = await roundsService.getRoundsForGameSorted(widget.gameId!);
-        int newScoreTeamOne = 0;
-        int newScoreTeamTwo = 0;
-        for (final r in rounds) {
-          newScoreTeamOne += r.teamOneScore ?? 0;
-          newScoreTeamTwo += r.teamTwoScore ?? 0;
-        }
-        if (game != null) {
-          game.teamOneScore = newScoreTeamOne;
-          game.teamTwoScore = newScoreTeamTwo;
-          await gamesService.updateGame(game);
-        }
-        if (!mounted) return;
-        
-        context.pop();
+        await _saveBelotRound(game, gameType, teamOneBelot, teamTwoBelot);
         return;
       }
 
-     
-      teamOneBase = int.tryParse(inputTeamOne.text) ?? 0;
-      teamTwoBase = int.tryParse(inputTeamTwo.text) ?? 0;
-      teamOneCallAmount = _callsTeamOne.fold(0, (prev, c) => prev + _callValue(c.type) * c.count);
-      teamTwoCallAmount = _callsTeamTwo.fold(0, (prev, c) => prev + _callValue(c.type) * c.count);
-
-      if (teamOneBase == 0 && teamTwoBase > 0) {
-        teamTwoBase = 252;
-      } else if (teamTwoBase == 0 && teamOneBase > 0) {
-        teamOneBase = 252;
-      }
-
-      int? failedTeam;
-      int callerScore, otherScore;
-      teamFailed = false;
-
-      var scores = roundsService.calculateRoundScores(
-        teamOneBase: teamOneBase,
-        teamTwoBase: teamTwoBase,
-        teamOneCallAmount: teamOneCallAmount,
-        teamTwoCallAmount: teamTwoCallAmount,
-      );
-      callerScore = selectedCaller == 0 ? scores['teamOneTotal']! : scores['teamTwoTotal']!;
-      otherScore = selectedCaller == 0 ? scores['teamTwoTotal']! : scores['teamOneTotal']!;
-
-      if (callerScore <= otherScore || callerScore < 82) {
-        teamFailed = true;
-        failedTeam = selectedCaller;
-        scores = roundsService.calculateRoundScores(
-          teamOneBase: teamOneBase,
-          teamTwoBase: teamTwoBase,
-          teamOneCallAmount: teamOneCallAmount,
-          teamTwoCallAmount: teamTwoCallAmount,
-          failedTeam: failedTeam,
-        );
-      }
-
-      if (widget.roundToEdit != null) {
-        final updatedRound = widget.roundToEdit;
-        updatedRound.teamCalled = selectedCaller;
-        updatedRound.teamOneScore = scores['teamOneTotal'];
-        updatedRound.teamTwoScore = scores['teamTwoTotal'];
-        updatedRound.teamFailed = teamFailed;
-        updatedRound.teamOneCallAmount = scores['teamOneCallAmount'];
-        updatedRound.teamTwoCallAmount = scores['teamTwoCallAmount'];
-        await roundsService.updateRound(updatedRound);
-      } else {
-        final round = Round(
-          gameId: widget.gameId!,
-          teamCalled: selectedCaller,
-          teamOneScore: scores['teamOneTotal'],
-          teamTwoScore: scores['teamTwoTotal'],
-          teamFailed: teamFailed,
-          teamOneCallAmount: scores['teamOneCallAmount'],
-          teamTwoCallAmount: scores['teamTwoCallAmount'],
-        );
-        await roundsService.createRound(round);
-      }
-
-      final rounds = await roundsService.getRoundsForGameSorted(widget.gameId!);
-      int newScoreTeamOne = 0;
-      int newScoreTeamTwo = 0;
-      for (final r in rounds) {
-        newScoreTeamOne += r.teamOneScore ?? 0;
-        newScoreTeamTwo += r.teamTwoScore ?? 0;
-      }
-
-      if (game != null) {
-        game.teamOneScore = newScoreTeamOne;
-        game.teamTwoScore = newScoreTeamTwo;
-        await gamesService.updateGame(game);
-      }
-
-      if (!mounted) return;
-      context.pop();
+      final roundData = _prepareRoundData();
+      final scores = _calculateScores(roundData);
+      await _saveNormalRound(game, scores);
     } catch (e, stack) {
       debugPrint('Greška pri spremanju runde: $e\n$stack');
       if (!mounted) return;
@@ -287,6 +169,127 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
           backgroundColor: Colors.red,
         ),
       );
+      return;
+    }
+  }
+
+  Future<void> _saveBelotRound(dynamic game, int gameType, bool teamOneBelot, bool teamTwoBelot) async {
+    int teamOneCallAmount = teamOneBelot ? gameType : 0;
+    int teamTwoCallAmount = teamTwoBelot ? gameType : 0;
+    final round = widget.roundToEdit ?? Round(gameId: widget.gameId!);
+    round.teamCalled = selectedCaller;
+    round.teamOneScore = teamOneCallAmount;
+    round.teamTwoScore = teamTwoCallAmount;
+    round.teamFailed = false;
+    round.teamOneCallAmount = teamOneCallAmount;
+    round.teamTwoCallAmount = teamTwoCallAmount;
+    if (widget.roundToEdit != null) {
+      await roundsService.updateRound(round);
+    } else {
+      await roundsService.createRound(round);
+    }
+    await _updateGameScores(game);
+    if (!mounted) return;
+    context.pop();
+  }
+
+  ScoreModel _prepareRoundData() {
+    int teamOneBase = int.tryParse(inputTeamOne.text) ?? 0;
+    int teamTwoBase = int.tryParse(inputTeamTwo.text) ?? 0;
+    int teamOneCallAmount = _callsTeamOne.fold(0, (prev, c) => prev + _callValue(c.type) * c.count);
+    int teamTwoCallAmount = _callsTeamTwo.fold(0, (prev, c) => prev + _callValue(c.type) * c.count);
+
+    if (teamOneBase == 0 && teamTwoBase > 0) {
+      teamTwoBase = 252;
+    } else if (teamTwoBase == 0 && teamOneBase > 0) {
+      teamOneBase = 252;
+    }
+
+    
+    return ScoreModel(
+      teamOneBase: teamOneBase,
+      teamTwoBase: teamTwoBase,
+      teamOneCallAmount: teamOneCallAmount,
+      teamTwoCallAmount: teamTwoCallAmount,
+      teamOneTotal: 0,
+      teamTwoTotal: 0,
+      teamFailed: false,
+    );
+  }
+
+  ScoreModel _calculateScores(ScoreModel roundData) {
+    int teamOneBase = roundData.teamOneBase;
+    int teamTwoBase = roundData.teamTwoBase;
+    int teamOneCallAmount = roundData.teamOneCallAmount;
+    int teamTwoCallAmount = roundData.teamTwoCallAmount;
+
+    var scores = roundsService.calculateRoundScores(
+      teamOneBase: teamOneBase,
+      teamTwoBase: teamTwoBase,
+      teamOneCallAmount: teamOneCallAmount,
+      teamTwoCallAmount: teamTwoCallAmount,
+    );
+    int teamOneTotal = scores['teamOneTotal']!;
+    int teamTwoTotal = scores['teamTwoTotal']!;
+    int callerScore = selectedCaller == 0 ? teamOneTotal : teamTwoTotal;
+    int otherScore = selectedCaller == 0 ? teamTwoTotal : teamOneTotal;
+
+    bool teamFailed = false;
+    if (callerScore <= otherScore || callerScore < 82) {
+      int failedTeam = selectedCaller;
+      scores = roundsService.calculateRoundScores(
+        teamOneBase: teamOneBase,
+        teamTwoBase: teamTwoBase,
+        teamOneCallAmount: teamOneCallAmount,
+        teamTwoCallAmount: teamTwoCallAmount,
+        failedTeam: failedTeam,
+      );
+      teamOneTotal = scores['teamOneTotal']!;
+      teamTwoTotal = scores['teamTwoTotal']!;
+      teamFailed = true;
+    }
+
+    return ScoreModel(
+      teamOneBase: teamOneBase,
+      teamTwoBase: teamTwoBase,
+      teamOneCallAmount: teamOneCallAmount,
+      teamTwoCallAmount: teamTwoCallAmount,
+      teamOneTotal: teamOneTotal,
+      teamTwoTotal: teamTwoTotal,
+      teamFailed: teamFailed,
+    );
+  }
+
+  Future<void> _saveNormalRound(dynamic game, ScoreModel scores) async {
+    final round = widget.roundToEdit ?? Round(gameId: widget.gameId!);
+    round.teamCalled = selectedCaller;
+    round.teamOneScore = scores.teamOneTotal;
+    round.teamTwoScore = scores.teamTwoTotal;
+    round.teamFailed = scores.teamFailed;
+    round.teamOneCallAmount = scores.teamOneCallAmount;
+    round.teamTwoCallAmount = scores.teamTwoCallAmount;
+    if (widget.roundToEdit != null) {
+      await roundsService.updateRound(round);
+    } else {
+      await roundsService.createRound(round);
+    }
+    await _updateGameScores(game);
+    if (!mounted) return;
+    context.pop();
+  }
+
+  Future<void> _updateGameScores(dynamic game) async {
+    final rounds = await roundsService.getRoundsForGameSorted(widget.gameId!);
+    int newScoreTeamOne = 0;
+    int newScoreTeamTwo = 0;
+    for (final r in rounds) {
+      newScoreTeamOne += r.teamOneScore ?? 0;
+      newScoreTeamTwo += r.teamTwoScore ?? 0;
+    }
+    if (game != null) {
+      game.teamOneScore = newScoreTeamOne;
+      game.teamTwoScore = newScoreTeamTwo;
+      await gamesService.updateGame(game);
     }
   }
 
@@ -320,17 +323,28 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
     if (_isAutoCompleting) return;
     _isAutoCompleting = true;
     final value = int.tryParse(inputTeamOne.text);
-    if (value != null && value == 0) {
+    if (value == null) {
+      inputTeamTwo.text = '';
+      _isAutoCompleting = false;
+      setState(() {});
+      return;
+    }
+    if (value == 0) {
       if (inputTeamTwo.text != '252') {
         inputTeamTwo.text = '252';
       }
-    } else if (value != null && value > 0 && value <= maxScore) {
+      _isAutoCompleting = false;
+      setState(() {});
+      return;
+    }
+    if (value > 0 && value <= maxScore) {
       final other = maxScore - value;
       if (inputTeamTwo.text != other.toString()) {
         inputTeamTwo.text = other.toString();
       }
-    } else if (inputTeamOne.text.isEmpty) {
-      inputTeamTwo.text = '';
+      _isAutoCompleting = false;
+      setState(() {});
+      return;
     }
     _isAutoCompleting = false;
     setState(() {});
@@ -340,17 +354,28 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
     if (_isAutoCompleting) return;
     _isAutoCompleting = true;
     final value = int.tryParse(inputTeamTwo.text);
-    if (value != null && value == 0) {
+    if (value == null) {
+      inputTeamOne.text = '';
+      _isAutoCompleting = false;
+      setState(() {});
+      return;
+    }
+    if (value == 0) {
       if (inputTeamOne.text != '252') {
         inputTeamOne.text = '252';
       }
-    } else if (value != null && value > 0 && value <= maxScore) {
+      _isAutoCompleting = false;
+      setState(() {});
+      return;
+    }
+    if (value > 0 && value <= maxScore) {
       final other = maxScore - value;
       if (inputTeamOne.text != other.toString()) {
         inputTeamOne.text = other.toString();
       }
-    } else if (inputTeamTwo.text.isEmpty) {
-      inputTeamOne.text = '';
+      _isAutoCompleting = false;
+      setState(() {});
+      return;
     }
     _isAutoCompleting = false;
     setState(() {});
@@ -375,12 +400,11 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
   int _callValue(CallType t) {
     switch (t) {
       case CallType.z20:
-        return 20;
+        return CallValueEnum.z20.value;
       case CallType.z50:
-        return 50;
+        return CallValueEnum.z50.value;
       case CallType.z100:
-        return 100;
-    
+        return CallValueEnum.z100.value;
     }
   }
 
@@ -826,10 +850,11 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
 
   int getNextShuffler(int roundCount) {
     if (currentlyShuffling == null || gameDirection == null) return 1;
-    int start = currentlyShuffling! - 1; 
-    int dir = gameDirection == 0 ? 1 : -1;
-    int next = (start + dir * roundCount) % totalPlayers;
-    if (next < 0) next += totalPlayers;
-    return next + 1; 
+    return roundsService.getNextShuffler(
+      roundCount: roundCount,
+      currentlyShuffling: currentlyShuffling!,
+      gameDirection: gameDirection!,
+      totalPlayers: totalPlayers,
+    );
   }
 }
