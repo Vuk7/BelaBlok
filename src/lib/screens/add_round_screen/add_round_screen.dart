@@ -1,5 +1,8 @@
+import 'package:bela_blok/screens/add_round_screen/widgets/call_show.dart';
 import 'package:bela_blok/db/database.dart'; 
 import 'package:bela_blok/db/models/round_model.dart'; 
+import 'package:bela_blok/models/score.model.dart';
+import 'package:bela_blok/models/fall_score.model.dart';
 import 'package:bela_blok/services/games_service.dart'; 
 import 'package:bela_blok/services/rounds_service.dart'; 
 import 'package:bela_blok/screens/add_round_screen/widgets/choose_caller.dart';
@@ -13,6 +16,7 @@ import 'package:bela_blok/themes/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:bela_blok/common/constants.dart';
+import 'package:bela_blok/enums/call_value_enum.dart';
 
 class AddRoundScreen extends StatefulWidget {
   final String? gameId;
@@ -26,11 +30,15 @@ class AddRoundScreen extends StatefulWidget {
 }
 
 class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStateMixin {
+  int? _currentGameType;
+  List<CallEntry> _callsTeamOne = [];
+  List<CallEntry> _callsTeamTwo = [];
   int selectedCaller = 0;
   final TextEditingController inputTeamOne = TextEditingController();
   final TextEditingController inputTeamTwo = TextEditingController();
   bool _isAutoCompleting = false;
   int selectedInputType = 0;
+  int selectedMode = 0; 
   bool showGameScore = true;
   int focusedInput = -1;
 
@@ -78,6 +86,11 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
       inputTeamOne.text = (widget.roundToEdit.teamOneScore ?? 0).toString();
       inputTeamTwo.text = (widget.roundToEdit.teamTwoScore ?? 0).toString();
       selectedCaller = widget.roundToEdit.teamCalled ?? 0;
+      
+      final t1 = widget.roundToEdit.teamOneCallAmount ?? 0;
+      final t2 = widget.roundToEdit.teamTwoCallAmount ?? 0;
+      _callsTeamOne = t1 > 0 ? [CallEntry(CallType.z20, (t1 / 20).round())] : [];
+      _callsTeamTwo = t2 > 0 ? [CallEntry(CallType.z20, (t2 / 20).round())] : [];
     }
 
     _loadGameData();
@@ -91,6 +104,7 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
         setState(() {
           currentlyShuffling = game.currentlyShuffling ?? 1;
           gameDirection = game.gameDirection ?? 0;
+          _currentGameType = game.gameType;
         });
       }
     }
@@ -98,9 +112,9 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
 
   Future<void> _loadRoundsCount() async {
     if (widget.gameId != null) {
-      final rounds = await roundsService.getRoundsForGameSorted(widget.gameId!);
+      final count = await roundsService.getRoundsForGameCount(widget.gameId!);
       setState(() {
-        roundsCount = rounds.length;
+        roundsCount = count;
       });
     }
   }
@@ -116,6 +130,12 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
 
 
   String? get isReadyToSaveMessage {
+    bool teamOneBelot = _callsTeamOne.any((c) => c.type == SpecialCall.belot);
+    bool teamTwoBelot = _callsTeamTwo.any((c) => c.type == SpecialCall.belot);
+    if (teamOneBelot || teamTwoBelot) {
+     
+      return null;
+    }
     if (selectedCaller < 0) return 'Odaberite tko je zvao.';
     if (focusedInput < 0) return 'Odaberite unos bodova.';
     if (inputTeamOne.text.isEmpty && inputTeamTwo.text.isEmpty) {
@@ -126,70 +146,21 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
 
   bool get isReadyToSave => isReadyToSaveMessage == null;
 
-  void handleSaveRound() async {
+  Future<void> handleSaveRound() async {
     try {
-      int teamOne = int.tryParse(inputTeamOne.text) ?? 0;
-      int teamTwo = int.tryParse(inputTeamTwo.text) ?? 0;
-
-     
-      if (teamOne == 0 && teamTwo > 0) {
-        teamTwo = 252;
-      } else if (teamTwo == 0 && teamOne > 0) {
-        teamOne = 252;
-      }
-
-      int callerScore = selectedCaller == 0 ? teamOne : teamTwo;
-      int otherScore = selectedCaller == 0 ? teamTwo : teamOne;
-
-      bool teamFailed = false;
-      
-      if (callerScore <= otherScore || callerScore < 82) {
-        teamFailed = true;
-       
-        if (selectedCaller == 0) {
-          teamOne = 0;
-          teamTwo = 162;
-        } else {
-          teamOne = 162;
-          teamTwo = 0;
-        }
-      }
-
-      if (widget.roundToEdit != null) {
-        final updatedRound = widget.roundToEdit;
-        updatedRound.teamCalled = selectedCaller;
-        updatedRound.teamOneScore = teamOne;
-        updatedRound.teamTwoScore = teamTwo;
-        updatedRound.teamFailed = teamFailed;
-        await roundsService.updateRound(updatedRound);
-      } else {
-        final round = Round(
-          gameId: widget.gameId!,
-          teamCalled: selectedCaller,
-          teamOneScore: teamOne,
-          teamTwoScore: teamTwo,
-          teamFailed: teamFailed,
-        );
-        await roundsService.createRound(round);
-      }
-
-      final rounds = await roundsService.getRoundsForGameSorted(widget.gameId!);
-      int newScoreTeamOne = 0;
-      int newScoreTeamTwo = 0;
-      for (final r in rounds) {
-        newScoreTeamOne += r.teamOneScore ?? 0;
-        newScoreTeamTwo += r.teamTwoScore ?? 0;
-      }
-
       final game = await gamesService.getGameById(widget.gameId!);
-      if (game != null) {
-        game.teamOneScore = newScoreTeamOne;
-        game.teamTwoScore = newScoreTeamTwo;
-        await gamesService.updateGame(game);
+      final int gameType = _currentGameType ?? game?.gameType ?? 1001;
+      bool teamOneBelot = _callsTeamOne.any((c) => c.type == SpecialCall.belot);
+      bool teamTwoBelot = _callsTeamTwo.any((c) => c.type == SpecialCall.belot);
+
+      if (teamOneBelot || teamTwoBelot) {
+        await _saveBelotRound(game, gameType, teamOneBelot, teamTwoBelot);
+        return;
       }
 
-      if (!mounted) return;
-      context.pop();
+      final roundData = _prepareRoundData();
+      final scores = _calculateScores(roundData);
+      await _saveNormalRound(game, scores);
     } catch (e, stack) {
       debugPrint('Greška pri spremanju runde: $e\n$stack');
       if (!mounted) return;
@@ -199,6 +170,127 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
           backgroundColor: Colors.red,
         ),
       );
+      return;
+    }
+  }
+
+  Future<void> _saveBelotRound(dynamic game, int gameType, bool teamOneBelot, bool teamTwoBelot) async {
+    int teamOneCallAmount = teamOneBelot ? gameType : 0;
+    int teamTwoCallAmount = teamTwoBelot ? gameType : 0;
+    final round = widget.roundToEdit ?? Round(gameId: widget.gameId!);
+    round.teamCalled = selectedCaller;
+    round.teamOneScore = teamOneCallAmount;
+    round.teamTwoScore = teamTwoCallAmount;
+    round.teamFailed = false;
+    round.teamOneCallAmount = teamOneCallAmount;
+    round.teamTwoCallAmount = teamTwoCallAmount;
+    if (widget.roundToEdit != null) {
+      await roundsService.updateRound(round);
+    } else {
+      await roundsService.createRound(round);
+    }
+    await _updateGameScores(game);
+    if (!mounted) return;
+    context.pop();
+  }
+
+  ScoreModel _prepareRoundData() {
+    int teamOneBase = int.tryParse(inputTeamOne.text) ?? 0;
+    int teamTwoBase = int.tryParse(inputTeamTwo.text) ?? 0;
+    int teamOneCallAmount = _callsTeamOne.fold(0, (prev, c) => prev + _callValue(c.type) * c.count);
+    int teamTwoCallAmount = _callsTeamTwo.fold(0, (prev, c) => prev + _callValue(c.type) * c.count);
+
+    if (teamOneBase == 0 && teamTwoBase > 0) {
+      teamTwoBase = 252;
+    } else if (teamTwoBase == 0 && teamOneBase > 0) {
+      teamOneBase = 252;
+    }
+
+    
+    return ScoreModel(
+      teamOneBase: teamOneBase,
+      teamTwoBase: teamTwoBase,
+      teamOneCallAmount: teamOneCallAmount,
+      teamTwoCallAmount: teamTwoCallAmount,
+      teamOneTotal: 0,
+      teamTwoTotal: 0,
+      teamFailed: false,
+    );
+  }
+
+  ScoreModel _calculateScores(ScoreModel roundData) {
+    int teamOneBase = roundData.teamOneBase;
+    int teamTwoBase = roundData.teamTwoBase;
+    int teamOneCallAmount = roundData.teamOneCallAmount;
+    int teamTwoCallAmount = roundData.teamTwoCallAmount;
+
+    var scores = roundsService.calculateRoundScores(
+      teamOneBase: teamOneBase,
+      teamTwoBase: teamTwoBase,
+      teamOneCallAmount: teamOneCallAmount,
+      teamTwoCallAmount: teamTwoCallAmount,
+    );
+    int teamOneTotal = scores['teamOneTotal']!;
+    int teamTwoTotal = scores['teamTwoTotal']!;
+    int callerScore = selectedCaller == 0 ? teamOneTotal : teamTwoTotal;
+    int otherScore = selectedCaller == 0 ? teamTwoTotal : teamOneTotal;
+
+    bool teamFailed = false;
+    if (callerScore <= otherScore || callerScore < 82) {
+      int failedTeam = selectedCaller;
+      scores = roundsService.calculateRoundScores(
+        teamOneBase: teamOneBase,
+        teamTwoBase: teamTwoBase,
+        teamOneCallAmount: teamOneCallAmount,
+        teamTwoCallAmount: teamTwoCallAmount,
+        failedTeam: failedTeam,
+      );
+      teamOneTotal = scores['teamOneTotal']!;
+      teamTwoTotal = scores['teamTwoTotal']!;
+      teamFailed = true;
+    }
+
+    return ScoreModel(
+      teamOneBase: teamOneBase,
+      teamTwoBase: teamTwoBase,
+      teamOneCallAmount: teamOneCallAmount,
+      teamTwoCallAmount: teamTwoCallAmount,
+      teamOneTotal: teamOneTotal,
+      teamTwoTotal: teamTwoTotal,
+      teamFailed: teamFailed,
+    );
+  }
+
+  Future<void> _saveNormalRound(dynamic game, ScoreModel scores) async {
+    final round = widget.roundToEdit ?? Round(gameId: widget.gameId!);
+    round.teamCalled = selectedCaller;
+    round.teamOneScore = scores.teamOneTotal;
+    round.teamTwoScore = scores.teamTwoTotal;
+    round.teamFailed = scores.teamFailed;
+    round.teamOneCallAmount = scores.teamOneCallAmount;
+    round.teamTwoCallAmount = scores.teamTwoCallAmount;
+    if (widget.roundToEdit != null) {
+      await roundsService.updateRound(round);
+    } else {
+      await roundsService.createRound(round);
+    }
+    await _updateGameScores(game);
+    if (!mounted) return;
+    context.pop();
+  }
+
+  Future<void> _updateGameScores(dynamic game) async {
+    final rounds = await roundsService.getRoundsForGameSorted(widget.gameId!);
+    int newScoreTeamOne = 0;
+    int newScoreTeamTwo = 0;
+    for (final r in rounds) {
+      newScoreTeamOne += r.teamOneScore ?? 0;
+      newScoreTeamTwo += r.teamTwoScore ?? 0;
+    }
+    if (game != null) {
+      game.teamOneScore = newScoreTeamOne;
+      game.teamTwoScore = newScoreTeamTwo;
+      await gamesService.updateGame(game);
     }
   }
 
@@ -232,17 +324,28 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
     if (_isAutoCompleting) return;
     _isAutoCompleting = true;
     final value = int.tryParse(inputTeamOne.text);
-    if (value != null && value == 0) {
+    if (value == null) {
+      inputTeamTwo.text = '';
+      _isAutoCompleting = false;
+      setState(() {});
+      return;
+    }
+    if (value == 0) {
       if (inputTeamTwo.text != '252') {
         inputTeamTwo.text = '252';
       }
-    } else if (value != null && value > 0 && value <= maxScore) {
+      _isAutoCompleting = false;
+      setState(() {});
+      return;
+    }
+    if (value > 0 && value <= maxScore) {
       final other = maxScore - value;
       if (inputTeamTwo.text != other.toString()) {
         inputTeamTwo.text = other.toString();
       }
-    } else if (inputTeamOne.text.isEmpty) {
-      inputTeamTwo.text = '';
+      _isAutoCompleting = false;
+      setState(() {});
+      return;
     }
     _isAutoCompleting = false;
     setState(() {});
@@ -252,17 +355,28 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
     if (_isAutoCompleting) return;
     _isAutoCompleting = true;
     final value = int.tryParse(inputTeamTwo.text);
-    if (value != null && value == 0) {
+    if (value == null) {
+      inputTeamOne.text = '';
+      _isAutoCompleting = false;
+      setState(() {});
+      return;
+    }
+    if (value == 0) {
       if (inputTeamOne.text != '252') {
         inputTeamOne.text = '252';
       }
-    } else if (value != null && value > 0 && value <= maxScore) {
+      _isAutoCompleting = false;
+      setState(() {});
+      return;
+    }
+    if (value > 0 && value <= maxScore) {
       final other = maxScore - value;
       if (inputTeamOne.text != other.toString()) {
         inputTeamOne.text = other.toString();
       }
-    } else if (inputTeamTwo.text.isEmpty) {
-      inputTeamOne.text = '';
+      _isAutoCompleting = false;
+      setState(() {});
+      return;
     }
     _isAutoCompleting = false;
     setState(() {});
@@ -283,15 +397,57 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
     }
   }
 
+
+  int _callValue(CallType t) {
+    return CallValueEnum.values[t.index].value;
+  }
+
   @override
   Widget build(BuildContext context) {
-    // Calculate pad (fall) for UI onlyS
+    // Calculate pad (fall) for UI only using FallScoreModel
     int teamOneVal = int.tryParse(inputTeamOne.text) ?? 0;
     int teamTwoVal = int.tryParse(inputTeamTwo.text) ?? 0;
-    int callerScoreUI = selectedCaller == 0 ? teamOneVal : teamTwoVal;
-    int otherScoreUI = selectedCaller == 0 ? teamTwoVal : teamOneVal;
+    int teamOneCallAmount = _callsTeamOne.where((c) => c.type is CallType).fold(0, (prev, c) => prev + _callValue(c.type) * c.count) + (_callsTeamOne.any((c) => c.type == SpecialCall.belot) ? 100 : 0);
+    int teamTwoCallAmount = _callsTeamTwo.where((c) => c.type is CallType).fold(0, (prev, c) => prev + _callValue(c.type) * c.count) + (_callsTeamTwo.any((c) => c.type == SpecialCall.belot) ? 100 : 0);
+    int allCalls = teamOneCallAmount + teamTwoCallAmount;
+    FallScoreModel fallScore = selectedCaller == 0
+        ? FallScoreModel(
+            teamOneTotal: 0,
+            teamTwoTotal: maxScore + allCalls,
+            teamOneBase: 0,
+            teamTwoBase: maxScore,
+            teamOneCallAmount: 0,
+            teamTwoCallAmount: allCalls,
+            allCalls: allCalls,
+          )
+        : FallScoreModel(
+            teamOneTotal: maxScore + allCalls,
+            teamTwoTotal: 0,
+            teamOneBase: maxScore,
+            teamTwoBase: 0,
+            teamOneCallAmount: allCalls,
+            teamTwoCallAmount: 0,
+            allCalls: allCalls,
+          );
+    int teamOneTotal = teamOneVal + teamOneCallAmount;
+    int teamTwoTotal = teamTwoVal + teamTwoCallAmount;
+    int callerScoreUI = selectedCaller == 0 ? teamOneTotal : teamTwoTotal;
+    int otherScoreUI = selectedCaller == 0 ? teamTwoTotal : teamOneTotal;
     bool teamFailedUI = (callerScoreUI <= otherScoreUI || callerScoreUI < 82);
     final screenWidth = MediaQuery.of(context).size.width;
+
+    
+    String getInputSuffix(int i) {
+      final base = i == 0 ? teamOneVal : teamTwoVal;
+      final zvanja = i == 0 ? teamOneCallAmount : teamTwoCallAmount;
+      final ukupno = base + zvanja;
+      if (zvanja > 0) {
+        return '=$ukupno';
+      } else {
+        return '';
+      }
+    }
+
     return Scaffold(
       backgroundColor: AppTheme.getScreenBackground(context),
       resizeToAvoidBottomInset: false,
@@ -332,6 +488,7 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
               child: IntrinsicHeight(
                 child: Column(
                   children: [
+
                     Text(
                       '${roundsCount + 1}. RUNDA',
                       style: AppTheme.roundTitleTextStyle.copyWith(
@@ -415,17 +572,29 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
                                 Row(
                                   children: [
                                     Text(
-                                      inputTeamOne.text.isNotEmpty ? inputTeamOne.text : '0',
+                                      teamFailedUI ? '${fallScore.teamOneTotal}' : '$teamOneTotal',
                                       style: TextStyle(
-                                        fontSize: 14,
+                                        fontSize: 16,
                                         fontWeight: FontWeight.bold,
                                         color: Theme.of(context).colorScheme.primary,
                                       ),
                                     ),
+                                    if ((teamFailedUI ? fallScore.teamOneCallAmount : teamOneCallAmount) > 0)
+                                      Padding(
+                                        padding: const EdgeInsets.only(left: 6.0),
+                                        child: Text(
+                                          '+${teamFailedUI ? fallScore.teamOneCallAmount : teamOneCallAmount}',
+                                          style: const TextStyle(
+                                            fontSize: 13,
+                                            color: AppTheme.green,
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                        ),
+                                      ),
                                     if (teamFailedUI && selectedCaller == 0)
-                                     const Padding(
-                                        padding:  EdgeInsets.only(left: 4.0),
-                                        child:  SizedBox(
+                                      const Padding(
+                                        padding: EdgeInsets.only(left: 4.0),
+                                        child: SizedBox(
                                           height: 24,
                                           width: 24,
                                           child: FallingArrowIcon(animateOnce: false),
@@ -457,16 +626,28 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
                                 Row(
                                   children: [
                                     Text(
-                                      inputTeamTwo.text.isNotEmpty ? inputTeamTwo.text : '0',
+                                      teamFailedUI ? '${fallScore.teamTwoTotal}' : '$teamTwoTotal',
                                       style: const TextStyle(
-                                        fontSize: 14,
+                                        fontSize: 16,
                                         fontWeight: FontWeight.bold,
                                         color: AppTheme.green,
                                       ),
                                     ),
+                                    if ((teamFailedUI ? fallScore.teamTwoCallAmount : teamTwoCallAmount) > 0)
+                                      Padding(
+                                        padding: const EdgeInsets.only(left: 6.0),
+                                        child: Text(
+                                          '+${teamFailedUI ? fallScore.teamTwoCallAmount : teamTwoCallAmount}',
+                                          style: const TextStyle(
+                                            fontSize: 13,
+                                            color: AppTheme.primary,
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                        ),
+                                      ),
                                     if (teamFailedUI && selectedCaller == 1)
-                                     const Padding(
-                                        padding:  EdgeInsets.only(left: 4.0),
+                                      const Padding(
+                                        padding: EdgeInsets.only(left: 4.0),
                                         child: SizedBox(
                                           height: 24,
                                           width: 24,
@@ -507,6 +688,7 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
                       ),
                     ),
                     const SizedBox(height: 30),
+                    
                     _buildSection(
                       context: context,
                       icon: Icons.edit,
@@ -514,57 +696,92 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
                       title: 'UNOS BODOVA',
                       child: Column(
                         children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: List.generate(
-                              2,
-                              (i) => AnimatedBuilder(
-                                animation: i == 0
-                                    ? _bounceAnimation1
-                                    : _bounceAnimation2,
-                                builder: (_, __) => Transform.scale(
-                                  scale: i == 0
-                                      ? _bounceAnimation1.value
-                                      : _bounceAnimation2.value,
-                                  child: BigButtonInputNumber(
-                                    text: '0',
-                                    textStyle: TextStyle(
-                                      color: focusedInput == i
-                                          ? AppTheme.getInverseTextColor(context)
-                                          : AppTheme.getTextColor(context),
-                                      fontSize: 30,
-                                      fontWeight: FontWeight.bold,
+                          ChooseInputType(
+                            selectedChoice: selectedMode,
+                            selectedColor: AppTheme.green,
+                            notSelectedColor: AppTheme.getDisabledButtonColor(context),
+                            onTap: (id) => setState(() => selectedMode = id),
+                            boxWidth: screenWidth / 3,
+                          ),
+                          const SizedBox(height: 16),
+                          if (selectedMode == 0) ...[
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              children: List.generate(
+                                2,
+                                (i) => Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    AnimatedBuilder(
+                                      animation: i == 0
+                                          ? _bounceAnimation1
+                                          : _bounceAnimation2,
+                                      builder: (_, __) => Transform.scale(
+                                        scale: i == 0
+                                            ? _bounceAnimation1.value
+                                            : _bounceAnimation2.value,
+                                        child: BigButtonInputNumber(
+                                          text: '0',
+                                          textStyle: TextStyle(
+                                            color: focusedInput == i
+                                                ? AppTheme.getInverseTextColor(context)
+                                                : AppTheme.getTextColor(context),
+                                            fontSize: 30,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                          bgColor: focusedInput == i
+                                              ? AppTheme.green
+                                              : focusedInput == (1 - i)
+                                                  ? AppTheme.red
+                                                  : AppTheme.getDisabledButtonColor(context),
+                                          onTap: () {
+                                            final controller =
+                                                i == 0 ? _bounceController1 : _bounceController2;
+                                            controller.forward().then((_) => controller.reverse());
+                                            setState(() => focusedInput = i);
+                                          },
+                                          inputController: i == 0
+                                              ? inputTeamOne
+                                              : inputTeamTwo,
+                                          textPadding: 10,
+                                          width: screenWidth / 3,
+                                         
+                                          suffixText: getInputSuffix(i),
+                                        ),
+                                      ),
                                     ),
-                                    bgColor: focusedInput == i
-                                        ? AppTheme.green
-                                        : focusedInput == (1 - i)
-                                            ? AppTheme.red
-                                            : AppTheme.getDisabledButtonColor(context),
-                                    onTap: () {
-                                      final controller =
-                                          i == 0 ? _bounceController1 : _bounceController2;
-                                      controller.forward().then((_) => controller.reverse());
-                                      setState(() => focusedInput = i);
-                                    },
-                                    inputController: i == 0
-                                        ? inputTeamOne
-                                        : inputTeamTwo,
-                                    textPadding: 10,
-                                    width: screenWidth / 3,
-                                  ),
+                                    
+                                  ],
                                 ),
                               ),
                             ),
-                          ),
-                          const SizedBox(height: 16),
-                          ChooseInputType(
-                            selectedChoice: selectedInputType,
-                            selectedColor: AppTheme.green,
-                            notSelectedColor:
-                                AppTheme.getDisabledButtonColor(context),
-                            onTap: (id) => setState(() => selectedInputType = id),
-                            boxWidth: screenWidth / 3,
-                          ),
+                          ],
+                          if (selectedMode == 1) ...[
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Expanded(
+                                  child: CallShowWidget(
+                                    teamLabel: 'MI',
+                                    color: AppTheme.green,
+                                    onChanged: (calls) => setState(() => _callsTeamOne = List.from(calls)),
+                                    initialCalls: List<CallEntry>.from(_callsTeamOne),
+                                    gameType: _currentGameType ?? 1001,
+                                  ),
+                                ),
+                                const SizedBox(width: 18),
+                                Expanded(
+                                  child: CallShowWidget(
+                                    teamLabel: 'VI',
+                                    color: AppTheme.primary,
+                                    onChanged: (calls) => setState(() => _callsTeamTwo = List.from(calls)),
+                                    initialCalls: List<CallEntry>.from(_callsTeamTwo),
+                                    gameType: _currentGameType ?? 1001,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
                         ],
                       ),
                     ),
@@ -647,10 +864,11 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
 
   int getNextShuffler(int roundCount) {
     if (currentlyShuffling == null || gameDirection == null) return 1;
-    int start = currentlyShuffling! - 1; 
-    int dir = gameDirection == 0 ? 1 : -1;
-    int next = (start + dir * roundCount) % totalPlayers;
-    if (next < 0) next += totalPlayers;
-    return next + 1; 
+    return roundsService.getNextShuffler(
+      roundCount: roundCount,
+      currentlyShuffling: currentlyShuffling!,
+      gameDirection: gameDirection!,
+      totalPlayers: totalPlayers,
+    );
   }
 }

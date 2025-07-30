@@ -32,13 +32,13 @@ class _MainScreenState extends State<MainScreen> {
   Future<void> _initGames() async {
     isLoadingGameHistory = true;
     gamesService = GamesService(AppDatabase());
-    gamesHistory = await gamesService.getAllGames();
+    gamesHistory = (await gamesService.getAllGames()).reversed.toList();
     isLoadingGameHistory = false;
     setState(() {});
   }
 
   Future<void> _refreshGameHistory() async {
-    gamesHistory = await gamesService.getAllGames();
+    gamesHistory = (await gamesService.getAllGames()).reversed.toList();
     setState(() {});
   }
 
@@ -108,13 +108,24 @@ class _MainScreenState extends State<MainScreen> {
                         padding: const EdgeInsets.all(20.0),
                         child: Column(
                           children: [
-                            Text(
-                              "Povijest:",
-                              style: TextStyle(
-                                fontSize: 22,
-                                fontWeight: FontWeight.bold,
-                                color: Theme.of(context).colorScheme.onSurface,
-                              ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  Icons.history,
+                                  color: Theme.of(context).colorScheme.primary,
+                                  size: 26,
+                                ),
+                                const SizedBox(width: 8),
+                                Text(
+                                  "Povijest:",
+                                  style: TextStyle(
+                                    fontSize: 22,
+                                    fontWeight: FontWeight.bold,
+                                    color: Theme.of(context).colorScheme.onSurface,
+                                  ),
+                                ),
+                              ],
                             ),
                             const SizedBox(height: 20),
                             isLoadingGameHistory
@@ -159,11 +170,12 @@ class _MainScreenState extends State<MainScreen> {
                                                   date: formatDate(game.createdAt),
                                                   teamOneScore: game.teamOneScore ?? 0,
                                                   teamTwoScore: game.teamTwoScore ?? 0,
-                                                  onTap: () {
-                                                    context.goNamed(
+                                                  onTap: () async {
+                                                    await context.pushNamed(
                                                       "currentgame",
                                                       queryParameters: {'id': game.id},
                                                     );
+                                                    await _refreshGameHistory();
                                                   },
                                                 ),
                                               );
@@ -221,8 +233,9 @@ class _MainScreenState extends State<MainScreen> {
                           iconAnimationType: AnimationType.rotate,
                           textStyle: AppTheme.defaultButtonTextStyle,
                           bgColor: AppTheme.orange,
-                          onTap: () {
-                            context.goNamed("newgame");
+                          onTap: () async {
+                            await context.pushNamed("newgame");
+                            await _refreshGameHistory();
                           },
                         ),
                       ),

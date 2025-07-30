@@ -1,13 +1,12 @@
-import 'package:bela_blok/screens/widgets/big_button.dart';
 import 'package:flutter/material.dart';
 
-class ChooseInputType extends StatefulWidget {
+class ChooseInputType extends StatelessWidget {
   final int selectedChoice;
   final Color selectedColor;
   final Color notSelectedColor;
   final Function(int id) onTap;
   final double boxWidth;
-  
+
   const ChooseInputType({
     super.key,
     required this.selectedChoice,
@@ -18,109 +17,57 @@ class ChooseInputType extends StatefulWidget {
   });
 
   @override
-  State<ChooseInputType> createState() => _ChooseInputTypeState();
-}
-
-class _ChooseInputTypeState extends State<ChooseInputType>
-    with TickerProviderStateMixin {
-  late AnimationController _scaleController1;
-  late AnimationController _scaleController2;
-  late Animation<double> _scaleAnimation1;
-  late Animation<double> _scaleAnimation2;
-
-  @override
-  void initState() {
-    super.initState();
-    
-    _scaleController1 = AnimationController(
-      duration: const Duration(milliseconds: 150),
-      vsync: this,
-    );
-    _scaleController2 = AnimationController(
-      duration: const Duration(milliseconds: 150),
-      vsync: this,
-    );
-    
-    _scaleAnimation1 = Tween<double>(
-      begin: 1.0,
-      end: 1.05,
-    ).animate(CurvedAnimation(
-      parent: _scaleController1,
-      curve: Curves.easeOut,
-    ));
-    
-    _scaleAnimation2 = Tween<double>(
-      begin: 1.0,
-      end: 1.05,
-    ).animate(CurvedAnimation(
-      parent: _scaleController2,
-      curve: Curves.easeOut,
-    ));
-  }
-
-  @override
-  void didUpdateWidget(ChooseInputType oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (oldWidget.selectedChoice != widget.selectedChoice) {
-      if (widget.selectedChoice == 0) {
-        _scaleController1.forward();
-        _scaleController2.reverse();
-      } else if (widget.selectedChoice == 1) {
-        _scaleController2.forward();
-        _scaleController1.reverse();
-      }
-    }
-  }
-
-  @override
-  void dispose() {
-    _scaleController1.dispose();
-    _scaleController2.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
+    final double minWidth = boxWidth > 90 ? boxWidth : 90;
     return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceAround,
+      mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        AnimatedBuilder(
-          animation: _scaleAnimation1,
-          builder: (context, child) {
-            return Transform.scale(
-              scale: _scaleAnimation1.value,
-              child: BigButton(
-                text: "IGRA",
-                textStyle: TextStyle(
-                    color: (widget.selectedChoice == 0) ? Colors.white : Colors.black, 
-                    fontSize: 24, 
-                    fontWeight: FontWeight.bold),
-                bgColor: (widget.selectedChoice == 0) ? const Color(0xFF4CAF50) : widget.notSelectedColor,
-                onTap: () => widget.onTap(0),
-                textPadding: 4,
-                width: widget.boxWidth,
+        Container(
+          constraints: BoxConstraints(minWidth: minWidth, maxWidth: 140),
+          child: ChoiceChip(
+            label: const Padding(
+              padding:  EdgeInsets.symmetric(vertical: 7.0, horizontal: 10.0),
+              child: Text(
+                'Igra',
+                style:  TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
               ),
-            );
-          },
+            ),
+            selected: selectedChoice == 0,
+            onSelected: (v) {
+              if (!v) return;
+              onTap(0);
+            },
+            selectedColor: selectedColor,
+            backgroundColor: notSelectedColor,
+            labelStyle: TextStyle(
+              color: selectedChoice == 0 ? Colors.white : Colors.black,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
         ),
-        AnimatedBuilder(
-          animation: _scaleAnimation2,
-          builder: (context, child) {
-            return Transform.scale(
-              scale: _scaleAnimation2.value,
-              child: BigButton(
-                text: "ZVANJE",
-                textStyle: TextStyle(
-                    color: (widget.selectedChoice == 1) ? Colors.white : Colors.black, 
-                    fontSize: 24, 
-                    fontWeight: FontWeight.bold),
-                bgColor: (widget.selectedChoice == 1) ? Colors.red : widget.notSelectedColor,
-                onTap: () => widget.onTap(1),
-                textPadding: 4,
-                width: widget.boxWidth,
+        const SizedBox(width: 14),
+        Container(
+          constraints: BoxConstraints(minWidth: minWidth, maxWidth: 140),
+          child: ChoiceChip(
+            label:const Padding(
+              padding:  EdgeInsets.symmetric(vertical: 7.0, horizontal: 10.0),
+              child: Text(
+                'Zvanje',
+                style:  TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
               ),
-            );
-          },
+            ),
+            selected: selectedChoice == 1,
+            onSelected: (v) {
+              if (!v) return;
+              onTap(1);
+            },
+            selectedColor: selectedColor,
+            backgroundColor: notSelectedColor,
+            labelStyle: TextStyle(
+              color: selectedChoice == 1 ? Colors.white : Colors.black,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
         ),
       ],
     );

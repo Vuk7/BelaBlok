@@ -9,15 +9,19 @@ class BigButtonInputNumber extends StatelessWidget {
   final TextEditingController inputController;
   final double textPadding;
   final double? width;
-  const BigButtonInputNumber(
-      {super.key,
-      required this.text,
-      required this.textStyle,
-      required this.bgColor,
-      required this.onTap,
-      required this.inputController,
-      this.textPadding = 20.0,
-      this.width});
+  final String? suffixText;
+
+  const BigButtonInputNumber({
+    super.key,
+    required this.text,
+    required this.textStyle,
+    required this.bgColor,
+    required this.onTap,
+    required this.inputController,
+    this.textPadding = 20.0,
+    this.width,
+    this.suffixText,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -36,13 +40,16 @@ class BigButtonInputNumber extends StatelessWidget {
           style: textStyle,
           onTap: onTap,
           decoration: InputDecoration(
-              border: InputBorder.none,
-              focusedBorder: InputBorder.none,
-              enabledBorder: InputBorder.none,
-              errorBorder: InputBorder.none,
-              disabledBorder: InputBorder.none,
-              hintText: text,
-              hintStyle: textStyle),
+            border: InputBorder.none,
+            focusedBorder: InputBorder.none,
+            enabledBorder: InputBorder.none,
+            errorBorder: InputBorder.none,
+            disabledBorder: InputBorder.none,
+            hintText: text,
+            hintStyle: textStyle,
+            suffixText: suffixText,
+            suffixStyle: textStyle.copyWith(fontSize: 15, color: Colors.grey[700]),
+          ),
           keyboardType: TextInputType.number,
           inputFormatters: <TextInputFormatter>[
             FilteringTextInputFormatter.digitsOnly

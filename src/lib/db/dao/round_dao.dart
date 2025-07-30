@@ -3,6 +3,14 @@ import 'package:drift/drift.dart';
 import '../database.dart';
 
 class RoundDao extends BaseDao {
+  Future<int> getRoundsForGameCount(String gameId) async {
+    final countExp = _db.roundTable.id.count();
+    final query = _db.selectOnly(_db.roundTable)
+      ..addColumns([countExp])
+      ..where(_db.roundTable.gameId.equals(gameId));
+    final result = await query.getSingle();
+    return result.read(countExp) ?? 0;
+  }
   final AppDatabase _db;
 
   RoundDao(this._db) : super(_db);
