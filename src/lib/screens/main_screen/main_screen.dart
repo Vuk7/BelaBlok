@@ -170,11 +170,12 @@ class _MainScreenState extends State<MainScreen> {
                                                   date: formatDate(game.createdAt),
                                                   teamOneScore: game.teamOneScore ?? 0,
                                                   teamTwoScore: game.teamTwoScore ?? 0,
-                                                  onTap: () {
-                                                    context.goNamed(
+                                                  onTap: () async {
+                                                    await context.pushNamed(
                                                       "currentgame",
                                                       queryParameters: {'id': game.id},
                                                     );
+                                                    await _refreshGameHistory();
                                                   },
                                                 ),
                                               );
@@ -232,8 +233,9 @@ class _MainScreenState extends State<MainScreen> {
                           iconAnimationType: AnimationType.rotate,
                           textStyle: AppTheme.defaultButtonTextStyle,
                           bgColor: AppTheme.orange,
-                          onTap: () {
-                            context.goNamed("newgame");
+                          onTap: () async {
+                            await context.pushNamed("newgame");
+                            await _refreshGameHistory();
                           },
                         ),
                       ),
