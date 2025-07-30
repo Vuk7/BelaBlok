@@ -1,7 +1,7 @@
 import 'package:bela_blok/screens/add_round_screen/widgets/call_show.dart';
 import 'package:bela_blok/db/database.dart'; 
 import 'package:bela_blok/db/models/round_model.dart'; 
-import 'package:bela_blok/db/models/score.model.dart';
+import 'package:bela_blok/models/score.model.dart';
 import 'package:bela_blok/services/games_service.dart'; 
 import 'package:bela_blok/services/rounds_service.dart'; 
 import 'package:bela_blok/screens/add_round_screen/widgets/choose_caller.dart';
