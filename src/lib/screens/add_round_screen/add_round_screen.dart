@@ -398,14 +398,7 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
 
 
   int _callValue(CallType t) {
-    switch (t) {
-      case CallType.z20:
-        return CallValueEnum.z20.value;
-      case CallType.z50:
-        return CallValueEnum.z50.value;
-      case CallType.z100:
-        return CallValueEnum.z100.value;
-    }
+    return CallValueEnum.values[t.index].value;
   }
 
   @override
