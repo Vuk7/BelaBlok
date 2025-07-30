@@ -2,6 +2,7 @@ import 'package:bela_blok/screens/add_round_screen/widgets/call_show.dart';
 import 'package:bela_blok/db/database.dart'; 
 import 'package:bela_blok/db/models/round_model.dart'; 
 import 'package:bela_blok/models/score.model.dart';
+import 'package:bela_blok/models/fall_score.model.dart';
 import 'package:bela_blok/services/games_service.dart'; 
 import 'package:bela_blok/services/rounds_service.dart'; 
 import 'package:bela_blok/screens/add_round_screen/widgets/choose_caller.dart';
@@ -403,11 +404,31 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
 
   @override
   Widget build(BuildContext context) {
-    // Calculate pad (fall) for UI only
+    // Calculate pad (fall) for UI only using FallScoreModel
     int teamOneVal = int.tryParse(inputTeamOne.text) ?? 0;
     int teamTwoVal = int.tryParse(inputTeamTwo.text) ?? 0;
     int teamOneCallAmount = _callsTeamOne.where((c) => c.type is CallType).fold(0, (prev, c) => prev + _callValue(c.type) * c.count) + (_callsTeamOne.any((c) => c.type == SpecialCall.belot) ? 100 : 0);
     int teamTwoCallAmount = _callsTeamTwo.where((c) => c.type is CallType).fold(0, (prev, c) => prev + _callValue(c.type) * c.count) + (_callsTeamTwo.any((c) => c.type == SpecialCall.belot) ? 100 : 0);
+    int allCalls = teamOneCallAmount + teamTwoCallAmount;
+    FallScoreModel fallScore = selectedCaller == 0
+        ? FallScoreModel(
+            teamOneTotal: 0,
+            teamTwoTotal: maxScore + allCalls,
+            teamOneBase: 0,
+            teamTwoBase: maxScore,
+            teamOneCallAmount: 0,
+            teamTwoCallAmount: allCalls,
+            allCalls: allCalls,
+          )
+        : FallScoreModel(
+            teamOneTotal: maxScore + allCalls,
+            teamTwoTotal: 0,
+            teamOneBase: maxScore,
+            teamTwoBase: 0,
+            teamOneCallAmount: allCalls,
+            teamTwoCallAmount: 0,
+            allCalls: allCalls,
+          );
     int teamOneTotal = teamOneVal + teamOneCallAmount;
     int teamTwoTotal = teamTwoVal + teamTwoCallAmount;
     int callerScoreUI = selectedCaller == 0 ? teamOneTotal : teamTwoTotal;
@@ -551,18 +572,18 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
                                 Row(
                                   children: [
                                     Text(
-                                      '$teamOneTotal',
+                                      teamFailedUI ? '${fallScore.teamOneTotal}' : '$teamOneTotal',
                                       style: TextStyle(
                                         fontSize: 16,
                                         fontWeight: FontWeight.bold,
                                         color: Theme.of(context).colorScheme.primary,
                                       ),
                                     ),
-                                    if (teamOneCallAmount > 0)
+                                    if ((teamFailedUI ? fallScore.teamOneCallAmount : teamOneCallAmount) > 0)
                                       Padding(
                                         padding: const EdgeInsets.only(left: 6.0),
                                         child: Text(
-                                          '+$teamOneCallAmount',
+                                          '+${teamFailedUI ? fallScore.teamOneCallAmount : teamOneCallAmount}',
                                           style: const TextStyle(
                                             fontSize: 13,
                                             color: AppTheme.green,
@@ -605,18 +626,18 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
                                 Row(
                                   children: [
                                     Text(
-                                      '$teamTwoTotal',
+                                      teamFailedUI ? '${fallScore.teamTwoTotal}' : '$teamTwoTotal',
                                       style: const TextStyle(
                                         fontSize: 16,
                                         fontWeight: FontWeight.bold,
                                         color: AppTheme.green,
                                       ),
                                     ),
-                                    if (teamTwoCallAmount > 0)
+                                    if ((teamFailedUI ? fallScore.teamTwoCallAmount : teamTwoCallAmount) > 0)
                                       Padding(
                                         padding: const EdgeInsets.only(left: 6.0),
                                         child: Text(
-                                          '+$teamTwoCallAmount',
+                                          '+${teamFailedUI ? fallScore.teamTwoCallAmount : teamTwoCallAmount}',
                                           style: const TextStyle(
                                             fontSize: 13,
                                             color: AppTheme.primary,
