@@ -17,6 +17,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:bela_blok/common/constants.dart';
 import 'package:bela_blok/enums/call_value_enum.dart';
+import 'package:bela_blok/screens/smart_calculator_screen/smart_calculator_screen.dart';
 
 class AddRoundScreen extends StatefulWidget {
   final String? gameId;
@@ -796,6 +797,26 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
                         selectedColor: Theme.of(context).colorScheme.primary,
                         selected: getNextShuffler(roundsCount),
                       ),
+                    ),
+                    const SizedBox(height: 16),
+                    ElevatedButton.icon(
+                      icon: const Icon(Icons.calculate),
+                      label: const Text('Pomoć kod izračuna'),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppTheme.green, 
+                        foregroundColor: Colors.white,
+                        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 20),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                      onPressed: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => const SmartCalculatorScreen(),
+                          ),
+                        );
+                      },
                     ),
                     const SizedBox(height: 40),
                   ],
