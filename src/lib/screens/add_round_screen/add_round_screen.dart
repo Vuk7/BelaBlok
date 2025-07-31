@@ -17,7 +17,9 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:bela_blok/common/constants.dart';
 import 'package:bela_blok/enums/call_value_enum.dart';
+
 import 'package:bela_blok/screens/smart_calculator_screen/smart_calculator_screen.dart';
+
 
 class AddRoundScreen extends StatefulWidget {
   final String? gameId;
@@ -94,10 +96,12 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
       final t2 = widget.roundToEdit.teamTwoCallAmount ?? 0;
       _callsTeamOne = t1 > 0 ? [CallEntry(CallType.z20, (t1 / 20).round())] : [];
       _callsTeamTwo = t2 > 0 ? [CallEntry(CallType.z20, (t2 / 20).round())] : [];
+
     }
 
     if (widget.roundToEdit != null && widget.roundToEdit.calculatorResult != null) {
       _calculatorResult = widget.roundToEdit.calculatorResult;
+
     }
 
     _loadGameData();
@@ -276,7 +280,9 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
     round.teamFailed = scores.teamFailed;
     round.teamOneCallAmount = scores.teamOneCallAmount;
     round.teamTwoCallAmount = scores.teamTwoCallAmount;
+
     round.calculatorResult = _calculatorResult; 
+
     if (widget.roundToEdit != null) {
       await roundsService.updateRound(round);
     } else {
