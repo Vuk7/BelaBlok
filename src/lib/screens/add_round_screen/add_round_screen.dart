@@ -811,9 +811,12 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
                         ),
                       ),
                       onPressed: () async {
+                        final initialCalculatorResult = widget.roundToEdit?.calculatorResult;
                         final result = await Navigator.of(context).push(
                           MaterialPageRoute(
-                            builder: (context) => const SmartCalculatorScreen(),
+                            builder: (context) => SmartCalculatorScreen(
+                              initialResult: initialCalculatorResult,
+                            ),
                           ),
                         );
                         if (result != null && result is Map) {
@@ -827,6 +830,10 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
                               } else {
                                 inputTeamTwo.text = score.toString();
                                 focusedInput = 1;
+                              }
+                              // Save calculator result for future editing
+                              if (widget.roundToEdit != null) {
+                                widget.roundToEdit.calculatorResult = result;
                               }
                             });
                           }

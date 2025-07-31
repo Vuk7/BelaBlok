@@ -4,7 +4,9 @@ import 'package:bela_blok/services/card_calculator_service.dart';
 import 'package:bela_blok/themes/app_theme.dart';
 
 class SmartCalculatorScreen extends StatefulWidget {
-  const SmartCalculatorScreen({super.key});
+  final Map<String, dynamic>? initialResult;
+
+  const SmartCalculatorScreen({super.key, this.initialResult}); 
 
   @override
   State<SmartCalculatorScreen> createState() => _SmartCalculatorScreenState();
@@ -13,21 +15,15 @@ class SmartCalculatorScreen extends StatefulWidget {
 class _SmartCalculatorScreenState extends State<SmartCalculatorScreen> {
   final CardCalculatorService _calculatorService = CardCalculatorService();
 
-  // State variables
   List<PlayingCard> _allCards = [];
   List<PlayingCard> _filteredCards = [];
   late final List<PlayingCard> _selectedCards = <PlayingCard>[];
 
-  // Filter state
   late final List<String> _selectedSuits = <String>['sve'];
   final String _trumpSuit = 'herc';
-  late final List<String> _trumpCards = <String>[]; // Karte koje su adut
+  late final List<String> _trumpCards = <String>[];
 
-  // Team selection
-  String _selectedTeam = 'mi'; // 'vi' ili 'mi'
-
-  // Zvanja input
-  final TextEditingController _zvanjaController = TextEditingController();
+  String _selectedTeam = 'mi';
 
   int _currentScore = 0;
 
@@ -35,11 +31,31 @@ class _SmartCalculatorScreenState extends State<SmartCalculatorScreen> {
   void initState() {
     super.initState();
     _initializeCards();
+    if (widget.initialResult != null) {
+      _restoreCalculatorState(widget.initialResult!);
+    }
+  }
+
+  void _restoreCalculatorState(Map<String, dynamic> result) {
+    _selectedTeam = result['team'] ?? 'mi';
+    _currentScore = result['score'] ?? 0;
+    final cardIds = (result['cards'] as List?)?.cast<String>() ?? [];
+    final trumpCardIds = (result['trumpCards'] as List?)?.cast<String>() ?? [];
+    _selectedCards.clear();
+    _trumpCards.clear();
+    for (final card in _allCards) {
+      if (cardIds.contains(card.id)) {
+        _selectedCards.add(card);
+        if (trumpCardIds.contains(card.id)) {
+          _trumpCards.add(card.id);
+        }
+      }
+    }
+    _calculateScore();
   }
 
   @override
   void dispose() {
-    _zvanjaController.dispose();
     super.dispose();
   }
 
@@ -55,17 +71,10 @@ class _SmartCalculatorScreenState extends State<SmartCalculatorScreen> {
 
   void _calculateScore() {
     _currentScore = _calculatorService.calculateTotalScore(
-      _selectedCards, 
-      _trumpSuit, 
+      _selectedCards,
+      _trumpSuit,
       _trumpCards
     );
-
-    // Dodaj zvanja ako su unesena
-    if (_zvanjaController.text.isNotEmpty) {
-      final zvanja = int.tryParse(_zvanjaController.text) ?? 0;
-      _currentScore += zvanja;
-    }
-
     setState(() {});
   }
 
@@ -73,7 +82,7 @@ class _SmartCalculatorScreenState extends State<SmartCalculatorScreen> {
     setState(() {
       if (_selectedCards.contains(card)) {
         _selectedCards.remove(card);
-        _trumpCards.remove(card.id); // Ukloni i iz adut liste
+        _trumpCards.remove(card.id);
       } else {
         _selectedCards.add(card);
       }
@@ -119,19 +128,16 @@ class _SmartCalculatorScreenState extends State<SmartCalculatorScreen> {
     setState(() {
       _selectedCards.clear();
       _trumpCards.clear();
-      _zvanjaController.clear();
       _calculateScore();
     });
   }
 
   void _confirmScore() {
-    // Vratiti rezultat natrag na prethodnu stranicu
     Navigator.of(context).pop({
       'score': _currentScore,
       'team': _selectedTeam,
       'cards': _selectedCards.map((c) => c.id).toList(),
       'trumpCards': _trumpCards,
-      'zvanja': int.tryParse(_zvanjaController.text) ?? 0,
     });
   }
 
@@ -156,31 +162,18 @@ class _SmartCalculatorScreenState extends State<SmartCalculatorScreen> {
       body: SafeArea(
         child: Column(
           children: [
-            // Scrollable content
             Expanded(
               child: SingleChildScrollView(
                 child: Column(
                   children: [
-                    // Team Selection (moved to top)
                     _buildTeamSelection(),
-
-                    // Zvanja Input
-                    _buildZvanjaInput(),
-
-                    // Suit Filter
                     _buildSuitFilter(),
-
-                    // Cards Grid
                     _buildCardsGrid(),
-
-                    // Extra spacing before button
                     const SizedBox(height: 20),
                   ],
                 ),
               ),
             ),
-
-            // Fixed button at bottom
             _buildConfirmButton(),
           ],
         ),
@@ -193,9 +186,9 @@ class _SmartCalculatorScreenState extends State<SmartCalculatorScreen> {
       margin: const EdgeInsets.all(16),
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: Theme.of(context).brightness == Brightness.dark 
-          ? Colors.grey[800] 
-          : Colors.white,
+        color: Theme.of(context).brightness == Brightness.dark
+            ? Colors.grey[800]
+            : Colors.white,
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
@@ -249,55 +242,14 @@ class _SmartCalculatorScreenState extends State<SmartCalculatorScreen> {
     );
   }
 
-  Widget _buildZvanjaInput() {
-    return Container(
-      margin: const EdgeInsets.fromLTRB(16, 8, 16, 8),
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: Theme.of(context).brightness == Brightness.dark 
-          ? Colors.grey[800] 
-          : Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.1),
-            blurRadius: 4,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Row(
-        children: [
-          const Text(
-            'Zvanja:',
-            style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
-          ),
-          const SizedBox(width: 16),
-          Expanded(
-            child: TextField(
-              controller: _zvanjaController,
-              keyboardType: TextInputType.number,
-              decoration: const InputDecoration(
-                hintText: 'Unesite bodove za zvanja',
-                border: OutlineInputBorder(),
-                contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-              ),
-              onChanged: (value) => _calculateScore(),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
   Widget _buildSuitFilter() {
     return Container(
       margin: const EdgeInsets.fromLTRB(16, 8, 16, 8),
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: Theme.of(context).brightness == Brightness.dark 
-          ? Colors.grey[800] 
-          : Colors.white,
+        color: Theme.of(context).brightness == Brightness.dark
+            ? Colors.grey[800]
+            : Colors.white,
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
@@ -379,16 +331,15 @@ class _SmartCalculatorScreenState extends State<SmartCalculatorScreen> {
                   width: isSelected ? 3 : 1,
                 ),
                 borderRadius: BorderRadius.circular(8),
-                color: isSelected 
-                  ? AppTheme.green.withValues(alpha: 0.1)
-                  : isTrump 
-                    ? Colors.orange.withValues(alpha: 0.2)
-                    : Colors.white,
+                color: isSelected
+                    ? AppTheme.green.withValues(alpha: 0.1)
+                    : isTrump
+                        ? Colors.orange.withValues(alpha: 0.2)
+                        : Colors.white,
               ),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  // Placeholder za sliku karte
                   Expanded(
                     child: Container(
                       margin: const EdgeInsets.all(4),
@@ -469,11 +420,16 @@ class _SmartCalculatorScreenState extends State<SmartCalculatorScreen> {
 
   String _getSuitSymbol(String suit) {
     switch (suit) {
-      case 'herc': return '♥';
-      case 'karo': return '♦';
-      case 'tref': return '♣';
-      case 'pik': return '♠';
-      default: return '';
+      case 'herc':
+        return '♥';
+      case 'karo':
+        return '♦';
+      case 'tref':
+        return '♣';
+      case 'pik':
+        return '♠';
+      default:
+        return '';
     }
   }
 

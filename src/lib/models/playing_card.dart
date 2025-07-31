@@ -13,7 +13,7 @@ class PlayingCard {
 
   String get id => '${rank}_$suit';
 
-  // Vrijednosti karata u standardnom načinu
+ 
   int get standardValue {
     switch (rank) {
       case 'A': return 11;
@@ -28,11 +28,11 @@ class PlayingCard {
     }
   }
 
-  // Vrijednosti karata u adutu
+  
   int get trumpValue {
     switch (rank) {
-      case 'J': return 20;  // Fant u adutu
-      case '9': return 14;  // Devet u adutu
+      case 'J': return 20;  
+      case '9': return 14; 
       case 'A': return 11;
       case '10': return 10;
       case 'K': return 4;
@@ -69,4 +69,18 @@ class PlayingCard {
 
   @override
   int get hashCode => id.hashCode;
+
+  Map<String, dynamic> toJson() => {
+    'suit': suit,
+    'rank': rank,
+    'imagePath': imagePath,
+    'isSelected': isSelected,
+  };
+
+  factory PlayingCard.fromJson(Map<String, dynamic> json) => PlayingCard(
+    suit: json['suit'],
+    rank: json['rank'],
+    imagePath: json['imagePath'],
+    isSelected: json['isSelected'] ?? false,
+  );
 }
