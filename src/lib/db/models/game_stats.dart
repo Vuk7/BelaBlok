@@ -33,9 +33,9 @@ class GameStatsModel {
       teamOneDeclarationsSum += round.teamOneCallAmount ?? 0;
       teamTwoDeclarationsSum += round.teamTwoCallAmount ?? 0;
 
-      // Prebroji koliko puta je svaki tim pao (broj unosa da je pao)
+     
       if (round.calculatorResult != null) {
-        // Ako je teamOneFails lista, broj padova je duljina liste
+        
         final teamOneFailsValue = round.calculatorResult?['teamOneFails'];
         final teamTwoFailsValue = round.calculatorResult?['teamTwoFails'];
 
