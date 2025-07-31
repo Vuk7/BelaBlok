@@ -12,6 +12,7 @@ import 'package:bela_blok/services/games_service.dart';
 import 'package:bela_blok/services/rounds_service.dart'; 
 import 'package:bela_blok/db/models/game_model.dart';
 import 'package:bela_blok/db/models/round_model.dart';
+import 'package:bela_blok/db/models/game_stats.dart'; // Add this import if missing
 import 'package:bela_blok/themes/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -26,7 +27,7 @@ class CurrentGameScreen extends StatefulWidget {
 
 class _CurrentGameScreenState extends State<CurrentGameScreen> {
   final ScrollController _scrollController = ScrollController();
-  bool _wobbleTrigger = false;
+  bool _showStatsPopup = false; // Popup NIJE aktivan na početku
 
   GamesService? gamesService;
   RoundsService? roundsService; 
@@ -151,15 +152,24 @@ class _CurrentGameScreenState extends State<CurrentGameScreen> {
     return teamScore[Team.teamOne]! >= gameTargetScore ? 'Tim 1' : 'Tim 2';
   }
 
-  Map<String, dynamic> get gameStats => {
-        'totalRounds': totalRounds,
-        'averageScore': averageScore,
-        'winner': winningTeam,
-      };
+  Map<String, dynamic> get gameStats =>
+      GameStatsModel.calculate(currentGame!, rounds ?? []);
 
   bool get isGameFinished =>
       teamScore[Team.teamOne]! >= gameTargetScore ||
       teamScore[Team.teamTwo]! >= gameTargetScore;
+
+  void _openStatsPopup() {
+    setState(() {
+      _showStatsPopup = true;
+    });
+  }
+
+  void _closeStatsPopup() {
+    setState(() {
+      _showStatsPopup = false;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -229,17 +239,42 @@ class _CurrentGameScreenState extends State<CurrentGameScreen> {
                     ),
                   ),
                   const SizedBox(height: 10),
-                  if (isGameFinished) ...[
+                  if (isGameFinished)
                     GestureDetector(
-                      onTap: () => setState(
-                          () => _wobbleTrigger = !_wobbleTrigger),
-                      child: WobbleWidget(
-                        triggerWobble: _wobbleTrigger,
-                        child: GameStatsWidget(gameStats: gameStats),
+                      onTap: _openStatsPopup,
+                      child: Container(
+                        margin: const EdgeInsets.symmetric(vertical: 8),
+                        padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
+                        decoration: BoxDecoration(
+                          color: AppTheme.green.withValues(alpha: 0.08),
+                          border: Border.all(color: AppTheme.green, width: 2),
+                          borderRadius: BorderRadius.circular(14),
+                          boxShadow: [
+                            BoxShadow(
+                              color: AppTheme.green.withValues(alpha: 0.15),
+                              blurRadius: 8,
+                              offset: const Offset(0, 2),
+                            ),
+                          ],
+                        ),
+                        child:  const Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children:  [
+                            Icon(Icons.analytics, color: AppTheme.green, size: 28),
+                            SizedBox(width: 8),
+                            Text(
+                              'STATISTIKA IGRE',
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                color: AppTheme.green,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
-                    const SizedBox(height: 10),
-                  ],
+                  const SizedBox(height: 10),
                   if (isLoadingRounds)
                     const Center(child: CircularProgressIndicator())
                   else
@@ -309,6 +344,30 @@ class _CurrentGameScreenState extends State<CurrentGameScreen> {
               ),
             ),
           ),
+          if (_showStatsPopup)
+            Container(
+              height: MediaQuery.of(context).size.height,
+              width: MediaQuery.of(context).size.width,
+              alignment: Alignment.center,
+              padding: const EdgeInsets.symmetric(horizontal: 10), 
+              child: Center(
+                child: AlertDialog(
+                  contentPadding: EdgeInsets.zero,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                  content: SizedBox(
+                    width: MediaQuery.of(context).size.width * 1, 
+                    height: MediaQuery.of(context).size.height * 0.40, 
+                    child: GameStatsWidget(gameStats: gameStats),
+                  ),
+                  actions: [
+                    TextButton(
+                      onPressed: _closeStatsPopup,
+                      child: const Text('Zatvori'),
+                    ),
+                  ],
+                ),
+              ),
+            ),
           ConfettiAnimation(
             isActive: isGameFinished,
             primaryColor: winnerColor,

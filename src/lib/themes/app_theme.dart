@@ -1,8 +1,7 @@
-// lib/themes/app_theme.dart
 import 'package:flutter/material.dart';
 
 class AppTheme {
-  // Boje
+  
   static const Color red = Color(0xFFFF0000);
   static const Color green = Color(0xFF3DB328);
   static const Color gray = Color(0xFFD9D9D9);
@@ -17,12 +16,10 @@ class AppTheme {
   static const Color brownShadow = Colors.brown;
   static const Color lightScoreBackground = Color(0xFFE8E8E8);
 
-  // Overlay boje (transparentni slojevi)
   static const Color lightOverlay = Color(0x1A000000);
   static const Color mediumOverlay = Color(0x33000000);
   static const Color heavyOverlay = Color(0x66000000);
 
-  // Tematski Data
   static final ThemeData lightTheme = ThemeData(
     primaryColor: primary,
     scaffoldBackgroundColor: lightBackground,
@@ -63,7 +60,6 @@ class AppTheme {
     ),
   );
 
-  // Stilovi teksta
   static const TextStyle titleTextStyle = TextStyle(
     fontSize: 44,
     fontWeight: FontWeight.bold,
@@ -119,7 +115,6 @@ class AppTheme {
     fontWeight: FontWeight.w500,
   );
 
-  // Pomoćne metode za boje prema temi
   static Color getScreenBackground(BuildContext context) {
     return Theme.of(context).brightness == Brightness.dark
         ? screenBackgroundDark
