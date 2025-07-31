@@ -810,12 +810,27 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
                           borderRadius: BorderRadius.circular(10),
                         ),
                       ),
-                      onPressed: () {
-                        Navigator.of(context).push(
+                      onPressed: () async {
+                        final result = await Navigator.of(context).push(
                           MaterialPageRoute(
                             builder: (context) => const SmartCalculatorScreen(),
                           ),
                         );
+                        if (result != null && result is Map) {
+                          final score = result['score'] as int? ?? 0;
+                          final team = result['team'] as String? ?? 'mi';
+                          if (mounted) {
+                            setState(() {
+                              if (team == 'mi') {
+                                inputTeamOne.text = score.toString();
+                                focusedInput = 0;
+                              } else {
+                                inputTeamTwo.text = score.toString();
+                                focusedInput = 1;
+                              }
+                            });
+                          }
+                        }
                       },
                     ),
                     const SizedBox(height: 40),
