@@ -58,6 +58,8 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
   int totalPlayers = 4; 
   int roundsCount = 0;
 
+  Map<String, dynamic>? _calculatorResult; 
+
   @override
   void initState() {
     super.initState();
@@ -92,6 +94,10 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
       final t2 = widget.roundToEdit.teamTwoCallAmount ?? 0;
       _callsTeamOne = t1 > 0 ? [CallEntry(CallType.z20, (t1 / 20).round())] : [];
       _callsTeamTwo = t2 > 0 ? [CallEntry(CallType.z20, (t2 / 20).round())] : [];
+    }
+
+    if (widget.roundToEdit != null && widget.roundToEdit.calculatorResult != null) {
+      _calculatorResult = widget.roundToEdit.calculatorResult;
     }
 
     _loadGameData();
@@ -270,6 +276,7 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
     round.teamFailed = scores.teamFailed;
     round.teamOneCallAmount = scores.teamOneCallAmount;
     round.teamTwoCallAmount = scores.teamTwoCallAmount;
+    round.calculatorResult = _calculatorResult; 
     if (widget.roundToEdit != null) {
       await roundsService.updateRound(round);
     } else {
@@ -811,11 +818,11 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
                         ),
                       ),
                       onPressed: () async {
-                        final initialCalculatorResult = widget.roundToEdit?.calculatorResult;
+                       
                         final result = await Navigator.of(context).push(
                           MaterialPageRoute(
                             builder: (context) => SmartCalculatorScreen(
-                              initialResult: initialCalculatorResult,
+                              initialResult: _calculatorResult,
                             ),
                           ),
                         );
@@ -831,9 +838,10 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
                                 inputTeamTwo.text = score.toString();
                                 focusedInput = 1;
                               }
-                              // Save calculator result for future editing
+                              
+                              _calculatorResult = Map<String, dynamic>.from(result);
                               if (widget.roundToEdit != null) {
-                                widget.roundToEdit.calculatorResult = result;
+                                widget.roundToEdit.calculatorResult = Map<String, dynamic>.from(result);
                               }
                             });
                           }

@@ -51,8 +51,7 @@ extension RoundMapper on RoundTableData {
 
 
       teamFailed: teamFailed,
-
-
+      calculatorResult: calculatorResult != null ? jsonDecode(calculatorResult!) : null,
     );
   }
 }
