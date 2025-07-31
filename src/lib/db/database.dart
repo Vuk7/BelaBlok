@@ -25,9 +25,11 @@ class AppDatabase extends _$AppDatabase {
   @override
   MigrationStrategy get migration => MigrationStrategy(
     onUpgrade: (migrator, from, to) async {
-      if (from == 1 && to == 2) {
-        
+      if (from < 2) {
         await migrator.addColumn(roundTable, roundTable.teamFailed);
+      }
+      if (from < 3) {
+        await migrator.addColumn(roundTable, roundTable.calculatorResult);
       }
     },
     beforeOpen: (details) async {},
