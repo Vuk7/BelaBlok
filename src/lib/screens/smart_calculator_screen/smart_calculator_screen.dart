@@ -92,28 +92,26 @@ class _SmartCalculatorScreenState extends State<SmartCalculatorScreen> {
 
   void _toggleTrumpCard(PlayingCard card) {
     setState(() {
-      // Dozvoli označavanje samo za 9 i J koji su odabrani
       if (!_selectedCards.contains(card) || !(card.rank == '9' || card.rank == 'J')) {
         return;
       }
 
-      // Provjeri je li karta već označena kao adut
       if (_trumpCards.contains(card.id)) {
         _trumpCards.remove(card.id);
       } else {
-        // Pronađi sve adute (9 i J) u drugim bojama
+       
         final currentSuit = card.suit;
         final adutIdsInOtherSuits = _trumpCards.where((id) {
           final parts = id.split('_');
           return parts.length == 2 && parts[1] != currentSuit && (parts[0] == '9' || parts[0] == 'J');
         }).toList();
 
-        // Ukloni sve adute iz drugih boja
+      
         for (final id in adutIdsInOtherSuits) {
           _trumpCards.remove(id);
         }
 
-        // Dodaj oznaku aduta samo za kliknutu kartu
+        
         _trumpCards.add(card.id);
       }
       _calculateScore();
