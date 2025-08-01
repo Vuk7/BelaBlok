@@ -69,7 +69,7 @@ final GoRouter appRouter = GoRouter(
                 pageBuilder: (BuildContext context, GoRouterState state) {
                   final id = state.uri.queryParameters['id'];
                   final roundId = state.uri.queryParameters['roundId'];
-                  final roundToEdit = state.extra; // može biti null ili Round
+                  final roundToEdit = state.extra;
                   return _slideTransition(
                     child: AddRoundScreen(
                       gameId: id,
@@ -81,18 +81,18 @@ final GoRouter appRouter = GoRouter(
                   );
                 },
               ),
+              GoRoute(
+                path: '/calculator',
+                name: 'calculator',
+                pageBuilder: (BuildContext context, GoRouterState state) {
+                  return _slideTransition(
+                    child: const SmartCalculatorScreen(),
+                    state: state,
+                    beginOffset: const Offset(0.0, 1.0), // slide from bottom
+                  );
+                },
+              ),
             ],
-          ),
-          GoRoute(
-            path: '/calculator',
-            name: 'calculator',
-            pageBuilder: (BuildContext context, GoRouterState state) {
-              return _slideTransition(
-                child: const SmartCalculatorScreen(),
-                state: state,
-                beginOffset: const Offset(0.0, 1.0), // slide from bottom
-              );
-            },
           ),
         ]),
   ],
