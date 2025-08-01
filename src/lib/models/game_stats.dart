@@ -1,3 +1,4 @@
+import 'package:bela_blok/db/database.dart';
 import 'package:bela_blok/db/models/game_model.dart';
 import 'package:bela_blok/db/models/round_model.dart';
 
@@ -18,7 +19,11 @@ class GameStatsModel {
     required this.teamTwoFails,
   });
 
-  static GameStatsModel calculate(Game game, List<Round> rounds) {
+  static Future<GameStatsModel> calculate(
+    Game game,
+    List<Round> rounds,
+    AppDatabase db,
+  ) async {
     int teamOneDeclarations = 0;
     int teamOneDeclarationsSum = 0;
     int teamOneFails = 0;
@@ -33,20 +38,14 @@ class GameStatsModel {
       teamOneDeclarationsSum += round.teamOneCallAmount ?? 0;
       teamTwoDeclarationsSum += round.teamTwoCallAmount ?? 0;
 
-      if (round.calculatorResult != null) {
-        final teamOneFailsValue = round.calculatorResult?['teamOneFails'];
-        final teamTwoFailsValue = round.calculatorResult?['teamTwoFails'];
+      if (round.id != null) {
+        final calculatorResult = await (db.select(db.calculatorResultTable)
+          ..where((tbl) => tbl.roundId.equals(round.id!)))
+          .getSingleOrNull();
 
-        if (teamOneFailsValue is List) {
-          teamOneFails += teamOneFailsValue.length;
-        } else if (teamOneFailsValue is int) {
-          teamOneFails += teamOneFailsValue;
-        }
-
-        if (teamTwoFailsValue is List) {
-          teamTwoFails += teamTwoFailsValue.length;
-        } else if (teamTwoFailsValue is int) {
-          teamTwoFails += teamTwoFailsValue;
+        if (calculatorResult != null) {
+          teamOneFails += calculatorResult.teamOneFails;
+          teamTwoFails += calculatorResult.teamTwoFails;
         }
       }
     }

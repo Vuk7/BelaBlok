@@ -152,8 +152,8 @@ class _CurrentGameScreenState extends State<CurrentGameScreen> {
     return teamScore[Team.teamOne]! >= gameTargetScore ? 'Tim 1' : 'Tim 2';
   }
 
-  GameStatsModel get gameStats =>
-      GameStatsModel.calculate(currentGame!, rounds ?? []);
+  Future<GameStatsModel> get gameStats async =>
+      await GameStatsModel.calculate(currentGame!, rounds ?? [], AppDatabase());
 
   bool get isGameFinished =>
       teamScore[Team.teamOne]! >= gameTargetScore ||
@@ -357,7 +357,18 @@ class _CurrentGameScreenState extends State<CurrentGameScreen> {
                   content: SizedBox(
                     width: MediaQuery.of(context).size.width * 1, 
                     height: MediaQuery.of(context).size.height * 0.40, 
-                    child: GameStatsWidget(gameStats: gameStats),
+                    child: FutureBuilder<GameStatsModel>(
+                      future: gameStats,
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState == ConnectionState.waiting) {
+                          return const Center(child: CircularProgressIndicator());
+                        }
+                        if (snapshot.hasError || !snapshot.hasData) {
+                          return const Center(child: Text('Greška pri učitavanju statistike.'));
+                        }
+                        return GameStatsWidget(gameStats: snapshot.data!);
+                      },
+                    ),
                   ),
                   actions: [
                     TextButton(

@@ -1,4 +1,5 @@
 import 'package:bela_blok/common/constants.dart';
+import 'package:bela_blok/db/entities/calculator_result.dart';
 import 'package:bela_blok/db/entities/game_entities.dart';
 import 'package:drift/drift.dart';
 import 'package:drift_flutter/drift_flutter.dart';
@@ -7,7 +8,13 @@ import 'package:uuid/uuid.dart';
 
 part 'database.g.dart';
 
-@DriftDatabase(tables: [GameTable, RoundTable])
+@DriftDatabase(
+  tables: [
+    GameTable,
+    RoundTable,
+    CalculatorResultTable, 
+  ]
+)
 class AppDatabase extends _$AppDatabase {
   static AppDatabase? _instance;
 

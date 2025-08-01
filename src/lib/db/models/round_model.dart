@@ -1,7 +1,7 @@
 import 'package:bela_blok/db/database.dart';
 import 'package:bela_blok/db/models/base_model.dart';
 import 'package:drift/drift.dart';
-import 'dart:convert'; 
+
 
 class Round extends BaseModel {
   String gameId;
@@ -13,7 +13,6 @@ class Round extends BaseModel {
   bool? isTeamOneCallSuccessful;
   bool? isTeamTwoCallSuccessful;
   bool? teamFailed;
-  Map<String, dynamic>? calculatorResult; 
 
   Round({
     required this.gameId,
@@ -25,7 +24,7 @@ class Round extends BaseModel {
     this.isTeamOneCallSuccessful,
     this.isTeamTwoCallSuccessful,
     this.teamFailed,
-    this.calculatorResult, 
+
     super.id,
     super.createdAt,
     super.updatedAt,
@@ -52,8 +51,7 @@ extension RoundMapper on RoundTableData {
 
       teamFailed: teamFailed,
 
-      calculatorResult: calculatorResult != null ? jsonDecode(calculatorResult!) : null,
-
+  
     );
   }
 }
@@ -72,9 +70,7 @@ extension RoundModelMapper on Round {
       isTeamOneCallSuccessful: Value(isTeamOneCallSuccessful),
       isTeamTwoCallSuccessful: Value(isTeamTwoCallSuccessful),
       teamFailed: Value(teamFailed),
-      calculatorResult: Value(
-        calculatorResult != null ? jsonEncode(calculatorResult) : null,
-      ),
+      
     );
   }
 }

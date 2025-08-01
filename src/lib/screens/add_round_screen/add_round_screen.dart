@@ -17,6 +17,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:bela_blok/common/constants.dart';
 import 'package:bela_blok/enums/call_value_enum.dart';
+import 'package:drift/drift.dart' hide Column;
 
 
 
@@ -90,21 +91,37 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
       inputTeamOne.text = (widget.roundToEdit.teamOneScore ?? 0).toString();
       inputTeamTwo.text = (widget.roundToEdit.teamTwoScore ?? 0).toString();
       selectedCaller = widget.roundToEdit.teamCalled ?? 0;
-      
+
       final t1 = widget.roundToEdit.teamOneCallAmount ?? 0;
       final t2 = widget.roundToEdit.teamTwoCallAmount ?? 0;
       _callsTeamOne = t1 > 0 ? [CallEntry(CallType.z20, (t1 / 20).round())] : [];
       _callsTeamTwo = t2 > 0 ? [CallEntry(CallType.z20, (t2 / 20).round())] : [];
 
-    }
-
-    if (widget.roundToEdit != null && widget.roundToEdit.calculatorResult != null) {
-      _calculatorResult = widget.roundToEdit.calculatorResult;
-
+     
+      _loadCalculatorResult(widget.roundToEdit.id);
     }
 
     _loadGameData();
     _loadRoundsCount();
+  }
+
+  Future<void> _loadCalculatorResult(String? roundId) async {
+    if (roundId == null) return;
+    final result = await (db.select(db.calculatorResultTable)
+      ..where((tbl) => tbl.roundId.equals(roundId)))
+      .getSingleOrNull();
+    if (result != null && mounted) {
+      setState(() {
+        _calculatorResult = {
+          'teamOneDeclarations': result.teamOneDeclarations,
+          'teamOneDeclarationsSum': result.teamOneDeclarationsSum,
+          'teamOneFails': result.teamOneFails,
+          'teamTwoDeclarations': result.teamTwoDeclarations,
+          'teamTwoDeclarationsSum': result.teamTwoDeclarationsSum,
+          'teamTwoFails': result.teamTwoFails,
+        };
+      });
+    }
   }
 
   Future<void> _loadGameData() async {
@@ -280,13 +297,27 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
     round.teamOneCallAmount = scores.teamOneCallAmount;
     round.teamTwoCallAmount = scores.teamTwoCallAmount;
 
-    round.calculatorResult = _calculatorResult; 
-
     if (widget.roundToEdit != null) {
       await roundsService.updateRound(round);
     } else {
       await roundsService.createRound(round);
     }
+
+    // After saving the round
+    if (_calculatorResult != null && round.id != null) {
+      await db.into(db.calculatorResultTable).insert(
+        CalculatorResultTableCompanion(
+          roundId: Value(round.id!),
+          teamOneDeclarations: Value(_calculatorResult?['teamOneDeclarations'] ?? 0),
+          teamOneDeclarationsSum: Value(_calculatorResult?['teamOneDeclarationsSum'] ?? 0),
+          teamOneFails: Value(_calculatorResult?['teamOneFails'] ?? 0),
+          teamTwoDeclarations: Value(_calculatorResult?['teamTwoDeclarations'] ?? 0),
+          teamTwoDeclarationsSum: Value(_calculatorResult?['teamTwoDeclarationsSum'] ?? 0),
+          teamTwoFails: Value(_calculatorResult?['teamTwoFails'] ?? 0),
+        ),
+      );
+    }
+
     await _updateGameScores(game);
     if (!mounted) return;
     context.pop();
@@ -432,10 +463,7 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
               inputTeamTwo.text = score.toString();
               focusedInput = 1;
             }
-            _calculatorResult = Map<String, dynamic>.from(result);
-            if (widget.roundToEdit != null) {
-              widget.roundToEdit.calculatorResult = Map<String, dynamic>.from(result);
-            }
+           
           });
         }
       }
