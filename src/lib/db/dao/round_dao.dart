@@ -36,15 +36,11 @@ class RoundDao extends BaseDao {
           .getSingleOrNull();
 
   Future<int> updateRoundCalculatorResult(String roundId, Map<String, dynamic>? calculatorResult) async {
-    return await (_db.update(_db.roundTable)
-      ..where((tbl) => tbl.id.equals(roundId)))
-      .write(
-        RoundTableCompanion(
-          calculatorResult: Value(
-            calculatorResult != null ? jsonEncode(calculatorResult) : null,
-          ),
-        ),
-      );
+    final companion = RoundTableCompanion(
+      calculatorResult: Value(calculatorResult != null ? jsonEncode(calculatorResult) : null),
+      updatedAt: Value(DateTime.now()),
+    );
+    return await update(database.roundTable, database.roundTable.id, roundId, companion);
   }
 
 }
