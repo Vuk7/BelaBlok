@@ -197,13 +197,11 @@ class _SmartCalculatorScreenState extends State<SmartCalculatorScreen> {
       margin: const EdgeInsets.all(16),
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: Theme.of(context).brightness == Brightness.dark
-            ? Colors.grey[800]
-            : Colors.white,
+        color: AppTheme.getCardBackgroundColor(context),
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.1),
+            color: AppTheme.getOverlayColor(context, opacity: 0.1),
             blurRadius: 4,
             offset: const Offset(0, 2),
           ),
@@ -258,13 +256,11 @@ class _SmartCalculatorScreenState extends State<SmartCalculatorScreen> {
       margin: const EdgeInsets.fromLTRB(16, 8, 16, 8),
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: Theme.of(context).brightness == Brightness.dark
-            ? Colors.grey[800]
-            : Colors.white,
+        color: AppTheme.getCardBackgroundColor(context),
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.1),
+            color: AppTheme.getOverlayColor(context, opacity: 0.1),
             blurRadius: 4,
             offset: const Offset(0, 2),
           ),
