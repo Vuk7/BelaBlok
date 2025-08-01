@@ -416,6 +416,35 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
     return CallValueEnum.values[t.index].value;
   }
 
+  Future<void> _handleCalculatorButtonPressed() async {
+    final result = await Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => SmartCalculatorScreen(
+          initialResult: _calculatorResult,
+        ),
+      ),
+    );
+    if (result != null && result is Map) {
+      final score = result['score'] as int? ?? 0;
+      final team = result['team'] as String? ?? 'mi';
+      if (mounted) {
+        setState(() {
+          if (team == 'mi') {
+            inputTeamOne.text = score.toString();
+            focusedInput = 0;
+          } else {
+            inputTeamTwo.text = score.toString();
+            focusedInput = 1;
+          }
+          _calculatorResult = Map<String, dynamic>.from(result);
+          if (widget.roundToEdit != null) {
+            widget.roundToEdit.calculatorResult = Map<String, dynamic>.from(result);
+          }
+        });
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     // Calculate pad (fall) for UI only using FallScoreModel
@@ -823,36 +852,7 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
                           borderRadius: BorderRadius.circular(10),
                         ),
                       ),
-                      onPressed: () async {
-                       
-                        final result = await Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (context) => SmartCalculatorScreen(
-                              initialResult: _calculatorResult,
-                            ),
-                          ),
-                        );
-                        if (result != null && result is Map) {
-                          final score = result['score'] as int? ?? 0;
-                          final team = result['team'] as String? ?? 'mi';
-                          if (mounted) {
-                            setState(() {
-                              if (team == 'mi') {
-                                inputTeamOne.text = score.toString();
-                                focusedInput = 0;
-                              } else {
-                                inputTeamTwo.text = score.toString();
-                                focusedInput = 1;
-                              }
-                              
-                              _calculatorResult = Map<String, dynamic>.from(result);
-                              if (widget.roundToEdit != null) {
-                                widget.roundToEdit.calculatorResult = Map<String, dynamic>.from(result);
-                              }
-                            });
-                          }
-                        }
-                      },
+                      onPressed: _handleCalculatorButtonPressed,
                     ),
                     const SizedBox(height: 40),
                   ],
