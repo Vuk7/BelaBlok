@@ -2,12 +2,8 @@ import 'package:bela_blok/models/playing_card.dart';
 import 'package:bela_blok/enums/smart_calculator_enum.dart';
 
 class CardCalculatorService {
-  static final CardCalculatorService _instance = CardCalculatorService._internal();
-  factory CardCalculatorService() => _instance;
-  CardCalculatorService._internal();
-
-  static const  List<CardSuit> suits = CardSuit.values;
-  static const  List<CardRank> ranks = CardRank.values;
+  final List<CardSuit> suits = CardSuit.values;
+  final List<CardRank> ranks = CardRank.values;
 
   List<PlayingCard> generateAllCards() {
     List<PlayingCard> cards = [];
@@ -50,7 +46,6 @@ class CardCalculatorService {
       case CardSuit.karo: return 'Karo ♦';
       case CardSuit.tref: return 'Tref ♣';
       case CardSuit.pik: return 'Pik ♠';
-   
     }
   }
 }

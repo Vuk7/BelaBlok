@@ -299,7 +299,7 @@ class _SmartCalculatorScreenState extends State<SmartCalculatorScreen> {
                 selectedColor: AppTheme.green.withAlpha(80),
                 checkmarkColor: AppTheme.green,
               ),
-              ...CardCalculatorService.suits.map((suit) {
+              ..._calculatorService.suits.map((suit) {
                 return FilterChip(
                   label: Text(_calculatorService.getSuitDisplayName(suit)),
                   selected: _selectedSuits.contains(suit),
