@@ -18,7 +18,7 @@ class GameStatsModel {
     required this.teamTwoFails,
   });
 
-  static Map<String, dynamic> calculate(Game game, List<Round> rounds) {
+  static GameStatsModel calculate(Game game, List<Round> rounds) {
     int teamOneDeclarations = 0;
     int teamOneDeclarationsSum = 0;
     int teamOneFails = 0;
@@ -33,9 +33,7 @@ class GameStatsModel {
       teamOneDeclarationsSum += round.teamOneCallAmount ?? 0;
       teamTwoDeclarationsSum += round.teamTwoCallAmount ?? 0;
 
-     
       if (round.calculatorResult != null) {
-        
         final teamOneFailsValue = round.calculatorResult?['teamOneFails'];
         final teamTwoFailsValue = round.calculatorResult?['teamTwoFails'];
 
@@ -53,13 +51,13 @@ class GameStatsModel {
       }
     }
 
-    return {
-      'teamOneDeclarations': teamOneDeclarations,
-      'teamOneDeclarationsSum': teamOneDeclarationsSum,
-      'teamOneFails': teamOneFails,
-      'teamTwoDeclarations': teamTwoDeclarations,
-      'teamTwoDeclarationsSum': teamTwoDeclarationsSum,
-      'teamTwoFails': teamTwoFails,
-    };
+    return GameStatsModel(
+      teamOneDeclarations: teamOneDeclarations,
+      teamOneDeclarationsSum: teamOneDeclarationsSum,
+      teamOneFails: teamOneFails,
+      teamTwoDeclarations: teamTwoDeclarations,
+      teamTwoDeclarationsSum: teamTwoDeclarationsSum,
+      teamTwoFails: teamTwoFails,
+    );
   }
 }

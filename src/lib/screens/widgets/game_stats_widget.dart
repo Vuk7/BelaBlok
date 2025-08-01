@@ -1,8 +1,9 @@
+import 'package:bela_blok/models/game_stats.dart';
 import 'package:bela_blok/themes/app_theme.dart';
 import 'package:flutter/material.dart';
 
 class GameStatsWidget extends StatelessWidget {
-  final Map<String, dynamic> gameStats;
+  final GameStatsModel gameStats;
 
   const GameStatsWidget({
     super.key,
@@ -65,9 +66,9 @@ class GameStatsWidget extends StatelessWidget {
                       context,
                       'MI',
                       Theme.of(context).colorScheme.primary,
-                      gameStats['teamOneDeclarations'] ?? 0,
-                      gameStats['teamOneDeclarationsSum'] ?? 0,
-                      gameStats['teamOneFails'] ?? 0,
+                      gameStats.teamOneDeclarations,
+                      gameStats.teamOneDeclarationsSum,
+                      gameStats.teamOneFails,
                       isDark,
                     ),
                   ),
@@ -82,9 +83,9 @@ class GameStatsWidget extends StatelessWidget {
                       context,
                       'VI',
                       AppTheme.green,
-                      gameStats['teamTwoDeclarations'] ?? 0,
-                      gameStats['teamTwoDeclarationsSum'] ?? 0,
-                      gameStats['teamTwoFails'] ?? 0,
+                      gameStats.teamTwoDeclarations,
+                      gameStats.teamTwoDeclarationsSum,
+                      gameStats.teamTwoFails,
                       isDark,
                     ),
                   ),

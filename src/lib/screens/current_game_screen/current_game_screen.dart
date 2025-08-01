@@ -152,7 +152,7 @@ class _CurrentGameScreenState extends State<CurrentGameScreen> {
     return teamScore[Team.teamOne]! >= gameTargetScore ? 'Tim 1' : 'Tim 2';
   }
 
-  Map<String, dynamic> get gameStats =>
+  GameStatsModel get gameStats =>
       GameStatsModel.calculate(currentGame!, rounds ?? []);
 
   bool get isGameFinished =>
