@@ -1,6 +1,8 @@
+import '../enums/smart_calculator_enum.dart';
+
 class PlayingCard {
-  final String suit; // 'herc', 'karo', 'tref', 'pik'
-  final String rank; // '7', '8', '9', '10', 'J', 'Q', 'K', 'A'
+  final CardSuit suit;
+  final CardRank rank;
   final String imagePath;
   final bool isSelected;
 
@@ -11,45 +13,17 @@ class PlayingCard {
     this.isSelected = false,
   });
 
-  String get id => '${rank}_$suit';
+  String get id => '${rank.label}_${suit.name}';
 
- 
-  int get standardValue {
-    switch (rank) {
-      case 'A': return 11;
-      case '10': return 10;
-      case 'K': return 4;
-      case 'Q': return 3;
-      case 'J': return 2;
-      case '9': return 0;
-      case '8': return 0;
-      case '7': return 0;
-      default: return 0;
-    }
-  }
+  int get standardValue => rank.standardValue;
 
-  
-  int get trumpValue {
-    switch (rank) {
-      case 'J': return 20;  
-      case '9': return 14; 
-      case 'A': return 11;
-      case '10': return 10;
-      case 'K': return 4;
-      case 'Q': return 3;
-      case '8': return 0;
-      case '7': return 0;
-      default: return 0;
-    }
-  }
+  int get trumpValue => rank.trumpValue;
 
-  int getValue(bool isTrump) {
-    return isTrump ? trumpValue : standardValue;
-  }
+  int getValue(bool isTrump) => isTrump ? trumpValue : standardValue;
 
   PlayingCard copyWith({
-    String? suit,
-    String? rank,
+    CardSuit? suit,
+    CardRank? rank,
     String? imagePath,
     bool? isSelected,
   }) {
@@ -71,15 +45,15 @@ class PlayingCard {
   int get hashCode => id.hashCode;
 
   Map<String, dynamic> toJson() => {
-    'suit': suit,
-    'rank': rank,
+    'suit': suit.name,
+    'rank': rank.label,
     'imagePath': imagePath,
     'isSelected': isSelected,
   };
 
   factory PlayingCard.fromJson(Map<String, dynamic> json) => PlayingCard(
-    suit: json['suit'],
-    rank: json['rank'],
+    suit: CardSuit.values.firstWhere((e) => e.name == json['suit']),
+    rank: CardRank.fromString(json['rank']),
     imagePath: json['imagePath'],
     isSelected: json['isSelected'] ?? false,
   );

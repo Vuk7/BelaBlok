@@ -1,22 +1,23 @@
 import 'package:bela_blok/models/playing_card.dart';
+import 'package:bela_blok/enums/smart_calculator_enum.dart';
 
 class CardCalculatorService {
   static final CardCalculatorService _instance = CardCalculatorService._internal();
   factory CardCalculatorService() => _instance;
   CardCalculatorService._internal();
 
-  static const List<String> suits = ['herc', 'karo', 'tref', 'pik'];
-  static const List<String> ranks = ['7', '8', '9', '10', 'J', 'Q', 'K', 'A'];
+  static const  List<CardSuit> suits = CardSuit.values;
+  static const  List<CardRank> ranks = CardRank.values;
 
   List<PlayingCard> generateAllCards() {
     List<PlayingCard> cards = [];
 
-    for (String suit in suits) {
-      for (String rank in ranks) {
+    for (CardSuit suit in suits) {
+      for (CardRank rank in ranks) {
         cards.add(PlayingCard(
           suit: suit,
           rank: rank,
-          imagePath: 'assets/cards/${rank}_$suit.png', 
+          imagePath: 'assets/cards/${rank.label}_${suit.name}.png',
         ));
       }
     }
@@ -24,33 +25,32 @@ class CardCalculatorService {
     return cards;
   }
 
-  List<PlayingCard> filterCardsBySuits(List<PlayingCard> allCards, List<String> selectedSuits) {
-    if (selectedSuits.contains('sve')) {
+  List<PlayingCard> filterCardsBySuits(List<PlayingCard> allCards, List<CardSuit> selectedSuits) {
+    if (selectedSuits.length == CardSuit.values.length) {
       return allCards;
     }
 
     return allCards.where((card) => selectedSuits.contains(card.suit)).toList();
   }
 
-  int calculateTotalScore(List<PlayingCard> selectedCards, String trumpSuit, List<String> trumpCards) {
+  int calculateTotalScore(List<PlayingCard> selectedCards, CardSuit trumpSuit, List<String> trumpCards) {
     int total = 0;
 
     for (PlayingCard card in selectedCards) {
-      bool isTrump = trumpCards.contains(card.id);
+      bool isTrump = card.suit == trumpSuit || trumpCards.contains(card.id);
       total += card.getValue(isTrump);
     }
 
     return total;
   }
 
-
-  String getSuitDisplayName(String suit) {
+  String getSuitDisplayName(CardSuit suit) {
     switch (suit) {
-      case 'herc': return 'Herc ♥';
-      case 'karo': return 'Karo ♦';
-      case 'tref': return 'Tref ♣';
-      case 'pik': return 'Pik ♠';
-      default: return suit;
+      case CardSuit.herc: return 'Herc ♥';
+      case CardSuit.karo: return 'Karo ♦';
+      case CardSuit.tref: return 'Tref ♣';
+      case CardSuit.pik: return 'Pik ♠';
+   
     }
   }
 }

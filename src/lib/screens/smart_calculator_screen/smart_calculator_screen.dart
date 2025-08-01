@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:bela_blok/models/playing_card.dart';
 import 'package:bela_blok/services/card_calculator_service.dart';
 import 'package:bela_blok/themes/app_theme.dart';
+import 'package:bela_blok/enums/smart_calculator_enum.dart' show CardSuit, CardRank; 
 
 class SmartCalculatorScreen extends StatefulWidget {
   final Map<String, dynamic>? initialResult;
@@ -19,8 +20,8 @@ class _SmartCalculatorScreenState extends State<SmartCalculatorScreen> {
   List<PlayingCard> _filteredCards = [];
   late final List<PlayingCard> _selectedCards = <PlayingCard>[];
 
-  late final List<String> _selectedSuits = <String>['sve'];
-  final String _trumpSuit = 'herc';
+  late final List<CardSuit> _selectedSuits = <CardSuit>[]; 
+  final CardSuit _trumpSuit = CardSuit.herc;
   late final List<String> _trumpCards = <String>[];
 
   String _selectedTeam = 'mi';
@@ -61,6 +62,8 @@ class _SmartCalculatorScreenState extends State<SmartCalculatorScreen> {
 
   void _initializeCards() {
     _allCards = _calculatorService.generateAllCards();
+    _selectedSuits.clear();
+    _selectedSuits.addAll(CardSuit.values);
     _updateFilteredCards();
   }
 
@@ -73,7 +76,7 @@ class _SmartCalculatorScreenState extends State<SmartCalculatorScreen> {
     _currentScore = _calculatorService.calculateTotalScore(
       _selectedCards,
       _trumpSuit,
-      _trumpCards
+      _trumpCards,
     );
     setState(() {});
   }
@@ -92,7 +95,7 @@ class _SmartCalculatorScreenState extends State<SmartCalculatorScreen> {
 
   void _toggleTrumpCard(PlayingCard card) {
     setState(() {
-      if (!_selectedCards.contains(card) || !(card.rank == '9' || card.rank == 'J')) {
+      if (!_selectedCards.contains(card) || !(card.rank == CardRank.nine || card.rank == CardRank.jack)) {
         return;
       }
 
@@ -103,7 +106,7 @@ class _SmartCalculatorScreenState extends State<SmartCalculatorScreen> {
         final currentSuit = card.suit;
         final adutIdsInOtherSuits = _trumpCards.where((id) {
           final parts = id.split('_');
-          return parts.length == 2 && parts[1] != currentSuit && (parts[0] == '9' || parts[0] == 'J');
+          return parts.length == 2 && parts[1] != currentSuit.name && (parts[0] == '9' || parts[0] == 'J');
         }).toList();
 
       
@@ -118,22 +121,15 @@ class _SmartCalculatorScreenState extends State<SmartCalculatorScreen> {
     });
   }
 
-  void _toggleSuitFilter(String suit) {
+  void _toggleSuitFilter(CardSuit suit) {
     setState(() {
-      if (suit == 'sve') {
-        _selectedSuits.clear();
-        _selectedSuits.add('sve');
+      if (_selectedSuits.contains(suit)) {
+        _selectedSuits.remove(suit);
       } else {
-        _selectedSuits.remove('sve');
-        if (_selectedSuits.contains(suit)) {
-          _selectedSuits.remove(suit);
-        } else {
-          _selectedSuits.add(suit);
-        }
-
-        if (_selectedSuits.isEmpty) {
-          _selectedSuits.add('sve');
-        }
+        _selectedSuits.add(suit);
+      }
+      if (_selectedSuits.isEmpty) {
+        _selectedSuits.addAll(CardSuit.values);
       }
       _updateFilteredCards();
     });
@@ -296,9 +292,15 @@ class _SmartCalculatorScreenState extends State<SmartCalculatorScreen> {
             children: [
               FilterChip(
                 label: const Text('Sve'),
-                selected: _selectedSuits.contains('sve'),
-                onSelected: (selected) => _toggleSuitFilter('sve'),
-                selectedColor: AppTheme.green.withValues(alpha: 0.3),
+                selected: _selectedSuits.length == CardSuit.values.length,
+                onSelected: (selected) {
+                  setState(() {
+                    _selectedSuits.clear();
+                    _selectedSuits.addAll(CardSuit.values);
+                    _updateFilteredCards();
+                  });
+                },
+                selectedColor: AppTheme.green.withAlpha(80),
                 checkmarkColor: AppTheme.green,
               ),
               ...CardCalculatorService.suits.map((suit) {
@@ -306,7 +308,7 @@ class _SmartCalculatorScreenState extends State<SmartCalculatorScreen> {
                   label: Text(_calculatorService.getSuitDisplayName(suit)),
                   selected: _selectedSuits.contains(suit),
                   onSelected: (selected) => _toggleSuitFilter(suit),
-                  selectedColor: AppTheme.green.withValues(alpha: 0.3),
+                  selectedColor: AppTheme.green.withAlpha(80),
                   checkmarkColor: AppTheme.green,
                 );
               }),
@@ -338,7 +340,7 @@ class _SmartCalculatorScreenState extends State<SmartCalculatorScreen> {
 
           return GestureDetector(
             onTap: () => _toggleCardSelection(card),
-            onLongPress: (card.rank == '9' || card.rank == 'J') ? () => _toggleTrumpCard(card) : null,
+            onLongPress: (card.rank == CardRank.nine || card.rank == CardRank.jack) ? () => _toggleTrumpCard(card) : null,
             child: Container(
               decoration: BoxDecoration(
                 border: Border.all(
@@ -364,7 +366,7 @@ class _SmartCalculatorScreenState extends State<SmartCalculatorScreen> {
                       ),
                       child: Center(
                         child: Text(
-                          '${card.rank}\n${_getSuitSymbol(card.suit)}',
+                          '${card.rank.label}\n${_getSuitSymbol(card.suit)}',
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             fontSize: 16,
@@ -433,31 +435,29 @@ class _SmartCalculatorScreenState extends State<SmartCalculatorScreen> {
     );
   }
 
-  String _getSuitSymbol(String suit) {
+  String _getSuitSymbol(CardSuit suit) {
     switch (suit) {
-      case 'herc':
+      case CardSuit.herc:
         return '♥';
-      case 'karo':
+      case CardSuit.karo:
         return '♦';
-      case 'tref':
+      case CardSuit.tref:
         return '♣';
-      case 'pik':
+      case CardSuit.pik:
         return '♠';
-      default:
-        return '';
+      
     }
   }
 
-  Color _getSuitColor(String suit) {
+  Color _getSuitColor(CardSuit suit) {
     switch (suit) {
-      case 'herc':
-      case 'karo':
+      case CardSuit.herc:
+      case CardSuit.karo:
         return Colors.red;
-      case 'tref':
-      case 'pik':
+      case CardSuit.tref:
+      case CardSuit.pik:
         return Colors.black;
-      default:
-        return Colors.black;
+      
     }
   }
 }
