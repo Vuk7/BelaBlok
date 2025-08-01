@@ -18,7 +18,6 @@ import 'package:go_router/go_router.dart';
 import 'package:bela_blok/common/constants.dart';
 import 'package:bela_blok/enums/call_value_enum.dart';
 
-import 'package:bela_blok/screens/smart_calculator_screen/smart_calculator_screen.dart';
 
 
 class AddRoundScreen extends StatefulWidget {
@@ -417,32 +416,30 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
   }
 
   Future<void> _handleCalculatorButtonPressed() async {
-    final result = await Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (context) => SmartCalculatorScreen(
-          initialResult: _calculatorResult,
-        ),
-      ),
-    );
-    if (result != null && result is Map) {
-      final score = result['score'] as int? ?? 0;
-      final team = result['team'] as String? ?? 'mi';
-      if (mounted) {
-        setState(() {
-          if (team == 'mi') {
-            inputTeamOne.text = score.toString();
-            focusedInput = 0;
-          } else {
-            inputTeamTwo.text = score.toString();
-            focusedInput = 1;
-          }
-          _calculatorResult = Map<String, dynamic>.from(result);
-          if (widget.roundToEdit != null) {
-            widget.roundToEdit.calculatorResult = Map<String, dynamic>.from(result);
-          }
-        });
+    context.pushNamed(
+      'calculator',
+      extra: _calculatorResult,
+    ).then((result) {
+      if (result != null && result is Map) {
+        final score = result['score'] as int? ?? 0;
+        final team = result['team'] as String? ?? 'mi';
+        if (mounted) {
+          setState(() {
+            if (team == 'mi') {
+              inputTeamOne.text = score.toString();
+              focusedInput = 0;
+            } else {
+              inputTeamTwo.text = score.toString();
+              focusedInput = 1;
+            }
+            _calculatorResult = Map<String, dynamic>.from(result);
+            if (widget.roundToEdit != null) {
+              widget.roundToEdit.calculatorResult = Map<String, dynamic>.from(result);
+            }
+          });
+        }
       }
-    }
+    });
   }
 
   @override

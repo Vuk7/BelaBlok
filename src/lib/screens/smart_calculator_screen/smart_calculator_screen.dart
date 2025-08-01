@@ -2,12 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:bela_blok/models/playing_card.dart';
 import 'package:bela_blok/services/card_calculator_service.dart';
 import 'package:bela_blok/themes/app_theme.dart';
-import 'package:bela_blok/enums/smart_calculator_enum.dart' show CardSuit, CardRank; 
+import 'package:bela_blok/enums/smart_calculator_enum.dart' show CardSuit, CardRank;
+import 'package:go_router/go_router.dart'; 
 
 class SmartCalculatorScreen extends StatefulWidget {
   final Map<String, dynamic>? initialResult;
 
-  const SmartCalculatorScreen({super.key, this.initialResult}); 
+  const SmartCalculatorScreen({super.key, this.initialResult});
 
   @override
   State<SmartCalculatorScreen> createState() => _SmartCalculatorScreenState();
@@ -20,7 +21,7 @@ class _SmartCalculatorScreenState extends State<SmartCalculatorScreen> {
   List<PlayingCard> _filteredCards = [];
   late final List<PlayingCard> _selectedCards = <PlayingCard>[];
 
-  late final List<CardSuit> _selectedSuits = <CardSuit>[]; 
+  late final List<CardSuit> _selectedSuits = <CardSuit>[];
   final CardSuit _trumpSuit = CardSuit.herc;
   late final List<String> _trumpCards = <String>[];
 
@@ -102,19 +103,16 @@ class _SmartCalculatorScreenState extends State<SmartCalculatorScreen> {
       if (_trumpCards.contains(card.id)) {
         _trumpCards.remove(card.id);
       } else {
-       
         final currentSuit = card.suit;
         final adutIdsInOtherSuits = _trumpCards.where((id) {
           final parts = id.split('_');
           return parts.length == 2 && parts[1] != currentSuit.name && (parts[0] == '9' || parts[0] == 'J');
         }).toList();
 
-      
         for (final id in adutIdsInOtherSuits) {
           _trumpCards.remove(id);
         }
 
-        
         _trumpCards.add(card.id);
       }
       _calculateScore();
@@ -144,7 +142,7 @@ class _SmartCalculatorScreenState extends State<SmartCalculatorScreen> {
   }
 
   void _confirmScore() {
-    Navigator.of(context).pop({
+    context.pop({
       'score': _currentScore,
       'team': _selectedTeam,
       'cards': _selectedCards.map((c) => c.id).toList(),
@@ -441,7 +439,6 @@ class _SmartCalculatorScreenState extends State<SmartCalculatorScreen> {
         return '♣';
       case CardSuit.pik:
         return '♠';
-      
     }
   }
 
@@ -453,7 +450,6 @@ class _SmartCalculatorScreenState extends State<SmartCalculatorScreen> {
       case CardSuit.tref:
       case CardSuit.pik:
         return Colors.black;
-      
     }
   }
 }
