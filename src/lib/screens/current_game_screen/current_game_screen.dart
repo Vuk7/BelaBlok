@@ -12,7 +12,7 @@ import 'package:bela_blok/services/games_service.dart';
 import 'package:bela_blok/services/rounds_service.dart'; 
 import 'package:bela_blok/db/models/game_model.dart';
 import 'package:bela_blok/db/models/round_model.dart';
-import 'package:bela_blok/db/models/game_stats.dart'; // Add this import if missing
+import 'package:bela_blok/models/game_stats.dart'; 
 import 'package:bela_blok/themes/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
