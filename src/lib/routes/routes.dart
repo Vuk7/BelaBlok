@@ -86,7 +86,9 @@ final GoRouter appRouter = GoRouter(
                 name: 'calculator',
                 pageBuilder: (BuildContext context, GoRouterState state) {
                   return _slideTransition(
-                    child: const SmartCalculatorScreen(),
+                    child: SmartCalculatorScreen(
+                      initialResult: state.extra as Map<String, dynamic>?,
+                    ),
                     state: state,
                     beginOffset: const Offset(0.0, 1.0), // slide from bottom
                   );

@@ -119,7 +119,22 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
           'teamTwoDeclarations': result.teamTwoDeclarations,
           'teamTwoDeclarationsSum': result.teamTwoDeclarationsSum,
           'teamTwoFails': result.teamTwoFails,
+          'team': result.team,
+          'score': 0, 
         };
+        
+        
+        if (result.selectedCards != null && result.selectedCards!.isNotEmpty) {
+          _calculatorResult!['cards'] = result.selectedCards!.split(',');
+        } else {
+          _calculatorResult!['cards'] = <String>[];
+        }
+        
+        if (result.trumpCards != null && result.trumpCards!.isNotEmpty) {
+          _calculatorResult!['trumpCards'] = result.trumpCards!.split(',');
+        } else {
+          _calculatorResult!['trumpCards'] = <String>[];
+        }
       });
     }
   }
@@ -303,8 +318,27 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
       await roundsService.createRound(round);
     }
 
-    // After saving the round
+   
     if (_calculatorResult != null && round.id != null) {
+      
+      if (widget.roundToEdit != null) {
+        await (db.delete(db.calculatorResultTable)
+          ..where((tbl) => tbl.roundId.equals(round.id!)))
+          .go();
+      }
+      
+     
+      String? selectedCardsJson;
+      String? trumpCardsJson;
+      
+      if (_calculatorResult!['cards'] is List) {
+        selectedCardsJson = (_calculatorResult!['cards'] as List).join(',');
+      }
+      
+      if (_calculatorResult!['trumpCards'] is List) {
+        trumpCardsJson = (_calculatorResult!['trumpCards'] as List).join(',');
+      }
+      
       await db.into(db.calculatorResultTable).insert(
         CalculatorResultTableCompanion(
           roundId: Value(round.id!),
@@ -314,6 +348,9 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
           teamTwoDeclarations: Value(_calculatorResult?['teamTwoDeclarations'] ?? 0),
           teamTwoDeclarationsSum: Value(_calculatorResult?['teamTwoDeclarationsSum'] ?? 0),
           teamTwoFails: Value(_calculatorResult?['teamTwoFails'] ?? 0),
+          selectedCards: Value(selectedCardsJson),
+          trumpCards: Value(trumpCardsJson),
+          team: Value(_calculatorResult?['team']),
         ),
       );
     }
@@ -452,6 +489,11 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
       extra: _calculatorResult,
     ).then((result) {
       if (result != null && result is Map) {
+      
+        setState(() {
+          _calculatorResult = Map<String, dynamic>.from(result);
+        });
+        
         final score = result['score'] as int? ?? 0;
         final team = result['team'] as String? ?? 'mi';
         if (mounted) {
