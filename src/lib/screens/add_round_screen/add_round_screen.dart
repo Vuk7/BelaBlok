@@ -18,6 +18,7 @@ import 'package:go_router/go_router.dart';
 import 'package:bela_blok/common/constants.dart';
 import 'package:bela_blok/enums/call_value_enum.dart';
 import 'package:drift/drift.dart' hide Column;
+import 'package:uuid/uuid.dart';
 
 
 
@@ -96,9 +97,11 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
       final t2 = widget.roundToEdit.teamTwoCallAmount ?? 0;
       _callsTeamOne = t1 > 0 ? [CallEntry(CallType.z20, (t1 / 20).round())] : [];
       _callsTeamTwo = t2 > 0 ? [CallEntry(CallType.z20, (t2 / 20).round())] : [];
+    }
 
-     
-      _loadCalculatorResult(widget.roundToEdit.id);
+    String? roundIdToLoad = widget.roundToEdit?.id ?? widget.roundId;
+    if (roundIdToLoad != null && roundIdToLoad.isNotEmpty) {
+      _loadCalculatorResult(roundIdToLoad);
     }
 
     _loadGameData();
@@ -107,9 +110,11 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
 
   Future<void> _loadCalculatorResult(String? roundId) async {
     if (roundId == null) return;
+    
     final result = await (db.select(db.calculatorResultTable)
       ..where((tbl) => tbl.roundId.equals(roundId)))
       .getSingleOrNull();
+    
     if (result != null && mounted) {
       setState(() {
         _calculatorResult = {
@@ -122,7 +127,6 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
           'team': result.team,
           'score': 0, 
         };
-        
         
         if (result.selectedCards != null && result.selectedCards!.isNotEmpty) {
           _calculatorResult!['cards'] = result.selectedCards!.split(',');
@@ -312,22 +316,36 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
     round.teamOneCallAmount = scores.teamOneCallAmount;
     round.teamTwoCallAmount = scores.teamTwoCallAmount;
 
-    if (widget.roundToEdit != null) {
-      await roundsService.updateRound(round);
-    } else {
-      await roundsService.createRound(round);
+    Round roundToSave = round;
+    if (widget.roundToEdit == null && round.id == null) {
+      final newId = const Uuid().v4();
+      roundToSave = Round(
+        id: newId,
+        gameId: round.gameId,
+        teamCalled: round.teamCalled,
+        teamOneScore: round.teamOneScore,
+        teamTwoScore: round.teamTwoScore,
+        teamFailed: round.teamFailed,
+        teamOneCallAmount: round.teamOneCallAmount,
+        teamTwoCallAmount: round.teamTwoCallAmount,
+        isTeamOneCallSuccessful: round.isTeamOneCallSuccessful,
+        isTeamTwoCallSuccessful: round.isTeamTwoCallSuccessful,
+      );
     }
 
-   
-    if (_calculatorResult != null && round.id != null) {
-      
+    if (widget.roundToEdit != null) {
+      await roundsService.updateRound(roundToSave);
+    } else {
+      await roundsService.createRound(roundToSave);
+    }
+
+    if (_calculatorResult != null && roundToSave.id != null) {
       if (widget.roundToEdit != null) {
         await (db.delete(db.calculatorResultTable)
-          ..where((tbl) => tbl.roundId.equals(round.id!)))
+          ..where((tbl) => tbl.roundId.equals(roundToSave.id!)))
           .go();
       }
       
-     
       String? selectedCardsJson;
       String? trumpCardsJson;
       
@@ -341,7 +359,7 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
       
       await db.into(db.calculatorResultTable).insert(
         CalculatorResultTableCompanion(
-          roundId: Value(round.id!),
+          roundId: Value(roundToSave.id!),
           teamOneDeclarations: Value(_calculatorResult?['teamOneDeclarations'] ?? 0),
           teamOneDeclarationsSum: Value(_calculatorResult?['teamOneDeclarationsSum'] ?? 0),
           teamOneFails: Value(_calculatorResult?['teamOneFails'] ?? 0),
@@ -489,7 +507,6 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
       extra: _calculatorResult,
     ).then((result) {
       if (result != null && result is Map) {
-      
         setState(() {
           _calculatorResult = Map<String, dynamic>.from(result);
         });
@@ -505,7 +522,6 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
               inputTeamTwo.text = score.toString();
               focusedInput = 1;
             }
-           
           });
         }
       }
