@@ -33,8 +33,19 @@ class CardCalculatorService {
     int total = 0;
 
     for (PlayingCard card in selectedCards) {
-      bool isTrump = card.suit == trumpSuit || trumpCards.contains(card.id);
-      total += card.getValue(isTrump);
+      int value;
+      if (card.rank == CardRank.nine || card.rank == CardRank.jack) {
+       
+        value = trumpCards.contains(card.id)
+            ? card.rank.trumpValue
+            : card.rank.standardValue;
+      } else {
+       
+        value = card.suit == trumpSuit
+            ? card.rank.trumpValue
+            : card.rank.standardValue;
+      }
+      total += value;
     }
 
     return total;

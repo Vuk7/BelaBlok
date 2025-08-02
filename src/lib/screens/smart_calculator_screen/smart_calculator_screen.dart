@@ -330,7 +330,10 @@ class _SmartCalculatorScreenState extends State<SmartCalculatorScreen> {
           final card = _filteredCards[index];
           final isSelected = _selectedCards.contains(card);
           final isTrump = _trumpCards.contains(card.id);
-          final cardValue = card.getValue(isTrump);
+         
+          final cardValue = isTrump
+              ? card.rank.trumpValue
+              : card.rank.standardValue;
 
           return GestureDetector(
             onTap: () => _toggleCardSelection(card),
@@ -382,7 +385,9 @@ class _SmartCalculatorScreenState extends State<SmartCalculatorScreen> {
                       ),
                     ),
                     child: Text(
-                      isTrump ? 'ADUT $cardValue' : '$cardValue',
+                      isTrump && (card.rank == CardRank.nine || card.rank == CardRank.jack)
+                          ? 'ADUT $cardValue'
+                          : '$cardValue',
                       textAlign: TextAlign.center,
                       style: const TextStyle(
                         color: Colors.white,
