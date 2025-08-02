@@ -59,6 +59,8 @@ extension RoundMapper on RoundTableData {
 extension RoundModelMapper on Round {
   RoundTableCompanion toCompanion() {
     return RoundTableCompanion(
+      id: id != null ? Value(id!) : const Value.absent(),
+      createdAt: createdAt != null ? Value(createdAt!) : const Value.absent(),
       updatedAt: Value(updatedAt ?? DateTime.now()),
       deletedAt: Value(deletedAt),
       gameId: Value(gameId),

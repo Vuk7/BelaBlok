@@ -109,12 +109,12 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
   }
 
   Future<void> _loadCalculatorResult(String? roundId) async {
-    if (roundId == null) return;
-    
+    if (roundId == null || roundId.isEmpty) return;
+
     final result = await (db.select(db.calculatorResultTable)
       ..where((tbl) => tbl.roundId.equals(roundId)))
       .getSingleOrNull();
-    
+
     if (result != null && mounted) {
       setState(() {
         _calculatorResult = {
@@ -207,8 +207,7 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
       final roundData = _prepareRoundData();
       final scores = _calculateScores(roundData);
       await _saveNormalRound(game, scores);
-    } catch (e, stack) {
-      debugPrint('Greška pri spremanju runde: $e\n$stack');
+    } catch (e) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -308,7 +307,15 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
   }
 
   Future<void> _saveNormalRound(dynamic game, ScoreModel scores) async {
-    final round = widget.roundToEdit ?? Round(gameId: widget.gameId!);
+    final Round round;
+    
+    if (widget.roundToEdit != null) {
+      round = widget.roundToEdit!;
+    } else {
+      final newId = const Uuid().v4();
+      round = Round(gameId: widget.gameId!, id: newId);
+    }
+    
     round.teamCalled = selectedCaller;
     round.teamOneScore = scores.teamOneTotal;
     round.teamTwoScore = scores.teamTwoTotal;
@@ -316,33 +323,16 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
     round.teamOneCallAmount = scores.teamOneCallAmount;
     round.teamTwoCallAmount = scores.teamTwoCallAmount;
 
-    Round roundToSave = round;
-    if (widget.roundToEdit == null && round.id == null) {
-      final newId = const Uuid().v4();
-      roundToSave = Round(
-        id: newId,
-        gameId: round.gameId,
-        teamCalled: round.teamCalled,
-        teamOneScore: round.teamOneScore,
-        teamTwoScore: round.teamTwoScore,
-        teamFailed: round.teamFailed,
-        teamOneCallAmount: round.teamOneCallAmount,
-        teamTwoCallAmount: round.teamTwoCallAmount,
-        isTeamOneCallSuccessful: round.isTeamOneCallSuccessful,
-        isTeamTwoCallSuccessful: round.isTeamTwoCallSuccessful,
-      );
-    }
-
     if (widget.roundToEdit != null) {
-      await roundsService.updateRound(roundToSave);
+      await roundsService.updateRound(round);
     } else {
-      await roundsService.createRound(roundToSave);
+      await roundsService.createRound(round);
     }
 
-    if (_calculatorResult != null && roundToSave.id != null) {
+    if (_calculatorResult != null && round.id != null) {
       if (widget.roundToEdit != null) {
         await (db.delete(db.calculatorResultTable)
-          ..where((tbl) => tbl.roundId.equals(roundToSave.id!)))
+          ..where((tbl) => tbl.roundId.equals(round.id!)))
           .go();
       }
       
@@ -359,7 +349,7 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
       
       await db.into(db.calculatorResultTable).insert(
         CalculatorResultTableCompanion(
-          roundId: Value(roundToSave.id!),
+          roundId: Value(round.id!),
           teamOneDeclarations: Value(_calculatorResult?['teamOneDeclarations'] ?? 0),
           teamOneDeclarationsSum: Value(_calculatorResult?['teamOneDeclarationsSum'] ?? 0),
           teamOneFails: Value(_calculatorResult?['teamOneFails'] ?? 0),
@@ -502,6 +492,14 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
   }
 
   Future<void> _handleCalculatorButtonPressed() async {
+  
+    String? roundIdToLoad = widget.roundToEdit?.id ?? widget.roundId;
+    
+    if (roundIdToLoad != null && roundIdToLoad.isNotEmpty) {
+      await _loadCalculatorResult(roundIdToLoad);
+      if (!mounted) return;
+    }
+    
     context.pushNamed(
       'calculator',
       extra: _calculatorResult,
