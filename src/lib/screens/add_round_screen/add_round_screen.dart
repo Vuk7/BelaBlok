@@ -104,25 +104,9 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
       _callsTeamTwo = t2 > 0 ? [CallEntry(CallType.z20, (t2 / 20).round())] : [];
     }
 
-    String? roundIdToLoad = widget.roundToEdit?.id ?? widget.roundId;
-    if (roundIdToLoad != null && roundIdToLoad.isNotEmpty) {
-      _loadCalculatorResult(roundIdToLoad);
-    }
-
+   
     _loadGameData();
     _loadRoundsCount();
-  }
-
-  Future<void> _loadCalculatorResult(String? roundId) async {
-    if (roundId == null || roundId.isEmpty) return;
-
-    final result = await calculatorDao.getCalculatorResultByRoundId(roundId);
-
-    if (result != null && mounted) {
-      setState(() {
-        _calculatorResult = CalculatorResultState.fromTableData(result);
-      });
-    }
   }
 
   Future<void> _loadGameData() async {
@@ -473,16 +457,18 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
   }
 
   Future<void> _handleCalculatorButtonPressed() async {
-    String? roundIdToLoad = widget.roundToEdit?.id ?? widget.roundId;
+    Map<String, dynamic>? initialData;
     
-    if (roundIdToLoad != null && roundIdToLoad.isNotEmpty) {
-      await _loadCalculatorResult(roundIdToLoad);
-      if (!mounted) return;
+    if (widget.roundToEdit != null) {
+      final result = await calculatorDao.getCalculatorResultByRoundId(widget.roundToEdit!.id);
+      if (result != null) {
+        initialData = CalculatorResultState.fromTableData(result).toMap();
+      }
     }
     
     context.pushNamed(
       'calculator',
-      extra: _calculatorResult?.toMap(),
+      extra: initialData,
     ).then((result) {
       if (result != null && result is Map) {
         setState(() {
