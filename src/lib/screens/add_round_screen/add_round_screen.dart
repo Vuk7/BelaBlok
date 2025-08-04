@@ -304,15 +304,17 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
     round.teamOneCallAmount = scores.teamOneCallAmount;
     round.teamTwoCallAmount = scores.teamTwoCallAmount;
 
+    String? actualRoundId;
     if (widget.roundToEdit != null) {
       await roundsService.updateRound(round);
+      actualRoundId = round.id; 
     } else {
-      await roundsService.createRound(round);
+      actualRoundId = await roundsService.createRound(round); 
     }
 
-    if (_calculatorResult != null && round.id != null) {
+    if (_calculatorResult != null && actualRoundId != null) {
       if (widget.roundToEdit != null) {
-        await calculatorDao.deleteCalculatorResultByRoundId(round.id!);
+        await calculatorDao.deleteCalculatorResultByRoundId(actualRoundId);
       }
       
       String? selectedCardsJson;
@@ -327,7 +329,7 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
       }
       
       final calculatorCompanion = CalculatorResultTableCompanion(
-        roundId: Value(round.id!),
+        roundId: Value(actualRoundId),
         teamOneDeclarations: Value(_calculatorResult?.calculatorResult?.teamOneDeclarations ?? 0),
         teamOneDeclarationsSum: Value(_calculatorResult?.calculatorResult?.teamOneDeclarationsSum ?? 0),
         teamOneFails: Value(_calculatorResult?.calculatorResult?.teamOneFails ?? 0),
@@ -471,7 +473,6 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
   }
 
   Future<void> _handleCalculatorButtonPressed() async {
-  
     String? roundIdToLoad = widget.roundToEdit?.id ?? widget.roundId;
     
     if (roundIdToLoad != null && roundIdToLoad.isNotEmpty) {

@@ -31,8 +31,9 @@ class RoundsService {
     return await dao.getRoundsForGameCount(gameId);
   }
 
-  Future<void> createRound(Round round) async {
-    await dao.insert(database.roundTable, round.toCompanion());
+  Future<String> createRound(Round round) async {
+    final result = await dao.insertReturning(database.roundTable, round.toCompanion());
+    return result.id;
   }
 
   Future<void> updateRound(Round round) async {

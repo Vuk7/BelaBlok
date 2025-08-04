@@ -40,7 +40,12 @@ class CalculatorResultState {
       team: tableData.team,
     );
     
-    return CalculatorResultState.fromCalculatorResult(result);
+    return CalculatorResultState(
+      calculatorResult: result,
+      score: 0, 
+      cardsList: result.selectedCards?.split(',').where((card) => card.isNotEmpty).toList() ?? <String>[],
+      trumpCardsList: result.trumpCards?.split(',').where((card) => card.isNotEmpty).toList() ?? <String>[],
+    );
   }
 
   factory CalculatorResultState.fromMap(Map<String, dynamic> map) {
