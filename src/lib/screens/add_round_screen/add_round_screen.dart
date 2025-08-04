@@ -466,6 +466,8 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
       }
     }
     
+    if (!mounted) return;
+    
     context.pushNamed(
       'calculator',
       extra: initialData,
