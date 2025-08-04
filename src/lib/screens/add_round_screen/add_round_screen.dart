@@ -18,8 +18,6 @@ import 'package:go_router/go_router.dart';
 import 'package:bela_blok/common/constants.dart';
 import 'package:bela_blok/enums/call_value_enum.dart';
 import 'package:drift/drift.dart' hide Column;
-import 'package:uuid/uuid.dart';
-
 
 
 class AddRoundScreen extends StatefulWidget {
@@ -312,8 +310,7 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
     if (widget.roundToEdit != null) {
       round = widget.roundToEdit!;
     } else {
-      final newId = const Uuid().v4();
-      round = Round(gameId: widget.gameId!, id: newId);
+      round = Round(gameId: widget.gameId!);
     }
     
     round.teamCalled = selectedCaller;
