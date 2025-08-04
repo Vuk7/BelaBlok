@@ -5,6 +5,7 @@ import 'package:bela_blok/db/dao/round_dao.dart';
 import 'package:bela_blok/db/dao/calculator_dao.dart';
 import 'package:bela_blok/models/score.model.dart';
 import 'package:bela_blok/models/fall_score.model.dart';
+import 'package:bela_blok/models/calculator_result_state.model.dart';
 import 'package:bela_blok/services/games_service.dart'; 
 import 'package:bela_blok/services/rounds_service.dart'; 
 import 'package:bela_blok/screens/add_round_screen/widgets/choose_caller.dart';
@@ -63,7 +64,7 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
   int totalPlayers = 4; 
   int roundsCount = 0;
 
-  Map<String, dynamic>? _calculatorResult; 
+  CalculatorResultState? _calculatorResult; 
 
   @override
   void initState() {
@@ -119,28 +120,7 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
 
     if (result != null && mounted) {
       setState(() {
-        _calculatorResult = {
-          'teamOneDeclarations': result.teamOneDeclarations,
-          'teamOneDeclarationsSum': result.teamOneDeclarationsSum,
-          'teamOneFails': result.teamOneFails,
-          'teamTwoDeclarations': result.teamTwoDeclarations,
-          'teamTwoDeclarationsSum': result.teamTwoDeclarationsSum,
-          'teamTwoFails': result.teamTwoFails,
-          'team': result.team,
-          'score': 0, 
-        };
-        
-        if (result.selectedCards != null && result.selectedCards!.isNotEmpty) {
-          _calculatorResult!['cards'] = result.selectedCards!.split(',');
-        } else {
-          _calculatorResult!['cards'] = <String>[];
-        }
-        
-        if (result.trumpCards != null && result.trumpCards!.isNotEmpty) {
-          _calculatorResult!['trumpCards'] = result.trumpCards!.split(',');
-        } else {
-          _calculatorResult!['trumpCards'] = <String>[];
-        }
+        _calculatorResult = CalculatorResultState.fromTableData(result);
       });
     }
   }
@@ -338,25 +318,25 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
       String? selectedCardsJson;
       String? trumpCardsJson;
       
-      if (_calculatorResult!['cards'] is List) {
-        selectedCardsJson = (_calculatorResult!['cards'] as List).join(',');
+      if (_calculatorResult!.cardsList.isNotEmpty) {
+        selectedCardsJson = _calculatorResult!.cardsList.join(',');
       }
       
-      if (_calculatorResult!['trumpCards'] is List) {
-        trumpCardsJson = (_calculatorResult!['trumpCards'] as List).join(',');
+      if (_calculatorResult!.trumpCardsList.isNotEmpty) {
+        trumpCardsJson = _calculatorResult!.trumpCardsList.join(',');
       }
       
       final calculatorCompanion = CalculatorResultTableCompanion(
         roundId: Value(round.id!),
-        teamOneDeclarations: Value(_calculatorResult?['teamOneDeclarations'] ?? 0),
-        teamOneDeclarationsSum: Value(_calculatorResult?['teamOneDeclarationsSum'] ?? 0),
-        teamOneFails: Value(_calculatorResult?['teamOneFails'] ?? 0),
-        teamTwoDeclarations: Value(_calculatorResult?['teamTwoDeclarations'] ?? 0),
-        teamTwoDeclarationsSum: Value(_calculatorResult?['teamTwoDeclarationsSum'] ?? 0),
-        teamTwoFails: Value(_calculatorResult?['teamTwoFails'] ?? 0),
+        teamOneDeclarations: Value(_calculatorResult?.calculatorResult?.teamOneDeclarations ?? 0),
+        teamOneDeclarationsSum: Value(_calculatorResult?.calculatorResult?.teamOneDeclarationsSum ?? 0),
+        teamOneFails: Value(_calculatorResult?.calculatorResult?.teamOneFails ?? 0),
+        teamTwoDeclarations: Value(_calculatorResult?.calculatorResult?.teamTwoDeclarations ?? 0),
+        teamTwoDeclarationsSum: Value(_calculatorResult?.calculatorResult?.teamTwoDeclarationsSum ?? 0),
+        teamTwoFails: Value(_calculatorResult?.calculatorResult?.teamTwoFails ?? 0),
         selectedCards: Value(selectedCardsJson),
         trumpCards: Value(trumpCardsJson),
-        team: Value(_calculatorResult?['team']),
+        team: Value(_calculatorResult?.calculatorResult?.team),
       );
       
       await calculatorDao.insertCalculatorResult(calculatorCompanion);
@@ -501,11 +481,11 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
     
     context.pushNamed(
       'calculator',
-      extra: _calculatorResult,
+      extra: _calculatorResult?.toMap(),
     ).then((result) {
       if (result != null && result is Map) {
         setState(() {
-          _calculatorResult = Map<String, dynamic>.from(result);
+          _calculatorResult = CalculatorResultState.fromMap(Map<String, dynamic>.from(result));
         });
         
         final score = result['score'] as int? ?? 0;
