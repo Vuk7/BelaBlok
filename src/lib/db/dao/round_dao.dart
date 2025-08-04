@@ -1,7 +1,6 @@
 import 'package:bela_blok/db/dao/base_dao.dart';
 import 'package:drift/drift.dart';
 import '../database.dart';
-import 'dart:convert';
 
 class RoundDao extends BaseDao {
   Future<int> getRoundsForGameCount(String gameId) async {
@@ -35,12 +34,10 @@ class RoundDao extends BaseDao {
             ..limit(1))
           .getSingleOrNull();
 
-  Future<int> updateRoundCalculatorResult(String roundId, Map<String, dynamic>? calculatorResult) async {
-    final companion = RoundTableCompanion(
-      calculatorResult: Value(calculatorResult != null ? jsonEncode(calculatorResult) : null),
-      updatedAt: Value(DateTime.now()),
-    );
-    return await update(database.roundTable, database.roundTable.id, roundId, companion);
+  Future<CalculatorResultTableData?> getCalculatorResultByRoundId(String roundId) async {
+    return (_db.select(_db.calculatorResultTable)
+      ..where((tbl) => tbl.roundId.equals(roundId)))
+      .getSingleOrNull();
   }
 
 }

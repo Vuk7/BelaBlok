@@ -1391,38 +1391,38 @@ class $CalculatorResultTableTable extends CalculatorResultTable
       const VerificationMeta('teamOneDeclarations');
   @override
   late final GeneratedColumn<int> teamOneDeclarations = GeneratedColumn<int>(
-      'team_one_declarations', aliasedName, false,
-      type: DriftSqlType.int, requiredDuringInsert: true);
+      'team_one_declarations', aliasedName, true,
+      type: DriftSqlType.int, requiredDuringInsert: false);
   static const VerificationMeta _teamOneDeclarationsSumMeta =
       const VerificationMeta('teamOneDeclarationsSum');
   @override
   late final GeneratedColumn<int> teamOneDeclarationsSum = GeneratedColumn<int>(
-      'team_one_declarations_sum', aliasedName, false,
-      type: DriftSqlType.int, requiredDuringInsert: true);
+      'team_one_declarations_sum', aliasedName, true,
+      type: DriftSqlType.int, requiredDuringInsert: false);
   static const VerificationMeta _teamOneFailsMeta =
       const VerificationMeta('teamOneFails');
   @override
   late final GeneratedColumn<int> teamOneFails = GeneratedColumn<int>(
-      'team_one_fails', aliasedName, false,
-      type: DriftSqlType.int, requiredDuringInsert: true);
+      'team_one_fails', aliasedName, true,
+      type: DriftSqlType.int, requiredDuringInsert: false);
   static const VerificationMeta _teamTwoDeclarationsMeta =
       const VerificationMeta('teamTwoDeclarations');
   @override
   late final GeneratedColumn<int> teamTwoDeclarations = GeneratedColumn<int>(
-      'team_two_declarations', aliasedName, false,
-      type: DriftSqlType.int, requiredDuringInsert: true);
+      'team_two_declarations', aliasedName, true,
+      type: DriftSqlType.int, requiredDuringInsert: false);
   static const VerificationMeta _teamTwoDeclarationsSumMeta =
       const VerificationMeta('teamTwoDeclarationsSum');
   @override
   late final GeneratedColumn<int> teamTwoDeclarationsSum = GeneratedColumn<int>(
-      'team_two_declarations_sum', aliasedName, false,
-      type: DriftSqlType.int, requiredDuringInsert: true);
+      'team_two_declarations_sum', aliasedName, true,
+      type: DriftSqlType.int, requiredDuringInsert: false);
   static const VerificationMeta _teamTwoFailsMeta =
       const VerificationMeta('teamTwoFails');
   @override
   late final GeneratedColumn<int> teamTwoFails = GeneratedColumn<int>(
-      'team_two_fails', aliasedName, false,
-      type: DriftSqlType.int, requiredDuringInsert: true);
+      'team_two_fails', aliasedName, true,
+      type: DriftSqlType.int, requiredDuringInsert: false);
   static const VerificationMeta _selectedCardsMeta =
       const VerificationMeta('selectedCards');
   @override
@@ -1494,48 +1494,36 @@ class $CalculatorResultTableTable extends CalculatorResultTable
           _teamOneDeclarationsMeta,
           teamOneDeclarations.isAcceptableOrUnknown(
               data['team_one_declarations']!, _teamOneDeclarationsMeta));
-    } else if (isInserting) {
-      context.missing(_teamOneDeclarationsMeta);
     }
     if (data.containsKey('team_one_declarations_sum')) {
       context.handle(
           _teamOneDeclarationsSumMeta,
           teamOneDeclarationsSum.isAcceptableOrUnknown(
               data['team_one_declarations_sum']!, _teamOneDeclarationsSumMeta));
-    } else if (isInserting) {
-      context.missing(_teamOneDeclarationsSumMeta);
     }
     if (data.containsKey('team_one_fails')) {
       context.handle(
           _teamOneFailsMeta,
           teamOneFails.isAcceptableOrUnknown(
               data['team_one_fails']!, _teamOneFailsMeta));
-    } else if (isInserting) {
-      context.missing(_teamOneFailsMeta);
     }
     if (data.containsKey('team_two_declarations')) {
       context.handle(
           _teamTwoDeclarationsMeta,
           teamTwoDeclarations.isAcceptableOrUnknown(
               data['team_two_declarations']!, _teamTwoDeclarationsMeta));
-    } else if (isInserting) {
-      context.missing(_teamTwoDeclarationsMeta);
     }
     if (data.containsKey('team_two_declarations_sum')) {
       context.handle(
           _teamTwoDeclarationsSumMeta,
           teamTwoDeclarationsSum.isAcceptableOrUnknown(
               data['team_two_declarations_sum']!, _teamTwoDeclarationsSumMeta));
-    } else if (isInserting) {
-      context.missing(_teamTwoDeclarationsSumMeta);
     }
     if (data.containsKey('team_two_fails')) {
       context.handle(
           _teamTwoFailsMeta,
           teamTwoFails.isAcceptableOrUnknown(
               data['team_two_fails']!, _teamTwoFailsMeta));
-    } else if (isInserting) {
-      context.missing(_teamTwoFailsMeta);
     }
     if (data.containsKey('selected_cards')) {
       context.handle(
@@ -1574,19 +1562,19 @@ class $CalculatorResultTableTable extends CalculatorResultTable
       roundId: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}round_id'])!,
       teamOneDeclarations: attachedDatabase.typeMapping.read(
-          DriftSqlType.int, data['${effectivePrefix}team_one_declarations'])!,
+          DriftSqlType.int, data['${effectivePrefix}team_one_declarations']),
       teamOneDeclarationsSum: attachedDatabase.typeMapping.read(
           DriftSqlType.int,
-          data['${effectivePrefix}team_one_declarations_sum'])!,
+          data['${effectivePrefix}team_one_declarations_sum']),
       teamOneFails: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}team_one_fails'])!,
+          .read(DriftSqlType.int, data['${effectivePrefix}team_one_fails']),
       teamTwoDeclarations: attachedDatabase.typeMapping.read(
-          DriftSqlType.int, data['${effectivePrefix}team_two_declarations'])!,
+          DriftSqlType.int, data['${effectivePrefix}team_two_declarations']),
       teamTwoDeclarationsSum: attachedDatabase.typeMapping.read(
           DriftSqlType.int,
-          data['${effectivePrefix}team_two_declarations_sum'])!,
+          data['${effectivePrefix}team_two_declarations_sum']),
       teamTwoFails: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}team_two_fails'])!,
+          .read(DriftSqlType.int, data['${effectivePrefix}team_two_fails']),
       selectedCards: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}selected_cards']),
       trumpCards: attachedDatabase.typeMapping
@@ -1609,12 +1597,12 @@ class CalculatorResultTableData extends DataClass
   final DateTime updatedAt;
   final DateTime? deletedAt;
   final String roundId;
-  final int teamOneDeclarations;
-  final int teamOneDeclarationsSum;
-  final int teamOneFails;
-  final int teamTwoDeclarations;
-  final int teamTwoDeclarationsSum;
-  final int teamTwoFails;
+  final int? teamOneDeclarations;
+  final int? teamOneDeclarationsSum;
+  final int? teamOneFails;
+  final int? teamTwoDeclarations;
+  final int? teamTwoDeclarationsSum;
+  final int? teamTwoFails;
   final String? selectedCards;
   final String? trumpCards;
   final String? team;
@@ -1624,12 +1612,12 @@ class CalculatorResultTableData extends DataClass
       required this.updatedAt,
       this.deletedAt,
       required this.roundId,
-      required this.teamOneDeclarations,
-      required this.teamOneDeclarationsSum,
-      required this.teamOneFails,
-      required this.teamTwoDeclarations,
-      required this.teamTwoDeclarationsSum,
-      required this.teamTwoFails,
+      this.teamOneDeclarations,
+      this.teamOneDeclarationsSum,
+      this.teamOneFails,
+      this.teamTwoDeclarations,
+      this.teamTwoDeclarationsSum,
+      this.teamTwoFails,
       this.selectedCards,
       this.trumpCards,
       this.team});
@@ -1643,12 +1631,24 @@ class CalculatorResultTableData extends DataClass
       map['deleted_at'] = Variable<DateTime>(deletedAt);
     }
     map['round_id'] = Variable<String>(roundId);
-    map['team_one_declarations'] = Variable<int>(teamOneDeclarations);
-    map['team_one_declarations_sum'] = Variable<int>(teamOneDeclarationsSum);
-    map['team_one_fails'] = Variable<int>(teamOneFails);
-    map['team_two_declarations'] = Variable<int>(teamTwoDeclarations);
-    map['team_two_declarations_sum'] = Variable<int>(teamTwoDeclarationsSum);
-    map['team_two_fails'] = Variable<int>(teamTwoFails);
+    if (!nullToAbsent || teamOneDeclarations != null) {
+      map['team_one_declarations'] = Variable<int>(teamOneDeclarations);
+    }
+    if (!nullToAbsent || teamOneDeclarationsSum != null) {
+      map['team_one_declarations_sum'] = Variable<int>(teamOneDeclarationsSum);
+    }
+    if (!nullToAbsent || teamOneFails != null) {
+      map['team_one_fails'] = Variable<int>(teamOneFails);
+    }
+    if (!nullToAbsent || teamTwoDeclarations != null) {
+      map['team_two_declarations'] = Variable<int>(teamTwoDeclarations);
+    }
+    if (!nullToAbsent || teamTwoDeclarationsSum != null) {
+      map['team_two_declarations_sum'] = Variable<int>(teamTwoDeclarationsSum);
+    }
+    if (!nullToAbsent || teamTwoFails != null) {
+      map['team_two_fails'] = Variable<int>(teamTwoFails);
+    }
     if (!nullToAbsent || selectedCards != null) {
       map['selected_cards'] = Variable<String>(selectedCards);
     }
@@ -1670,12 +1670,24 @@ class CalculatorResultTableData extends DataClass
           ? const Value.absent()
           : Value(deletedAt),
       roundId: Value(roundId),
-      teamOneDeclarations: Value(teamOneDeclarations),
-      teamOneDeclarationsSum: Value(teamOneDeclarationsSum),
-      teamOneFails: Value(teamOneFails),
-      teamTwoDeclarations: Value(teamTwoDeclarations),
-      teamTwoDeclarationsSum: Value(teamTwoDeclarationsSum),
-      teamTwoFails: Value(teamTwoFails),
+      teamOneDeclarations: teamOneDeclarations == null && nullToAbsent
+          ? const Value.absent()
+          : Value(teamOneDeclarations),
+      teamOneDeclarationsSum: teamOneDeclarationsSum == null && nullToAbsent
+          ? const Value.absent()
+          : Value(teamOneDeclarationsSum),
+      teamOneFails: teamOneFails == null && nullToAbsent
+          ? const Value.absent()
+          : Value(teamOneFails),
+      teamTwoDeclarations: teamTwoDeclarations == null && nullToAbsent
+          ? const Value.absent()
+          : Value(teamTwoDeclarations),
+      teamTwoDeclarationsSum: teamTwoDeclarationsSum == null && nullToAbsent
+          ? const Value.absent()
+          : Value(teamTwoDeclarationsSum),
+      teamTwoFails: teamTwoFails == null && nullToAbsent
+          ? const Value.absent()
+          : Value(teamTwoFails),
       selectedCards: selectedCards == null && nullToAbsent
           ? const Value.absent()
           : Value(selectedCards),
@@ -1696,15 +1708,15 @@ class CalculatorResultTableData extends DataClass
       deletedAt: serializer.fromJson<DateTime?>(json['deletedAt']),
       roundId: serializer.fromJson<String>(json['roundId']),
       teamOneDeclarations:
-          serializer.fromJson<int>(json['teamOneDeclarations']),
+          serializer.fromJson<int?>(json['teamOneDeclarations']),
       teamOneDeclarationsSum:
-          serializer.fromJson<int>(json['teamOneDeclarationsSum']),
-      teamOneFails: serializer.fromJson<int>(json['teamOneFails']),
+          serializer.fromJson<int?>(json['teamOneDeclarationsSum']),
+      teamOneFails: serializer.fromJson<int?>(json['teamOneFails']),
       teamTwoDeclarations:
-          serializer.fromJson<int>(json['teamTwoDeclarations']),
+          serializer.fromJson<int?>(json['teamTwoDeclarations']),
       teamTwoDeclarationsSum:
-          serializer.fromJson<int>(json['teamTwoDeclarationsSum']),
-      teamTwoFails: serializer.fromJson<int>(json['teamTwoFails']),
+          serializer.fromJson<int?>(json['teamTwoDeclarationsSum']),
+      teamTwoFails: serializer.fromJson<int?>(json['teamTwoFails']),
       selectedCards: serializer.fromJson<String?>(json['selectedCards']),
       trumpCards: serializer.fromJson<String?>(json['trumpCards']),
       team: serializer.fromJson<String?>(json['team']),
@@ -1719,12 +1731,12 @@ class CalculatorResultTableData extends DataClass
       'updatedAt': serializer.toJson<DateTime>(updatedAt),
       'deletedAt': serializer.toJson<DateTime?>(deletedAt),
       'roundId': serializer.toJson<String>(roundId),
-      'teamOneDeclarations': serializer.toJson<int>(teamOneDeclarations),
-      'teamOneDeclarationsSum': serializer.toJson<int>(teamOneDeclarationsSum),
-      'teamOneFails': serializer.toJson<int>(teamOneFails),
-      'teamTwoDeclarations': serializer.toJson<int>(teamTwoDeclarations),
-      'teamTwoDeclarationsSum': serializer.toJson<int>(teamTwoDeclarationsSum),
-      'teamTwoFails': serializer.toJson<int>(teamTwoFails),
+      'teamOneDeclarations': serializer.toJson<int?>(teamOneDeclarations),
+      'teamOneDeclarationsSum': serializer.toJson<int?>(teamOneDeclarationsSum),
+      'teamOneFails': serializer.toJson<int?>(teamOneFails),
+      'teamTwoDeclarations': serializer.toJson<int?>(teamTwoDeclarations),
+      'teamTwoDeclarationsSum': serializer.toJson<int?>(teamTwoDeclarationsSum),
+      'teamTwoFails': serializer.toJson<int?>(teamTwoFails),
       'selectedCards': serializer.toJson<String?>(selectedCards),
       'trumpCards': serializer.toJson<String?>(trumpCards),
       'team': serializer.toJson<String?>(team),
@@ -1737,12 +1749,12 @@ class CalculatorResultTableData extends DataClass
           DateTime? updatedAt,
           Value<DateTime?> deletedAt = const Value.absent(),
           String? roundId,
-          int? teamOneDeclarations,
-          int? teamOneDeclarationsSum,
-          int? teamOneFails,
-          int? teamTwoDeclarations,
-          int? teamTwoDeclarationsSum,
-          int? teamTwoFails,
+          Value<int?> teamOneDeclarations = const Value.absent(),
+          Value<int?> teamOneDeclarationsSum = const Value.absent(),
+          Value<int?> teamOneFails = const Value.absent(),
+          Value<int?> teamTwoDeclarations = const Value.absent(),
+          Value<int?> teamTwoDeclarationsSum = const Value.absent(),
+          Value<int?> teamTwoFails = const Value.absent(),
           Value<String?> selectedCards = const Value.absent(),
           Value<String?> trumpCards = const Value.absent(),
           Value<String?> team = const Value.absent()}) =>
@@ -1752,14 +1764,22 @@ class CalculatorResultTableData extends DataClass
         updatedAt: updatedAt ?? this.updatedAt,
         deletedAt: deletedAt.present ? deletedAt.value : this.deletedAt,
         roundId: roundId ?? this.roundId,
-        teamOneDeclarations: teamOneDeclarations ?? this.teamOneDeclarations,
-        teamOneDeclarationsSum:
-            teamOneDeclarationsSum ?? this.teamOneDeclarationsSum,
-        teamOneFails: teamOneFails ?? this.teamOneFails,
-        teamTwoDeclarations: teamTwoDeclarations ?? this.teamTwoDeclarations,
-        teamTwoDeclarationsSum:
-            teamTwoDeclarationsSum ?? this.teamTwoDeclarationsSum,
-        teamTwoFails: teamTwoFails ?? this.teamTwoFails,
+        teamOneDeclarations: teamOneDeclarations.present
+            ? teamOneDeclarations.value
+            : this.teamOneDeclarations,
+        teamOneDeclarationsSum: teamOneDeclarationsSum.present
+            ? teamOneDeclarationsSum.value
+            : this.teamOneDeclarationsSum,
+        teamOneFails:
+            teamOneFails.present ? teamOneFails.value : this.teamOneFails,
+        teamTwoDeclarations: teamTwoDeclarations.present
+            ? teamTwoDeclarations.value
+            : this.teamTwoDeclarations,
+        teamTwoDeclarationsSum: teamTwoDeclarationsSum.present
+            ? teamTwoDeclarationsSum.value
+            : this.teamTwoDeclarationsSum,
+        teamTwoFails:
+            teamTwoFails.present ? teamTwoFails.value : this.teamTwoFails,
         selectedCards:
             selectedCards.present ? selectedCards.value : this.selectedCards,
         trumpCards: trumpCards.present ? trumpCards.value : this.trumpCards,
@@ -1864,12 +1884,12 @@ class CalculatorResultTableCompanion
   final Value<DateTime> updatedAt;
   final Value<DateTime?> deletedAt;
   final Value<String> roundId;
-  final Value<int> teamOneDeclarations;
-  final Value<int> teamOneDeclarationsSum;
-  final Value<int> teamOneFails;
-  final Value<int> teamTwoDeclarations;
-  final Value<int> teamTwoDeclarationsSum;
-  final Value<int> teamTwoFails;
+  final Value<int?> teamOneDeclarations;
+  final Value<int?> teamOneDeclarationsSum;
+  final Value<int?> teamOneFails;
+  final Value<int?> teamTwoDeclarations;
+  final Value<int?> teamTwoDeclarationsSum;
+  final Value<int?> teamTwoFails;
   final Value<String?> selectedCards;
   final Value<String?> trumpCards;
   final Value<String?> team;
@@ -1897,23 +1917,17 @@ class CalculatorResultTableCompanion
     this.updatedAt = const Value.absent(),
     this.deletedAt = const Value.absent(),
     required String roundId,
-    required int teamOneDeclarations,
-    required int teamOneDeclarationsSum,
-    required int teamOneFails,
-    required int teamTwoDeclarations,
-    required int teamTwoDeclarationsSum,
-    required int teamTwoFails,
+    this.teamOneDeclarations = const Value.absent(),
+    this.teamOneDeclarationsSum = const Value.absent(),
+    this.teamOneFails = const Value.absent(),
+    this.teamTwoDeclarations = const Value.absent(),
+    this.teamTwoDeclarationsSum = const Value.absent(),
+    this.teamTwoFails = const Value.absent(),
     this.selectedCards = const Value.absent(),
     this.trumpCards = const Value.absent(),
     this.team = const Value.absent(),
     this.rowid = const Value.absent(),
-  })  : roundId = Value(roundId),
-        teamOneDeclarations = Value(teamOneDeclarations),
-        teamOneDeclarationsSum = Value(teamOneDeclarationsSum),
-        teamOneFails = Value(teamOneFails),
-        teamTwoDeclarations = Value(teamTwoDeclarations),
-        teamTwoDeclarationsSum = Value(teamTwoDeclarationsSum),
-        teamTwoFails = Value(teamTwoFails);
+  }) : roundId = Value(roundId);
   static Insertable<CalculatorResultTableData> custom({
     Expression<String>? id,
     Expression<DateTime>? createdAt,
@@ -1960,12 +1974,12 @@ class CalculatorResultTableCompanion
       Value<DateTime>? updatedAt,
       Value<DateTime?>? deletedAt,
       Value<String>? roundId,
-      Value<int>? teamOneDeclarations,
-      Value<int>? teamOneDeclarationsSum,
-      Value<int>? teamOneFails,
-      Value<int>? teamTwoDeclarations,
-      Value<int>? teamTwoDeclarationsSum,
-      Value<int>? teamTwoFails,
+      Value<int?>? teamOneDeclarations,
+      Value<int?>? teamOneDeclarationsSum,
+      Value<int?>? teamOneFails,
+      Value<int?>? teamTwoDeclarations,
+      Value<int?>? teamTwoDeclarationsSum,
+      Value<int?>? teamTwoFails,
       Value<String?>? selectedCards,
       Value<String?>? trumpCards,
       Value<String?>? team,
@@ -2938,12 +2952,12 @@ typedef $$CalculatorResultTableTableCreateCompanionBuilder
   Value<DateTime> updatedAt,
   Value<DateTime?> deletedAt,
   required String roundId,
-  required int teamOneDeclarations,
-  required int teamOneDeclarationsSum,
-  required int teamOneFails,
-  required int teamTwoDeclarations,
-  required int teamTwoDeclarationsSum,
-  required int teamTwoFails,
+  Value<int?> teamOneDeclarations,
+  Value<int?> teamOneDeclarationsSum,
+  Value<int?> teamOneFails,
+  Value<int?> teamTwoDeclarations,
+  Value<int?> teamTwoDeclarationsSum,
+  Value<int?> teamTwoFails,
   Value<String?> selectedCards,
   Value<String?> trumpCards,
   Value<String?> team,
@@ -2956,12 +2970,12 @@ typedef $$CalculatorResultTableTableUpdateCompanionBuilder
   Value<DateTime> updatedAt,
   Value<DateTime?> deletedAt,
   Value<String> roundId,
-  Value<int> teamOneDeclarations,
-  Value<int> teamOneDeclarationsSum,
-  Value<int> teamOneFails,
-  Value<int> teamTwoDeclarations,
-  Value<int> teamTwoDeclarationsSum,
-  Value<int> teamTwoFails,
+  Value<int?> teamOneDeclarations,
+  Value<int?> teamOneDeclarationsSum,
+  Value<int?> teamOneFails,
+  Value<int?> teamTwoDeclarations,
+  Value<int?> teamTwoDeclarationsSum,
+  Value<int?> teamTwoFails,
   Value<String?> selectedCards,
   Value<String?> trumpCards,
   Value<String?> team,
@@ -3239,12 +3253,12 @@ class $$CalculatorResultTableTableTableManager extends RootTableManager<
             Value<DateTime> updatedAt = const Value.absent(),
             Value<DateTime?> deletedAt = const Value.absent(),
             Value<String> roundId = const Value.absent(),
-            Value<int> teamOneDeclarations = const Value.absent(),
-            Value<int> teamOneDeclarationsSum = const Value.absent(),
-            Value<int> teamOneFails = const Value.absent(),
-            Value<int> teamTwoDeclarations = const Value.absent(),
-            Value<int> teamTwoDeclarationsSum = const Value.absent(),
-            Value<int> teamTwoFails = const Value.absent(),
+            Value<int?> teamOneDeclarations = const Value.absent(),
+            Value<int?> teamOneDeclarationsSum = const Value.absent(),
+            Value<int?> teamOneFails = const Value.absent(),
+            Value<int?> teamTwoDeclarations = const Value.absent(),
+            Value<int?> teamTwoDeclarationsSum = const Value.absent(),
+            Value<int?> teamTwoFails = const Value.absent(),
             Value<String?> selectedCards = const Value.absent(),
             Value<String?> trumpCards = const Value.absent(),
             Value<String?> team = const Value.absent(),
@@ -3273,12 +3287,12 @@ class $$CalculatorResultTableTableTableManager extends RootTableManager<
             Value<DateTime> updatedAt = const Value.absent(),
             Value<DateTime?> deletedAt = const Value.absent(),
             required String roundId,
-            required int teamOneDeclarations,
-            required int teamOneDeclarationsSum,
-            required int teamOneFails,
-            required int teamTwoDeclarations,
-            required int teamTwoDeclarationsSum,
-            required int teamTwoFails,
+            Value<int?> teamOneDeclarations = const Value.absent(),
+            Value<int?> teamOneDeclarationsSum = const Value.absent(),
+            Value<int?> teamOneFails = const Value.absent(),
+            Value<int?> teamTwoDeclarations = const Value.absent(),
+            Value<int?> teamTwoDeclarationsSum = const Value.absent(),
+            Value<int?> teamTwoFails = const Value.absent(),
             Value<String?> selectedCards = const Value.absent(),
             Value<String?> trumpCards = const Value.absent(),
             Value<String?> team = const Value.absent(),
