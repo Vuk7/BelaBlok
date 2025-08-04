@@ -43,18 +43,4 @@ class PlayingCard {
 
   @override
   int get hashCode => id.hashCode;
-
-  Map<String, dynamic> toJson() => {
-    'suit': suit.name,
-    'rank': rank.label,
-    'imagePath': imagePath,
-    'isSelected': isSelected,
-  };
-
-  factory PlayingCard.fromJson(Map<String, dynamic> json) => PlayingCard(
-    suit: CardSuit.values.firstWhere((e) => e.name == json['suit']),
-    rank: CardRank.fromString(json['rank']),
-    imagePath: json['imagePath'],
-    isSelected: json['isSelected'] ?? false,
-  );
 }
