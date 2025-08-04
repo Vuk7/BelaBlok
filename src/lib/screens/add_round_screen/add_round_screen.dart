@@ -1,6 +1,8 @@
 import 'package:bela_blok/screens/add_round_screen/widgets/call_show.dart';
 import 'package:bela_blok/db/database.dart'; 
 import 'package:bela_blok/db/models/round_model.dart'; 
+import 'package:bela_blok/db/dao/round_dao.dart';
+import 'package:bela_blok/db/dao/calculator_dao.dart';
 import 'package:bela_blok/models/score.model.dart';
 import 'package:bela_blok/models/fall_score.model.dart';
 import 'package:bela_blok/services/games_service.dart'; 
@@ -53,6 +55,8 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
   late final AppDatabase db;
   late final GamesService gamesService;
   late final RoundsService roundsService;
+  late final RoundDao roundDao;
+  late final CalculatorDao calculatorDao;
 
   int? currentlyShuffling;
   int? gameDirection;
@@ -67,6 +71,8 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
     db = AppDatabase();
     gamesService = GamesService(db);
     roundsService = RoundsService(db);
+    roundDao = RoundDao(db);
+    calculatorDao = CalculatorDao(db);
 
     _bounceController1 = AnimationController(
       duration: const Duration(milliseconds: 200),
@@ -109,9 +115,7 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
   Future<void> _loadCalculatorResult(String? roundId) async {
     if (roundId == null || roundId.isEmpty) return;
 
-    final result = await (db.select(db.calculatorResultTable)
-      ..where((tbl) => tbl.roundId.equals(roundId)))
-      .getSingleOrNull();
+    final result = await calculatorDao.getCalculatorResultByRoundId(roundId);
 
     if (result != null && mounted) {
       setState(() {
@@ -328,9 +332,7 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
 
     if (_calculatorResult != null && round.id != null) {
       if (widget.roundToEdit != null) {
-        await (db.delete(db.calculatorResultTable)
-          ..where((tbl) => tbl.roundId.equals(round.id!)))
-          .go();
+        await calculatorDao.deleteCalculatorResultByRoundId(round.id!);
       }
       
       String? selectedCardsJson;
@@ -344,20 +346,20 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
         trumpCardsJson = (_calculatorResult!['trumpCards'] as List).join(',');
       }
       
-      await db.into(db.calculatorResultTable).insert(
-        CalculatorResultTableCompanion(
-          roundId: Value(round.id!),
-          teamOneDeclarations: Value(_calculatorResult?['teamOneDeclarations'] ?? 0),
-          teamOneDeclarationsSum: Value(_calculatorResult?['teamOneDeclarationsSum'] ?? 0),
-          teamOneFails: Value(_calculatorResult?['teamOneFails'] ?? 0),
-          teamTwoDeclarations: Value(_calculatorResult?['teamTwoDeclarations'] ?? 0),
-          teamTwoDeclarationsSum: Value(_calculatorResult?['teamTwoDeclarationsSum'] ?? 0),
-          teamTwoFails: Value(_calculatorResult?['teamTwoFails'] ?? 0),
-          selectedCards: Value(selectedCardsJson),
-          trumpCards: Value(trumpCardsJson),
-          team: Value(_calculatorResult?['team']),
-        ),
+      final calculatorCompanion = CalculatorResultTableCompanion(
+        roundId: Value(round.id!),
+        teamOneDeclarations: Value(_calculatorResult?['teamOneDeclarations'] ?? 0),
+        teamOneDeclarationsSum: Value(_calculatorResult?['teamOneDeclarationsSum'] ?? 0),
+        teamOneFails: Value(_calculatorResult?['teamOneFails'] ?? 0),
+        teamTwoDeclarations: Value(_calculatorResult?['teamTwoDeclarations'] ?? 0),
+        teamTwoDeclarationsSum: Value(_calculatorResult?['teamTwoDeclarationsSum'] ?? 0),
+        teamTwoFails: Value(_calculatorResult?['teamTwoFails'] ?? 0),
+        selectedCards: Value(selectedCardsJson),
+        trumpCards: Value(trumpCardsJson),
+        team: Value(_calculatorResult?['team']),
       );
+      
+      await calculatorDao.insertCalculatorResult(calculatorCompanion);
     }
 
     await _updateGameScores(game);

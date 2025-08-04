@@ -34,10 +34,4 @@ class RoundDao extends BaseDao {
             ..limit(1))
           .getSingleOrNull();
 
-  Future<CalculatorResultTableData?> getCalculatorResultByRoundId(String roundId) async {
-    return (_db.select(_db.calculatorResultTable)
-      ..where((tbl) => tbl.roundId.equals(roundId)))
-      .getSingleOrNull();
-  }
-
 }

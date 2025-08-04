@@ -1,7 +1,7 @@
 import 'package:bela_blok/db/database.dart';
 import 'package:bela_blok/db/models/game_model.dart';
 import 'package:bela_blok/db/models/round_model.dart';
-import 'package:bela_blok/db/dao/round_dao.dart';
+import 'package:bela_blok/db/dao/calculator_dao.dart';
 
 class GameStatsModel {
   final int teamOneDeclarations;
@@ -25,7 +25,7 @@ class GameStatsModel {
     List<Round> rounds,
     AppDatabase db,
   ) async {
-    final roundDao = RoundDao(db);
+    final calculatorDao = CalculatorDao(db);
     
     int teamOneDeclarations = 0;
     int teamOneDeclarationsSum = 0;
@@ -42,7 +42,7 @@ class GameStatsModel {
       teamTwoDeclarationsSum += round.teamTwoCallAmount ?? 0;
 
       if (round.id != null) {
-        final calculatorResult = await roundDao.getCalculatorResultByRoundId(round.id!);
+        final calculatorResult = await calculatorDao.getCalculatorResultByRoundId(round.id!);
 
         if (calculatorResult != null) {
           teamOneFails += calculatorResult.teamOneFails ?? 0;
