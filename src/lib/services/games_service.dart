@@ -78,4 +78,12 @@ class GamesService {
     
     return 1;
   }
+  Future<int> getPreviousGameDirection() async {
+    final latestGame = await getLatestGame();
+    if (latestGame != null && latestGame.gameDirection != null) {
+      return latestGame.gameDirection!;
+    }
+    
+    return 0; 
+  }
 }

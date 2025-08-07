@@ -30,14 +30,16 @@ class _NewGameScreenState extends State<NewGameScreen> {
     super.initState();
     _db = AppDatabase(); 
     _gamesService = GamesService(_db);
-    _setDefaultShufflingPosition();
+    _setDefaultGameSettings();
   }
 
-  Future<void> _setDefaultShufflingPosition() async {
-   
+  Future<void> _setDefaultGameSettings() async {
     int nextShuffler = await _gamesService.getNextStartingShuffler(playerCount: 4);
+    int previousDirection = await _gamesService.getPreviousGameDirection();
+    
     setState(() {
       playerShufflingSelect = nextShuffler;
+      playDirectionSelect = previousDirection;
     });
   }
 
