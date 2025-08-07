@@ -19,6 +19,15 @@ class GamesService {
     return gameRows.map((row) => row.toModel()).toList();
   }
 
+  Future<List<Game>> getGamesPaginated({required int limit, required int offset}) async {
+    final gameRows = await dao.getGamesPaginated(limit: limit, offset: offset);
+    return gameRows.map((row) => row.toModel()).toList();
+  }
+
+  Future<int> getTotalGamesCount() async {
+    return await dao.getTotalGamesCount();
+  }
+
   Future<Game?> createNewGameWithParameters({
     int? gameType,
     PlayDirection? playDirection,
