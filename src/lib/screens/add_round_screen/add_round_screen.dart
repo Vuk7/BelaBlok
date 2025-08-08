@@ -83,8 +83,13 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
     inputTeamTwo.addListener(_handleTeamTwoInput);
 
     if (widget.roundToEdit != null) {
-      inputTeamOne.text = (widget.roundToEdit.teamOneScore ?? 0).toString();
-      inputTeamTwo.text = (widget.roundToEdit.teamTwoScore ?? 0).toString();
+      if (widget.roundToEdit.teamFailed == true) {
+        inputTeamOne.text = (widget.roundToEdit.teamOneOriginalScore ?? 0).toString();
+        inputTeamTwo.text = (widget.roundToEdit.teamTwoOriginalScore ?? 0).toString();
+      } else {
+        inputTeamOne.text = (widget.roundToEdit.teamOneScore ?? 0).toString();
+        inputTeamTwo.text = (widget.roundToEdit.teamTwoScore ?? 0).toString();
+      }
       selectedCaller = widget.roundToEdit.teamCalled ?? 0;
       
       final t1 = widget.roundToEdit.teamOneCallAmount ?? 0;
@@ -184,6 +189,10 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
     round.teamFailed = false;
     round.teamOneCallAmount = teamOneCallAmount;
     round.teamTwoCallAmount = teamTwoCallAmount;
+    
+    round.teamOneOriginalScore = int.tryParse(inputTeamOne.text) ?? 0;
+    round.teamTwoOriginalScore = int.tryParse(inputTeamTwo.text) ?? 0;
+    
     if (widget.roundToEdit != null) {
       await roundsService.updateRound(round);
     } else {
@@ -269,6 +278,15 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
     round.teamFailed = scores.teamFailed;
     round.teamOneCallAmount = scores.teamOneCallAmount;
     round.teamTwoCallAmount = scores.teamTwoCallAmount;
+    
+    if (scores.teamFailed) {
+      round.teamOneOriginalScore = scores.teamOneBase;
+      round.teamTwoOriginalScore = scores.teamTwoBase;
+    } else {
+      round.teamOneOriginalScore = null;
+      round.teamTwoOriginalScore = null;
+    }
+    
     if (widget.roundToEdit != null) {
       await roundsService.updateRound(round);
     } else {
