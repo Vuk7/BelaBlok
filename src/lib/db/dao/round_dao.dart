@@ -34,6 +34,13 @@ class RoundDao extends BaseDao {
             ..limit(1))
           .getSingleOrNull();
 
+  Future<RoundTableData?> getFirstRoundForGame(String gameId) =>
+      (_db.select(_db.roundTable)
+            ..where((r) => r.gameId.equals(gameId))
+            ..orderBy([(r) => OrderingTerm.asc(r.createdAt)])
+            ..limit(1))
+          .getSingleOrNull();
+
   Future<RoundTableData?> getRoundById(String roundId) =>
       (_db.select(_db.roundTable)..where((r) => r.id.equals(roundId)))
           .getSingleOrNull();

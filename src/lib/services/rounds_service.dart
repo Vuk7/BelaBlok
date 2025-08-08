@@ -55,6 +55,11 @@ class RoundsService {
     return roundData?.toModel();
   }
 
+  Future<Round?> getFirstRoundForGame(String gameId) async {
+    final roundData = await dao.getFirstRoundForGame(gameId);
+    return roundData?.toModel();
+  }
+
   Future<void> createRound(Round round) async {
     await dao.insert(database.roundTable, round.toCompanion());
   }
