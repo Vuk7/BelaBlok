@@ -5,17 +5,36 @@ import 'package:bela_blok/db/models/round_model.dart';
 import 'package:bela_blok/common/constants.dart';
 
 class RoundsService {
-  int getNextShuffler({
-    required int roundCount,
+  Future<int> getNextShuffler({
+    required String gameId,
     required int currentlyShuffling,
     required int gameDirection,
     int totalPlayers = 4,
-  }) {
-    int start = currentlyShuffling - 1;
-    int dir = gameDirection == 0 ? 1 : -1;
-    int next = (start + dir * roundCount) % totalPlayers;
-    if (next < 0) next += totalPlayers;
-    return next + 1;
+  }) async {
+    final roundsCount = await dao.getRoundsForGameCount(gameId);
+    
+    if (roundsCount == 0) {
+      return currentlyShuffling;
+    }
+    
+    final lastRound = await dao.getLastRoundForGame(gameId);
+    
+    int lastShuffler;
+    if (lastRound == null || lastRound.shuffler == null) {
+      lastShuffler = currentlyShuffling;
+    } else {
+      lastShuffler = lastRound.shuffler!;
+    }
+    
+    int nextShuffler;
+    if (gameDirection == 0) {
+      nextShuffler = (lastShuffler % totalPlayers) + 1;
+    } else {
+      nextShuffler = lastShuffler - 1;
+      if (nextShuffler < 1) nextShuffler = totalPlayers;
+    }
+    
+    return nextShuffler;
   }
   final AppDatabase database;
   final RoundDao dao;
@@ -29,6 +48,11 @@ class RoundsService {
 
   Future<int> getRoundsForGameCount(String gameId) async {
     return await dao.getRoundsForGameCount(gameId);
+  }
+
+  Future<Round?> getRoundById(String roundId) async {
+    final roundData = await dao.getRoundById(roundId);
+    return roundData?.toModel();
   }
 
   Future<void> createRound(Round round) async {

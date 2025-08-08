@@ -20,7 +20,7 @@ class AppDatabase extends _$AppDatabase {
 
 
   @override
-  int get schemaVersion => 2;
+  int get schemaVersion => 3;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -28,6 +28,15 @@ class AppDatabase extends _$AppDatabase {
       if (from == 1 && to == 2) {
         
         await migrator.addColumn(roundTable, roundTable.teamFailed);
+      }
+      if (from == 2 && to == 3) {
+       
+        await migrator.addColumn(roundTable, roundTable.shuffler);
+      }
+      if (from == 1 && to == 3) {
+       
+        await migrator.addColumn(roundTable, roundTable.teamFailed);
+        await migrator.addColumn(roundTable, roundTable.shuffler);
       }
     },
     beforeOpen: (details) async {},
