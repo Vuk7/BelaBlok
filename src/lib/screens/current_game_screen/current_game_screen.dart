@@ -261,6 +261,7 @@ class _CurrentGameScreenState extends State<CurrentGameScreen> {
                                 teamTwoCallAmount: round.teamTwoCallAmount ?? 0,
                                 teamOneScore: round.teamOneScore ?? 0,
                                 teamTwoScore: round.teamTwoScore ?? 0,
+                                teamFailed: round.teamFailed ?? false,
                                 roundID: index, 
                                 teamCalled: Team.values[
                                     round.teamCalled ??

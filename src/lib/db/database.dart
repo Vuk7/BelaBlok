@@ -20,23 +20,27 @@ class AppDatabase extends _$AppDatabase {
 
 
   @override
-  int get schemaVersion => 3;
+  int get schemaVersion => 4;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
     onUpgrade: (migrator, from, to) async {
-      if (from == 1 && to == 2) {
-        await migrator.addColumn(roundTable, roundTable.teamFailed);
-      }
-     
-      if (from == 2 && to == 3) {
-        await migrator.addColumn(roundTable, roundTable.teamOneOriginalScore);
-        await migrator.addColumn(roundTable, roundTable.teamTwoOriginalScore);
-      }
-      if (from == 1 && to == 3) {
-        await migrator.addColumn(roundTable, roundTable.teamFailed);
-        await migrator.addColumn(roundTable, roundTable.teamOneOriginalScore);
-        await migrator.addColumn(roundTable, roundTable.teamTwoOriginalScore);
+      for (var v = from; v < to; v++) {
+        if (v == 1) {
+          await migrator.addColumn(roundTable, roundTable.teamFailed);
+        }
+        if (v == 2) {
+        }
+        if (v == 3) {
+          try {
+            await customStatement('ALTER TABLE rounds DROP COLUMN team_one_original_score');
+          } catch (_) {
+          }
+          try {
+            await customStatement('ALTER TABLE rounds DROP COLUMN team_two_original_score');
+          } catch (_) {
+          }
+        }
       }
      
     },

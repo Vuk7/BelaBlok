@@ -83,15 +83,10 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
     inputTeamTwo.addListener(_handleTeamTwoInput);
 
     if (widget.roundToEdit != null) {
-      if (widget.roundToEdit.teamFailed == true) {
-        inputTeamOne.text = (widget.roundToEdit.teamOneOriginalScore ?? 0).toString();
-        inputTeamTwo.text = (widget.roundToEdit.teamTwoOriginalScore ?? 0).toString();
-      } else {
-        inputTeamOne.text = (widget.roundToEdit.teamOneScore ?? 0).toString();
-        inputTeamTwo.text = (widget.roundToEdit.teamTwoScore ?? 0).toString();
-      }
+      inputTeamOne.text = (widget.roundToEdit.teamOneScore ?? 0).toString();
+      inputTeamTwo.text = (widget.roundToEdit.teamTwoScore ?? 0).toString();
       selectedCaller = widget.roundToEdit.teamCalled ?? 0;
-      
+
       final t1 = widget.roundToEdit.teamOneCallAmount ?? 0;
       final t2 = widget.roundToEdit.teamTwoCallAmount ?? 0;
       _callsTeamOne = t1 > 0 ? [CallEntry(CallType.z20, (t1 / 20).round())] : [];
@@ -184,14 +179,11 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
     int teamTwoCallAmount = teamTwoBelot ? gameType : 0;
     final round = widget.roundToEdit ?? Round(gameId: widget.gameId!);
     round.teamCalled = selectedCaller;
-    round.teamOneScore = teamOneCallAmount;
-    round.teamTwoScore = teamTwoCallAmount;
+  round.teamOneScore = int.tryParse(inputTeamOne.text) ?? 0;
+  round.teamTwoScore = int.tryParse(inputTeamTwo.text) ?? 0;
     round.teamFailed = false;
     round.teamOneCallAmount = teamOneCallAmount;
     round.teamTwoCallAmount = teamTwoCallAmount;
-    
-    round.teamOneOriginalScore = int.tryParse(inputTeamOne.text) ?? 0;
-    round.teamTwoOriginalScore = int.tryParse(inputTeamTwo.text) ?? 0;
     
     if (widget.roundToEdit != null) {
       await roundsService.updateRound(round);
@@ -273,19 +265,11 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
   Future<void> _saveNormalRound(dynamic game, ScoreModel scores) async {
     final round = widget.roundToEdit ?? Round(gameId: widget.gameId!);
     round.teamCalled = selectedCaller;
-    round.teamOneScore = scores.teamOneTotal;
-    round.teamTwoScore = scores.teamTwoTotal;
+  round.teamOneScore = scores.teamOneBase;
+  round.teamTwoScore = scores.teamTwoBase;
     round.teamFailed = scores.teamFailed;
     round.teamOneCallAmount = scores.teamOneCallAmount;
     round.teamTwoCallAmount = scores.teamTwoCallAmount;
-    
-    if (scores.teamFailed) {
-      round.teamOneOriginalScore = scores.teamOneBase;
-      round.teamTwoOriginalScore = scores.teamTwoBase;
-    } else {
-      round.teamOneOriginalScore = null;
-      round.teamTwoOriginalScore = null;
-    }
     
     if (widget.roundToEdit != null) {
       await roundsService.updateRound(round);
@@ -302,8 +286,20 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
     int newScoreTeamOne = 0;
     int newScoreTeamTwo = 0;
     for (final r in rounds) {
-      newScoreTeamOne += r.teamOneScore ?? 0;
-      newScoreTeamTwo += r.teamTwoScore ?? 0;
+      final baseOne = r.teamOneScore ?? 0;
+      final baseTwo = r.teamTwoScore ?? 0;
+      final callsOne = r.teamOneCallAmount ?? 0;
+      final callsTwo = r.teamTwoCallAmount ?? 0;
+      final failedTeam = (r.teamFailed ?? false) ? r.teamCalled : null;
+      final computed = roundsService.calculateRoundScores(
+        teamOneBase: baseOne,
+        teamTwoBase: baseTwo,
+        teamOneCallAmount: callsOne,
+        teamTwoCallAmount: callsTwo,
+        failedTeam: failedTeam,
+      );
+      newScoreTeamOne += computed['teamOneTotal'] ?? 0;
+      newScoreTeamTwo += computed['teamTwoTotal'] ?? 0;
     }
     if (game != null) {
       game.teamOneScore = newScoreTeamOne;
