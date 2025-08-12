@@ -3,22 +3,25 @@ import 'package:bela_blok/db/models/calculator.model.dart';
 class CalculatorResultState {
   final CalculatorResult? calculatorResult;
   final int score;
-  final List<String> cardsList;
-  final List<String> trumpCardsList;
+  final Map<String, int> cardCounts;
+  final Map<String, int> trumpCardCounts;
 
   CalculatorResultState({
     this.calculatorResult,
     required this.score,
-    required this.cardsList,
-    required this.trumpCardsList,
+    required this.cardCounts,
+    required this.trumpCardCounts,
   });
+
+  List<String> get cardsList => _expandCounts(cardCounts);
+  List<String> get trumpCardsList => _expandCounts(trumpCardCounts);
 
   factory CalculatorResultState.fromCalculatorResult(CalculatorResult result) {
     return CalculatorResultState(
       calculatorResult: result,
       score: 0, 
-  cardsList: result.selectedCards?.split(',').where((card) => card.isNotEmpty).toList() ?? <String>[],
-  trumpCardsList: result.trumpCards?.split(',').where((card) => card.isNotEmpty).toList() ?? <String>[],
+  cardCounts: _countsFromCsv(result.selectedCards),
+  trumpCardCounts: _countsFromCsv(result.trumpCards),
     );
   }
 
@@ -27,8 +30,8 @@ class CalculatorResultState {
     return CalculatorResultState(
       calculatorResult: null,
       score: map['score'] as int? ?? 0,
-      cardsList: (map['cards'] as List?)?.cast<String>() ?? <String>[],
-      trumpCardsList: (map['trumpCards'] as List?)?.cast<String>() ?? <String>[],
+      cardCounts: _countsFromList((map['cards'] as List?)?.cast<String>() ?? <String>[]),
+      trumpCardCounts: _countsFromList((map['trumpCards'] as List?)?.cast<String>() ?? <String>[]),
     );
   }
 
@@ -45,5 +48,31 @@ class CalculatorResultState {
       'cards': cardsList,
       'trumpCards': trumpCardsList,
     };
+  }
+
+  static Map<String, int> _countsFromCsv(String? csv) {
+    if (csv == null || csv.isEmpty) return <String, int>{};
+    final parts = csv.split(',');
+    return _countsFromList(parts);
+  }
+
+  static Map<String, int> _countsFromList(List<String> items) {
+    final Map<String, int> counts = {};
+    for (final raw in items) {
+      final id = raw.trim();
+      if (id.isEmpty) continue;
+      counts.update(id, (c) => c + 1, ifAbsent: () => 1);
+    }
+    return counts;
+  }
+
+  static List<String> _expandCounts(Map<String, int> counts) {
+    final List<String> out = [];
+    counts.forEach((id, count) {
+      for (int i = 0; i < count; i++) {
+        out.add(id);
+      }
+    });
+    return out;
   }
 }
