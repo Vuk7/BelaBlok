@@ -299,7 +299,7 @@ class _SmartCalculatorScreenState extends State<SmartCalculatorScreen> {
               ),
               ..._calculatorService.suits.map((suit) {
                 return FilterChip(
-                  label: Text(_calculatorService.getSuitDisplayName(suit)),
+                  label: Text(suit.displayName),
                   selected: _selectedSuits.contains(suit),
                   onSelected: (selected) => _toggleSuitFilter(suit),
                   selectedColor: AppTheme.green.withAlpha(80),

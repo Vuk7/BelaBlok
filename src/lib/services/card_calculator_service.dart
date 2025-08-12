@@ -9,7 +9,7 @@ class CardCalculatorService {
     List<PlayingCard> cards = [];
 
     for (CardSuit suit in suits) {
-      for (CardRank rank in ranks) {
+      for (CardRank rank in ranks) { 
         cards.add(PlayingCard(
           suit: suit,
           rank: rank,
@@ -49,14 +49,5 @@ class CardCalculatorService {
     }
 
     return total;
-  }
-
-  String getSuitDisplayName(CardSuit suit) {
-    switch (suit) {
-      case CardSuit.herc: return 'Herc ♥';
-      case CardSuit.karo: return 'Karo ♦';
-      case CardSuit.tref: return 'Tref ♣';
-      case CardSuit.pik: return 'Pik ♠';
-    }
   }
 }

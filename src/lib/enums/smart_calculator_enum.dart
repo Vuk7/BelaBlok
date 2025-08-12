@@ -1,4 +1,12 @@
-enum CardSuit { herc, karo, tref, pik }
+enum CardSuit {
+  herc('Herc ♥'),
+  karo('Karo ♦'),
+  tref('Tref ♣'),
+  pik('Pik ♠');
+
+  final String displayName;
+  const CardSuit(this.displayName);
+}
 
 enum CardRank {
   seven('7', 0, 0),
