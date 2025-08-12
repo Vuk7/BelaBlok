@@ -34,12 +34,12 @@ class _NewGameScreenState extends State<NewGameScreen> {
   }
 
   Future<void> _setDefaultGameSettings() async {
-    int nextShuffler = await _gamesService.getNextStartingShuffler(playerCount: 4);
-    int previousDirection = await _gamesService.getPreviousGameDirection();
+  int nextShuffler = await _gamesService.getNextStartingShuffler(playerCount: 4);
+  PlayDirection previousDirection = await _gamesService.getPreviousGameDirection();
     
     setState(() {
       playerShufflingSelect = nextShuffler;
-      playDirectionSelect = previousDirection;
+  playDirectionSelect = previousDirection.index;
     });
   }
 
