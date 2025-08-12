@@ -6,6 +6,7 @@ import 'package:bela_blok/db/dao/calculator_dao.dart';
 import 'package:bela_blok/models/score.model.dart';
 import 'package:bela_blok/models/fall_score.model.dart';
 import 'package:bela_blok/models/calculator_result_state.model.dart';
+import 'package:bela_blok/db/models/calculator.model.dart';
 import 'package:bela_blok/services/games_service.dart'; 
 import 'package:bela_blok/services/rounds_service.dart'; 
 import 'package:bela_blok/screens/add_round_screen/widgets/choose_caller.dart';
@@ -20,7 +21,6 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:bela_blok/common/constants.dart';
 import 'package:bela_blok/enums/call_value_enum.dart';
-import 'package:drift/drift.dart' hide Column;
 
 
 class AddRoundScreen extends StatefulWidget {
@@ -301,31 +301,27 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
         await calculatorDao.deleteCalculatorResultByRoundId(actualRoundId);
       }
       
-      String? selectedCardsJson;
-      String? trumpCardsJson;
-      
-      if (_calculatorResult!.cardsList.isNotEmpty) {
-        selectedCardsJson = _calculatorResult!.cardsList.join(',');
-      }
-      
-      if (_calculatorResult!.trumpCardsList.isNotEmpty) {
-        trumpCardsJson = _calculatorResult!.trumpCardsList.join(',');
-      }
-      
-      final calculatorCompanion = CalculatorResultTableCompanion(
-        roundId: Value(actualRoundId),
-        teamOneDeclarations: Value(_calculatorResult?.calculatorResult?.teamOneDeclarations ?? 0),
-        teamOneDeclarationsSum: Value(_calculatorResult?.calculatorResult?.teamOneDeclarationsSum ?? 0),
-        teamOneFails: Value(_calculatorResult?.calculatorResult?.teamOneFails ?? 0),
-        teamTwoDeclarations: Value(_calculatorResult?.calculatorResult?.teamTwoDeclarations ?? 0),
-        teamTwoDeclarationsSum: Value(_calculatorResult?.calculatorResult?.teamTwoDeclarationsSum ?? 0),
-        teamTwoFails: Value(_calculatorResult?.calculatorResult?.teamTwoFails ?? 0),
-        selectedCards: Value(selectedCardsJson),
-        trumpCards: Value(trumpCardsJson),
-        team: Value(_calculatorResult?.calculatorResult?.team),
+      final selectedCardsJson = _calculatorResult!.cardsList.isNotEmpty
+          ? _calculatorResult!.cardsList.join(',')
+          : null;
+      final trumpCardsJson = _calculatorResult!.trumpCardsList.isNotEmpty
+          ? _calculatorResult!.trumpCardsList.join(',')
+          : null;
+
+      final resultModel = CalculatorResult(
+        roundId: actualRoundId,
+        teamOneDeclarations: _calculatorResult?.calculatorResult?.teamOneDeclarations,
+        teamOneDeclarationsSum: _calculatorResult?.calculatorResult?.teamOneDeclarationsSum,
+        teamOneFails: _calculatorResult?.calculatorResult?.teamOneFails,
+        teamTwoDeclarations: _calculatorResult?.calculatorResult?.teamTwoDeclarations,
+        teamTwoDeclarationsSum: _calculatorResult?.calculatorResult?.teamTwoDeclarationsSum,
+        teamTwoFails: _calculatorResult?.calculatorResult?.teamTwoFails,
+        selectedCards: selectedCardsJson,
+        trumpCards: trumpCardsJson,
+        team: _calculatorResult?.calculatorResult?.team,
       );
-      
-      await calculatorDao.insertCalculatorResult(calculatorCompanion);
+
+      await calculatorDao.insertCalculatorResult(resultModel);
     }
 
     await _updateGameScores(game);

@@ -1,5 +1,6 @@
 import 'package:bela_blok/db/dao/base_dao.dart';
 import 'package:bela_blok/db/entities/calculator_result.dart';
+import 'package:bela_blok/db/models/calculator.model.dart';
 import '../database.dart';
 
 class CalculatorDao extends BaseDao<CalculatorResultTable, CalculatorResultTableData> {
@@ -15,8 +16,8 @@ class CalculatorDao extends BaseDao<CalculatorResultTable, CalculatorResultTable
     );
   }
 
-  Future<void> insertCalculatorResult(CalculatorResultTableCompanion calculatorResult) async {
-    await insert(_db.calculatorResultTable, calculatorResult);
+  Future<void> insertCalculatorResult(CalculatorResult calculatorResult) async {
+    await insert(_db.calculatorResultTable, calculatorResult.toCompanion());
   }
 
   Future<int> deleteCalculatorResultByRoundId(String roundId) async {
