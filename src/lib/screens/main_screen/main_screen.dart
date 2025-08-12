@@ -22,7 +22,7 @@ class _MainScreenState extends State<MainScreen> {
   late GamesService gamesService;
   List<Game> gamesHistory = [];
   var isLoadingGameHistory = true;
-  Game? latestUnfinishedGame;
+  Game? latestGame;
 
   @override
   void initState() {
@@ -34,14 +34,14 @@ class _MainScreenState extends State<MainScreen> {
     isLoadingGameHistory = true;
     gamesService = GamesService(AppDatabase());
     gamesHistory = (await gamesService.getAllGames()).reversed.toList();
-    latestUnfinishedGame = await gamesService.getLatestUnfinishedGame();
+  latestGame = await gamesService.getLatestGame();
     isLoadingGameHistory = false;
     setState(() {});
   }
 
   Future<void> _refreshGameHistory() async {
     gamesHistory = (await gamesService.getAllGames()).reversed.toList();
-    latestUnfinishedGame = await gamesService.getLatestUnfinishedGame();
+  latestGame = await gamesService.getLatestGame();
     setState(() {});
   }
 
@@ -195,8 +195,8 @@ class _MainScreenState extends State<MainScreen> {
                     const RulesWidget(),
                     const SizedBox(height: 20),
 
-                    // Continue game button if there's an unfinished game
-                    if (latestUnfinishedGame != null && latestUnfinishedGame!.finished != true)
+                    // Continue game button if the latest game exists and is unfinished
+                    if (latestGame != null && latestGame!.finished != true)
                       Padding(
                         padding: const EdgeInsets.all(5.0),
                         child: Hero(
@@ -210,7 +210,7 @@ class _MainScreenState extends State<MainScreen> {
                             onTap: () {
                               context.goNamed(
                                 "currentgame",
-                                queryParameters: {'id': latestUnfinishedGame!.id},
+                                queryParameters: {'id': latestGame!.id},
                               );
                             },
                           ),
