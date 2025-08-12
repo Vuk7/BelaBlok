@@ -86,7 +86,6 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
       inputTeamOne.text = (widget.roundToEdit.teamOneScore ?? 0).toString();
       inputTeamTwo.text = (widget.roundToEdit.teamTwoScore ?? 0).toString();
       selectedCaller = widget.roundToEdit.teamCalled ?? 0;
-      
       final t1 = widget.roundToEdit.teamOneCallAmount ?? 0;
       final t2 = widget.roundToEdit.teamTwoCallAmount ?? 0;
       _callsTeamOne = t1 > 0 ? [CallEntry(CallType.z20, (t1 / 20).round())] : [];
@@ -185,11 +184,6 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
     round.teamOneCallAmount = teamOneCallAmount;
     round.teamTwoCallAmount = teamTwoCallAmount;
     
-    if (widget.roundToEdit != null) {
-      round.shuffler = widget.roundToEdit.shuffler ?? await getNextShufflerAsync();
-    } else {
-      round.shuffler = await getNextShufflerAsync();
-    }
     
     if (widget.roundToEdit != null) {
       await roundsService.updateRound(round);
@@ -277,11 +271,6 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
     round.teamOneCallAmount = scores.teamOneCallAmount;
     round.teamTwoCallAmount = scores.teamTwoCallAmount;
     
-    if (widget.roundToEdit != null) {
-      round.shuffler = widget.roundToEdit.shuffler ?? await getNextShufflerAsync();
-    } else {
-      round.shuffler = await getNextShufflerAsync();
-    }
     
     if (widget.roundToEdit != null) {
       await roundsService.updateRound(round);
@@ -305,15 +294,6 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
       game.teamOneScore = newScoreTeamOne;
       game.teamTwoScore = newScoreTeamTwo;
       
-      if (widget.roundToEdit == null) { 
-        final nextShuffler = await roundsService.getNextShuffler(
-          gameId: widget.gameId!,
-          currentlyShuffling: currentlyShuffling ?? 1,
-          gameDirection: gameDirection!,
-          totalPlayers: totalPlayers,
-        );
-        game.currentlyShuffling = nextShuffler;
-      }
       
       await gamesService.updateGame(game);
     }
@@ -817,9 +797,7 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
                       iconColor: AppTheme.green,
                       title: 'TRENUTNO MIJEŠA',
                       child: FutureBuilder<int>(
-                        future: widget.roundToEdit != null 
-                            ? Future.value(widget.roundToEdit!.shuffler ?? currentlyShuffling ?? 1)
-                            : getNextShufflerAsync(),
+                        future: _computeShufflerToShow(),
                         builder: (context, snapshot) {
                           final shuffler = snapshot.data ?? (currentlyShuffling ?? 1);
                           return PlayerShuffling(
@@ -895,11 +873,14 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
         ),
       );
 
-  Future<int> getNextShufflerAsync() async {
-    if (currentlyShuffling == null || gameDirection == null || widget.gameId == null) return 1;
-    return await roundsService.getNextShuffler(
-      gameId: widget.gameId!,
-      currentlyShuffling: currentlyShuffling!,
+  Future<int> _computeShufflerToShow() async {
+    if (currentlyShuffling == null || gameDirection == null || widget.gameId == null) {
+      return 1;
+    }
+    final count = await roundsService.getRoundsForGameCount(widget.gameId!);
+    return roundsService.computeShuffler(
+      firstShuffler: currentlyShuffling!,
+      index: widget.roundToEdit != null ? (count == 0 ? 0 : count - 1) : count,
       gameDirection: gameDirection!,
       totalPlayers: totalPlayers,
     );

@@ -2,14 +2,12 @@ import 'package:bela_blok/db/dao/game_dao.dart';
 import 'package:bela_blok/db/database.dart';
 import 'package:bela_blok/db/models/game_model.dart';
 import 'package:bela_blok/enums/play_direction_enum.dart';
-import 'package:bela_blok/services/rounds_service.dart';
 
 class GamesService {
   final AppDatabase database;
   final GameDao dao;
-  final RoundsService _roundsService;
 
-  GamesService(this.database) : dao = GameDao(database), _roundsService = RoundsService(database);
+  GamesService(this.database) : dao = GameDao(database);
 
   Future<void> createGame() async {
     var newGame = Game(teamOneScore: 20, teamTwoScore: 25);
@@ -70,30 +68,17 @@ class GamesService {
   }
 
 
-  /// [playerCount] 
   Future<int> getNextStartingShuffler({int playerCount = 4}) async {
     final latestGame = await getLatestGame();
-    if (latestGame != null && latestGame.id != null) {
-      final firstRound = await _roundsService.getFirstRoundForGame(latestGame.id!);
-      
-      if (firstRound != null && firstRound.shuffler != null) {
-        final gameDirection = latestGame.gameDirection ?? 0;
-        int nextShuffler;
-        
-        if (gameDirection == 0) {
-          // Clockwise: 1->2->3->4->1
-          nextShuffler = (firstRound.shuffler! % playerCount) + 1;
-        } else {
-          // Counter-clockwise: 1->4->3->2->1
-          nextShuffler = firstRound.shuffler! - 1;
-          if (nextShuffler < 1) nextShuffler = playerCount;
-        }
-        
-        return nextShuffler;
-      }
+    if (latestGame == null) return 1;
+    final firstShuffler = latestGame.currentlyShuffling ?? 1;
+    final dir = latestGame.gameDirection ?? 0;
+    if (dir == 0) {
+      return (firstShuffler % playerCount) + 1;
+    } else {
+      final prev = firstShuffler - 1;
+      return prev < 1 ? playerCount : prev;
     }
-    
-    return 1; 
   }
   Future<int> getPreviousGameDirection() async {
     final latestGame = await getLatestGame();

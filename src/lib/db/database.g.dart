@@ -693,12 +693,6 @@ class $RoundTableTable extends RoundTable
       requiredDuringInsert: false,
       defaultConstraints: GeneratedColumn.constraintIsAlways(
           'CHECK ("team_failed" IN (0, 1))'));
-  static const VerificationMeta _shufflerMeta =
-      const VerificationMeta('shuffler');
-  @override
-  late final GeneratedColumn<int> shuffler = GeneratedColumn<int>(
-      'shuffler', aliasedName, true,
-      type: DriftSqlType.int, requiredDuringInsert: false);
   @override
   List<GeneratedColumn> get $columns => [
         id,
@@ -713,8 +707,7 @@ class $RoundTableTable extends RoundTable
         teamTwoCallAmount,
         isTeamOneCallSuccessful,
         isTeamTwoCallSuccessful,
-        teamFailed,
-        shuffler
+        teamFailed
       ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -797,10 +790,6 @@ class $RoundTableTable extends RoundTable
           teamFailed.isAcceptableOrUnknown(
               data['team_failed']!, _teamFailedMeta));
     }
-    if (data.containsKey('shuffler')) {
-      context.handle(_shufflerMeta,
-          shuffler.isAcceptableOrUnknown(data['shuffler']!, _shufflerMeta));
-    }
     return context;
   }
 
@@ -838,8 +827,6 @@ class $RoundTableTable extends RoundTable
           data['${effectivePrefix}is_team_two_call_successful']),
       teamFailed: attachedDatabase.typeMapping
           .read(DriftSqlType.bool, data['${effectivePrefix}team_failed']),
-      shuffler: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}shuffler']),
     );
   }
 
@@ -863,7 +850,6 @@ class RoundTableData extends DataClass implements Insertable<RoundTableData> {
   final bool? isTeamOneCallSuccessful;
   final bool? isTeamTwoCallSuccessful;
   final bool? teamFailed;
-  final int? shuffler;
   const RoundTableData(
       {required this.id,
       required this.createdAt,
@@ -877,8 +863,7 @@ class RoundTableData extends DataClass implements Insertable<RoundTableData> {
       this.teamTwoCallAmount,
       this.isTeamOneCallSuccessful,
       this.isTeamTwoCallSuccessful,
-      this.teamFailed,
-      this.shuffler});
+      this.teamFailed});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -914,9 +899,6 @@ class RoundTableData extends DataClass implements Insertable<RoundTableData> {
     }
     if (!nullToAbsent || teamFailed != null) {
       map['team_failed'] = Variable<bool>(teamFailed);
-    }
-    if (!nullToAbsent || shuffler != null) {
-      map['shuffler'] = Variable<int>(shuffler);
     }
     return map;
   }
@@ -954,9 +936,6 @@ class RoundTableData extends DataClass implements Insertable<RoundTableData> {
       teamFailed: teamFailed == null && nullToAbsent
           ? const Value.absent()
           : Value(teamFailed),
-      shuffler: shuffler == null && nullToAbsent
-          ? const Value.absent()
-          : Value(shuffler),
     );
   }
 
@@ -979,7 +958,6 @@ class RoundTableData extends DataClass implements Insertable<RoundTableData> {
       isTeamTwoCallSuccessful:
           serializer.fromJson<bool?>(json['isTeamTwoCallSuccessful']),
       teamFailed: serializer.fromJson<bool?>(json['teamFailed']),
-      shuffler: serializer.fromJson<int?>(json['shuffler']),
     );
   }
   @override
@@ -1001,7 +979,6 @@ class RoundTableData extends DataClass implements Insertable<RoundTableData> {
       'isTeamTwoCallSuccessful':
           serializer.toJson<bool?>(isTeamTwoCallSuccessful),
       'teamFailed': serializer.toJson<bool?>(teamFailed),
-      'shuffler': serializer.toJson<int?>(shuffler),
     };
   }
 
@@ -1018,8 +995,7 @@ class RoundTableData extends DataClass implements Insertable<RoundTableData> {
           Value<int?> teamTwoCallAmount = const Value.absent(),
           Value<bool?> isTeamOneCallSuccessful = const Value.absent(),
           Value<bool?> isTeamTwoCallSuccessful = const Value.absent(),
-          Value<bool?> teamFailed = const Value.absent(),
-          Value<int?> shuffler = const Value.absent()}) =>
+          Value<bool?> teamFailed = const Value.absent()}) =>
       RoundTableData(
         id: id ?? this.id,
         createdAt: createdAt ?? this.createdAt,
@@ -1044,7 +1020,6 @@ class RoundTableData extends DataClass implements Insertable<RoundTableData> {
             ? isTeamTwoCallSuccessful.value
             : this.isTeamTwoCallSuccessful,
         teamFailed: teamFailed.present ? teamFailed.value : this.teamFailed,
-        shuffler: shuffler.present ? shuffler.value : this.shuffler,
       );
   RoundTableData copyWithCompanion(RoundTableCompanion data) {
     return RoundTableData(
@@ -1075,7 +1050,6 @@ class RoundTableData extends DataClass implements Insertable<RoundTableData> {
           : this.isTeamTwoCallSuccessful,
       teamFailed:
           data.teamFailed.present ? data.teamFailed.value : this.teamFailed,
-      shuffler: data.shuffler.present ? data.shuffler.value : this.shuffler,
     );
   }
 
@@ -1094,8 +1068,7 @@ class RoundTableData extends DataClass implements Insertable<RoundTableData> {
           ..write('teamTwoCallAmount: $teamTwoCallAmount, ')
           ..write('isTeamOneCallSuccessful: $isTeamOneCallSuccessful, ')
           ..write('isTeamTwoCallSuccessful: $isTeamTwoCallSuccessful, ')
-          ..write('teamFailed: $teamFailed, ')
-          ..write('shuffler: $shuffler')
+          ..write('teamFailed: $teamFailed')
           ..write(')'))
         .toString();
   }
@@ -1114,8 +1087,7 @@ class RoundTableData extends DataClass implements Insertable<RoundTableData> {
       teamTwoCallAmount,
       isTeamOneCallSuccessful,
       isTeamTwoCallSuccessful,
-      teamFailed,
-      shuffler);
+      teamFailed);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -1132,8 +1104,7 @@ class RoundTableData extends DataClass implements Insertable<RoundTableData> {
           other.teamTwoCallAmount == this.teamTwoCallAmount &&
           other.isTeamOneCallSuccessful == this.isTeamOneCallSuccessful &&
           other.isTeamTwoCallSuccessful == this.isTeamTwoCallSuccessful &&
-          other.teamFailed == this.teamFailed &&
-          other.shuffler == this.shuffler);
+          other.teamFailed == this.teamFailed);
 }
 
 class RoundTableCompanion extends UpdateCompanion<RoundTableData> {
@@ -1150,7 +1121,6 @@ class RoundTableCompanion extends UpdateCompanion<RoundTableData> {
   final Value<bool?> isTeamOneCallSuccessful;
   final Value<bool?> isTeamTwoCallSuccessful;
   final Value<bool?> teamFailed;
-  final Value<int?> shuffler;
   final Value<int> rowid;
   const RoundTableCompanion({
     this.id = const Value.absent(),
@@ -1166,7 +1136,6 @@ class RoundTableCompanion extends UpdateCompanion<RoundTableData> {
     this.isTeamOneCallSuccessful = const Value.absent(),
     this.isTeamTwoCallSuccessful = const Value.absent(),
     this.teamFailed = const Value.absent(),
-    this.shuffler = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   RoundTableCompanion.insert({
@@ -1183,7 +1152,6 @@ class RoundTableCompanion extends UpdateCompanion<RoundTableData> {
     this.isTeamOneCallSuccessful = const Value.absent(),
     this.isTeamTwoCallSuccessful = const Value.absent(),
     this.teamFailed = const Value.absent(),
-    this.shuffler = const Value.absent(),
     this.rowid = const Value.absent(),
   }) : gameId = Value(gameId);
   static Insertable<RoundTableData> custom({
@@ -1200,7 +1168,6 @@ class RoundTableCompanion extends UpdateCompanion<RoundTableData> {
     Expression<bool>? isTeamOneCallSuccessful,
     Expression<bool>? isTeamTwoCallSuccessful,
     Expression<bool>? teamFailed,
-    Expression<int>? shuffler,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -1219,7 +1186,6 @@ class RoundTableCompanion extends UpdateCompanion<RoundTableData> {
       if (isTeamTwoCallSuccessful != null)
         'is_team_two_call_successful': isTeamTwoCallSuccessful,
       if (teamFailed != null) 'team_failed': teamFailed,
-      if (shuffler != null) 'shuffler': shuffler,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -1238,7 +1204,6 @@ class RoundTableCompanion extends UpdateCompanion<RoundTableData> {
       Value<bool?>? isTeamOneCallSuccessful,
       Value<bool?>? isTeamTwoCallSuccessful,
       Value<bool?>? teamFailed,
-      Value<int?>? shuffler,
       Value<int>? rowid}) {
     return RoundTableCompanion(
       id: id ?? this.id,
@@ -1256,7 +1221,6 @@ class RoundTableCompanion extends UpdateCompanion<RoundTableData> {
       isTeamTwoCallSuccessful:
           isTeamTwoCallSuccessful ?? this.isTeamTwoCallSuccessful,
       teamFailed: teamFailed ?? this.teamFailed,
-      shuffler: shuffler ?? this.shuffler,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -1305,9 +1269,6 @@ class RoundTableCompanion extends UpdateCompanion<RoundTableData> {
     if (teamFailed.present) {
       map['team_failed'] = Variable<bool>(teamFailed.value);
     }
-    if (shuffler.present) {
-      map['shuffler'] = Variable<int>(shuffler.value);
-    }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
     }
@@ -1330,7 +1291,6 @@ class RoundTableCompanion extends UpdateCompanion<RoundTableData> {
           ..write('isTeamOneCallSuccessful: $isTeamOneCallSuccessful, ')
           ..write('isTeamTwoCallSuccessful: $isTeamTwoCallSuccessful, ')
           ..write('teamFailed: $teamFailed, ')
-          ..write('shuffler: $shuffler, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -1711,7 +1671,6 @@ typedef $$RoundTableTableCreateCompanionBuilder = RoundTableCompanion Function({
   Value<bool?> isTeamOneCallSuccessful,
   Value<bool?> isTeamTwoCallSuccessful,
   Value<bool?> teamFailed,
-  Value<int?> shuffler,
   Value<int> rowid,
 });
 typedef $$RoundTableTableUpdateCompanionBuilder = RoundTableCompanion Function({
@@ -1728,7 +1687,6 @@ typedef $$RoundTableTableUpdateCompanionBuilder = RoundTableCompanion Function({
   Value<bool?> isTeamOneCallSuccessful,
   Value<bool?> isTeamTwoCallSuccessful,
   Value<bool?> teamFailed,
-  Value<int?> shuffler,
   Value<int> rowid,
 });
 
@@ -1799,9 +1757,6 @@ class $$RoundTableTableFilterComposer
 
   ColumnFilters<bool> get teamFailed => $composableBuilder(
       column: $table.teamFailed, builder: (column) => ColumnFilters(column));
-
-  ColumnFilters<int> get shuffler => $composableBuilder(
-      column: $table.shuffler, builder: (column) => ColumnFilters(column));
 
   $$GameTableTableFilterComposer get gameId {
     final $$GameTableTableFilterComposer composer = $composerBuilder(
@@ -1875,9 +1830,6 @@ class $$RoundTableTableOrderingComposer
   ColumnOrderings<bool> get teamFailed => $composableBuilder(
       column: $table.teamFailed, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<int> get shuffler => $composableBuilder(
-      column: $table.shuffler, builder: (column) => ColumnOrderings(column));
-
   $$GameTableTableOrderingComposer get gameId {
     final $$GameTableTableOrderingComposer composer = $composerBuilder(
         composer: this,
@@ -1944,9 +1896,6 @@ class $$RoundTableTableAnnotationComposer
   GeneratedColumn<bool> get teamFailed => $composableBuilder(
       column: $table.teamFailed, builder: (column) => column);
 
-  GeneratedColumn<int> get shuffler =>
-      $composableBuilder(column: $table.shuffler, builder: (column) => column);
-
   $$GameTableTableAnnotationComposer get gameId {
     final $$GameTableTableAnnotationComposer composer = $composerBuilder(
         composer: this,
@@ -2004,7 +1953,6 @@ class $$RoundTableTableTableManager extends RootTableManager<
             Value<bool?> isTeamOneCallSuccessful = const Value.absent(),
             Value<bool?> isTeamTwoCallSuccessful = const Value.absent(),
             Value<bool?> teamFailed = const Value.absent(),
-            Value<int?> shuffler = const Value.absent(),
             Value<int> rowid = const Value.absent(),
           }) =>
               RoundTableCompanion(
@@ -2021,7 +1969,6 @@ class $$RoundTableTableTableManager extends RootTableManager<
             isTeamOneCallSuccessful: isTeamOneCallSuccessful,
             isTeamTwoCallSuccessful: isTeamTwoCallSuccessful,
             teamFailed: teamFailed,
-            shuffler: shuffler,
             rowid: rowid,
           ),
           createCompanionCallback: ({
@@ -2038,7 +1985,6 @@ class $$RoundTableTableTableManager extends RootTableManager<
             Value<bool?> isTeamOneCallSuccessful = const Value.absent(),
             Value<bool?> isTeamTwoCallSuccessful = const Value.absent(),
             Value<bool?> teamFailed = const Value.absent(),
-            Value<int?> shuffler = const Value.absent(),
             Value<int> rowid = const Value.absent(),
           }) =>
               RoundTableCompanion.insert(
@@ -2055,7 +2001,6 @@ class $$RoundTableTableTableManager extends RootTableManager<
             isTeamOneCallSuccessful: isTeamOneCallSuccessful,
             isTeamTwoCallSuccessful: isTeamTwoCallSuccessful,
             teamFailed: teamFailed,
-            shuffler: shuffler,
             rowid: rowid,
           ),
           withReferenceMapper: (p0) => p0

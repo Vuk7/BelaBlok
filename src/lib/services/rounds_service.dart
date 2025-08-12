@@ -11,30 +11,15 @@ class RoundsService {
     required int gameDirection,
     int totalPlayers = 4,
   }) async {
+    // Compute next shuffler from first shuffler and next round index 
     final roundsCount = await dao.getRoundsForGameCount(gameId);
-    
-    if (roundsCount == 0) {
-      return currentlyShuffling;
-    }
-    
-    final lastRound = await dao.getLastRoundForGame(gameId);
-    
-    int lastShuffler;
-    if (lastRound == null || lastRound.shuffler == null) {
-      lastShuffler = currentlyShuffling;
-    } else {
-      lastShuffler = lastRound.shuffler!;
-    }
-    
-    int nextShuffler;
-    if (gameDirection == 0) {
-      nextShuffler = (lastShuffler % totalPlayers) + 1;
-    } else {
-      nextShuffler = lastShuffler - 1;
-      if (nextShuffler < 1) nextShuffler = totalPlayers;
-    }
-    
-    return nextShuffler;
+    // Next round will be at index = roundsCount (0-based), first is 0
+    return computeShuffler(
+      firstShuffler: currentlyShuffling,
+      index: roundsCount,
+      gameDirection: gameDirection,
+      totalPlayers: totalPlayers,
+    );
   }
   final AppDatabase database;
   final RoundDao dao;
@@ -51,7 +36,7 @@ class RoundsService {
   }
 
   Future<Round?> getRoundById(String roundId) async {
-    final roundData = await dao.getRoundById(roundId);
+  final roundData = await dao.getById(database.roundTable, database.roundTable.id, roundId);
     return roundData?.toModel();
   }
 
@@ -73,7 +58,6 @@ class RoundsService {
     );
   }
 
-  
  
   Map<String, int> calculateRoundScores({
     required int teamOneBase,
@@ -107,6 +91,24 @@ class RoundsService {
       );
     }
   }
+    int computeShuffler({
+      required int firstShuffler,
+      required int index,
+      required int gameDirection,
+      int totalPlayers = 4,
+    }) {
+      final zeroBased = firstShuffler - 1;
+      int computed;
+      if (gameDirection == 0) {
+        // clockwise: 1->2->3->4->1
+        computed = (zeroBased + index) % totalPlayers;
+      } else {
+        // counter-clockwise: 1->4->3->2->1
+        computed = (zeroBased - index) % totalPlayers;
+        if (computed < 0) computed += totalPlayers;
+      }
+      return computed + 1;
+    }
 
 
   Map<String, int> calculateFallScores({
