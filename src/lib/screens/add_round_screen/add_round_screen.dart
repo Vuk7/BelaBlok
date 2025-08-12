@@ -458,7 +458,7 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
     if (widget.roundToEdit != null) {
       final result = await calculatorDao.getCalculatorResultByRoundId(widget.roundToEdit!.id);
       if (result != null) {
-        initialData = CalculatorResultState.fromTableData(result).toMap();
+        initialData = CalculatorResultState.fromCalculatorResult(result.toModel()).toMap();
       }
     }
     
