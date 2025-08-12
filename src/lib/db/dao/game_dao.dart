@@ -26,11 +26,13 @@ class GameDao extends BaseDao {
             ..orderBy([(g) => OrderingTerm.desc(g.createdAt)]))
           .get();
 
-  Future<List<GameTableData>> getGamesPaginated({required int limit, required int offset}) =>
-      (_db.select(_db.gameTable)
-            ..orderBy([(g) => OrderingTerm.desc(g.createdAt)])
-            ..limit(limit, offset: offset))
-          .get();
+  Future<List<GameTableData>> getGamesPaginated({required int nextPage, required int perPage}) =>
+      withPagination(
+        (_db.select(_db.gameTable)
+              ..orderBy([(g) => OrderingTerm.desc(g.createdAt)])),
+        nextPage: nextPage,
+        perPage: perPage,
+      ).get();
 
   Future<int> getTotalGamesCount() async {
     final countQuery = _db.selectOnly(_db.gameTable)..addColumns([_db.gameTable.id.count()]);

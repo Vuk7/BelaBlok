@@ -26,7 +26,7 @@ class _MainScreenState extends State<MainScreen> {
   var hasMoreGames = true;
   
   static const int _pageSize = 20;
-  int _currentPage = 0;
+  int _currentPage = 1; 
   late ScrollController _scrollController;
 
   @override
@@ -55,7 +55,7 @@ class _MainScreenState extends State<MainScreen> {
     setState(() {
       isLoadingGameHistory = true;
       gamesHistory = [];
-      _currentPage = 0;
+  _currentPage = 1;
       hasMoreGames = true;
     });
     
@@ -71,13 +71,13 @@ class _MainScreenState extends State<MainScreen> {
     if (!hasMoreGames || isLoadingMoreGames) return;
     
     final newGames = await gamesService.getGamesPaginated(
-      limit: _pageSize,
-      offset: _currentPage * _pageSize,
+      nextPage: _currentPage,
+      perPage: _pageSize,
     );
     
     setState(() {
       gamesHistory.addAll(newGames);
-      _currentPage++;
+  _currentPage++;
       hasMoreGames = newGames.length == _pageSize;
     });
   }
