@@ -1,4 +1,5 @@
 import 'package:bela_blok/enums/team_enum.dart';
+import 'package:bela_blok/common/constants.dart';
 import 'package:bela_blok/themes/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'falling_arrow_icon.dart';
@@ -10,6 +11,7 @@ class RoundScoreListItem extends StatelessWidget {
   final int teamTwoScore;
   final int roundID;
   final Team teamCalled;
+  final bool teamFailed;
   final Function() onTap;
   const RoundScoreListItem({
     super.key,
@@ -19,14 +21,15 @@ class RoundScoreListItem extends StatelessWidget {
     required this.teamTwoScore,
     required this.roundID,
     required this.teamCalled,
+    required this.teamFailed,
     required this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
   
-    final bool teamOneFell = teamCalled == Team.teamOne && teamOneScore == 0;
-    final bool teamTwoFell = teamCalled == Team.teamTwo && teamTwoScore == 0;
+  final bool teamOneFell = teamFailed && teamCalled == Team.teamOne;
+  final bool teamTwoFell = teamFailed && teamCalled == Team.teamTwo;
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -84,7 +87,7 @@ class RoundScoreListItem extends StatelessWidget {
                     Row(
                       children: [
                         Text(
-                          "$teamOneScore",
+                          "${_displayTeamOne()}",
                           style: const TextStyle(
                             color: Color(0xFF2C3E50),
                             fontWeight: FontWeight.bold,
@@ -111,7 +114,6 @@ class RoundScoreListItem extends StatelessWidget {
                   ],
                 ),
               ),
-              // Srednji dio - broj runde i ukupno
               Column(
                 children: [
                   Text(
@@ -124,7 +126,7 @@ class RoundScoreListItem extends StatelessWidget {
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    "${(teamOneScore + teamTwoScore)}",
+                    "${_roundTotal()}",
                     style: const TextStyle(
                       color: Color(0xFF2C3E50),
                       fontWeight: FontWeight.w600,
@@ -172,7 +174,7 @@ class RoundScoreListItem extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
                         Text(
-                          "$teamTwoScore",
+                          "${_displayTeamTwo()}",
                           style: const TextStyle(
                             color: Color(0xFF2C3E50),
                             fontWeight: FontWeight.bold,
@@ -204,5 +206,27 @@ class RoundScoreListItem extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  int _roundTotal() {
+    final callsSum = teamOneCallAmount + teamTwoCallAmount;
+    if (teamFailed) {
+      return maxScore + callsSum;
+    }
+    return teamOneScore + teamTwoScore + callsSum;
+  }
+
+  int _displayTeamOne() {
+    final callsSum = teamOneCallAmount + teamTwoCallAmount;
+    if (teamFailed && teamCalled == Team.teamOne) return 0;
+    if (teamFailed && teamCalled == Team.teamTwo) return maxScore + callsSum;
+    return teamOneScore + teamOneCallAmount;
+  }
+
+  int _displayTeamTwo() {
+    final callsSum = teamOneCallAmount + teamTwoCallAmount;
+    if (teamFailed && teamCalled == Team.teamTwo) return 0;
+    if (teamFailed && teamCalled == Team.teamOne) return maxScore + callsSum;
+    return teamTwoScore + teamTwoCallAmount;
   }
 }

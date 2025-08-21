@@ -24,6 +24,7 @@ class AppDatabase extends _$AppDatabase {
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
+
     onUpgrade: (migrator, from, to) async {
       if (from == 1 && to >= 2) {
         await migrator.addColumn(roundTable, roundTable.teamFailed);
@@ -36,6 +37,7 @@ class AppDatabase extends _$AppDatabase {
     },
     beforeOpen: (details) async {},
   );
+
 
   static QueryExecutor _openConnection(){
     return driftDatabase(
