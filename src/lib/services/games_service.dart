@@ -57,11 +57,6 @@ class GamesService {
     );
   }
 
-  Future<Game?> getLatestUnfinishedGame() async {
-    final data = await dao.getLatestUnfinishedGame();
-    return data?.toModel();
-  }
-
   Future<Game?> getGameById(String gameId) async {
     final data = await dao.getById(database.gameTable, database.gameTable.id, gameId);
     return data?.toModel();

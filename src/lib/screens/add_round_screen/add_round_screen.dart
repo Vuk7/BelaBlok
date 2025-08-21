@@ -292,6 +292,14 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
     if (game != null) {
       game.teamOneScore = newScoreTeamOne;
       game.teamTwoScore = newScoreTeamTwo;
+      
+      // Check if game is finished and mark it as such
+      final int gameTargetScore = game.gameType ?? 1001;
+      if (newScoreTeamOne >= gameTargetScore || newScoreTeamTwo >= gameTargetScore) {
+        game.finished = true;
+        game.winner = newScoreTeamOne >= gameTargetScore ? 0 : 1; 
+      }
+      
       await gamesService.updateGame(game);
     }
   }
