@@ -19,6 +19,7 @@ class _GameStatsWidgetState extends State<GameStatsWidget> {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
+  final statsColors = Theme.of(context).extension<GameStatsColors>();
 
     return Container(
       width: double.infinity,
@@ -51,24 +52,24 @@ class _GameStatsWidgetState extends State<GameStatsWidget> {
               padding: const EdgeInsets.all(16),
               child: Row(
                 children: [
-                  const Icon(
+                 const Icon(
                     Icons.analytics,
                     color: AppTheme.green,
                     size: 24,
                   ),
                   const SizedBox(width: 8),
-                  const Text(
+                 const Text(
                     'STATISTIKE IGRE',
-                    style: TextStyle(
+                    style:  TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
                       color: AppTheme.green,
                     ),
                   ),
                   const Spacer(),
-                  const Icon(
+                  Icon(
                     Icons.emoji_events,
-                    color: Colors.amber,
+                    color: statsColors?.declarations ?? Colors.amber,
                     size: 24,
                   ),
                   const SizedBox(width: 8),
@@ -87,150 +88,93 @@ class _GameStatsWidgetState extends State<GameStatsWidget> {
           ),
 
           // Expandable content
-          AnimatedContainer(
-            duration: const Duration(milliseconds: 300),
-            curve: Curves.easeInOut,
-            decoration: const BoxDecoration(),
-            clipBehavior: Clip.antiAlias,
-            child: Visibility(
-              visible: isExpanded,
-              child: SizedBox(
-                // Ograniči maksimalnu visinu na pola ekrana (ili koliko želiš)
-                height: MediaQuery.of(context).size.height * 0.5,
-                child: SingleChildScrollView(
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 16, right: 16, bottom: 16),
-                    child: Column(
-                      children: [
-                        const Divider(),
-                        const SizedBox(height: 8),
+          AnimatedCrossFade(
+            firstChild: const SizedBox.shrink(),
+            secondChild: _ExpandedStatsContent(
+              gameStats: widget.gameStats,
+              isDark: isDark,
+            ),
+            crossFadeState: isExpanded ? CrossFadeState.showSecond : CrossFadeState.showFirst,
+            duration: const Duration(milliseconds: 250),
+          )
+        ],
+      ),
+    );
+  }
+}
 
-                        // Statistike u grid formatu
-                        Row(
-                          children: [
-                            // MI tim statistike
-                            Expanded(
-                              child: Column(
-                                children: [
-                                  Text(
-                                    'MI',
-                                    style: TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold,
-                                      color: Theme.of(context).colorScheme.primary,
-                                    ),
-                                  ),
-                                  const SizedBox(height: 8),
-                                  _buildStatItem(
-                                    'Pozivi',
-                                    (widget.gameStats['teamOneCalls'] ?? 0).toString(),
-                                    Icons.phone_callback,
-                                    Colors.blue,
-                                    isDark,
-                                  ),
-                                  _buildStatItem(
-                                    'Padovi',
-                                    (widget.gameStats['teamOneFails'] ?? 0).toString(),
-                                    Icons.trending_down,
-                                    Colors.red,
-                                    isDark,
-                                  ),
-                                  _buildStatItem(
-                                    'Zvanja',
-                                    (widget.gameStats['teamOneDeclarations'] ?? 0).toString(),
-                                    Icons.star,
-                                    Colors.amber,
-                                    isDark,
-                                  ),
-                                ],
-                              ),
-                            ),
+class _ExpandedStatsContent extends StatelessWidget {
+  final Map<String, dynamic> gameStats;
+  final bool isDark;
 
-                            // Separator
-                            Container(
-                              width: 2,
-                              height: 120,
-                              color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.2),
-                            ),
+  const _ExpandedStatsContent({required this.gameStats, required this.isDark});
 
-                            // VI tim statistike
-                            Expanded(
-                              child: Column(
-                                children: [
-                                  const Text(
-                                    'VI',
-                                    style: TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold,
-                                      color: AppTheme.green,
-                                    ),
-                                  ),
-                                  const SizedBox(height: 8),
-                                  _buildStatItem(
-                                    'Pozivi',
-                                    (widget.gameStats['teamTwoCalls'] ?? 0).toString(),
-                                    Icons.phone_callback,
-                                    Colors.blue,
-                                    isDark,
-                                  ),
-                                  _buildStatItem(
-                                    'Padovi',
-                                    (widget.gameStats['teamTwoFails'] ?? 0).toString(),
-                                    Icons.trending_down,
-                                    Colors.red,
-                                    isDark,
-                                  ),
-                                  _buildStatItem(
-                                    'Zvanja',
-                                    (widget.gameStats['teamTwoDeclarations'] ?? 0).toString(),
-                                    Icons.star,
-                                    Colors.amber,
-                                    isDark,
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
+  @override
+  Widget build(BuildContext context) {
+  const double gap = 12;
+  final calls1 = gameStats['teamOneCalls'] ?? 0;
+    final calls2 = gameStats['teamTwoCalls'] ?? 0;
+    final fails1 = gameStats['teamOneFails'] ?? 0;
+    final fails2 = gameStats['teamTwoFails'] ?? 0;
+    final dec1 = gameStats['teamOneDeclarations'] ?? 0;
+    final dec2 = gameStats['teamTwoDeclarations'] ?? 0;
+    final success1 = _calcSuccess(calls1, fails1);
+    final success2 = _calcSuccess(calls2, fails2);
 
-                        const SizedBox(height: 12),
-
-                        // Dodatne statistike
-                        Container(
-                          padding: const EdgeInsets.all(12),
-                          decoration: BoxDecoration(
-                            color: (isDark ? Colors.grey[700] : Colors.grey[100]),
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: [
-                              _buildMiniStat(
-                                'Uspješnost MI',
-                                '${_calculateSuccessRate(widget.gameStats['teamOneCalls'] ?? 0, widget.gameStats['teamOneFails'] ?? 0)}%',
-                                isDark,
-                              ),
-                              _buildMiniStat(
-                                'Uspješnost VI',
-                                '${_calculateSuccessRate(widget.gameStats['teamTwoCalls'] ?? 0, widget.gameStats['teamTwoFails'] ?? 0)}%',
-                                isDark,
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+      child: Column(
+        children: [
+          const Divider(),
+         const  SizedBox(height: gap),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                child: _teamColumn(
+                  context,
+                  'MI',
+                  Theme.of(context).colorScheme.primary,
+                  calls1,
+                  fails1,
+                  dec1,
                 ),
               ),
-            ),
+              _verticalDivider(context),
+              Expanded(
+                child: _teamColumn(
+                  context,
+                  'VI',
+                  AppTheme.green,
+                  calls2,
+                  fails2,
+                  dec2,
+                ),
+              ),
+            ],
           ),
+          const SizedBox(height: gap),
+          _summaryRow(context, success1, success2),
         ],
       ),
     );
   }
 
-  Widget _buildStatItem(String label, String value, IconData icon, Color color, bool isDark) {
+  Widget _teamColumn(BuildContext context, String label, Color labelColor, int calls, int fails, int declarations) {
+    final statsColors = Theme.of(context).extension<GameStatsColors>();
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(label, style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: labelColor)),
+        const SizedBox(height: 6),
+        _statRow(Icons.phone_callback, 'Pozivi', calls.toString(), statsColors?.calls ?? Colors.blue, context),
+        _statRow(Icons.trending_down, 'Padovi', fails.toString(), statsColors?.fails ?? Colors.red, context),
+        _statRow(Icons.star, 'Zvanja', declarations.toString(), statsColors?.declarations ?? Colors.amber, context),
+      ],
+    );
+  }
+
+  Widget _statRow(IconData icon, String label, String value, Color color, BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4),
       child: Row(
@@ -240,48 +184,64 @@ class _GameStatsWidgetState extends State<GameStatsWidget> {
           Expanded(
             child: Text(
               label,
-              style: TextStyle(
-                fontSize: 12,
-                color: isDark ? Colors.grey[300] : Colors.grey[700],
-              ),
+              style: TextStyle(fontSize: 12, color: isDark ? Colors.grey[300] : Colors.grey[700]),
             ),
           ),
           Text(
             value,
-            style: TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.bold,
-              color: isDark ? Colors.white : Colors.black87,
-            ),
+            style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: isDark ? Colors.white : Colors.black87),
           ),
         ],
       ),
     );
   }
 
-  Widget _buildMiniStat(String label, String value, bool isDark) {
-    return Column(
-      children: [
-        Text(
-          value,
-          style: TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
-            color: isDark ? Colors.white : Colors.black87,
+  Widget _verticalDivider(BuildContext context) => Container(
+        width: 1,
+        height: 100,
+        margin: const EdgeInsets.symmetric(horizontal: 12),
+        color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.15),
+      );
+
+  Widget _summaryRow(BuildContext context, int success1, int success2) {
+    final statsColors = Theme.of(context).extension<GameStatsColors>();
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: statsColors?.successCard ?? (isDark ? Colors.grey[700] : Colors.grey[100]),
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Row(
+        children: [
+          Expanded(child: _mini('Uspješnost MI', '$success1%')),
+          Container(
+            width: 1,
+            height: 28,
+            color: statsColors?.divider ?? Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.15),
+            margin: const EdgeInsets.symmetric(horizontal: 12),
           ),
-        ),
-        Text(
-          label,
-          style: TextStyle(
-            fontSize: 10,
-            color: isDark ? Colors.grey[400] : Colors.grey[600],
-          ),
-        ),
-      ],
+            Expanded(child: _mini('Uspješnost VI', '$success2%')),
+        ],
+      ),
     );
   }
 
-  int _calculateSuccessRate(dynamic calls, dynamic fails) {
+  Widget _mini(String label, String value) => Column(
+        children: [
+          Text(
+            value,
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: isDark ? Colors.white : Colors.black87),
+          ),
+          const SizedBox(height: 2),
+          Text(
+            label,
+            style: TextStyle(fontSize: 10, color: isDark ? Colors.grey[400] : Colors.grey[600]),
+            textAlign: TextAlign.center,
+          ),
+        ],
+      );
+
+  static int _calcSuccess(dynamic calls, dynamic fails) {
     final c = (calls ?? 0) is int ? (calls ?? 0) : int.tryParse((calls ?? '0').toString()) ?? 0;
     final f = (fails ?? 0) is int ? (fails ?? 0) : int.tryParse((fails ?? '0').toString()) ?? 0;
     if (c == 0) return 0;

@@ -1,8 +1,50 @@
-// lib/themes/app_theme.dart
 import 'package:flutter/material.dart';
 
+@immutable
+class GameStatsColors extends ThemeExtension<GameStatsColors> {
+  final Color calls;        // Color for number of calls
+  final Color fails;        // Color for number of fails
+  final Color declarations; // Color for declarations (zvanja)
+  final Color successCard;  // Background for success summary row
+  final Color divider;      // Divider inside stats widget
+
+  const GameStatsColors({
+    required this.calls,
+    required this.fails,
+    required this.declarations,
+    required this.successCard,
+    required this.divider,
+  });
+
+  @override
+  GameStatsColors copyWith({
+    Color? calls,
+    Color? fails,
+    Color? declarations,
+    Color? successCard,
+    Color? divider,
+  }) => GameStatsColors(
+        calls: calls ?? this.calls,
+        fails: fails ?? this.fails,
+        declarations: declarations ?? this.declarations,
+        successCard: successCard ?? this.successCard,
+        divider: divider ?? this.divider,
+      );
+
+  @override
+  GameStatsColors lerp(ThemeExtension<GameStatsColors>? other, double t) {
+    if (other is! GameStatsColors) return this;
+    return GameStatsColors(
+      calls: Color.lerp(calls, other.calls, t)!,
+      fails: Color.lerp(fails, other.fails, t)!,
+      declarations: Color.lerp(declarations, other.declarations, t)!,
+      successCard: Color.lerp(successCard, other.successCard, t)!,
+      divider: Color.lerp(divider, other.divider, t)!,
+    );
+  }
+}
+
 class AppTheme {
-  // Boje
   static const Color red = Color(0xFFFF0000);
   static const Color green = Color(0xFF3DB328);
   static const Color gray = Color(0xFFD9D9D9);
@@ -17,12 +59,10 @@ class AppTheme {
   static const Color brownShadow = Colors.brown;
   static const Color lightScoreBackground = Color(0xFFE8E8E8);
 
-  // Overlay boje (transparentni slojevi)
   static const Color lightOverlay = Color(0x1A000000);
   static const Color mediumOverlay = Color(0x33000000);
   static const Color heavyOverlay = Color(0x66000000);
 
-  // Tematski Data
   static final ThemeData lightTheme = ThemeData(
     primaryColor: primary,
     scaffoldBackgroundColor: lightBackground,
@@ -41,6 +81,15 @@ class AppTheme {
       surfaceContainerHighest: black,
       error: red,
     ),
+    extensions: const <ThemeExtension<dynamic>>[
+      GameStatsColors(
+        calls: blue,
+        fails: red,
+        declarations: orange,
+        successCard: Color(0xFFF2F7ED),
+        divider: Color(0x22000000),
+      ),
+    ],
   );
 
   static final ThemeData darkTheme = ThemeData(
@@ -61,9 +110,17 @@ class AppTheme {
       surfaceContainerHighest: Colors.white,
       error: red,
     ),
+    extensions: const <ThemeExtension<dynamic>>[
+      GameStatsColors(
+        calls: blue,
+        fails: red,
+        declarations: orange,
+        successCard: Color(0xFF374239),
+        divider: Color(0x33FFFFFF),
+      ),
+    ],
   );
 
-  // Stilovi teksta
   static const TextStyle titleTextStyle = TextStyle(
     fontSize: 44,
     fontWeight: FontWeight.bold,
@@ -119,7 +176,6 @@ class AppTheme {
     fontWeight: FontWeight.w500,
   );
 
-  // Pomoćne metode za boje prema temi
   static Color getScreenBackground(BuildContext context) {
     return Theme.of(context).brightness == Brightness.dark
         ? screenBackgroundDark
