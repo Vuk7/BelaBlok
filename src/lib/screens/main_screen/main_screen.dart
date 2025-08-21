@@ -22,12 +22,14 @@ class _MainScreenState extends State<MainScreen> {
   late GamesService gamesService;
   List<Game> gamesHistory = [];
   var isLoadingGameHistory = true;
+
   var isLoadingMoreGames = false;
   var hasMoreGames = true;
   
   static const int _pageSize = 20;
   int _currentPage = 1; 
   late ScrollController _scrollController;
+
 
   @override
   void initState() {
@@ -60,6 +62,7 @@ class _MainScreenState extends State<MainScreen> {
     });
     
     gamesService = GamesService(AppDatabase());
+
     await _loadGamePage();
     
     setState(() {
@@ -98,6 +101,7 @@ class _MainScreenState extends State<MainScreen> {
 
   Future<void> _refreshGameHistory() async {
     await _initGames();
+
   }
 
   Future<bool> _showDeleteConfirmationDialog(String gameId) async {
@@ -271,37 +275,27 @@ class _MainScreenState extends State<MainScreen> {
                     const RulesWidget(),
                     const SizedBox(height: 20),
 
-                    
-                    FutureBuilder<Game?>(
-                      future: gamesService.getLatestUnfinishedGame(),
-                      builder: (context, snapshot) {
-                        if (snapshot.connectionState == ConnectionState.waiting) {
-                          return const CircularProgressIndicator();
-                        }
-                        final latestUnfinishedGame = snapshot.data;
-                        if (latestUnfinishedGame == null) return const SizedBox.shrink();
-
-                        return Padding(
-                          padding: const EdgeInsets.all(5.0),
-                          child: Hero(
-                            tag: "continue_button",
-                            child: AnimatedBigButton(
-                              text: "NASTAVI",
-                              icon: Icons.play_arrow,
-                              iconAnimationType: AnimationType.slideRight,
-                              textStyle: AppTheme.defaultButtonTextStyle,
-                              bgColor: AppTheme.green,
-                              onTap: () {
-                                context.goNamed(
-                                  "currentgame",
-                                  queryParameters: {'id': latestUnfinishedGame.id},
-                                );
-                              },
-                            ),
+                    // Continue game button if the latest game exists and is unfinished
+                    if (latestGame != null && latestGame!.finished != true)
+                      Padding(
+                        padding: const EdgeInsets.all(5.0),
+                        child: Hero(
+                          tag: "continue_button",
+                          child: AnimatedBigButton(
+                            text: "NASTAVI",
+                            icon: Icons.play_arrow,
+                            iconAnimationType: AnimationType.slideRight,
+                            textStyle: AppTheme.defaultButtonTextStyle,
+                            bgColor: AppTheme.green,
+                            onTap: () {
+                              context.goNamed(
+                                "currentgame",
+                                queryParameters: {'id': latestGame!.id},
+                              );
+                            },
                           ),
-                        );
-                      },
-                    ),
+                        ),
+                      ),
                     Padding(
                       padding: const EdgeInsets.all(5.0),
                       child: Hero(

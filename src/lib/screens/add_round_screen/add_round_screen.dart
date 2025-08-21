@@ -2,7 +2,6 @@ import 'package:bela_blok/screens/add_round_screen/widgets/call_show.dart';
 import 'package:bela_blok/db/database.dart'; 
 import 'package:bela_blok/db/models/round_model.dart'; 
 import 'package:bela_blok/models/score.model.dart';
-import 'package:bela_blok/models/fall_score.model.dart';
 import 'package:bela_blok/services/games_service.dart'; 
 import 'package:bela_blok/services/rounds_service.dart'; 
 import 'package:bela_blok/screens/add_round_screen/widgets/choose_caller.dart';
@@ -11,7 +10,6 @@ import 'package:bela_blok/screens/widgets/big_button_input_number.dart';
 import 'package:bela_blok/screens/widgets/help_dialog.dart';
 import 'package:bela_blok/screens/widgets/player_shuffling.dart';
 import 'package:bela_blok/screens/widgets/pulsing_fab.dart';
-import 'package:bela_blok/screens/current_game_screen/widgets/falling_arrow_icon.dart';
 import 'package:bela_blok/themes/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -56,6 +54,8 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
   int? gameDirection;
   int totalPlayers = 4; 
   int roundsCount = 0;
+  int currentGameTeamOneScore = 0;
+  int currentGameTeamTwoScore = 0;
 
   @override
   void initState() {
@@ -86,7 +86,7 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
       inputTeamOne.text = (widget.roundToEdit.teamOneScore ?? 0).toString();
       inputTeamTwo.text = (widget.roundToEdit.teamTwoScore ?? 0).toString();
       selectedCaller = widget.roundToEdit.teamCalled ?? 0;
-      
+
       final t1 = widget.roundToEdit.teamOneCallAmount ?? 0;
       final t2 = widget.roundToEdit.teamTwoCallAmount ?? 0;
       _callsTeamOne = t1 > 0 ? [CallEntry(CallType.z20, (t1 / 20).round())] : [];
@@ -105,6 +105,8 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
           currentlyShuffling = game.currentlyShuffling ?? 1;
           gameDirection = game.gameDirection ?? 0;
           _currentGameType = game.gameType;
+          currentGameTeamOneScore = game.teamOneScore ?? 0;
+          currentGameTeamTwoScore = game.teamTwoScore ?? 0;
         });
       }
     }
@@ -179,11 +181,12 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
     int teamTwoCallAmount = teamTwoBelot ? gameType : 0;
     final round = widget.roundToEdit ?? Round(gameId: widget.gameId!);
     round.teamCalled = selectedCaller;
-    round.teamOneScore = teamOneCallAmount;
-    round.teamTwoScore = teamTwoCallAmount;
+  round.teamOneScore = int.tryParse(inputTeamOne.text) ?? 0;
+  round.teamTwoScore = int.tryParse(inputTeamTwo.text) ?? 0;
     round.teamFailed = false;
     round.teamOneCallAmount = teamOneCallAmount;
     round.teamTwoCallAmount = teamTwoCallAmount;
+    
     if (widget.roundToEdit != null) {
       await roundsService.updateRound(round);
     } else {
@@ -264,11 +267,12 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
   Future<void> _saveNormalRound(dynamic game, ScoreModel scores) async {
     final round = widget.roundToEdit ?? Round(gameId: widget.gameId!);
     round.teamCalled = selectedCaller;
-    round.teamOneScore = scores.teamOneTotal;
-    round.teamTwoScore = scores.teamTwoTotal;
+  round.teamOneScore = scores.teamOneBase;
+  round.teamTwoScore = scores.teamTwoBase;
     round.teamFailed = scores.teamFailed;
     round.teamOneCallAmount = scores.teamOneCallAmount;
     round.teamTwoCallAmount = scores.teamTwoCallAmount;
+    
     if (widget.roundToEdit != null) {
       await roundsService.updateRound(round);
     } else {
@@ -284,12 +288,32 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
     int newScoreTeamOne = 0;
     int newScoreTeamTwo = 0;
     for (final r in rounds) {
-      newScoreTeamOne += r.teamOneScore ?? 0;
-      newScoreTeamTwo += r.teamTwoScore ?? 0;
+      final baseOne = r.teamOneScore ?? 0;
+      final baseTwo = r.teamTwoScore ?? 0;
+      final callsOne = r.teamOneCallAmount ?? 0;
+      final callsTwo = r.teamTwoCallAmount ?? 0;
+      final failedTeam = (r.teamFailed ?? false) ? r.teamCalled : null;
+      final computed = roundsService.calculateRoundScores(
+        teamOneBase: baseOne,
+        teamTwoBase: baseTwo,
+        teamOneCallAmount: callsOne,
+        teamTwoCallAmount: callsTwo,
+        failedTeam: failedTeam,
+      );
+      newScoreTeamOne += computed['teamOneTotal'] ?? 0;
+      newScoreTeamTwo += computed['teamTwoTotal'] ?? 0;
     }
     if (game != null) {
       game.teamOneScore = newScoreTeamOne;
       game.teamTwoScore = newScoreTeamTwo;
+      
+      // Check if game is finished and mark it as such
+      final int gameTargetScore = game.gameType ?? 1001;
+      if (newScoreTeamOne >= gameTargetScore || newScoreTeamTwo >= gameTargetScore) {
+        game.finished = true;
+        game.winner = newScoreTeamOne >= gameTargetScore ? 0 : 1; 
+      }
+      
       await gamesService.updateGame(game);
     }
   }
@@ -404,36 +428,10 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
 
   @override
   Widget build(BuildContext context) {
-    // Calculate pad (fall) for UI only using FallScoreModel
     int teamOneVal = int.tryParse(inputTeamOne.text) ?? 0;
     int teamTwoVal = int.tryParse(inputTeamTwo.text) ?? 0;
     int teamOneCallAmount = _callsTeamOne.where((c) => c.type is CallType).fold(0, (prev, c) => prev + _callValue(c.type) * c.count) + (_callsTeamOne.any((c) => c.type == SpecialCall.belot) ? 100 : 0);
     int teamTwoCallAmount = _callsTeamTwo.where((c) => c.type is CallType).fold(0, (prev, c) => prev + _callValue(c.type) * c.count) + (_callsTeamTwo.any((c) => c.type == SpecialCall.belot) ? 100 : 0);
-    int allCalls = teamOneCallAmount + teamTwoCallAmount;
-    FallScoreModel fallScore = selectedCaller == 0
-        ? FallScoreModel(
-            teamOneTotal: 0,
-            teamTwoTotal: maxScore + allCalls,
-            teamOneBase: 0,
-            teamTwoBase: maxScore,
-            teamOneCallAmount: 0,
-            teamTwoCallAmount: allCalls,
-            allCalls: allCalls,
-          )
-        : FallScoreModel(
-            teamOneTotal: maxScore + allCalls,
-            teamTwoTotal: 0,
-            teamOneBase: maxScore,
-            teamTwoBase: 0,
-            teamOneCallAmount: allCalls,
-            teamTwoCallAmount: 0,
-            allCalls: allCalls,
-          );
-    int teamOneTotal = teamOneVal + teamOneCallAmount;
-    int teamTwoTotal = teamTwoVal + teamTwoCallAmount;
-    int callerScoreUI = selectedCaller == 0 ? teamOneTotal : teamTwoTotal;
-    int otherScoreUI = selectedCaller == 0 ? teamTwoTotal : teamOneTotal;
-    bool teamFailedUI = (callerScoreUI <= otherScoreUI || callerScoreUI < 82);
     final screenWidth = MediaQuery.of(context).size.width;
 
     
@@ -572,34 +570,13 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
                                 Row(
                                   children: [
                                     Text(
-                                      teamFailedUI ? '${fallScore.teamOneTotal}' : '$teamOneTotal',
+                                      '$currentGameTeamOneScore',
                                       style: TextStyle(
                                         fontSize: 16,
                                         fontWeight: FontWeight.bold,
                                         color: Theme.of(context).colorScheme.primary,
                                       ),
                                     ),
-                                    if ((teamFailedUI ? fallScore.teamOneCallAmount : teamOneCallAmount) > 0)
-                                      Padding(
-                                        padding: const EdgeInsets.only(left: 6.0),
-                                        child: Text(
-                                          '+${teamFailedUI ? fallScore.teamOneCallAmount : teamOneCallAmount}',
-                                          style: const TextStyle(
-                                            fontSize: 13,
-                                            color: AppTheme.green,
-                                            fontWeight: FontWeight.w500,
-                                          ),
-                                        ),
-                                      ),
-                                    if (teamFailedUI && selectedCaller == 0)
-                                      const Padding(
-                                        padding: EdgeInsets.only(left: 4.0),
-                                        child: SizedBox(
-                                          height: 24,
-                                          width: 24,
-                                          child: FallingArrowIcon(animateOnce: false),
-                                        ),
-                                      ),
                                   ],
                                 ),
                               ],
@@ -626,34 +603,13 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
                                 Row(
                                   children: [
                                     Text(
-                                      teamFailedUI ? '${fallScore.teamTwoTotal}' : '$teamTwoTotal',
+                                      '$currentGameTeamTwoScore',
                                       style: const TextStyle(
                                         fontSize: 16,
                                         fontWeight: FontWeight.bold,
                                         color: AppTheme.green,
                                       ),
                                     ),
-                                    if ((teamFailedUI ? fallScore.teamTwoCallAmount : teamTwoCallAmount) > 0)
-                                      Padding(
-                                        padding: const EdgeInsets.only(left: 6.0),
-                                        child: Text(
-                                          '+${teamFailedUI ? fallScore.teamTwoCallAmount : teamTwoCallAmount}',
-                                          style: const TextStyle(
-                                            fontSize: 13,
-                                            color: AppTheme.primary,
-                                            fontWeight: FontWeight.w500,
-                                          ),
-                                        ),
-                                      ),
-                                    if (teamFailedUI && selectedCaller == 1)
-                                      const Padding(
-                                        padding: EdgeInsets.only(left: 4.0),
-                                        child: SizedBox(
-                                          height: 24,
-                                          width: 24,
-                                          child: FallingArrowIcon(animateOnce: false),
-                                        ),
-                                      ),
                                   ],
                                 ),
                               ],

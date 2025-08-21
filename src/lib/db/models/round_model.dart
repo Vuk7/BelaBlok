@@ -12,6 +12,7 @@ class Round extends BaseModel {
   bool? isTeamOneCallSuccessful;
   bool? isTeamTwoCallSuccessful;
   bool? teamFailed;
+  
 
   Round({
     required this.gameId,
@@ -23,6 +24,7 @@ class Round extends BaseModel {
     this.isTeamOneCallSuccessful,
     this.isTeamTwoCallSuccessful,
     this.teamFailed,
+    
     super.id,
     super.createdAt,
     super.updatedAt,
@@ -45,11 +47,7 @@ extension RoundMapper on RoundTableData {
       teamTwoCallAmount: teamTwoCallAmount,
       isTeamOneCallSuccessful: isTeamOneCallSuccessful,
       isTeamTwoCallSuccessful: isTeamTwoCallSuccessful,
-
-
       teamFailed: teamFailed,
-
-
     );
   }
 }

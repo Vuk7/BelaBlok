@@ -66,11 +66,6 @@ class GamesService {
     );
   }
 
-  Future<Game?> getLatestUnfinishedGame() async {
-    final data = await dao.getLatestUnfinishedGame();
-    return data?.toModel();
-  }
-
   Future<Game?> getGameById(String gameId) async {
     final data = await dao.getById(database.gameTable, database.gameTable.id, gameId);
     return data?.toModel();
@@ -86,5 +81,16 @@ class GamesService {
     }
     
     return 1;
+  }
+  Future<PlayDirection> getPreviousGameDirection() async {
+    final latestGame = await getLatestGame();
+    if (latestGame != null && latestGame.gameDirection != null) {
+      final dirIndex = latestGame.gameDirection!;
+      if (dirIndex >= 0 && dirIndex < PlayDirection.values.length) {
+        return PlayDirection.values[dirIndex];
+      }
+    }
+
+    return PlayDirection.clockwise; 
   }
 }
