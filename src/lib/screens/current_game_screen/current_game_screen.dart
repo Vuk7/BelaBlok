@@ -106,10 +106,7 @@ class _CurrentGameScreenState extends State<CurrentGameScreen> {
       showErrorMessage("Nema aktivne igre");
       return;
     }
-    if (isGameFinished) {
-      showErrorMessage("Igra je već završena");
-      return;
-    }
+    
     await context.pushNamed(
       'addround',
       queryParameters: {'id': currentGame!.id!},
@@ -300,10 +297,10 @@ class _CurrentGameScreenState extends State<CurrentGameScreen> {
                   Padding(
                     padding: const EdgeInsets.all(5.0),
                     child: Hero(
-                      tag: "add_round_button",
+                      tag: isGameFinished ? "return_to_main_button" : "add_round_button",
                       child: button.AnimatedBigButton(
-                        text: "DODAJ",
-                        icon: Icons.add,
+                        text: isGameFinished ? "NOVA IGRA" : "DODAJ",
+                        icon: isGameFinished ? Icons.home : Icons.add,
                         iconAnimationType: button.AnimationType.scale,
                         textStyle: TextStyle(
                           color: AppTheme.getInverseTextColor(context),
@@ -312,8 +309,8 @@ class _CurrentGameScreenState extends State<CurrentGameScreen> {
                           fontWeight: AppTheme
                               .defaultButtonTextStyle.fontWeight,
                         ),
-                        bgColor: AppTheme.green,
-                        onTap: handleAddRound,
+                        bgColor: isGameFinished ? AppTheme.primary : AppTheme.green,
+                        onTap: isGameFinished ? () => context.goNamed('main') : handleAddRound,
                         textPadding: 15,
                       ),
                     ),
