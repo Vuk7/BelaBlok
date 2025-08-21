@@ -22,27 +22,86 @@ class _MainScreenState extends State<MainScreen> {
   late GamesService gamesService;
   List<Game> gamesHistory = [];
   var isLoadingGameHistory = true;
-  Game? latestGame;
+
+  var isLoadingMoreGames = false;
+  var hasMoreGames = true;
+  
+  static const int _pageSize = 20;
+  int _currentPage = 1; 
+  late ScrollController _scrollController;
+
 
   @override
   void initState() {
     super.initState();
+    _scrollController = ScrollController();
+    _scrollController.addListener(_onScroll);
     _initGames();
   }
 
+  @override
+  void dispose() {
+    _scrollController.removeListener(_onScroll);
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  void _onScroll() {
+    if (_scrollController.position.pixels >= _scrollController.position.maxScrollExtent - 200) {
+      // Load more when user is 200 pixels from the bottom
+      _loadMoreGames();
+    }
+  }
+
   Future<void> _initGames() async {
-    isLoadingGameHistory = true;
+    setState(() {
+      isLoadingGameHistory = true;
+      gamesHistory = [];
+  _currentPage = 1;
+      hasMoreGames = true;
+    });
+    
     gamesService = GamesService(AppDatabase());
-    gamesHistory = (await gamesService.getAllGames()).reversed.toList();
-  latestGame = await gamesService.getLatestGame();
-    isLoadingGameHistory = false;
-    setState(() {});
+
+    await _loadGamePage();
+    
+    setState(() {
+      isLoadingGameHistory = false;
+    });
+  }
+
+  Future<void> _loadGamePage() async {
+    if (!hasMoreGames || isLoadingMoreGames) return;
+    
+    final newGames = await gamesService.getGamesPaginated(
+      nextPage: _currentPage,
+      perPage: _pageSize,
+    );
+    
+    setState(() {
+      gamesHistory.addAll(newGames);
+  _currentPage++;
+      hasMoreGames = newGames.length == _pageSize;
+    });
+  }
+
+  Future<void> _loadMoreGames() async {
+    if (!hasMoreGames || isLoadingMoreGames || isLoadingGameHistory) return;
+    
+    setState(() {
+      isLoadingMoreGames = true;
+    });
+    
+    await _loadGamePage();
+    
+    setState(() {
+      isLoadingMoreGames = false;
+    });
   }
 
   Future<void> _refreshGameHistory() async {
-    gamesHistory = (await gamesService.getAllGames()).reversed.toList();
-  latestGame = await gamesService.getLatestGame();
-    setState(() {});
+    await _initGames();
+
   }
 
   Future<bool> _showDeleteConfirmationDialog(String gameId) async {
@@ -70,7 +129,14 @@ class _MainScreenState extends State<MainScreen> {
 
   Future<void> handleDeleteGame(String gameId) async {
     await gamesService.deleteGame(gameId);
-    await _refreshGameHistory();
+    
+    setState(() {
+      gamesHistory.removeWhere((game) => game.id == gameId);
+    });
+    
+    if (hasMoreGames && gamesHistory.length < _pageSize) {
+      await _loadMoreGames();
+    }
 
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -147,10 +213,24 @@ class _MainScreenState extends State<MainScreen> {
                                             ),
                                           )
                                         : ListView.builder(
-                                            itemCount: gamesHistory.length,
+                                            controller: _scrollController,
+                                            itemCount: gamesHistory.length + (hasMoreGames ? 1 : 0),
                                             itemBuilder: (context, index) {
+                                              if (index == gamesHistory.length) {
+                                                return Container(
+                                                  padding: const EdgeInsets.all(16),
+                                                  alignment: Alignment.center,
+                                                  child: isLoadingMoreGames
+                                                      ? const SizedBox(
+                                                          height: 24,
+                                                          width: 24,
+                                                          child: CircularProgressIndicator(strokeWidth: 2),
+                                                        )
+                                                      : const SizedBox.shrink(),
+                                                );
+                                              }
+                                              
                                               final game = gamesHistory[index];
-
                                               return Dismissible(
                                                 key: Key(game.id ?? index.toString()),
                                                 direction: DismissDirection.endToStart,
