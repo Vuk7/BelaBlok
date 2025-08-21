@@ -29,6 +29,7 @@ class _MainScreenState extends State<MainScreen> {
   static const int _pageSize = 20;
   int _currentPage = 1; 
   late ScrollController _scrollController;
+  Game? latestGame; // cache of the most recent game to show Continue button
 
 
   @override
@@ -64,6 +65,8 @@ class _MainScreenState extends State<MainScreen> {
     gamesService = GamesService(AppDatabase());
 
     await _loadGamePage();
+  // Fetch latest game for Continue button
+  latestGame = await gamesService.getLatestGame();
     
     setState(() {
       isLoadingGameHistory = false;
@@ -137,6 +140,9 @@ class _MainScreenState extends State<MainScreen> {
     if (hasMoreGames && gamesHistory.length < _pageSize) {
       await _loadMoreGames();
     }
+
+  // Update latestGame cache
+  latestGame = await gamesService.getLatestGame();
 
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -259,6 +265,7 @@ class _MainScreenState extends State<MainScreen> {
                                                       queryParameters: {'id': game.id},
                                                     );
                                                     await _refreshGameHistory();
+                                                    latestGame = await gamesService.getLatestGame();
                                                   },
                                                 ),
                                               );
