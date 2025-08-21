@@ -20,17 +20,24 @@ class AppDatabase extends _$AppDatabase {
 
 
   @override
-  int get schemaVersion => 2;
+  int get schemaVersion => 4;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
-        onUpgrade: (migrator, from, to) async {
-          if (from == 1 && to >= 2) {
-            await migrator.addColumn(roundTable, roundTable.teamFailed);
-          }
-        },
-        beforeOpen: (details) async {},
-      );
+
+    onUpgrade: (migrator, from, to) async {
+      if (from == 1 && to >= 2) {
+        await migrator.addColumn(roundTable, roundTable.teamFailed);
+      }
+      if (to >= 4 && from < 4) {
+        try {
+          await migrator.dropColumn(roundTable, 'shuffler');
+        } catch (_) {}
+      }
+    },
+    beforeOpen: (details) async {},
+  );
+
 
   static QueryExecutor _openConnection(){
     return driftDatabase(

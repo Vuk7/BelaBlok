@@ -187,6 +187,7 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
     round.teamOneCallAmount = teamOneCallAmount;
     round.teamTwoCallAmount = teamTwoCallAmount;
     
+
     if (widget.roundToEdit != null) {
       await roundsService.updateRound(round);
     } else {
@@ -273,6 +274,7 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
     round.teamOneCallAmount = scores.teamOneCallAmount;
     round.teamTwoCallAmount = scores.teamTwoCallAmount;
     
+
     if (widget.roundToEdit != null) {
       await roundsService.updateRound(round);
     } else {
@@ -307,12 +309,14 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
       game.teamOneScore = newScoreTeamOne;
       game.teamTwoScore = newScoreTeamTwo;
       
+
       // Check if game is finished and mark it as such
       final int gameTargetScore = game.gameType ?? 1001;
       if (newScoreTeamOne >= gameTargetScore || newScoreTeamTwo >= gameTargetScore) {
         game.finished = true;
         game.winner = newScoreTeamOne >= gameTargetScore ? 0 : 1; 
       }
+
       
       await gamesService.updateGame(game);
     }
@@ -747,10 +751,16 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
                       icon: Icons.style,
                       iconColor: AppTheme.green,
                       title: 'TRENUTNO MIJEŠA',
-                      child: PlayerShuffling(
-                        onTap: (_) {},
-                        selectedColor: Theme.of(context).colorScheme.primary,
-                        selected: getNextShuffler(roundsCount),
+                      child: FutureBuilder<int>(
+                        future: _computeShufflerToShow(),
+                        builder: (context, snapshot) {
+                          final shuffler = snapshot.data ?? (currentlyShuffling ?? 1);
+                          return PlayerShuffling(
+                            onTap: (_) {},
+                            selectedColor: Theme.of(context).colorScheme.primary,
+                            selected: shuffler,
+                          );
+                        },
                       ),
                     ),
                     const SizedBox(height: 40),
@@ -818,11 +828,14 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
         ),
       );
 
-  int getNextShuffler(int roundCount) {
-    if (currentlyShuffling == null || gameDirection == null) return 1;
-    return roundsService.getNextShuffler(
-      roundCount: roundCount,
-      currentlyShuffling: currentlyShuffling!,
+  Future<int> _computeShufflerToShow() async {
+    if (currentlyShuffling == null || gameDirection == null || widget.gameId == null) {
+      return 1;
+    }
+    final count = await roundsService.getRoundsForGameCount(widget.gameId!);
+    return roundsService.computeShuffler(
+      firstShuffler: currentlyShuffling!,
+      index: widget.roundToEdit != null ? (count == 0 ? 0 : count - 1) : count,
       gameDirection: gameDirection!,
       totalPlayers: totalPlayers,
     );

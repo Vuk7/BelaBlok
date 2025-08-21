@@ -72,15 +72,25 @@ class GamesService {
   }
 
 
-  /// [playerCount] 
   Future<int> getNextStartingShuffler({int playerCount = 4}) async {
     final latestGame = await getLatestGame();
-    if (latestGame != null && latestGame.currentlyShuffling != null) {
-
-      return (latestGame.currentlyShuffling! % playerCount) + 1;
+    if (latestGame == null) return 1;
+    final firstShuffler = latestGame.currentlyShuffling ?? 1;
+    final dir = latestGame.gameDirection ?? 0;
+    if (dir == 0) {
+      return (firstShuffler % playerCount) + 1;
+    } else {
+      final prev = firstShuffler - 1;
+      return prev < 1 ? playerCount : prev;
+    }
+  }
+  Future<int> getPreviousGameDirection() async {
+    final latestGame = await getLatestGame();
+    if (latestGame != null && latestGame.gameDirection != null) {
+      return latestGame.gameDirection!;
     }
     
-    return 1;
+    return 0; 
   }
   Future<PlayDirection> getPreviousGameDirection() async {
     final latestGame = await getLatestGame();
