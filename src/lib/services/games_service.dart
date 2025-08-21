@@ -92,15 +92,11 @@ class GamesService {
     
     return 0; 
   }
-  Future<PlayDirection> getPreviousGameDirection() async {
-    final latestGame = await getLatestGame();
-    if (latestGame != null && latestGame.gameDirection != null) {
-      final dirIndex = latestGame.gameDirection!;
-      if (dirIndex >= 0 && dirIndex < PlayDirection.values.length) {
-        return PlayDirection.values[dirIndex];
-      }
+  Future<PlayDirection> getPreviousPlayDirection() async {
+    final dirIndex = await getPreviousGameDirection();
+    if (dirIndex >= 0 && dirIndex < PlayDirection.values.length) {
+      return PlayDirection.values[dirIndex];
     }
-
-    return PlayDirection.clockwise; 
+    return PlayDirection.clockwise; // default
   }
 }
