@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:bela_blok/screens/widgets/animated_big_button.dart';
 import 'package:bela_blok/themes/app_theme.dart';
-import 'package:bela_blok/screens/settings/settings_dialog.dart';
+import 'package:go_router/go_router.dart';
 
 class SettingsButton extends StatelessWidget {
   final VoidCallback? onTap;
@@ -17,12 +17,8 @@ class SettingsButton extends StatelessWidget {
         iconAnimationType: AnimationType.rotate,
     textStyle: AppTheme.getSettingsButtonTextStyle(context),
     bgColor: AppTheme.getSettingsButtonBackground(context),
-        onTap: onTap ?? () async {
-          await showDialog(
-            context: context,
-            barrierDismissible: true,
-            builder: (ctx) => const SettingsDialog(),
-          );
+        onTap: onTap ?? () {
+          context.pushNamed('settings');
         },
       ),
     );

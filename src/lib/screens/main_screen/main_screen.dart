@@ -7,8 +7,6 @@ import 'package:bela_blok/screens/widgets/animated_big_button.dart';
 import 'package:bela_blok/utils/date_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:provider/provider.dart';
-import 'package:bela_blok/main.dart';
 import 'package:bela_blok/themes/app_theme.dart';
 import 'package:bela_blok/screens/widgets/settings_button.dart';
 
@@ -158,7 +156,7 @@ class _MainScreenState extends State<MainScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+  backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: SafeArea(
         child: isLoadingGameHistory
             ? const Center(child: CircularProgressIndicator())
@@ -328,18 +326,7 @@ class _MainScreenState extends State<MainScreen> {
                   ],
                 ),
               ),
-      ),
-      floatingActionButton: IconButton(
-        icon: Icon(
-          Theme.of(context).brightness == Brightness.dark
-              ? Icons.nightlight_round
-              : Icons.wb_sunny,
-          color: Colors.amber,
-        ),
-        onPressed: () {
-          Provider.of<ThemeNotifier>(context, listen: false).toggleTheme();
-        },
-      ),
+  ),
     );
   }
 }
