@@ -9,6 +9,8 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:bela_blok/themes/app_theme.dart';
 import 'package:bela_blok/screens/widgets/settings_button.dart';
+import 'package:provider/provider.dart';
+import 'package:bela_blok/providers/settings_provider.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -278,7 +280,11 @@ class _MainScreenState extends State<MainScreen> {
                     const SizedBox(height: 20),
 
                     
-                    const RulesWidget(),
+                    Consumer<SettingsProvider>(
+                      builder: (context, settings, _) => settings.showRules
+                          ? const RulesWidget()
+                          : const SizedBox.shrink(),
+                    ),
                     const SizedBox(height: 20),
 
                     // Continue game button if the latest game exists and is unfinished
