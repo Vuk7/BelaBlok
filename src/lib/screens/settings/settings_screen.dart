@@ -44,6 +44,17 @@ class SettingsScreen extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 32),
+          Text('Statistike igre', style: AppTheme.sectionHeaderTextStyle.copyWith(color: Theme.of(context).colorScheme.onSurface)),
+          const SizedBox(height: 4),
+          Consumer<SettingsProvider>(
+            builder: (context, settings, _) => SwitchListTile(
+              title: const Text('Prikaz statistike '),
+              value: settings.showGameStats,
+              onChanged: (val) => settings.toggleShowGameStats(val),
+              secondary: const Icon(Icons.analytics),
+            ),
+          ),
+          const SizedBox(height: 32),
           Card(
             color: AppTheme.getCardBackgroundColor(context),
             child: const ListTile(

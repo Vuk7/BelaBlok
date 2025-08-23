@@ -6,6 +6,8 @@ import 'package:bela_blok/screens/widgets/animated_big_button.dart' as button;
 import 'package:bela_blok/screens/widgets/animated_list_item.dart';
 import 'package:bela_blok/screens/widgets/confetti_animation.dart';
 import 'package:bela_blok/screens/widgets/game_stats_widget.dart';
+import 'package:provider/provider.dart';
+import 'package:bela_blok/providers/settings_provider.dart';
 import 'package:bela_blok/screens/widgets/morphing_widgets.dart';
 import 'package:bela_blok/screens/widgets/error_message_widget.dart';
 import 'package:bela_blok/services/games_service.dart';
@@ -239,17 +241,23 @@ class _CurrentGameScreenState extends State<CurrentGameScreen> {
                     ),
                   ),
                   const SizedBox(height: 10),
-                  if (isGameFinished) ...[
-                    GestureDetector(
-                      onTap: () => setState(
-                          () => _wobbleTrigger = !_wobbleTrigger),
-                      child: WobbleWidget(
-                        triggerWobble: _wobbleTrigger,
-                        child: GameStatsWidget(gameStats: gameStats),
-                      ),
+                  if (isGameFinished)
+                    Consumer<SettingsProvider>(
+                      builder: (context, settings, _) => settings.showGameStats
+                          ? Column(
+                              children: [
+                                GestureDetector(
+                                  onTap: () => setState(() => _wobbleTrigger = !_wobbleTrigger),
+                                  child: WobbleWidget(
+                                    triggerWobble: _wobbleTrigger,
+                                    child: GameStatsWidget(gameStats: gameStats),
+                                  ),
+                                ),
+                                const SizedBox(height: 10),
+                              ],
+                            )
+                          : const SizedBox(height: 10),
                     ),
-                    const SizedBox(height: 10),
-                  ],
                   if (isLoadingRounds)
                     const Center(child: CircularProgressIndicator())
                   else
