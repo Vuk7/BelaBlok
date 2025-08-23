@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:bela_blok/screens/widgets/animated_big_button.dart';
 import 'package:bela_blok/themes/app_theme.dart';
 import 'package:go_router/go_router.dart';
 
@@ -9,17 +8,30 @@ class SettingsButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Hero(
-      tag: 'settings_button',
-      child: AnimatedBigButton(
-        text: 'POSTAVKE',
-        icon: Icons.settings,
-        iconAnimationType: AnimationType.rotate,
-    textStyle: AppTheme.getSettingsButtonTextStyle(context),
-    bgColor: AppTheme.getSettingsButtonBackground(context),
-        onTap: onTap ?? () {
-          context.pushNamed('settings');
-        },
+  final bg = AppTheme.getSettingsButtonBackground(context);
+    return Semantics(
+      label: 'Postavke',
+      button: true,
+      child: InkWell(
+        borderRadius: BorderRadius.circular(10),
+        onTap: onTap ?? () => context.pushNamed('settings'),
+        child: Ink(
+          width: 48,
+          height: 48,
+          decoration: BoxDecoration(
+            color: bg,
+            borderRadius: BorderRadius.circular(10),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.15),
+  
+                blurRadius: 6,
+                offset: const Offset(0, 3),
+              ),
+            ],
+          ),
+          child: const Icon(Icons.settings, size: 26, color: Colors.white),
+        ),
       ),
     );
   }

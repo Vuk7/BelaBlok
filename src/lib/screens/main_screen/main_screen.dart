@@ -158,7 +158,7 @@ class _MainScreenState extends State<MainScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-  backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: SafeArea(
         child: isLoadingGameHistory
             ? const Center(child: CircularProgressIndicator())
@@ -166,14 +166,14 @@ class _MainScreenState extends State<MainScreen> {
                 padding: const EdgeInsets.all(20.0),
                 child: Column(
                   children: [
-                    const SizedBox(height: 40),
-                   const Text(
-                      "BELA BLOK",
-                      style: AppTheme.titleTextStyle,
-                    ),
-                    const SizedBox(
-                      height: 40,
-                    ),
+                        const SizedBox(height: 40),
+                        const Text(
+                          "BELA BLOK",
+                          style: AppTheme.titleTextStyle,
+                        ),
+                        const SizedBox(
+                          height: 40,
+                        ),
                     Card(
                       elevation: 4,
                       color: AppTheme.getCardBackgroundColor(context),
@@ -243,11 +243,6 @@ class _MainScreenState extends State<MainScreen> {
                                                 direction: DismissDirection.endToStart,
                                                 background: Container(
                                                   color: AppTheme.red,
-                                                  child: const Icon(
-                                                    Icons.delete,
-                                                    color: Colors.white,
-                                                    size: 30,
-                                                  ),
                                                 ),
                                                 confirmDismiss: (direction) async {
                                                   return await _showDeleteConfirmationDialog(game.id ?? "");
@@ -325,14 +320,16 @@ class _MainScreenState extends State<MainScreen> {
                         ),
                       ),
                     ),
-                    // Settings button
-                    const SizedBox(height: 10),
-                    const SettingsButton(),
-                    const SizedBox(height: 50),
+                    const SizedBox(height: 24),
+                  const  Align(
+                      alignment: Alignment.centerRight,
+                      child:  SettingsButton(),
+                    ),
+                    const SizedBox(height: 40),
                   ],
                 ),
               ),
-  ),
+      ),
     );
   }
 }
