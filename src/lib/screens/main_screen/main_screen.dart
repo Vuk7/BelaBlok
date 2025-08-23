@@ -10,6 +10,7 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:bela_blok/main.dart';
 import 'package:bela_blok/themes/app_theme.dart';
+import 'package:bela_blok/screens/widgets/settings_button.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -320,6 +321,9 @@ class _MainScreenState extends State<MainScreen> {
                         ),
                       ),
                     ),
+                    // Settings button
+                    const SizedBox(height: 10),
+                    const SettingsButton(),
                     const SizedBox(height: 50),
                   ],
                 ),
