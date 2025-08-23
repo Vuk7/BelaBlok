@@ -55,13 +55,7 @@ class SettingsScreen extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 32),
-          Card(
-            color: AppTheme.getCardBackgroundColor(context),
-            child: const ListTile(
-              title: Text('Više opcija uskoro...'),
-              leading: Icon(Icons.tune),
-            ),
-          ),
+      
         ],
       ),
     );
