@@ -11,6 +11,8 @@ import 'package:bela_blok/screens/widgets/help_dialog.dart';
 import 'package:bela_blok/screens/widgets/player_shuffling.dart';
 import 'package:bela_blok/screens/widgets/pulsing_fab.dart';
 import 'package:bela_blok/themes/app_theme.dart';
+import 'package:provider/provider.dart';
+import 'package:bela_blok/providers/settings_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:bela_blok/common/constants.dart';
@@ -453,30 +455,33 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
     return Scaffold(
       backgroundColor: AppTheme.getScreenBackground(context),
       resizeToAvoidBottomInset: false,
-      floatingActionButton: Stack(
-        children: [
-          Positioned(
-            left: 30,
-            bottom: 0,
-            child: FloatingActionButton(
-              heroTag: 'help_btn',
-              onPressed: () => ZvanjaHelpDialog.show(context),
-              backgroundColor: AppTheme.red,
-              child: const Icon(Icons.quiz, color: AppTheme.black, size: 28),
+      floatingActionButton: Consumer<SettingsProvider>(
+        builder: (context, settings, _) => Stack(
+          children: [
+            if (settings.showHelpDialog)
+              Positioned(
+                left: 30,
+                bottom: 0,
+                child: FloatingActionButton(
+                  heroTag: 'help_btn',
+                  onPressed: () => ZvanjaHelpDialog.show(context),
+                  backgroundColor: AppTheme.red,
+                  child: const Icon(Icons.quiz, color: AppTheme.black, size: 28),
+                ),
+              ),
+            Positioned(
+              right: 0,
+              bottom: 0,
+              child: PulsingFloatingActionButton(
+                heroTag: 'save_btn',
+                onPressed: handleSaveButtonPressed,
+                backgroundColor: AppTheme.green,
+                isPulsing: isReadyToSaveMessage == null,
+                child: const Icon(Icons.save, color: AppTheme.black, size: 28),
+              ),
             ),
-          ),
-          Positioned(
-            right: 0,
-            bottom: 0,
-            child: PulsingFloatingActionButton(
-              heroTag: 'save_btn',
-              onPressed: handleSaveButtonPressed,
-              backgroundColor: AppTheme.green,
-              isPulsing: isReadyToSaveMessage == null,
-              child: const Icon(Icons.save, color: AppTheme.black, size: 28),
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
       body: SafeArea(
         child: Padding(

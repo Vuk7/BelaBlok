@@ -32,6 +32,17 @@ class SettingsScreen extends StatelessWidget {
               secondary: const Icon(Icons.menu_book),
             ),
           ),
+          const SizedBox(height: 24),
+          Text('Help dijalog', style: AppTheme.sectionHeaderTextStyle.copyWith(color: Theme.of(context).colorScheme.onSurface)),
+          const SizedBox(height: 4),
+          Consumer<SettingsProvider>(
+            builder: (context, settings, _) => SwitchListTile(
+              title: const Text('Prikaži pomoći zvanja'),
+              value: settings.showHelpDialog,
+              onChanged: (val) => settings.toggleShowHelpDialog(val),
+              secondary: const Icon(Icons.quiz),
+            ),
+          ),
           const SizedBox(height: 32),
           Card(
             color: AppTheme.getCardBackgroundColor(context),
