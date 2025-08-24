@@ -1,9 +1,9 @@
 import 'package:bela_blok/themes/app_theme.dart';
 import 'package:flutter/material.dart';
-import 'components/stats_utils.dart';
-import 'components/team_column_widget.dart';
-import 'components/vertical_divider_widget.dart';
-import 'components/summary_row_widget.dart';
+import 'components_stats/stats_utils.dart';
+import 'components_stats/team_column_widget.dart';
+import 'components_stats/vertical_divider_widget.dart';
+import 'components_stats/summary_row_widget.dart';
 
 class GameStatsWidget extends StatefulWidget {
   final Map<String, dynamic> gameStats;
