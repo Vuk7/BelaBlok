@@ -13,6 +13,7 @@ import 'package:bela_blok/services/rounds_service.dart';
 import 'package:bela_blok/db/models/game_model.dart';
 import 'package:bela_blok/db/models/round_model.dart';
 import 'package:bela_blok/themes/app_theme.dart';
+import 'package:bela_blok/models/game_stats_model.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -161,24 +162,21 @@ class _CurrentGameScreenState extends State<CurrentGameScreen> {
     return teamScore[Team.teamOne]! >= gameTargetScore ? 'Tim 1' : 'Tim 2';
   }
 
-  Map<String, dynamic> get gameStats => {
-        'totalRounds': totalRounds,
-        'averageScore': averageScore,
-        'winner': winningTeam,
-        // Aggregated per-team statistics
-        ..._aggregateTeamStats(),
-      };
+  GameStats get gameStats => _aggregateTeamStats();
 
-  Map<String, dynamic> _aggregateTeamStats() {
+  GameStats _aggregateTeamStats() {
     if (rounds == null || rounds!.isEmpty) {
-      return {
-        'teamOneCalls': 0,
-        'teamTwoCalls': 0,
-        'teamOneFails': 0,
-        'teamTwoFails': 0,
-        'teamOneDeclarations': 0,
-        'teamTwoDeclarations': 0,
-      };
+      return GameStats(
+        totalRounds: totalRounds,
+        averageScore: averageScore,
+        winner: winningTeam,
+        teamOneCalls: 0,
+        teamTwoCalls: 0,
+        teamOneFails: 0,
+        teamTwoFails: 0,
+        teamOneDeclarations: 0,
+        teamTwoDeclarations: 0,
+      );
     }
 
     int teamOneCalls = 0;
@@ -207,14 +205,17 @@ class _CurrentGameScreenState extends State<CurrentGameScreen> {
       teamTwoDeclarations += r.teamTwoCallAmount ?? 0;
     }
 
-    return {
-      'teamOneCalls': teamOneCalls,
-      'teamTwoCalls': teamTwoCalls,
-      'teamOneFails': teamOneFails,
-      'teamTwoFails': teamTwoFails,
-      'teamOneDeclarations': teamOneDeclarations,
-      'teamTwoDeclarations': teamTwoDeclarations,
-    };
+    return GameStats(
+      totalRounds: totalRounds,
+      averageScore: averageScore,
+      winner: winningTeam,
+      teamOneCalls: teamOneCalls,
+      teamTwoCalls: teamTwoCalls,
+      teamOneFails: teamOneFails,
+      teamTwoFails: teamTwoFails,
+      teamOneDeclarations: teamOneDeclarations,
+      teamTwoDeclarations: teamTwoDeclarations,
+    );
   }
 
   bool get isGameFinished =>

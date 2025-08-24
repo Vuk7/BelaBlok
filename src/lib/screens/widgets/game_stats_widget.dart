@@ -4,9 +4,10 @@ import 'components_stats/stats_utils.dart';
 import 'components_stats/team_column_widget.dart';
 import 'components_stats/vertical_divider_widget.dart';
 import 'components_stats/summary_row_widget.dart';
+import 'package:bela_blok/models/game_stats_model.dart';
 
 class GameStatsWidget extends StatefulWidget {
-  final Map<String, dynamic> gameStats;
+  final GameStats gameStats;
 
   const GameStatsWidget({
     super.key,
@@ -108,7 +109,7 @@ class _GameStatsWidgetState extends State<GameStatsWidget> {
 }
 
 class _ExpandedStatsContent extends StatelessWidget {
-  final Map<String, dynamic> gameStats;
+  final GameStats gameStats;
   final bool isDark;
 
   const _ExpandedStatsContent({required this.gameStats, required this.isDark});
@@ -116,12 +117,12 @@ class _ExpandedStatsContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
   const double gap = 12;
-  final calls1 = gameStats['teamOneCalls'] ?? 0;
-    final calls2 = gameStats['teamTwoCalls'] ?? 0;
-    final fails1 = gameStats['teamOneFails'] ?? 0;
-    final fails2 = gameStats['teamTwoFails'] ?? 0;
-    final dec1 = gameStats['teamOneDeclarations'] ?? 0;
-    final dec2 = gameStats['teamTwoDeclarations'] ?? 0;
+  final calls1 = gameStats.teamOneCalls;
+    final calls2 = gameStats.teamTwoCalls;
+    final fails1 = gameStats.teamOneFails;
+    final fails2 = gameStats.teamTwoFails;
+    final dec1 = gameStats.teamOneDeclarations;
+    final dec2 = gameStats.teamTwoDeclarations;
     final success1 = StatsUtils.calculateSuccessRate(calls1, fails1);
     final success2 = StatsUtils.calculateSuccessRate(calls2, fails2);
 
