@@ -5,7 +5,6 @@ class AppSettings extends Table {
   BoolColumn get showRules => boolean().withDefault(const Constant(true))();
   BoolColumn get showHelpDialog => boolean().withDefault(const Constant(true))();
   BoolColumn get showGameStats => boolean().withDefault(const Constant(true))();
-  BoolColumn get showMiViScore => boolean().withDefault(const Constant(true))();
   TextColumn get themeMode => text().withDefault(const Constant('light'))(); // 'light' or 'dark'
 
   @override

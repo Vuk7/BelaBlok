@@ -1340,16 +1340,6 @@ class $AppSettingsTable extends AppSettings
       defaultConstraints: GeneratedColumn.constraintIsAlways(
           'CHECK ("show_game_stats" IN (0, 1))'),
       defaultValue: const Constant(true));
-  static const VerificationMeta _showMiViScoreMeta =
-      const VerificationMeta('showMiViScore');
-  @override
-  late final GeneratedColumn<bool> showMiViScore = GeneratedColumn<bool>(
-      'show_mi_vi_score', aliasedName, false,
-      type: DriftSqlType.bool,
-      requiredDuringInsert: false,
-      defaultConstraints: GeneratedColumn.constraintIsAlways(
-          'CHECK ("show_mi_vi_score" IN (0, 1))'),
-      defaultValue: const Constant(true));
   static const VerificationMeta _themeModeMeta =
       const VerificationMeta('themeMode');
   @override
@@ -1360,7 +1350,7 @@ class $AppSettingsTable extends AppSettings
       defaultValue: const Constant('light'));
   @override
   List<GeneratedColumn> get $columns =>
-      [id, showRules, showHelpDialog, showGameStats, showMiViScore, themeMode];
+      [id, showRules, showHelpDialog, showGameStats, themeMode];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -1390,12 +1380,6 @@ class $AppSettingsTable extends AppSettings
           showGameStats.isAcceptableOrUnknown(
               data['show_game_stats']!, _showGameStatsMeta));
     }
-    if (data.containsKey('show_mi_vi_score')) {
-      context.handle(
-          _showMiViScoreMeta,
-          showMiViScore.isAcceptableOrUnknown(
-              data['show_mi_vi_score']!, _showMiViScoreMeta));
-    }
     if (data.containsKey('theme_mode')) {
       context.handle(_themeModeMeta,
           themeMode.isAcceptableOrUnknown(data['theme_mode']!, _themeModeMeta));
@@ -1417,8 +1401,6 @@ class $AppSettingsTable extends AppSettings
           .read(DriftSqlType.bool, data['${effectivePrefix}show_help_dialog'])!,
       showGameStats: attachedDatabase.typeMapping
           .read(DriftSqlType.bool, data['${effectivePrefix}show_game_stats'])!,
-      showMiViScore: attachedDatabase.typeMapping
-          .read(DriftSqlType.bool, data['${effectivePrefix}show_mi_vi_score'])!,
       themeMode: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}theme_mode'])!,
     );
@@ -1435,14 +1417,12 @@ class AppSetting extends DataClass implements Insertable<AppSetting> {
   final bool showRules;
   final bool showHelpDialog;
   final bool showGameStats;
-  final bool showMiViScore;
   final String themeMode;
   const AppSetting(
       {required this.id,
       required this.showRules,
       required this.showHelpDialog,
       required this.showGameStats,
-      required this.showMiViScore,
       required this.themeMode});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -1451,7 +1431,6 @@ class AppSetting extends DataClass implements Insertable<AppSetting> {
     map['show_rules'] = Variable<bool>(showRules);
     map['show_help_dialog'] = Variable<bool>(showHelpDialog);
     map['show_game_stats'] = Variable<bool>(showGameStats);
-    map['show_mi_vi_score'] = Variable<bool>(showMiViScore);
     map['theme_mode'] = Variable<String>(themeMode);
     return map;
   }
@@ -1462,7 +1441,6 @@ class AppSetting extends DataClass implements Insertable<AppSetting> {
       showRules: Value(showRules),
       showHelpDialog: Value(showHelpDialog),
       showGameStats: Value(showGameStats),
-      showMiViScore: Value(showMiViScore),
       themeMode: Value(themeMode),
     );
   }
@@ -1475,7 +1453,6 @@ class AppSetting extends DataClass implements Insertable<AppSetting> {
       showRules: serializer.fromJson<bool>(json['showRules']),
       showHelpDialog: serializer.fromJson<bool>(json['showHelpDialog']),
       showGameStats: serializer.fromJson<bool>(json['showGameStats']),
-      showMiViScore: serializer.fromJson<bool>(json['showMiViScore']),
       themeMode: serializer.fromJson<String>(json['themeMode']),
     );
   }
@@ -1487,7 +1464,6 @@ class AppSetting extends DataClass implements Insertable<AppSetting> {
       'showRules': serializer.toJson<bool>(showRules),
       'showHelpDialog': serializer.toJson<bool>(showHelpDialog),
       'showGameStats': serializer.toJson<bool>(showGameStats),
-      'showMiViScore': serializer.toJson<bool>(showMiViScore),
       'themeMode': serializer.toJson<String>(themeMode),
     };
   }
@@ -1497,14 +1473,12 @@ class AppSetting extends DataClass implements Insertable<AppSetting> {
           bool? showRules,
           bool? showHelpDialog,
           bool? showGameStats,
-          bool? showMiViScore,
           String? themeMode}) =>
       AppSetting(
         id: id ?? this.id,
         showRules: showRules ?? this.showRules,
         showHelpDialog: showHelpDialog ?? this.showHelpDialog,
         showGameStats: showGameStats ?? this.showGameStats,
-        showMiViScore: showMiViScore ?? this.showMiViScore,
         themeMode: themeMode ?? this.themeMode,
       );
   AppSetting copyWithCompanion(AppSettingsCompanion data) {
@@ -1517,9 +1491,6 @@ class AppSetting extends DataClass implements Insertable<AppSetting> {
       showGameStats: data.showGameStats.present
           ? data.showGameStats.value
           : this.showGameStats,
-      showMiViScore: data.showMiViScore.present
-          ? data.showMiViScore.value
-          : this.showMiViScore,
       themeMode: data.themeMode.present ? data.themeMode.value : this.themeMode,
     );
   }
@@ -1531,15 +1502,14 @@ class AppSetting extends DataClass implements Insertable<AppSetting> {
           ..write('showRules: $showRules, ')
           ..write('showHelpDialog: $showHelpDialog, ')
           ..write('showGameStats: $showGameStats, ')
-          ..write('showMiViScore: $showMiViScore, ')
           ..write('themeMode: $themeMode')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(
-      id, showRules, showHelpDialog, showGameStats, showMiViScore, themeMode);
+  int get hashCode =>
+      Object.hash(id, showRules, showHelpDialog, showGameStats, themeMode);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -1548,7 +1518,6 @@ class AppSetting extends DataClass implements Insertable<AppSetting> {
           other.showRules == this.showRules &&
           other.showHelpDialog == this.showHelpDialog &&
           other.showGameStats == this.showGameStats &&
-          other.showMiViScore == this.showMiViScore &&
           other.themeMode == this.themeMode);
 }
 
@@ -1557,7 +1526,6 @@ class AppSettingsCompanion extends UpdateCompanion<AppSetting> {
   final Value<bool> showRules;
   final Value<bool> showHelpDialog;
   final Value<bool> showGameStats;
-  final Value<bool> showMiViScore;
   final Value<String> themeMode;
   final Value<int> rowid;
   const AppSettingsCompanion({
@@ -1565,7 +1533,6 @@ class AppSettingsCompanion extends UpdateCompanion<AppSetting> {
     this.showRules = const Value.absent(),
     this.showHelpDialog = const Value.absent(),
     this.showGameStats = const Value.absent(),
-    this.showMiViScore = const Value.absent(),
     this.themeMode = const Value.absent(),
     this.rowid = const Value.absent(),
   });
@@ -1574,7 +1541,6 @@ class AppSettingsCompanion extends UpdateCompanion<AppSetting> {
     this.showRules = const Value.absent(),
     this.showHelpDialog = const Value.absent(),
     this.showGameStats = const Value.absent(),
-    this.showMiViScore = const Value.absent(),
     this.themeMode = const Value.absent(),
     this.rowid = const Value.absent(),
   });
@@ -1583,7 +1549,6 @@ class AppSettingsCompanion extends UpdateCompanion<AppSetting> {
     Expression<bool>? showRules,
     Expression<bool>? showHelpDialog,
     Expression<bool>? showGameStats,
-    Expression<bool>? showMiViScore,
     Expression<String>? themeMode,
     Expression<int>? rowid,
   }) {
@@ -1592,7 +1557,6 @@ class AppSettingsCompanion extends UpdateCompanion<AppSetting> {
       if (showRules != null) 'show_rules': showRules,
       if (showHelpDialog != null) 'show_help_dialog': showHelpDialog,
       if (showGameStats != null) 'show_game_stats': showGameStats,
-      if (showMiViScore != null) 'show_mi_vi_score': showMiViScore,
       if (themeMode != null) 'theme_mode': themeMode,
       if (rowid != null) 'rowid': rowid,
     });
@@ -1603,7 +1567,6 @@ class AppSettingsCompanion extends UpdateCompanion<AppSetting> {
       Value<bool>? showRules,
       Value<bool>? showHelpDialog,
       Value<bool>? showGameStats,
-      Value<bool>? showMiViScore,
       Value<String>? themeMode,
       Value<int>? rowid}) {
     return AppSettingsCompanion(
@@ -1611,7 +1574,6 @@ class AppSettingsCompanion extends UpdateCompanion<AppSetting> {
       showRules: showRules ?? this.showRules,
       showHelpDialog: showHelpDialog ?? this.showHelpDialog,
       showGameStats: showGameStats ?? this.showGameStats,
-      showMiViScore: showMiViScore ?? this.showMiViScore,
       themeMode: themeMode ?? this.themeMode,
       rowid: rowid ?? this.rowid,
     );
@@ -1632,9 +1594,6 @@ class AppSettingsCompanion extends UpdateCompanion<AppSetting> {
     if (showGameStats.present) {
       map['show_game_stats'] = Variable<bool>(showGameStats.value);
     }
-    if (showMiViScore.present) {
-      map['show_mi_vi_score'] = Variable<bool>(showMiViScore.value);
-    }
     if (themeMode.present) {
       map['theme_mode'] = Variable<String>(themeMode.value);
     }
@@ -1651,7 +1610,6 @@ class AppSettingsCompanion extends UpdateCompanion<AppSetting> {
           ..write('showRules: $showRules, ')
           ..write('showHelpDialog: $showHelpDialog, ')
           ..write('showGameStats: $showGameStats, ')
-          ..write('showMiViScore: $showMiViScore, ')
           ..write('themeMode: $themeMode, ')
           ..write('rowid: $rowid')
           ..write(')'))
@@ -2429,7 +2387,6 @@ typedef $$AppSettingsTableCreateCompanionBuilder = AppSettingsCompanion
   Value<bool> showRules,
   Value<bool> showHelpDialog,
   Value<bool> showGameStats,
-  Value<bool> showMiViScore,
   Value<String> themeMode,
   Value<int> rowid,
 });
@@ -2439,7 +2396,6 @@ typedef $$AppSettingsTableUpdateCompanionBuilder = AppSettingsCompanion
   Value<bool> showRules,
   Value<bool> showHelpDialog,
   Value<bool> showGameStats,
-  Value<bool> showMiViScore,
   Value<String> themeMode,
   Value<int> rowid,
 });
@@ -2465,9 +2421,6 @@ class $$AppSettingsTableFilterComposer
 
   ColumnFilters<bool> get showGameStats => $composableBuilder(
       column: $table.showGameStats, builder: (column) => ColumnFilters(column));
-
-  ColumnFilters<bool> get showMiViScore => $composableBuilder(
-      column: $table.showMiViScore, builder: (column) => ColumnFilters(column));
 
   ColumnFilters<String> get themeMode => $composableBuilder(
       column: $table.themeMode, builder: (column) => ColumnFilters(column));
@@ -2496,10 +2449,6 @@ class $$AppSettingsTableOrderingComposer
       column: $table.showGameStats,
       builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<bool> get showMiViScore => $composableBuilder(
-      column: $table.showMiViScore,
-      builder: (column) => ColumnOrderings(column));
-
   ColumnOrderings<String> get themeMode => $composableBuilder(
       column: $table.themeMode, builder: (column) => ColumnOrderings(column));
 }
@@ -2524,9 +2473,6 @@ class $$AppSettingsTableAnnotationComposer
 
   GeneratedColumn<bool> get showGameStats => $composableBuilder(
       column: $table.showGameStats, builder: (column) => column);
-
-  GeneratedColumn<bool> get showMiViScore => $composableBuilder(
-      column: $table.showMiViScore, builder: (column) => column);
 
   GeneratedColumn<String> get themeMode =>
       $composableBuilder(column: $table.themeMode, builder: (column) => column);
@@ -2559,7 +2505,6 @@ class $$AppSettingsTableTableManager extends RootTableManager<
             Value<bool> showRules = const Value.absent(),
             Value<bool> showHelpDialog = const Value.absent(),
             Value<bool> showGameStats = const Value.absent(),
-            Value<bool> showMiViScore = const Value.absent(),
             Value<String> themeMode = const Value.absent(),
             Value<int> rowid = const Value.absent(),
           }) =>
@@ -2568,7 +2513,6 @@ class $$AppSettingsTableTableManager extends RootTableManager<
             showRules: showRules,
             showHelpDialog: showHelpDialog,
             showGameStats: showGameStats,
-            showMiViScore: showMiViScore,
             themeMode: themeMode,
             rowid: rowid,
           ),
@@ -2577,7 +2521,6 @@ class $$AppSettingsTableTableManager extends RootTableManager<
             Value<bool> showRules = const Value.absent(),
             Value<bool> showHelpDialog = const Value.absent(),
             Value<bool> showGameStats = const Value.absent(),
-            Value<bool> showMiViScore = const Value.absent(),
             Value<String> themeMode = const Value.absent(),
             Value<int> rowid = const Value.absent(),
           }) =>
@@ -2586,7 +2529,6 @@ class $$AppSettingsTableTableManager extends RootTableManager<
             showRules: showRules,
             showHelpDialog: showHelpDialog,
             showGameStats: showGameStats,
-            showMiViScore: showMiViScore,
             themeMode: themeMode,
             rowid: rowid,
           ),

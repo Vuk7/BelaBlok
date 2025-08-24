@@ -6,7 +6,6 @@ class SettingsProvider extends ChangeNotifier {
   bool _showRules = true;
   bool _showHelpDialog = true;
   bool _showGameStats = true;
-  bool _showMiViScore = true;
   String _themeMode = 'light';
 
   late final SettingsService _service;
@@ -14,17 +13,15 @@ class SettingsProvider extends ChangeNotifier {
   bool get showRules => _showRules;
   bool get showHelpDialog => _showHelpDialog;
   bool get showGameStats => _showGameStats;
-  bool get showMiViScore => _showMiViScore;
   String get themeMode => _themeMode;
 
   Future<void> init(AppDatabase db) async {
     _service = SettingsService(db);
-    final data = await _service.loadRaw();
-    _showRules = (data['show_rules'] ?? 1) == 1;
-    _showHelpDialog = (data['show_help_dialog'] ?? 1) == 1;
-    _showGameStats = (data['show_game_stats'] ?? 1) == 1;
-    _showMiViScore = (data['show_mi_vi_score'] ?? 1) == 1;
-    _themeMode = (data['theme_mode'] ?? 'light') as String;
+  final data = await _service.fetchSettings();
+  _showRules = data.showRules;
+  _showHelpDialog = data.showHelpDialog;
+  _showGameStats = data.showGameStats;
+  _themeMode = data.themeMode;
     notifyListeners();
   }
 
@@ -63,14 +60,12 @@ class SettingsProvider extends ChangeNotifier {
     bool? showRules,
     bool? showHelpDialog,
     bool? showGameStats,
-    bool? showMiViScore,
     String? themeMode,
   }) async {
     await _service.update(
       showRules: showRules,
       showHelpDialog: showHelpDialog,
       showGameStats: showGameStats,
-      showMiViScore: showMiViScore,
       themeMode: themeMode,
     );
   }

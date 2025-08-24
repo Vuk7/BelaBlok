@@ -21,7 +21,7 @@ class AppDatabase extends _$AppDatabase {
 
 
   @override
-  int get schemaVersion => 5;
+  int get schemaVersion => 6; 
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -38,6 +38,14 @@ class AppDatabase extends _$AppDatabase {
           await migrator.createTable(appSettings);
         } catch (_) {}
         await customStatement("INSERT OR IGNORE INTO app_settings (id, show_rules, show_help_dialog, show_game_stats, show_mi_vi_score, theme_mode) VALUES ('singleton', 1, 1, 1, 1, 'light')");
+      }
+      if (from < 6 && to >= 6) {
+        try {
+          await customStatement('ALTER TABLE app_settings RENAME TO app_settings_old');
+          await customStatement('CREATE TABLE app_settings (id TEXT NOT NULL PRIMARY KEY, show_rules INTEGER NOT NULL DEFAULT 1, show_help_dialog INTEGER NOT NULL DEFAULT 1, show_game_stats INTEGER NOT NULL DEFAULT 1, theme_mode TEXT NOT NULL DEFAULT \'light\')');
+          await customStatement('INSERT INTO app_settings (id, show_rules, show_help_dialog, show_game_stats, theme_mode) SELECT id, show_rules, show_help_dialog, show_game_stats, theme_mode FROM app_settings_old');
+          await customStatement('DROP TABLE app_settings_old');
+        } catch (_) {}
       }
     },
     beforeOpen: (details) async {},
