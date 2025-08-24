@@ -51,14 +51,6 @@ class SettingsProvider extends ChangeNotifier {
       notifyListeners();
     }
   }
-
-  void toggleShowMiViScore(bool value) {
-    if (_showMiViScore != value) {
-      _showMiViScore = value;
-      _persist(showMiViScore: value);
-      notifyListeners();
-    }
-  }
   Future<void> setThemeMode(String mode) async {
     if (_themeMode != mode) {
       _themeMode = mode;
