@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:bela_blok/main.dart';
 import 'package:bela_blok/themes/app_theme.dart';
 import 'package:bela_blok/providers/settings_provider.dart';
 
@@ -67,15 +66,15 @@ class _ThemeToggle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<ThemeNotifier>(
-      builder: (context, themeNotifier, _) {
-        final isDark = themeNotifier.themeMode == ThemeMode.dark;
+    return Consumer<SettingsProvider>(
+      builder: (context, settings, _) {
+        final isDark = settings.themeMode == 'dark';
         final colorScheme = Theme.of(context).colorScheme;
         return Semantics(
           label: 'Odabir teme. Trenutno ${isDark ? 'tamna' : 'svijetla'}',
           toggled: isDark,
           child: GestureDetector(
-            onTap: () => themeNotifier.setThemeMode(isDark ? ThemeMode.light : ThemeMode.dark),
+            onTap: () => settings.setThemeMode(isDark ? 'light' : 'dark'),
             child: AnimatedContainer(
               duration: const Duration(milliseconds: 250),
               curve: Curves.easeInOut,
@@ -92,14 +91,14 @@ class _ThemeToggle extends StatelessWidget {
                     label: 'Svijetla',
                     icon: Icons.wb_sunny,
                     selected: !isDark,
-                    onTap: () => themeNotifier.setThemeMode(ThemeMode.light),
+                    onTap: () => settings.setThemeMode('light'),
                     highlightColor: colorScheme.primary,
                   ),
                   _ThemeOption(
                     label: 'Tamna',
                     icon: Icons.nightlight_round,
                     selected: isDark,
-                    onTap: () => themeNotifier.setThemeMode(ThemeMode.dark),
+                    onTap: () => settings.setThemeMode('dark'),
                     highlightColor: colorScheme.primary,
                   ),
                 ],

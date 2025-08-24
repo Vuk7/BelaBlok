@@ -1297,16 +1297,380 @@ class RoundTableCompanion extends UpdateCompanion<RoundTableData> {
   }
 }
 
+class $AppSettingsTable extends AppSettings
+    with TableInfo<$AppSettingsTable, AppSetting> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $AppSettingsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+      'id', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: false,
+      defaultValue: const Constant('singleton'));
+  static const VerificationMeta _showRulesMeta =
+      const VerificationMeta('showRules');
+  @override
+  late final GeneratedColumn<bool> showRules = GeneratedColumn<bool>(
+      'show_rules', aliasedName, false,
+      type: DriftSqlType.bool,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('CHECK ("show_rules" IN (0, 1))'),
+      defaultValue: const Constant(true));
+  static const VerificationMeta _showHelpDialogMeta =
+      const VerificationMeta('showHelpDialog');
+  @override
+  late final GeneratedColumn<bool> showHelpDialog = GeneratedColumn<bool>(
+      'show_help_dialog', aliasedName, false,
+      type: DriftSqlType.bool,
+      requiredDuringInsert: false,
+      defaultConstraints: GeneratedColumn.constraintIsAlways(
+          'CHECK ("show_help_dialog" IN (0, 1))'),
+      defaultValue: const Constant(true));
+  static const VerificationMeta _showGameStatsMeta =
+      const VerificationMeta('showGameStats');
+  @override
+  late final GeneratedColumn<bool> showGameStats = GeneratedColumn<bool>(
+      'show_game_stats', aliasedName, false,
+      type: DriftSqlType.bool,
+      requiredDuringInsert: false,
+      defaultConstraints: GeneratedColumn.constraintIsAlways(
+          'CHECK ("show_game_stats" IN (0, 1))'),
+      defaultValue: const Constant(true));
+  static const VerificationMeta _showMiViScoreMeta =
+      const VerificationMeta('showMiViScore');
+  @override
+  late final GeneratedColumn<bool> showMiViScore = GeneratedColumn<bool>(
+      'show_mi_vi_score', aliasedName, false,
+      type: DriftSqlType.bool,
+      requiredDuringInsert: false,
+      defaultConstraints: GeneratedColumn.constraintIsAlways(
+          'CHECK ("show_mi_vi_score" IN (0, 1))'),
+      defaultValue: const Constant(true));
+  static const VerificationMeta _themeModeMeta =
+      const VerificationMeta('themeMode');
+  @override
+  late final GeneratedColumn<String> themeMode = GeneratedColumn<String>(
+      'theme_mode', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: false,
+      defaultValue: const Constant('light'));
+  @override
+  List<GeneratedColumn> get $columns =>
+      [id, showRules, showHelpDialog, showGameStats, showMiViScore, themeMode];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'app_settings';
+  @override
+  VerificationContext validateIntegrity(Insertable<AppSetting> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('show_rules')) {
+      context.handle(_showRulesMeta,
+          showRules.isAcceptableOrUnknown(data['show_rules']!, _showRulesMeta));
+    }
+    if (data.containsKey('show_help_dialog')) {
+      context.handle(
+          _showHelpDialogMeta,
+          showHelpDialog.isAcceptableOrUnknown(
+              data['show_help_dialog']!, _showHelpDialogMeta));
+    }
+    if (data.containsKey('show_game_stats')) {
+      context.handle(
+          _showGameStatsMeta,
+          showGameStats.isAcceptableOrUnknown(
+              data['show_game_stats']!, _showGameStatsMeta));
+    }
+    if (data.containsKey('show_mi_vi_score')) {
+      context.handle(
+          _showMiViScoreMeta,
+          showMiViScore.isAcceptableOrUnknown(
+              data['show_mi_vi_score']!, _showMiViScoreMeta));
+    }
+    if (data.containsKey('theme_mode')) {
+      context.handle(_themeModeMeta,
+          themeMode.isAcceptableOrUnknown(data['theme_mode']!, _themeModeMeta));
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  AppSetting map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return AppSetting(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}id'])!,
+      showRules: attachedDatabase.typeMapping
+          .read(DriftSqlType.bool, data['${effectivePrefix}show_rules'])!,
+      showHelpDialog: attachedDatabase.typeMapping
+          .read(DriftSqlType.bool, data['${effectivePrefix}show_help_dialog'])!,
+      showGameStats: attachedDatabase.typeMapping
+          .read(DriftSqlType.bool, data['${effectivePrefix}show_game_stats'])!,
+      showMiViScore: attachedDatabase.typeMapping
+          .read(DriftSqlType.bool, data['${effectivePrefix}show_mi_vi_score'])!,
+      themeMode: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}theme_mode'])!,
+    );
+  }
+
+  @override
+  $AppSettingsTable createAlias(String alias) {
+    return $AppSettingsTable(attachedDatabase, alias);
+  }
+}
+
+class AppSetting extends DataClass implements Insertable<AppSetting> {
+  final String id;
+  final bool showRules;
+  final bool showHelpDialog;
+  final bool showGameStats;
+  final bool showMiViScore;
+  final String themeMode;
+  const AppSetting(
+      {required this.id,
+      required this.showRules,
+      required this.showHelpDialog,
+      required this.showGameStats,
+      required this.showMiViScore,
+      required this.themeMode});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['show_rules'] = Variable<bool>(showRules);
+    map['show_help_dialog'] = Variable<bool>(showHelpDialog);
+    map['show_game_stats'] = Variable<bool>(showGameStats);
+    map['show_mi_vi_score'] = Variable<bool>(showMiViScore);
+    map['theme_mode'] = Variable<String>(themeMode);
+    return map;
+  }
+
+  AppSettingsCompanion toCompanion(bool nullToAbsent) {
+    return AppSettingsCompanion(
+      id: Value(id),
+      showRules: Value(showRules),
+      showHelpDialog: Value(showHelpDialog),
+      showGameStats: Value(showGameStats),
+      showMiViScore: Value(showMiViScore),
+      themeMode: Value(themeMode),
+    );
+  }
+
+  factory AppSetting.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return AppSetting(
+      id: serializer.fromJson<String>(json['id']),
+      showRules: serializer.fromJson<bool>(json['showRules']),
+      showHelpDialog: serializer.fromJson<bool>(json['showHelpDialog']),
+      showGameStats: serializer.fromJson<bool>(json['showGameStats']),
+      showMiViScore: serializer.fromJson<bool>(json['showMiViScore']),
+      themeMode: serializer.fromJson<String>(json['themeMode']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'showRules': serializer.toJson<bool>(showRules),
+      'showHelpDialog': serializer.toJson<bool>(showHelpDialog),
+      'showGameStats': serializer.toJson<bool>(showGameStats),
+      'showMiViScore': serializer.toJson<bool>(showMiViScore),
+      'themeMode': serializer.toJson<String>(themeMode),
+    };
+  }
+
+  AppSetting copyWith(
+          {String? id,
+          bool? showRules,
+          bool? showHelpDialog,
+          bool? showGameStats,
+          bool? showMiViScore,
+          String? themeMode}) =>
+      AppSetting(
+        id: id ?? this.id,
+        showRules: showRules ?? this.showRules,
+        showHelpDialog: showHelpDialog ?? this.showHelpDialog,
+        showGameStats: showGameStats ?? this.showGameStats,
+        showMiViScore: showMiViScore ?? this.showMiViScore,
+        themeMode: themeMode ?? this.themeMode,
+      );
+  AppSetting copyWithCompanion(AppSettingsCompanion data) {
+    return AppSetting(
+      id: data.id.present ? data.id.value : this.id,
+      showRules: data.showRules.present ? data.showRules.value : this.showRules,
+      showHelpDialog: data.showHelpDialog.present
+          ? data.showHelpDialog.value
+          : this.showHelpDialog,
+      showGameStats: data.showGameStats.present
+          ? data.showGameStats.value
+          : this.showGameStats,
+      showMiViScore: data.showMiViScore.present
+          ? data.showMiViScore.value
+          : this.showMiViScore,
+      themeMode: data.themeMode.present ? data.themeMode.value : this.themeMode,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('AppSetting(')
+          ..write('id: $id, ')
+          ..write('showRules: $showRules, ')
+          ..write('showHelpDialog: $showHelpDialog, ')
+          ..write('showGameStats: $showGameStats, ')
+          ..write('showMiViScore: $showMiViScore, ')
+          ..write('themeMode: $themeMode')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+      id, showRules, showHelpDialog, showGameStats, showMiViScore, themeMode);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is AppSetting &&
+          other.id == this.id &&
+          other.showRules == this.showRules &&
+          other.showHelpDialog == this.showHelpDialog &&
+          other.showGameStats == this.showGameStats &&
+          other.showMiViScore == this.showMiViScore &&
+          other.themeMode == this.themeMode);
+}
+
+class AppSettingsCompanion extends UpdateCompanion<AppSetting> {
+  final Value<String> id;
+  final Value<bool> showRules;
+  final Value<bool> showHelpDialog;
+  final Value<bool> showGameStats;
+  final Value<bool> showMiViScore;
+  final Value<String> themeMode;
+  final Value<int> rowid;
+  const AppSettingsCompanion({
+    this.id = const Value.absent(),
+    this.showRules = const Value.absent(),
+    this.showHelpDialog = const Value.absent(),
+    this.showGameStats = const Value.absent(),
+    this.showMiViScore = const Value.absent(),
+    this.themeMode = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  AppSettingsCompanion.insert({
+    this.id = const Value.absent(),
+    this.showRules = const Value.absent(),
+    this.showHelpDialog = const Value.absent(),
+    this.showGameStats = const Value.absent(),
+    this.showMiViScore = const Value.absent(),
+    this.themeMode = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  static Insertable<AppSetting> custom({
+    Expression<String>? id,
+    Expression<bool>? showRules,
+    Expression<bool>? showHelpDialog,
+    Expression<bool>? showGameStats,
+    Expression<bool>? showMiViScore,
+    Expression<String>? themeMode,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (showRules != null) 'show_rules': showRules,
+      if (showHelpDialog != null) 'show_help_dialog': showHelpDialog,
+      if (showGameStats != null) 'show_game_stats': showGameStats,
+      if (showMiViScore != null) 'show_mi_vi_score': showMiViScore,
+      if (themeMode != null) 'theme_mode': themeMode,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  AppSettingsCompanion copyWith(
+      {Value<String>? id,
+      Value<bool>? showRules,
+      Value<bool>? showHelpDialog,
+      Value<bool>? showGameStats,
+      Value<bool>? showMiViScore,
+      Value<String>? themeMode,
+      Value<int>? rowid}) {
+    return AppSettingsCompanion(
+      id: id ?? this.id,
+      showRules: showRules ?? this.showRules,
+      showHelpDialog: showHelpDialog ?? this.showHelpDialog,
+      showGameStats: showGameStats ?? this.showGameStats,
+      showMiViScore: showMiViScore ?? this.showMiViScore,
+      themeMode: themeMode ?? this.themeMode,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (showRules.present) {
+      map['show_rules'] = Variable<bool>(showRules.value);
+    }
+    if (showHelpDialog.present) {
+      map['show_help_dialog'] = Variable<bool>(showHelpDialog.value);
+    }
+    if (showGameStats.present) {
+      map['show_game_stats'] = Variable<bool>(showGameStats.value);
+    }
+    if (showMiViScore.present) {
+      map['show_mi_vi_score'] = Variable<bool>(showMiViScore.value);
+    }
+    if (themeMode.present) {
+      map['theme_mode'] = Variable<String>(themeMode.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('AppSettingsCompanion(')
+          ..write('id: $id, ')
+          ..write('showRules: $showRules, ')
+          ..write('showHelpDialog: $showHelpDialog, ')
+          ..write('showGameStats: $showGameStats, ')
+          ..write('showMiViScore: $showMiViScore, ')
+          ..write('themeMode: $themeMode, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
   late final $GameTableTable gameTable = $GameTableTable(this);
   late final $RoundTableTable roundTable = $RoundTableTable(this);
+  late final $AppSettingsTable appSettings = $AppSettingsTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
   @override
-  List<DatabaseSchemaEntity> get allSchemaEntities => [gameTable, roundTable];
+  List<DatabaseSchemaEntity> get allSchemaEntities =>
+      [gameTable, roundTable, appSettings];
 }
 
 typedef $$GameTableTableCreateCompanionBuilder = GameTableCompanion Function({
@@ -2059,6 +2423,192 @@ typedef $$RoundTableTableProcessedTableManager = ProcessedTableManager<
     (RoundTableData, $$RoundTableTableReferences),
     RoundTableData,
     PrefetchHooks Function({bool gameId})>;
+typedef $$AppSettingsTableCreateCompanionBuilder = AppSettingsCompanion
+    Function({
+  Value<String> id,
+  Value<bool> showRules,
+  Value<bool> showHelpDialog,
+  Value<bool> showGameStats,
+  Value<bool> showMiViScore,
+  Value<String> themeMode,
+  Value<int> rowid,
+});
+typedef $$AppSettingsTableUpdateCompanionBuilder = AppSettingsCompanion
+    Function({
+  Value<String> id,
+  Value<bool> showRules,
+  Value<bool> showHelpDialog,
+  Value<bool> showGameStats,
+  Value<bool> showMiViScore,
+  Value<String> themeMode,
+  Value<int> rowid,
+});
+
+class $$AppSettingsTableFilterComposer
+    extends Composer<_$AppDatabase, $AppSettingsTable> {
+  $$AppSettingsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<bool> get showRules => $composableBuilder(
+      column: $table.showRules, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<bool> get showHelpDialog => $composableBuilder(
+      column: $table.showHelpDialog,
+      builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<bool> get showGameStats => $composableBuilder(
+      column: $table.showGameStats, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<bool> get showMiViScore => $composableBuilder(
+      column: $table.showMiViScore, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get themeMode => $composableBuilder(
+      column: $table.themeMode, builder: (column) => ColumnFilters(column));
+}
+
+class $$AppSettingsTableOrderingComposer
+    extends Composer<_$AppDatabase, $AppSettingsTable> {
+  $$AppSettingsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<bool> get showRules => $composableBuilder(
+      column: $table.showRules, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<bool> get showHelpDialog => $composableBuilder(
+      column: $table.showHelpDialog,
+      builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<bool> get showGameStats => $composableBuilder(
+      column: $table.showGameStats,
+      builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<bool> get showMiViScore => $composableBuilder(
+      column: $table.showMiViScore,
+      builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get themeMode => $composableBuilder(
+      column: $table.themeMode, builder: (column) => ColumnOrderings(column));
+}
+
+class $$AppSettingsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $AppSettingsTable> {
+  $$AppSettingsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<bool> get showRules =>
+      $composableBuilder(column: $table.showRules, builder: (column) => column);
+
+  GeneratedColumn<bool> get showHelpDialog => $composableBuilder(
+      column: $table.showHelpDialog, builder: (column) => column);
+
+  GeneratedColumn<bool> get showGameStats => $composableBuilder(
+      column: $table.showGameStats, builder: (column) => column);
+
+  GeneratedColumn<bool> get showMiViScore => $composableBuilder(
+      column: $table.showMiViScore, builder: (column) => column);
+
+  GeneratedColumn<String> get themeMode =>
+      $composableBuilder(column: $table.themeMode, builder: (column) => column);
+}
+
+class $$AppSettingsTableTableManager extends RootTableManager<
+    _$AppDatabase,
+    $AppSettingsTable,
+    AppSetting,
+    $$AppSettingsTableFilterComposer,
+    $$AppSettingsTableOrderingComposer,
+    $$AppSettingsTableAnnotationComposer,
+    $$AppSettingsTableCreateCompanionBuilder,
+    $$AppSettingsTableUpdateCompanionBuilder,
+    (AppSetting, BaseReferences<_$AppDatabase, $AppSettingsTable, AppSetting>),
+    AppSetting,
+    PrefetchHooks Function()> {
+  $$AppSettingsTableTableManager(_$AppDatabase db, $AppSettingsTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$AppSettingsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$AppSettingsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$AppSettingsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback: ({
+            Value<String> id = const Value.absent(),
+            Value<bool> showRules = const Value.absent(),
+            Value<bool> showHelpDialog = const Value.absent(),
+            Value<bool> showGameStats = const Value.absent(),
+            Value<bool> showMiViScore = const Value.absent(),
+            Value<String> themeMode = const Value.absent(),
+            Value<int> rowid = const Value.absent(),
+          }) =>
+              AppSettingsCompanion(
+            id: id,
+            showRules: showRules,
+            showHelpDialog: showHelpDialog,
+            showGameStats: showGameStats,
+            showMiViScore: showMiViScore,
+            themeMode: themeMode,
+            rowid: rowid,
+          ),
+          createCompanionCallback: ({
+            Value<String> id = const Value.absent(),
+            Value<bool> showRules = const Value.absent(),
+            Value<bool> showHelpDialog = const Value.absent(),
+            Value<bool> showGameStats = const Value.absent(),
+            Value<bool> showMiViScore = const Value.absent(),
+            Value<String> themeMode = const Value.absent(),
+            Value<int> rowid = const Value.absent(),
+          }) =>
+              AppSettingsCompanion.insert(
+            id: id,
+            showRules: showRules,
+            showHelpDialog: showHelpDialog,
+            showGameStats: showGameStats,
+            showMiViScore: showMiViScore,
+            themeMode: themeMode,
+            rowid: rowid,
+          ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ));
+}
+
+typedef $$AppSettingsTableProcessedTableManager = ProcessedTableManager<
+    _$AppDatabase,
+    $AppSettingsTable,
+    AppSetting,
+    $$AppSettingsTableFilterComposer,
+    $$AppSettingsTableOrderingComposer,
+    $$AppSettingsTableAnnotationComposer,
+    $$AppSettingsTableCreateCompanionBuilder,
+    $$AppSettingsTableUpdateCompanionBuilder,
+    (AppSetting, BaseReferences<_$AppDatabase, $AppSettingsTable, AppSetting>),
+    AppSetting,
+    PrefetchHooks Function()>;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -2067,4 +2617,6 @@ class $AppDatabaseManager {
       $$GameTableTableTableManager(_db, _db.gameTable);
   $$RoundTableTableTableManager get roundTable =>
       $$RoundTableTableTableManager(_db, _db.roundTable);
+  $$AppSettingsTableTableManager get appSettings =>
+      $$AppSettingsTableTableManager(_db, _db.appSettings);
 }

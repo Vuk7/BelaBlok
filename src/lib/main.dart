@@ -5,36 +5,23 @@ import 'package:provider/provider.dart';
 
 import 'package:bela_blok/routes/routes.dart';
 import 'package:bela_blok/providers/settings_provider.dart';
+import 'package:bela_blok/db/database.dart';
 
-class ThemeNotifier extends ChangeNotifier {
-  ThemeMode _themeMode = ThemeMode.light;
-  ThemeMode get themeMode => _themeMode;
-
-  void toggleTheme() {
-    _themeMode = _themeMode == ThemeMode.light ? ThemeMode.dark : ThemeMode.light;
-    notifyListeners();
-  }
-
-  void setThemeMode(ThemeMode mode) {
-    if (_themeMode != mode) {
-      _themeMode = mode;
-      notifyListeners();
-    }
-  }
-}
-
-void main() {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  // Lock orientation to portrait only
-  SystemChrome.setPreferredOrientations([
+  await SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
   ]);
+
+  final db = AppDatabase();
+  final settingsProvider = SettingsProvider();
+  await settingsProvider.init(db);
+
   runApp(
     MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => ThemeNotifier()),
-        ChangeNotifierProvider(create: (_) => SettingsProvider()),
+        ChangeNotifierProvider(create: (_) => settingsProvider),
       ],
       child: const MyApp(),
     ),
@@ -46,14 +33,14 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final themeNotifier = Provider.of<ThemeNotifier>(context);
+    final settings = Provider.of<SettingsProvider>(context);
     return MaterialApp.router(
       title: 'Bela Blok',
       debugShowCheckedModeBanner: false,
       routerConfig: appRouter,
       theme: AppTheme.lightTheme,
       darkTheme: AppTheme.darkTheme,
-      themeMode: themeNotifier.themeMode,
+      themeMode: settings.themeMode == 'dark' ? ThemeMode.dark : ThemeMode.light,
     );
   }
 }
