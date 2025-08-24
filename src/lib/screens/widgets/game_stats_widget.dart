@@ -1,5 +1,9 @@
 import 'package:bela_blok/themes/app_theme.dart';
 import 'package:flutter/material.dart';
+import 'components/stats_utils.dart';
+import 'components/team_column_widget.dart';
+import 'components/vertical_divider_widget.dart';
+import 'components/summary_row_widget.dart';
 
 class GameStatsWidget extends StatefulWidget {
   final Map<String, dynamic> gameStats;
@@ -118,8 +122,8 @@ class _ExpandedStatsContent extends StatelessWidget {
     final fails2 = gameStats['teamTwoFails'] ?? 0;
     final dec1 = gameStats['teamOneDeclarations'] ?? 0;
     final dec2 = gameStats['teamTwoDeclarations'] ?? 0;
-    final success1 = _calcSuccess(calls1, fails1);
-    final success2 = _calcSuccess(calls2, fails2);
+    final success1 = StatsUtils.calculateSuccessRate(calls1, fails1);
+    final success2 = StatsUtils.calculateSuccessRate(calls2, fails2);
 
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
@@ -131,120 +135,36 @@ class _ExpandedStatsContent extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Expanded(
-                child: _teamColumn(
-                  context,
-                  'MI',
-                  Theme.of(context).colorScheme.primary,
-                  calls1,
-                  fails1,
-                  dec1,
+                child: TeamColumnWidget(
+                  label: 'MI',
+                  labelColor: Theme.of(context).colorScheme.primary,
+                  calls: calls1,
+                  fails: fails1,
+                  declarations: dec1,
+                  isDark: isDark,
                 ),
               ),
-              _verticalDivider(context),
+              const VerticalDividerWidget(),
               Expanded(
-                child: _teamColumn(
-                  context,
-                  'VI',
-                  AppTheme.green,
-                  calls2,
-                  fails2,
-                  dec2,
+                child: TeamColumnWidget(
+                  label: 'VI',
+                  labelColor: AppTheme.green,
+                  calls: calls2,
+                  fails: fails2,
+                  declarations: dec2,
+                  isDark: isDark,
                 ),
               ),
             ],
           ),
           const SizedBox(height: gap),
-          _summaryRow(context, success1, success2),
-        ],
-      ),
-    );
-  }
-
-  Widget _teamColumn(BuildContext context, String label, Color labelColor, int calls, int fails, int declarations) {
-    final statsColors = Theme.of(context).extension<GameStatsColors>();
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(label, style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: labelColor)),
-        const SizedBox(height: 6),
-        _statRow(Icons.phone_callback, 'Pozivi', calls.toString(), statsColors?.calls ?? Colors.blue, context),
-        _statRow(Icons.trending_down, 'Padovi', fails.toString(), statsColors?.fails ?? Colors.red, context),
-        _statRow(Icons.star, 'Zvanja', declarations.toString(), statsColors?.declarations ?? Colors.amber, context),
-      ],
-    );
-  }
-
-  Widget _statRow(IconData icon, String label, String value, Color color, BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4),
-      child: Row(
-        children: [
-          Icon(icon, size: 16, color: color),
-          const SizedBox(width: 8),
-          Expanded(
-            child: Text(
-              label,
-              style: TextStyle(fontSize: 12, color: isDark ? Colors.grey[300] : Colors.grey[700]),
-            ),
-          ),
-          Text(
-            value,
-            style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: isDark ? Colors.white : Colors.black87),
+          SummaryRowWidget(
+            success1: success1,
+            success2: success2,
+            isDark: isDark,
           ),
         ],
       ),
     );
-  }
-
-  Widget _verticalDivider(BuildContext context) => Container(
-        width: 1,
-        height: 100,
-        margin: const EdgeInsets.symmetric(horizontal: 12),
-        color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.15),
-      );
-
-  Widget _summaryRow(BuildContext context, int success1, int success2) {
-    final statsColors = Theme.of(context).extension<GameStatsColors>();
-    return Container(
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: statsColors?.successCard ?? (isDark ? Colors.grey[700] : Colors.grey[100]),
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: Row(
-        children: [
-          Expanded(child: _mini('Uspješnost MI', '$success1%')),
-          Container(
-            width: 1,
-            height: 28,
-            color: statsColors?.divider ?? Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.15),
-            margin: const EdgeInsets.symmetric(horizontal: 12),
-          ),
-            Expanded(child: _mini('Uspješnost VI', '$success2%')),
-        ],
-      ),
-    );
-  }
-
-  Widget _mini(String label, String value) => Column(
-        children: [
-          Text(
-            value,
-            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: isDark ? Colors.white : Colors.black87),
-          ),
-          const SizedBox(height: 2),
-          Text(
-            label,
-            style: TextStyle(fontSize: 10, color: isDark ? Colors.grey[400] : Colors.grey[600]),
-            textAlign: TextAlign.center,
-          ),
-        ],
-      );
-
-  static int _calcSuccess(dynamic calls, dynamic fails) {
-    final c = (calls ?? 0) is int ? (calls ?? 0) : int.tryParse((calls ?? '0').toString()) ?? 0;
-    final f = (fails ?? 0) is int ? (fails ?? 0) : int.tryParse((fails ?? '0').toString()) ?? 0;
-    if (c == 0) return 0;
-    return (((c - f) / c) * 100).round();
   }
 }
