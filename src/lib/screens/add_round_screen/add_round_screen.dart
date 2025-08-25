@@ -1,9 +1,11 @@
 import 'package:bela_blok/screens/add_round_screen/widgets/call_show.dart';
 import 'package:bela_blok/db/database.dart'; 
-import 'package:bela_blok/db/models/round_model.dart'; 
+import 'package:bela_blok/db/models/round_model.dart';
+import 'package:bela_blok/db/models/user_settings_model.dart';
 import 'package:bela_blok/models/score.model.dart';
 import 'package:bela_blok/services/games_service.dart'; 
-import 'package:bela_blok/services/rounds_service.dart'; 
+import 'package:bela_blok/services/rounds_service.dart';
+import 'package:bela_blok/services/settings_services.dart';
 import 'package:bela_blok/screens/add_round_screen/widgets/choose_caller.dart';
 import 'package:bela_blok/screens/add_round_screen/widgets/choose_input_type.dart';
 import 'package:bela_blok/screens/widgets/big_button_input_number.dart';
@@ -45,10 +47,11 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
   late final Animation<double> _bounceAnimation1;
   late final Animation<double> _bounceAnimation2;
 
-  
   late final AppDatabase db;
   late final GamesService gamesService;
   late final RoundsService roundsService;
+  late final SettingsService settingsService;
+  UserSettings? settings;
 
   int? currentlyShuffling;
   int? gameDirection;
@@ -63,6 +66,7 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
     db = AppDatabase();
     gamesService = GamesService(db);
     roundsService = RoundsService(db);
+    settingsService = SettingsService(db);
 
     _bounceController1 = AnimationController(
       duration: const Duration(milliseconds: 200),
@@ -110,6 +114,10 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
         });
       }
     }
+    
+    // Load settings
+    settings = await settingsService.fetchSettings();
+    setState(() {});
   }
 
   Future<void> _loadRoundsCount() async {
@@ -455,16 +463,18 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
       resizeToAvoidBottomInset: false,
       floatingActionButton: Stack(
         children: [
-          Positioned(
-            left: 30,
-            bottom: 0,
-            child: FloatingActionButton(
-              heroTag: 'help_btn',
-              onPressed: () => ZvanjaHelpDialog.show(context),
-              backgroundColor: AppTheme.red,
-              child: const Icon(Icons.quiz, color: AppTheme.black, size: 28),
+          // Conditionally show help button based on settings
+          if (settings?.showHelpDialog == true)
+            Positioned(
+              left: 30,
+              bottom: 0,
+              child: FloatingActionButton(
+                heroTag: 'help_btn',
+                onPressed: () => ZvanjaHelpDialog.show(context),
+                backgroundColor: AppTheme.red,
+                child: const Icon(Icons.quiz, color: AppTheme.black, size: 28),
+              ),
             ),
-          ),
           Positioned(
             right: 0,
             bottom: 0,

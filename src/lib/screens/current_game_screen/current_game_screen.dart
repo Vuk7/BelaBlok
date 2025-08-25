@@ -1,5 +1,6 @@
 import 'package:bela_blok/db/database.dart'; 
 import 'package:bela_blok/enums/team_enum.dart';
+import 'package:bela_blok/db/models/user_settings_model.dart';
 import 'package:bela_blok/screens/current_game_screen/widgets/round_score_list_item.dart';
 import 'package:bela_blok/screens/current_game_screen/widgets/top_score_details.dart';
 import 'package:bela_blok/screens/widgets/animated_big_button.dart' as button;
@@ -9,7 +10,8 @@ import 'package:bela_blok/screens/widgets/game_stats_widget.dart';
 import 'package:bela_blok/screens/widgets/morphing_widgets.dart';
 import 'package:bela_blok/screens/widgets/error_message_widget.dart';
 import 'package:bela_blok/services/games_service.dart';
-import 'package:bela_blok/services/rounds_service.dart'; 
+import 'package:bela_blok/services/rounds_service.dart';
+import 'package:bela_blok/services/settings_services.dart';
 import 'package:bela_blok/db/models/game_model.dart';
 import 'package:bela_blok/db/models/round_model.dart';
 import 'package:bela_blok/themes/app_theme.dart';
@@ -29,10 +31,12 @@ class _CurrentGameScreenState extends State<CurrentGameScreen> {
   bool _wobbleTrigger = false;
 
   GamesService? gamesService;
-  RoundsService? roundsService; 
+  RoundsService? roundsService;
+  SettingsService? settingsService;
   Game? currentGame;
   bool isLoadingGame = true;
   String? errorMessage;
+  UserSettings? settings;
 
   List<Round>? rounds;
   bool isLoadingRounds = true;
@@ -41,7 +45,8 @@ class _CurrentGameScreenState extends State<CurrentGameScreen> {
   void initState() {
     super.initState();
     gamesService = GamesService(AppDatabase());
-    roundsService = RoundsService(AppDatabase()); 
+    roundsService = RoundsService(AppDatabase());
+    settingsService = SettingsService(AppDatabase());
     () async {
       await handleInitializeGame(gameId: widget.gameId);
     }();
@@ -76,6 +81,9 @@ class _CurrentGameScreenState extends State<CurrentGameScreen> {
 
     setState(() => currentGame = game);
     await loadRounds(game.id!);
+
+    // Load settings
+    settings = await settingsService!.fetchSettings();
 
     setState(() => isLoadingGame = false);
   }
@@ -239,7 +247,7 @@ class _CurrentGameScreenState extends State<CurrentGameScreen> {
                     ),
                   ),
                   const SizedBox(height: 10),
-                  if (isGameFinished) ...[
+                  if (isGameFinished && settings?.showGameStats == true) ...[
                     GestureDetector(
                       onTap: () => setState(
                           () => _wobbleTrigger = !_wobbleTrigger),

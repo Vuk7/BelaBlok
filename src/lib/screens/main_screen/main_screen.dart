@@ -1,8 +1,10 @@
 import 'package:bela_blok/db/database.dart';
 import 'package:bela_blok/db/models/game_model.dart';
+import 'package:bela_blok/db/models/user_settings_model.dart';
 import 'package:bela_blok/screens/main_screen/widgets/animated_history_list_item.dart';
 import 'package:bela_blok/screens/widgets/rules_widget.dart';
 import 'package:bela_blok/services/games_service.dart';
+import 'package:bela_blok/services/settings_services.dart';
 import 'package:bela_blok/screens/widgets/animated_big_button.dart';
 import 'package:bela_blok/utils/date_helper.dart';
 import 'package:flutter/material.dart';
@@ -19,8 +21,10 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen> {
   late GamesService gamesService;
+  late SettingsService settingsService;
   List<Game> gamesHistory = [];
   var isLoadingGameHistory = true;
+  UserSettings? settings;
 
   var isLoadingMoreGames = false;
   var hasMoreGames = true;
@@ -62,6 +66,10 @@ class _MainScreenState extends State<MainScreen> {
     });
     
     gamesService = GamesService(AppDatabase());
+    settingsService = SettingsService(AppDatabase());
+
+    // Load settings
+    settings = await settingsService.fetchSettings();
 
     await _loadGamePage();
   // Fetch latest game for Continue button
@@ -103,7 +111,11 @@ class _MainScreenState extends State<MainScreen> {
 
   Future<void> _refreshGameHistory() async {
     await _initGames();
+  }
 
+  Future<void> _refreshSettings() async {
+    settings = await settingsService.fetchSettings();
+    setState(() {});
   }
 
   Future<bool> _showDeleteConfirmationDialog(String gameId) async {
@@ -241,11 +253,6 @@ class _MainScreenState extends State<MainScreen> {
                                                 direction: DismissDirection.endToStart,
                                                 background: Container(
                                                   color: AppTheme.red,
-                                                  child: const Icon(
-                                                    Icons.delete,
-                                                    color: Colors.white,
-                                                    size: 30,
-                                                  ),
                                                 ),
                                                 confirmDismiss: (direction) async {
                                                   return await _showDeleteConfirmationDialog(game.id ?? "");
@@ -277,9 +284,11 @@ class _MainScreenState extends State<MainScreen> {
                     ),
                     const SizedBox(height: 20),
 
-                    
-                    const RulesWidget(),
-                    const SizedBox(height: 20),
+                    // Conditionally show RulesWidget based on settings
+                    if (settings?.showRules == true) ...[
+                      const RulesWidget(),
+                      const SizedBox(height: 20),
+                    ],
 
                     // Continue game button if the latest game exists and is unfinished
                     if (latestGame != null && latestGame!.finished != true)
@@ -319,10 +328,17 @@ class _MainScreenState extends State<MainScreen> {
                         ),
                       ),
                     ),
-                    // Settings button
-                    const SizedBox(height: 10),
-                    const SettingsButton(),
-                    const SizedBox(height: 50),
+                    const SizedBox(height: 24),
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: SettingsButton(
+                        onTap: () async {
+                          await context.pushNamed('settings');
+                          await _refreshSettings();
+                        },
+                      ),
+                    ),
+                    const SizedBox(height: 40),
                   ],
                 ),
               ),
