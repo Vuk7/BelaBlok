@@ -13,6 +13,13 @@ class ThemeNotifier extends ChangeNotifier {
     _themeMode = _themeMode == ThemeMode.light ? ThemeMode.dark : ThemeMode.light;
     notifyListeners();
   }
+
+  void setThemeMode(ThemeMode mode) {
+    if (_themeMode != mode) {
+      _themeMode = mode;
+      notifyListeners();
+    }
+  }
 }
 
 void main() {

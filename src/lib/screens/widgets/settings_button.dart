@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:bela_blok/screens/widgets/animated_big_button.dart';
 import 'package:bela_blok/themes/app_theme.dart';
+import 'package:go_router/go_router.dart';
 
 class SettingsButton extends StatelessWidget {
   final VoidCallback? onTap;
@@ -17,9 +18,7 @@ class SettingsButton extends StatelessWidget {
     textStyle: AppTheme.getSettingsButtonTextStyle(context),
     bgColor: AppTheme.getSettingsButtonBackground(context),
         onTap: onTap ?? () {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Ekran postavki još nije implementiran.')),
-          );
+          context.pushNamed('settings');
         },
       ),
     );
