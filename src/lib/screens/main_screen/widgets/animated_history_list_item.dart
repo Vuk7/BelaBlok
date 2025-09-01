@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:bela_blok/screens/main_screen/widgets/history_list_item.dart';
+import '../../../themes/app_theme.dart';
 
 class AnimatedHistoryListItem extends StatefulWidget {
   final String date, gameID;
@@ -16,7 +17,7 @@ class AnimatedHistoryListItem extends StatefulWidget {
     required this.teamTwoScore,
     required this.onTap,
     this.index = 0,
-    this.delay = const Duration(milliseconds: 100),
+    this.delay = AppTheme.animatedHistoryListItemDefaultDelay,
   });
 
   @override
@@ -37,42 +38,46 @@ class _AnimatedHistoryListItemState extends State<AnimatedHistoryListItem>
     
     // Scale animation for tap
     _scaleController = AnimationController(
-      duration: const Duration(milliseconds: 150),
+      duration: AppTheme.animatedHistoryListItemScaleDuration,
       vsync: this,
     );
     
     // Slide-in animation for staggered entry
     _slideController = AnimationController(
-      duration: const Duration(milliseconds: 600),
+      duration: AppTheme.animatedHistoryListItemSlideDuration,
       vsync: this,
     );
     
     _scaleAnimation = Tween<double>(
-      begin: 1.0,
-      end: 0.95,
+      begin: AppTheme.animatedHistoryListItemScaleBegin,
+      end: AppTheme.animatedHistoryListItemScaleEnd,
     ).animate(CurvedAnimation(
       parent: _scaleController,
-      curve: Curves.easeInOut,
+      curve: AppTheme.animatedHistoryListItemScaleCurve,
     ));
     
     _slideAnimation = Tween<Offset>(
-      begin: const Offset(0.3, 0),
-      end: Offset.zero,
+      begin: AppTheme.animatedHistoryListItemSlideBegin,
+      end: AppTheme.animatedHistoryListItemSlideEnd,
     ).animate(CurvedAnimation(
       parent: _slideController,
-      curve: Curves.easeOutCubic,
+      curve: AppTheme.animatedHistoryListItemSlideCurve,
     ));
     
     _fadeAnimation = Tween<double>(
-      begin: 0.0,
-      end: 1.0,
+      begin: AppTheme.animatedHistoryListItemFadeBegin,
+      end: AppTheme.animatedHistoryListItemFadeEnd,
     ).animate(CurvedAnimation(
       parent: _slideController,
-      curve: const Interval(0.0, 0.8, curve: Curves.easeOut),
+      curve:   const Interval(
+        AppTheme.animatedHistoryListItemFadeIntervalStart, 
+        AppTheme.animatedHistoryListItemFadeIntervalEnd, 
+        curve: AppTheme.animatedHistoryListItemFadeCurve,
+      ),
     ));
 
     // Start staggered animation after delay
-    Future.delayed(Duration(milliseconds: widget.index * 150), () {
+    Future.delayed(Duration(milliseconds: widget.index * AppTheme.animatedHistoryListItemStaggerDelayMultiplier), () {
       if (mounted) {
         _slideController.forward();
       }

@@ -195,6 +195,23 @@ class AppTheme {
   static const double animatedButtonIconSizeMultiplier = 0.8;
   static const double animatedButtonDefaultTextPadding = 20.0;
 
+  // Animated History List Item Widget Styles
+  static const Duration animatedHistoryListItemScaleDuration = Duration(milliseconds: 150);
+  static const Duration animatedHistoryListItemSlideDuration = Duration(milliseconds: 600);
+  static const double animatedHistoryListItemScaleBegin = 1.0;
+  static const double animatedHistoryListItemScaleEnd = 0.95;
+  static const Offset animatedHistoryListItemSlideBegin = Offset(0.3, 0);
+  static const Offset animatedHistoryListItemSlideEnd = Offset.zero;
+  static const double animatedHistoryListItemFadeBegin = 0.0;
+  static const double animatedHistoryListItemFadeEnd = 1.0;
+  static const double animatedHistoryListItemFadeIntervalStart = 0.0;
+  static const double animatedHistoryListItemFadeIntervalEnd = 0.8;
+  static const int animatedHistoryListItemStaggerDelayMultiplier = 150;
+  static const Duration animatedHistoryListItemDefaultDelay = Duration(milliseconds: 100);
+  static const Curve animatedHistoryListItemScaleCurve = Curves.easeInOut;
+  static const Curve animatedHistoryListItemSlideCurve = Curves.easeOutCubic;
+  static const Curve animatedHistoryListItemFadeCurve = Curves.easeOut;
+
   // Pomoćne metode za boje prema temi
   static Color getScreenBackground(BuildContext context) {
     return Theme.of(context).brightness == Brightness.dark
