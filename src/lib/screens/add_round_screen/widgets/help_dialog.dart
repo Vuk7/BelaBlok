@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../themes/app_theme.dart';
 
 class ZvanjaHelpDialog {
   static void show(BuildContext context) {
@@ -16,18 +17,16 @@ class ZvanjaHelpBottomSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    
     return Container(
-      height: MediaQuery.of(context).size.height * 0.85,
+      height: MediaQuery.of(context).size.height * AppTheme.helpDialogHeightRatio,
       decoration: BoxDecoration(
-        color: isDark ? const Color(0xFF34495E) : Colors.white,
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+        color: AppTheme.getHelpDialogBackgroundColor(context),
+        borderRadius:const BorderRadius.vertical(top: Radius.circular(AppTheme.helpDialogBorderRadius)),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.1),
-            blurRadius: 10,
-            offset: const Offset(0, -5),
+            color: AppTheme.getHelpDialogShadowColor(),
+            blurRadius: AppTheme.helpDialogShadowBlurRadius,
+            offset: AppTheme.helpDialogShadowOffset,
           ),
         ],
       ),
@@ -35,34 +34,32 @@ class ZvanjaHelpBottomSheet extends StatelessWidget {
         children: [
           // Handle bar
           Container(
-            margin: const EdgeInsets.only(top: 12),
-            width: 40,
-            height: 4,
+            margin: AppTheme.helpDialogHandleBarMargin,
+            width: AppTheme.helpDialogHandleBarWidth,
+            height: AppTheme.helpDialogHandleBarHeight,
             decoration: BoxDecoration(
-              color: Colors.grey[400],
-              borderRadius: BorderRadius.circular(2),
+              color: AppTheme.getHelpDialogHandleBarColor(),
+              borderRadius: BorderRadius.circular(AppTheme.helpDialogHandleBarBorderRadius),
             ),
           ),
           
           // Header
           Padding(
-            padding: const EdgeInsets.all(20),
+            padding: AppTheme.helpDialogHeaderPadding,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
                   'Sva moguća zvanja u Belotu',
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    color: isDark ? Colors.white : Colors.black87,
+                  style: AppTheme.helpDialogTitleTextStyle.copyWith(
+                    color: AppTheme.getHelpDialogTextColor(context),
                   ),
                 ),
                 IconButton(
                   onPressed: () => Navigator.of(context).pop(),
                   icon: Icon(
                     Icons.close,
-                    color: isDark ? Colors.white : Colors.black87,
+                    color: AppTheme.getHelpDialogTextColor(context),
                   ),
                 ),
               ],
@@ -72,7 +69,7 @@ class ZvanjaHelpBottomSheet extends StatelessWidget {
           // Content
           Expanded(
             child: ListView(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
+              padding: AppTheme.helpDialogContentPadding,
               children: [
                 _buildZvanjeCard(
                   context,
@@ -81,7 +78,6 @@ class ZvanjaHelpBottomSheet extends StatelessWidget {
                   'Dama i kralj adut boje',
                   Icons.favorite,
                   Colors.red,
-                  isDark,
                 ),
                 _buildZvanjeCard(
                   context,
@@ -90,7 +86,6 @@ class ZvanjaHelpBottomSheet extends StatelessWidget {
                   '3 uzastopne karte iste boje',
                   Icons.view_stream,
                   Colors.blue,
-                  isDark,
                 ),
                 _buildZvanjeCard(
                   context,
@@ -99,7 +94,6 @@ class ZvanjaHelpBottomSheet extends StatelessWidget {
                   '4 uzastopne karte iste boje',
                   Icons.view_carousel,
                   Colors.green,
-                  isDark,
                 ),
                 _buildZvanjeCard(
                   context,
@@ -108,7 +102,6 @@ class ZvanjaHelpBottomSheet extends StatelessWidget {
                   '5 uzastopnih karata iste boje',
                   Icons.view_quilt,
                   Colors.purple,
-                  isDark,
                 ),
                 _buildZvanjeCard(
                   context,
@@ -117,7 +110,6 @@ class ZvanjaHelpBottomSheet extends StatelessWidget {
                   '4 dečka (svih boja)',
                   Icons.people,
                   Colors.orange,
-                  isDark,
                 ),
                 _buildZvanjeCard(
                   context,
@@ -126,7 +118,6 @@ class ZvanjaHelpBottomSheet extends StatelessWidget {
                   '4 devetke (svih boja)',
                   Icons.grid_3x3,
                   Colors.teal,
-                  isDark,
                 ),
                 _buildZvanjeCard(
                   context,
@@ -135,7 +126,6 @@ class ZvanjaHelpBottomSheet extends StatelessWidget {
                   '4 asa (svih boja)',
                   Icons.star,
                   Colors.amber,
-                  isDark,
                 ),
                 _buildZvanjeCard(
                   context,
@@ -144,7 +134,6 @@ class ZvanjaHelpBottomSheet extends StatelessWidget {
                   '4 desetke (svih boja)',
                   Icons.crop_square,
                   Colors.indigo,
-                  isDark,
                 ),
                 _buildZvanjeCard(
                   context,
@@ -153,7 +142,6 @@ class ZvanjaHelpBottomSheet extends StatelessWidget {
                   '4 kraljice (svih boja)',
                   Icons.woman,
                   Colors.pink,
-                  isDark,
                 ),
                 _buildZvanjeCard(
                   context,
@@ -162,44 +150,40 @@ class ZvanjaHelpBottomSheet extends StatelessWidget {
                   '4 kraljeva (svih boja)',
                   Icons.person,
                   Colors.brown,
-                  isDark,
                 ),
                 
                 // Napomene
-                const SizedBox(height: 20),
+                 const SizedBox(height: AppTheme.helpDialogSpacing20),
                 Container(
-                  padding: const EdgeInsets.all(16),
+                  padding: AppTheme.helpDialogNotePadding,
                   decoration: BoxDecoration(
-                    color: isDark ? Colors.grey[800] : Colors.grey[100],
-                    borderRadius: BorderRadius.circular(12),
+                    color: AppTheme.getHelpDialogNoteBackgroundColor(context),
+                    borderRadius: BorderRadius.circular(AppTheme.helpDialogCardBorderRadius),
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
                         'Napomene:',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: isDark ? Colors.white : Colors.black87,
+                        style: AppTheme.helpDialogNoteHeaderTextStyle.copyWith(
+                          color: AppTheme.getHelpDialogTextColor(context),
                         ),
                       ),
-                      const SizedBox(height: 8),
+                     const SizedBox(height: AppTheme.helpDialogSpacing8),
                       Text(
                         '• Zvanja se prijavljuju prije početka igre\n'
                         '• Bodove za zvanja dobiva tim koji ima najveće zvanje\n'
                         '• Adut karte imaju prednost kod terz/kvinta/kvart zvanja\n'
                         '• Bela se može prijaviti samo ako se ima i dama i kralj adut boje',
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: isDark ? Colors.grey[300] : Colors.grey[700],
-                          height: 1.4,
+                        style: AppTheme.helpDialogNoteContentTextStyle.copyWith(
+                          color: AppTheme.getHelpDialogNoteTextColor(context),
+                          height: AppTheme.helpDialogTextLineHeight,
                         ),
                       ),
                     ],
                   ),
                 ),
-                const SizedBox(height: 20),
+               const SizedBox(height: AppTheme.helpDialogSpacing20),
               ],
             ),
           ),
@@ -215,34 +199,33 @@ class ZvanjaHelpBottomSheet extends StatelessWidget {
     String opis,
     IconData icon,
     Color iconColor,
-    bool isDark,
   ) {
     return Container(
-      margin: const EdgeInsets.only(bottom: 12),
-      padding: const EdgeInsets.all(16),
+      margin: AppTheme.helpDialogCardMargin,
+      padding: AppTheme.helpDialogCardPadding,
       decoration: BoxDecoration(
-        color: isDark ? Colors.grey[800] : Colors.grey[50],
-        borderRadius: BorderRadius.circular(12),
+        color: AppTheme.getHelpDialogCardBackgroundColor(context),
+        borderRadius: BorderRadius.circular(AppTheme.helpDialogCardBorderRadius),
         border: Border.all(
-          color: isDark ? Colors.grey[700]! : Colors.grey[300]!,
+          color: AppTheme.getHelpDialogCardBorderColor(context),
           width: 1,
         ),
       ),
       child: Row(
         children: [
           Container(
-            padding: const EdgeInsets.all(12),
+            padding: AppTheme.helpDialogIconPadding,
             decoration: BoxDecoration(
-              color: iconColor.withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(8),
+              color: iconColor.withValues(alpha: AppTheme.helpDialogIconBackgroundOpacity),
+              borderRadius: BorderRadius.circular(AppTheme.helpDialogIconBorderRadius),
             ),
             child: Icon(
               icon,
               color: iconColor,
-              size: 24,
+              size: AppTheme.helpDialogIconSize,
             ),
           ),
-          const SizedBox(width: 16),
+        const  SizedBox(width: AppTheme.helpDialogSpacing16),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -252,38 +235,28 @@ class ZvanjaHelpBottomSheet extends StatelessWidget {
                   children: [
                     Text(
                       naziv,
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                        color: isDark ? Colors.white : Colors.black87,
+                      style: AppTheme.helpDialogCardTitleTextStyle.copyWith(
+                        color: AppTheme.getHelpDialogTextColor(context),
                       ),
                     ),
                     Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 8,
-                        vertical: 4,
-                      ),
+                      padding: AppTheme.helpDialogBadgePadding,
                       decoration: BoxDecoration(
                         color: iconColor,
-                        borderRadius: BorderRadius.circular(12),
+                        borderRadius: BorderRadius.circular(AppTheme.helpDialogBadgeBorderRadius),
                       ),
                       child: Text(
                         bodovi,
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 12,
-                          fontWeight: FontWeight.bold,
-                        ),
+                        style: AppTheme.helpDialogBadgeTextStyle,
                       ),
                     ),
                   ],
                 ),
-                const SizedBox(height: 4),
+               const SizedBox(height: AppTheme.helpDialogSpacing4),
                 Text(
                   opis,
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: isDark ? Colors.grey[300] : Colors.grey[600],
+                  style: AppTheme.helpDialogCardDescriptionTextStyle.copyWith(
+                    color: AppTheme.getHelpDialogDescriptionTextColor(context),
                   ),
                 ),
               ],

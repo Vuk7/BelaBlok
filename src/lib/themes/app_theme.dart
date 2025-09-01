@@ -260,6 +260,67 @@ class AppTheme {
     fontSize: 16,
   );
 
+  // Help Dialog Widget Styles
+  static const Color helpDialogDarkBackgroundColor = Color(0xFF34495E);
+  static const Color helpDialogLightBackgroundColor = Colors.white;
+  static const Color helpDialogShadowColor = Colors.black;
+  static const Color helpDialogHandleBarColor = Colors.grey;
+  static const double helpDialogHeightRatio = 0.85;
+  static const double helpDialogBorderRadius = 20.0;
+  static const double helpDialogCardBorderRadius = 12.0;
+  static const double helpDialogIconBorderRadius = 8.0;
+  static const double helpDialogBadgeBorderRadius = 12.0;
+  static const double helpDialogHandleBarBorderRadius = 2.0;
+  static const double helpDialogHandleBarWidth = 40.0;
+  static const double helpDialogHandleBarHeight = 4.0;
+  static const double helpDialogShadowBlurRadius = 10.0;
+  static const Offset helpDialogShadowOffset = Offset(0, -5);
+  static const double helpDialogShadowOpacity = 0.1;
+  static const double helpDialogIconBackgroundOpacity = 0.1;
+  static const double helpDialogIconSize = 24.0;
+  static const double helpDialogTextLineHeight = 1.4;
+  static const EdgeInsets helpDialogHandleBarMargin = EdgeInsets.only(top: 12);
+  static const EdgeInsets helpDialogHeaderPadding = EdgeInsets.all(20);
+  static const EdgeInsets helpDialogContentPadding = EdgeInsets.symmetric(horizontal: 20);
+  static const EdgeInsets helpDialogCardMargin = EdgeInsets.only(bottom: 12);
+  static const EdgeInsets helpDialogCardPadding = EdgeInsets.all(16);
+  static const EdgeInsets helpDialogIconPadding = EdgeInsets.all(12);
+  static const EdgeInsets helpDialogBadgePadding = EdgeInsets.symmetric(horizontal: 8, vertical: 4);
+  static const EdgeInsets helpDialogNotePadding = EdgeInsets.all(16);
+  static const double helpDialogSpacing16 = 16.0;
+  static const double helpDialogSpacing8 = 8.0;
+  static const double helpDialogSpacing4 = 4.0;
+  static const double helpDialogSpacing20 = 20.0;
+
+  static const TextStyle helpDialogTitleTextStyle = TextStyle(
+    fontSize: 20,
+    fontWeight: FontWeight.bold,
+  );
+
+  static const TextStyle helpDialogCardTitleTextStyle = TextStyle(
+    fontSize: 16,
+    fontWeight: FontWeight.bold,
+  );
+
+  static const TextStyle helpDialogCardDescriptionTextStyle = TextStyle(
+    fontSize: 14,
+  );
+
+  static const TextStyle helpDialogBadgeTextStyle = TextStyle(
+    color: Colors.white,
+    fontSize: 12,
+    fontWeight: FontWeight.bold,
+  );
+
+  static const TextStyle helpDialogNoteHeaderTextStyle = TextStyle(
+    fontSize: 16,
+    fontWeight: FontWeight.bold,
+  );
+
+  static const TextStyle helpDialogNoteContentTextStyle = TextStyle(
+    fontSize: 14,
+  );
+
   // Pomoćne metode za boje prema temi
   static Color getScreenBackground(BuildContext context) {
     return Theme.of(context).brightness == Brightness.dark
@@ -295,5 +356,56 @@ class AppTheme {
     return Theme.of(context).brightness == Brightness.dark
         ? getCardBackgroundColor(context)
         : lightScoreBackground;
+  }
+
+  // Help Dialog Helper Methods
+  static Color getHelpDialogBackgroundColor(BuildContext context) {
+    return Theme.of(context).brightness == Brightness.dark 
+        ? helpDialogDarkBackgroundColor 
+        : helpDialogLightBackgroundColor;
+  }
+
+  static Color getHelpDialogTextColor(BuildContext context) {
+    return Theme.of(context).brightness == Brightness.dark 
+        ? Colors.white 
+        : Colors.black87;
+  }
+
+  static Color getHelpDialogCardBackgroundColor(BuildContext context) {
+    return Theme.of(context).brightness == Brightness.dark 
+        ? Colors.grey[800]! 
+        : Colors.grey[50]!;
+  }
+
+  static Color getHelpDialogCardBorderColor(BuildContext context) {
+    return Theme.of(context).brightness == Brightness.dark 
+        ? Colors.grey[700]! 
+        : Colors.grey[300]!;
+  }
+
+  static Color getHelpDialogNoteBackgroundColor(BuildContext context) {
+    return Theme.of(context).brightness == Brightness.dark 
+        ? Colors.grey[800]! 
+        : Colors.grey[100]!;
+  }
+
+  static Color getHelpDialogNoteTextColor(BuildContext context) {
+    return Theme.of(context).brightness == Brightness.dark 
+        ? Colors.grey[300]! 
+        : Colors.grey[700]!;
+  }
+
+  static Color getHelpDialogDescriptionTextColor(BuildContext context) {
+    return Theme.of(context).brightness == Brightness.dark 
+        ? Colors.grey[300]! 
+        : Colors.grey[600]!;
+  }
+
+  static Color getHelpDialogHandleBarColor() {
+    return Colors.grey[400]!;
+  }
+
+  static Color getHelpDialogShadowColor() {
+    return helpDialogShadowColor.withValues(alpha: helpDialogShadowOpacity);
   }
 }
