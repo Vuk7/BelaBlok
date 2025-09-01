@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../themes/app_theme.dart';
 
 class ChooseCaller extends StatelessWidget {
   final int selectedChoice;
@@ -21,62 +22,58 @@ class ChooseCaller extends StatelessWidget {
         InkWell(
             onTap: () => onTap(0),
             child: Padding(
-              padding: const EdgeInsets.all(4.0),
+              padding: AppTheme.chooseCallerItemPadding,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   CircleAvatar(
-                    radius: 12,
+                    radius: AppTheme.chooseCallerCircleAvatarRadius,
                     backgroundColor: (selectedChoice == 0)
                         ? selectedColor
                         : notSelectedColor,
                   ),
-                  const SizedBox(
-                    width: 10,
+                 const SizedBox(
+                    width: AppTheme.chooseCallerIconTextSpacing,
                   ),
                   Text(
                     "ZOVE",
-                    style: TextStyle(
+                    style: AppTheme.chooseCallerTextStyle.copyWith(
                         color: (selectedChoice == 0)
                             ? selectedColor
-                            : notSelectedColor,
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold),
+                            : notSelectedColor),
                   )
                 ],
               ),
             )),
         const Spacer(),
-        const SizedBox(
-          width: 20,
+       const SizedBox(
+          width: AppTheme.chooseCallerHorizontalSpacing,
         ),
         const Spacer(),
         InkWell(
             onTap: () => onTap(1),
             child: Padding(
-              padding: const EdgeInsets.all(4.0),
+              padding: AppTheme.chooseCallerItemPadding,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   CircleAvatar(
-                    radius: 12,
+                    radius: AppTheme.chooseCallerCircleAvatarRadius,
                     backgroundColor: (selectedChoice == 1)
                         ? selectedColor
                         : notSelectedColor,
                   ),
-                  const SizedBox(
-                    width: 10,
+                 const SizedBox(
+                    width: AppTheme.chooseCallerIconTextSpacing,
                   ),
                   Text(
                     "ZOVE",
-                    style: TextStyle(
+                    style: AppTheme.chooseCallerTextStyle.copyWith(
                         color: (selectedChoice == 1)
                             ? selectedColor
-                            : notSelectedColor,
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold),
+                            : notSelectedColor),
                   )
                 ],
               ),

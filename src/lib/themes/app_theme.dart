@@ -369,6 +369,17 @@ class AppTheme {
     fontWeight: FontWeight.w600,
   );
 
+  // Choose Caller Widget Styles
+  static const EdgeInsets chooseCallerItemPadding = EdgeInsets.all(4.0);
+  static const double chooseCallerCircleAvatarRadius = 12.0;
+  static const double chooseCallerIconTextSpacing = 10.0;
+  static const double chooseCallerHorizontalSpacing = 20.0;
+
+  static const TextStyle chooseCallerTextStyle = TextStyle(
+    fontSize: 16,
+    fontWeight: FontWeight.bold,
+  );
+
   // Falling Arrow Icon Widget Styles
   static const Duration fallingArrowAnimationDuration = Duration(milliseconds: 600);
   static const double fallingArrowShakeBegin = 0.0;
