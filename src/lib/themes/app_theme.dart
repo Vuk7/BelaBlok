@@ -212,6 +212,12 @@ class AppTheme {
   static const Curve animatedHistoryListItemSlideCurve = Curves.easeOutCubic;
   static const Curve animatedHistoryListItemFadeCurve = Curves.easeOut;
 
+  // Top Score Details Widget Styles
+  static const Color topScoreDetailsTeamOneColor = Colors.orange;
+  static const Color topScoreDetailsTeamTwoColor = Colors.blue;
+  static const EdgeInsets topScoreDetailsPadding = EdgeInsets.symmetric(vertical: 20);
+  static const double topScoreDetailsGlowRadius = 30.0;
+
   // Pomoćne metode za boje prema temi
   static Color getScreenBackground(BuildContext context) {
     return Theme.of(context).brightness == Brightness.dark
