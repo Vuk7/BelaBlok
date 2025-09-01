@@ -218,6 +218,48 @@ class AppTheme {
   static const EdgeInsets topScoreDetailsPadding = EdgeInsets.symmetric(vertical: 20);
   static const double topScoreDetailsGlowRadius = 30.0;
 
+  // Round Score List Item Widget Styles
+  static const Color roundScoreListItemBackgroundColor = Color(0xFFD4B896);
+  static const Color roundScoreListItemTextColor = Color(0xFF2C3E50);
+  static const Color roundScoreListItemShadowColor = Colors.black;
+  static const Color roundScoreListItemInactiveIconColor = Colors.grey;
+  static const EdgeInsets roundScoreListItemMargin = EdgeInsets.symmetric(vertical: 6);
+  static const EdgeInsets roundScoreListItemPadding = EdgeInsets.symmetric(horizontal: 16, vertical: 12);
+  static const double roundScoreListItemBorderRadius = 16.0;
+  static const double roundScoreListItemShadowBlurRadius = 4.0;
+  static const Offset roundScoreListItemShadowOffset = Offset(0, 2);
+  static const double roundScoreListItemShadowOpacity = 0.1;
+  static const double roundScoreListItemTopSpacing = 8.0;
+  static const double roundScoreListItemIconTextSpacing = 4.0;
+  static const double roundScoreListItemArrowSpacing = 6.0;
+  static const double roundScoreListItemCenterSpacing = 8.0;
+  static const double roundScoreListItemIconSize = 16.0;
+
+  static const TextStyle roundScoreListItemCallTextStyle = TextStyle(
+    fontWeight: FontWeight.bold,
+    fontSize: 14,
+  );
+
+  static const TextStyle roundScoreListItemScoreTextStyle = TextStyle(
+    fontWeight: FontWeight.bold,
+    fontSize: 36,
+  );
+
+  static const TextStyle roundScoreListItemCallAmountTextStyle = TextStyle(
+    fontWeight: FontWeight.w600,
+    fontSize: 14,
+  );
+
+  static const TextStyle roundScoreListItemRoundNumberTextStyle = TextStyle(
+    fontWeight: FontWeight.bold,
+    fontSize: 18,
+  );
+
+  static const TextStyle roundScoreListItemTotalTextStyle = TextStyle(
+    fontWeight: FontWeight.w600,
+    fontSize: 16,
+  );
+
   // Pomoćne metode za boje prema temi
   static Color getScreenBackground(BuildContext context) {
     return Theme.of(context).brightness == Brightness.dark

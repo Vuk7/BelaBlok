@@ -34,20 +34,20 @@ class RoundScoreListItem extends StatelessWidget {
       onTap: onTap,
       child: Container(
         width: double.infinity,
-        margin: const EdgeInsets.symmetric(vertical: 6),
+        margin: AppTheme.roundScoreListItemMargin,
         decoration: BoxDecoration(
-          color: const Color(0xFFD4B896),
-          borderRadius: BorderRadius.circular(16),
+          color: AppTheme.roundScoreListItemBackgroundColor,
+          borderRadius: BorderRadius.circular(AppTheme.roundScoreListItemBorderRadius),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withValues(alpha: 0.1),
-              blurRadius: 4,
-              offset: const Offset(0, 2),
+              color: AppTheme.roundScoreListItemShadowColor.withValues(alpha: AppTheme.roundScoreListItemShadowOpacity),
+              blurRadius: AppTheme.roundScoreListItemShadowBlurRadius,
+              offset: AppTheme.roundScoreListItemShadowOffset,
             ),
           ],
         ),
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          padding: AppTheme.roundScoreListItemPadding,
           child: Row(
             children: [
               // Lijevi tim (MI)
@@ -55,47 +55,43 @@ class RoundScoreListItem extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const SizedBox(height: 8),
+                   const SizedBox(height: AppTheme.roundScoreListItemTopSpacing),
                     Row(
                       children: [
                         if (teamCalled == Team.teamOne)
-                          const Icon(
+                        const   Icon(
                             Icons.mic,
                             color: AppTheme.red,
-                            size: 16,
+                            size: AppTheme.roundScoreListItemIconSize,
                           ),
                         if (teamCalled == Team.teamOne)
-                          const SizedBox(width: 4),
+                         const SizedBox(width: AppTheme.roundScoreListItemIconTextSpacing),
                         if (teamCalled == Team.teamOne)
-                          const Text(
+                          Text(
                             "ZVAO",
-                            style: TextStyle(
+                            style: AppTheme.roundScoreListItemCallTextStyle.copyWith(
                               color: AppTheme.red,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 14,
                             ),
                           ),
                         if (teamCalled != Team.teamOne)
-                          const Icon(
+                           const Icon(
                             Icons.mic,
-                            color: Colors.grey,
-                            size: 16,
+                            color: AppTheme.roundScoreListItemInactiveIconColor,
+                            size: AppTheme.roundScoreListItemIconSize,
                           ),
                       ],
                     ),
-                    const SizedBox(height: 4),
+                   const SizedBox(height: AppTheme.roundScoreListItemIconTextSpacing),
                     Row(
                       children: [
                         Text(
                           "${_displayTeamOne()}",
-                          style: const TextStyle(
-                            color: Color(0xFF2C3E50),
-                            fontWeight: FontWeight.bold,
-                            fontSize: 36,
+                          style: AppTheme.roundScoreListItemScoreTextStyle.copyWith(
+                            color: AppTheme.roundScoreListItemTextColor,
                           ),
                         ),
                         if (teamOneFell) ...[
-                          const SizedBox(width: 6),
+                       const   SizedBox(width: AppTheme.roundScoreListItemArrowSpacing),
                        const   Tooltip(
                             message: 'Pad',
                             child: FallingArrowIcon(animateOnce: true),
@@ -105,10 +101,8 @@ class RoundScoreListItem extends StatelessWidget {
                     ),
                     Text(
                       "(+$teamOneCallAmount)",
-                      style: const TextStyle(
-                        color: Color(0xFF2C3E50),
-                        fontWeight: FontWeight.w600,
-                        fontSize: 14,
+                      style: AppTheme.roundScoreListItemCallAmountTextStyle.copyWith(
+                        color: AppTheme.roundScoreListItemTextColor,
                       ),
                     ),
                   ],
@@ -118,19 +112,15 @@ class RoundScoreListItem extends StatelessWidget {
                 children: [
                   Text(
                     "${(roundID + 1)}.",
-                    style: const TextStyle(
-                      color: Color(0xFF2C3E50),
-                      fontWeight: FontWeight.bold,
-                      fontSize: 18,
+                    style: AppTheme.roundScoreListItemRoundNumberTextStyle.copyWith(
+                      color: AppTheme.roundScoreListItemTextColor,
                     ),
                   ),
-                  const SizedBox(height: 8),
+                 const  SizedBox(height: AppTheme.roundScoreListItemCenterSpacing),
                   Text(
                     "${_roundTotal()}",
-                    style: const TextStyle(
-                      color: Color(0xFF2C3E50),
-                      fontWeight: FontWeight.w600,
-                      fontSize: 16,
+                    style: AppTheme.roundScoreListItemTotalTextStyle.copyWith(
+                      color: AppTheme.roundScoreListItemTextColor,
                     ),
                   ),
                 ],
@@ -140,49 +130,45 @@ class RoundScoreListItem extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
-                    const SizedBox(height: 8),
+                   const SizedBox(height: AppTheme.roundScoreListItemTopSpacing),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
                         if (teamCalled == Team.teamTwo)
-                          const Text(
+                          Text(
                             "ZVAO",
-                            style: TextStyle(
+                            style: AppTheme.roundScoreListItemCallTextStyle.copyWith(
                               color: AppTheme.red,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 14,
                             ),
                           ),
                         if (teamCalled == Team.teamTwo)
-                          const SizedBox(width: 4),
+                         const SizedBox(width: AppTheme.roundScoreListItemIconTextSpacing),
                         if (teamCalled == Team.teamTwo)
-                          const Icon(
+                       const   Icon(
                             Icons.mic,
                             color: AppTheme.red,
-                            size: 16,
+                            size: AppTheme.roundScoreListItemIconSize,
                           ),
                         if (teamCalled != Team.teamTwo)
-                          const Icon(
+                       const   Icon(
                             Icons.mic,
-                            color: Colors.grey,
-                            size: 16,
+                            color: AppTheme.roundScoreListItemInactiveIconColor,
+                            size: AppTheme.roundScoreListItemIconSize,
                           ),
                       ],
                     ),
-                    const SizedBox(height: 4),
+                 const   SizedBox(height: AppTheme.roundScoreListItemIconTextSpacing),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
                         Text(
                           "${_displayTeamTwo()}",
-                          style: const TextStyle(
-                            color: Color(0xFF2C3E50),
-                            fontWeight: FontWeight.bold,
-                            fontSize: 36,
+                          style: AppTheme.roundScoreListItemScoreTextStyle.copyWith(
+                            color: AppTheme.roundScoreListItemTextColor,
                           ),
                         ),
                         if (teamTwoFell) ...[
-                          const SizedBox(width: 6),
+                       const   SizedBox(width: AppTheme.roundScoreListItemArrowSpacing),
                        const   Tooltip(
                             message: 'Pad',
                             child: FallingArrowIcon(animateOnce: true),
@@ -192,10 +178,8 @@ class RoundScoreListItem extends StatelessWidget {
                     ),
                     Text(
                       "(+$teamTwoCallAmount)",
-                      style: const TextStyle(
-                        color: Color(0xFF2C3E50),
-                        fontWeight: FontWeight.w600,
-                        fontSize: 14,
+                      style: AppTheme.roundScoreListItemCallAmountTextStyle.copyWith(
+                        color: AppTheme.roundScoreListItemTextColor,
                       ),
                     ),
                   ],
