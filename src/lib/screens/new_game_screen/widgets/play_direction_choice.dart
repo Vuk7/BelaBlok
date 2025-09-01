@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:bela_blok/themes/app_theme.dart';
 
 class PlayDirectionChoice extends StatelessWidget {
   final int selectedChoice;
@@ -24,34 +25,31 @@ class PlayDirectionChoice extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Container(
-                  width: 32,
-                  height: 32,
+                  width: AppTheme.playDirectionIconContainerSize,
+                  height: AppTheme.playDirectionIconContainerSize,
                   decoration: BoxDecoration(
                     color: (selectedChoice == 0) ? selectedColor : notSelectedColor,
-                    borderRadius: BorderRadius.circular(16),
+                    borderRadius: BorderRadius.circular(AppTheme.playDirectionBorderRadius),
                   ),
                   child: const Icon(
                     Icons.rotate_right,
-                    color: Colors.white,
-                    size: 20,
+                    color: AppTheme.playDirectionIconColor,
+                    size: AppTheme.playDirectionIconSize,
                   ),
                 ),
                 const SizedBox(
-                  width: 8,
+                  width: AppTheme.playDirectionSpacingHorizontal,
                 ),
                 Text(
                   "U SMJERU KAZALJKE NA SATU",
-                  style: TextStyle(
-                      color: (selectedChoice == 0)
-                          ? selectedColor
-                          : notSelectedColor,
-                      fontSize: 12,
-                      fontWeight: FontWeight.bold),
+                  style: AppTheme.playDirectionLabelTextStyle.copyWith(
+                    color: (selectedChoice == 0) ? selectedColor : notSelectedColor,
+                  ),
                 )
               ],
             )),
         const SizedBox(
-          height: 10,
+          height: AppTheme.playDirectionSpacingVertical,
         ),
         GestureDetector(
             onTap: () => onTap(1),
@@ -60,29 +58,26 @@ class PlayDirectionChoice extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Container(
-                  width: 32,
-                  height: 32,
+                  width: AppTheme.playDirectionIconContainerSize,
+                  height: AppTheme.playDirectionIconContainerSize,
                   decoration: BoxDecoration(
                     color: (selectedChoice == 1) ? selectedColor : notSelectedColor,
-                    borderRadius: BorderRadius.circular(16),
+                    borderRadius: BorderRadius.circular(AppTheme.playDirectionBorderRadius),
                   ),
                   child: const Icon(
                     Icons.rotate_left,
-                    color: Colors.white,
-                    size: 20,
+                    color: AppTheme.playDirectionIconColor,
+                    size: AppTheme.playDirectionIconSize,
                   ),
                 ),
                 const SizedBox(
-                  width: 8,
+                  width: AppTheme.playDirectionSpacingHorizontal,
                 ),
                 Text(
                   "SUPROTNO OD KAZALJKE NA SATU",
-                  style: TextStyle(
-                      color: (selectedChoice == 1)
-                          ? selectedColor
-                          : notSelectedColor,
-                      fontSize: 12,
-                      fontWeight: FontWeight.bold),
+                  style: AppTheme.playDirectionLabelTextStyle.copyWith(
+                    color: (selectedChoice == 1) ? selectedColor : notSelectedColor,
+                  ),
                 )
               ],
             )),

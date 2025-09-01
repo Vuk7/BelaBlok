@@ -119,6 +119,19 @@ class AppTheme {
     fontWeight: FontWeight.w500,
   );
 
+  static const TextStyle playDirectionLabelTextStyle = TextStyle(
+    fontSize: 12,
+    fontWeight: FontWeight.bold,
+  );
+
+  // Play Direction Widget Styles
+  static const double playDirectionIconContainerSize = 32.0;
+  static const double playDirectionIconSize = 20.0;
+  static const double playDirectionBorderRadius = 20.0;
+  static const double playDirectionSpacingHorizontal = 8.0;
+  static const double playDirectionSpacingVertical = 10.0;
+  static const Color playDirectionIconColor = Colors.white;
+
   // Pomoćne metode za boje prema temi
   static Color getScreenBackground(BuildContext context) {
     return Theme.of(context).brightness == Brightness.dark
