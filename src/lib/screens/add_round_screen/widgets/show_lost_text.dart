@@ -18,65 +18,57 @@ class ShowLostText extends StatelessWidget {
             const Spacer(),
             (teamLost == Team.teamOne)
                 ? Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                    padding: AppTheme.showLostTextContainerPadding,
                     decoration: BoxDecoration(
-                      color: AppTheme.red,
-                      borderRadius: BorderRadius.circular(20),
+                      color: AppTheme.showLostTextBackgroundColor,
+                      borderRadius: BorderRadius.circular(AppTheme.showLostTextBorderRadius),
                     ),
                     child: const Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Icon(
                           Icons.trending_down,
-                          color: Colors.white,
-                          size: 20,
+                          color: AppTheme.showLostTextIconColor,
+                          size: AppTheme.showLostTextIconSize,
                         ),
-                        SizedBox(width: 4),
+                        SizedBox(width: AppTheme.showLostTextIconSpacing),
                         Text(
                           "PAD",
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
-                          ),
+                          style: AppTheme.showLostTextStyle,
                         ),
                       ],
                     ),
                   )
-                : const SizedBox(width: 80),
+                : const SizedBox(width: AppTheme.showLostTextContainerWidth),
             const Spacer(),
-            const SizedBox(width: 20),
+           const SizedBox(width: AppTheme.showLostTextHorizontalSpacing),
             const Spacer(),
             (teamLost == Team.teamTwo)
                 ? Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                    padding: AppTheme.showLostTextContainerPadding,
                     decoration: BoxDecoration(
-                      color: AppTheme.red,
-                      borderRadius: BorderRadius.circular(20),
+                      color: AppTheme.showLostTextBackgroundColor,
+                      borderRadius: BorderRadius.circular(AppTheme.showLostTextBorderRadius),
                     ),
                     child: const Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Icon(
                           Icons.trending_down,
-                          color: Colors.white,
-                          size: 20,
+                          color: AppTheme.showLostTextIconColor,
+                          size: AppTheme.showLostTextIconSize,
                         ),
-                        SizedBox(width: 4),
+                        SizedBox(width: AppTheme.showLostTextIconSpacing),
                         Text(
                           "PAD",
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
-                          ),
+                          style: AppTheme.showLostTextStyle,
                         ),
                       ],
                     ),
                   )
-                : const SizedBox(width: 80),
+                : const SizedBox(width: AppTheme.showLostTextContainerWidth),
             const Spacer(),
           ])
-        : const SizedBox(height: 50);
+        : const SizedBox(height: AppTheme.showLostTextContainerHeight);
   }
 }

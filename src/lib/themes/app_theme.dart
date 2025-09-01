@@ -335,6 +335,23 @@ class AppTheme {
   static const double topScoreVerticalSpacing = 10.0;
   static const double topScoreHorizontalSpacing = 20.0;
 
+  // Show Lost Text Widget Styles
+  static const EdgeInsets showLostTextContainerPadding = EdgeInsets.symmetric(horizontal: 12, vertical: 6);
+  static const double showLostTextBorderRadius = 20.0;
+  static const Color showLostTextBackgroundColor = red;
+  static const Color showLostTextIconColor = Colors.white;
+  static const double showLostTextIconSize = 20.0;
+  static const double showLostTextIconSpacing = 4.0;
+  static const double showLostTextContainerWidth = 80.0;
+  static const double showLostTextHorizontalSpacing = 20.0;
+  static const double showLostTextContainerHeight = 50.0;
+
+  static const TextStyle showLostTextStyle = TextStyle(
+    fontSize: 16,
+    fontWeight: FontWeight.bold,
+    color: Colors.white,
+  );
+
   // Falling Arrow Icon Widget Styles
   static const Duration fallingArrowAnimationDuration = Duration(milliseconds: 600);
   static const double fallingArrowShakeBegin = 0.0;
