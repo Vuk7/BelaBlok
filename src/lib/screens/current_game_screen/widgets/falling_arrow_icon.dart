@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../../themes/app_theme.dart';
 
 class FallingArrowIcon extends StatefulWidget {
   final bool animateOnce;
@@ -19,9 +20,12 @@ class _FallingArrowIconState extends State<FallingArrowIcon>
     super.initState();
     _controller = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 600),
+      duration: AppTheme.fallingArrowAnimationDuration,
     );
-    _shakeAnimation = Tween<double>(begin: 0, end: 12).chain(CurveTween(curve: Curves.elasticIn)).animate(_controller);
+    _shakeAnimation = Tween<double>(
+      begin: AppTheme.fallingArrowShakeBegin, 
+      end: AppTheme.fallingArrowShakeEnd
+    ).chain(CurveTween(curve: AppTheme.fallingArrowAnimationCurve)).animate(_controller);
     if (widget.animateOnce) {
       _controller.forward().then((_) => _controller.reverse());
     } else {
@@ -46,9 +50,9 @@ class _FallingArrowIconState extends State<FallingArrowIcon>
         );
       },
       child: const Icon(
-        Icons.arrow_downward,
-        color: Colors.red,
-        size: 28,
+        AppTheme.fallingArrowIcon,
+        color: AppTheme.fallingArrowIconColor,
+        size: AppTheme.fallingArrowIconSize,
       ),
     );
   }

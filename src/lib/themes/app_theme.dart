@@ -321,6 +321,15 @@ class AppTheme {
     fontSize: 14,
   );
 
+  // Falling Arrow Icon Widget Styles
+  static const Duration fallingArrowAnimationDuration = Duration(milliseconds: 600);
+  static const double fallingArrowShakeBegin = 0.0;
+  static const double fallingArrowShakeEnd = 12.0;
+  static const Curve fallingArrowAnimationCurve = Curves.elasticIn;
+  static const Color fallingArrowIconColor = Colors.red;
+  static const double fallingArrowIconSize = 28.0;
+  static const IconData fallingArrowIcon = Icons.arrow_downward;
+
   // Pomoćne metode za boje prema temi
   static Color getScreenBackground(BuildContext context) {
     return Theme.of(context).brightness == Brightness.dark
