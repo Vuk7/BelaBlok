@@ -2,27 +2,35 @@
 import 'package:flutter/material.dart';
 
 class AppTheme {
-  // Boje
+  // ============================================================================
+  // BASE COLORS
+  // ============================================================================
+  
   static const Color red = Color(0xFFFF0000);
   static const Color green = Color(0xFF3DB328);
   static const Color gray = Color(0xFFD9D9D9);
-  static const Color darkBackground = Color(0xFF2C3E50);
-  static const Color lightBackground = Color(0xFFF5E6D3);
-  static const Color screenBackgroundDark = Color(0xFF1E2A38);
-  static const Color primary = Color(0xFFFBB117);
   static const Color orange = Color(0xFFFF9500);
   static const Color blue = Color(0xFF2196F3);
   static const Color black = Color(0xFF000000);
+  static const Color primary = Color(0xFFFBB117);
   static const Color accent = Colors.amber;
   static const Color brownShadow = Colors.brown;
+
+  // Background Colors
+  static const Color darkBackground = Color(0xFF2C3E50);
+  static const Color lightBackground = Color(0xFFF5E6D3);
+  static const Color screenBackgroundDark = Color(0xFF1E2A38);
   static const Color lightScoreBackground = Color(0xFFE8E8E8);
 
-  // Overlay boje (transparentni slojevi)
+  // Overlay Colors (transparent layers)
   static const Color lightOverlay = Color(0x1A000000);
   static const Color mediumOverlay = Color(0x33000000);
   static const Color heavyOverlay = Color(0x66000000);
 
-  // Tematski Data
+  // ============================================================================
+  // THEME DATA
+  // ============================================================================
+  
   static final ThemeData lightTheme = ThemeData(
     primaryColor: primary,
     scaffoldBackgroundColor: lightBackground,
@@ -63,7 +71,10 @@ class AppTheme {
     ),
   );
 
-  // Stilovi teksta
+  // ============================================================================
+  // GLOBAL TEXT STYLES
+  // ============================================================================
+  
   static const TextStyle titleTextStyle = TextStyle(
     fontSize: 44,
     fontWeight: FontWeight.bold,
@@ -94,16 +105,6 @@ class AppTheme {
     fontWeight: FontWeight.bold,
   );
 
-  static const TextStyle optionButtonTextStyle = TextStyle(
-    fontSize: 24,
-    fontWeight: FontWeight.bold,
-  );
-
-  static const TextStyle manualOptionTextStyle = TextStyle(
-    fontSize: 20,
-    fontWeight: FontWeight.bold,
-  );
-
   static const TextStyle defaultButtonTextStyle = TextStyle(
     fontSize: 32,
     fontWeight: FontWeight.bold,
@@ -114,17 +115,30 @@ class AppTheme {
     fontWeight: FontWeight.bold,
   );
 
+  static const TextStyle optionButtonTextStyle = TextStyle(
+    fontSize: 24,
+    fontWeight: FontWeight.bold,
+  );
+
+  static const TextStyle manualOptionTextStyle = TextStyle(
+    fontSize: 20,
+    fontWeight: FontWeight.bold,
+  );
+
   static const TextStyle toggleTextStyle = TextStyle(
     fontSize: 12,
     fontWeight: FontWeight.w500,
   );
 
+  // ============================================================================
+  // PLAY DIRECTION WIDGET STYLES
+  // ============================================================================
+  
   static const TextStyle playDirectionLabelTextStyle = TextStyle(
     fontSize: 12,
     fontWeight: FontWeight.bold,
   );
 
-  // Play Direction Widget Styles
   static const double playDirectionIconContainerSize = 32.0;
   static const double playDirectionIconSize = 20.0;
   static const double playDirectionBorderRadius = 20.0;
@@ -132,7 +146,10 @@ class AppTheme {
   static const double playDirectionSpacingVertical = 10.0;
   static const Color playDirectionIconColor = Colors.white;
 
-  // Game Type Choice Widget Styles
+  // ============================================================================
+  // GAME TYPE CHOICE WIDGET STYLES
+  // ============================================================================
+  
   static const EdgeInsets gameTypeButtonPadding = EdgeInsets.only(right: 90, left: 90, top: 10, bottom: 10);
   static const EdgeInsets gameTypeButtonPaddingNoTop = EdgeInsets.only(right: 90, left: 90, bottom: 10);
   static const double gameTypeButtonTextPadding = 10.0;
@@ -150,7 +167,10 @@ class AppTheme {
     fontWeight: FontWeight.bold,
   );
 
-  // Game Settings Menu Widget Styles
+  // ============================================================================
+  // GAME SETTINGS MENU WIDGET STYLES
+  // ============================================================================
+  
   static const EdgeInsets gameSettingsMenuMargin = EdgeInsets.symmetric(vertical: 10);
   static const double gameSettingsMenuBorderRadius = 16.0;
   static const EdgeInsets gameSettingsMenuHeaderPadding = EdgeInsets.all(16);
@@ -176,7 +196,10 @@ class AppTheme {
     fontWeight: FontWeight.bold,
   );
 
-  // Animated Play Direction Choice Widget Styles
+  // ============================================================================
+  // ANIMATED PLAY DIRECTION CHOICE WIDGET STYLES
+  // ============================================================================
+  
   static const Duration animatedPlayDirectionAnimationDuration = Duration(milliseconds: 600);
   static const Duration animatedPlayDirectionTapDelay = Duration(milliseconds: 50);
   static const Curve animatedPlayDirectionAnimationCurve = Curves.easeInOut;
@@ -184,7 +207,10 @@ class AppTheme {
   static const double animatedPlayDirectionClockwiseRotation = 1.0;
   static const double animatedPlayDirectionCounterClockwiseRotation = -1.0;
 
-  // Animated Button Widget Styles
+  // ============================================================================
+  // ANIMATED BUTTON WIDGET STYLES
+  // ============================================================================
+  
   static const double animatedButtonScale = 0.95;
   static const Duration animatedButtonAnimationDuration = Duration(milliseconds: 120);
   static const double animatedButtonBorderRadius = 16.0;
@@ -195,7 +221,10 @@ class AppTheme {
   static const double animatedButtonIconSizeMultiplier = 0.8;
   static const double animatedButtonDefaultTextPadding = 20.0;
 
-  // Animated History List Item Widget Styles
+  // ============================================================================
+  // ANIMATED HISTORY LIST ITEM WIDGET STYLES
+  // ============================================================================
+  
   static const Duration animatedHistoryListItemScaleDuration = Duration(milliseconds: 150);
   static const Duration animatedHistoryListItemSlideDuration = Duration(milliseconds: 600);
   static const double animatedHistoryListItemScaleBegin = 1.0;
@@ -212,13 +241,31 @@ class AppTheme {
   static const Curve animatedHistoryListItemSlideCurve = Curves.easeOutCubic;
   static const Curve animatedHistoryListItemFadeCurve = Curves.easeOut;
 
-  // Top Score Details Widget Styles
+  // ============================================================================
+  // TOP SCORE WIDGET STYLES
+  // ============================================================================
+  
   static const Color topScoreDetailsTeamOneColor = Colors.orange;
   static const Color topScoreDetailsTeamTwoColor = Colors.blue;
   static const EdgeInsets topScoreDetailsPadding = EdgeInsets.symmetric(vertical: 20);
   static const double topScoreDetailsGlowRadius = 30.0;
+  static const double topScoreVerticalSpacing = 10.0;
+  static const double topScoreHorizontalSpacing = 20.0;
 
-  // Round Score List Item Widget Styles
+  static const TextStyle topScoreTeamLabelTextStyle = TextStyle(
+    fontWeight: FontWeight.bold,
+    fontSize: 36,
+  );
+
+  static const TextStyle topScoreTeamScoreTextStyle = TextStyle(
+    fontWeight: FontWeight.normal,
+    fontSize: 36,
+  );
+
+  // ============================================================================
+  // ROUND SCORE LIST ITEM WIDGET STYLES
+  // ============================================================================
+  
   static const Color roundScoreListItemBackgroundColor = Color(0xFFD4B896);
   static const Color roundScoreListItemTextColor = Color(0xFF2C3E50);
   static const Color roundScoreListItemShadowColor = Colors.black;
@@ -260,7 +307,111 @@ class AppTheme {
     fontSize: 16,
   );
 
-  // Help Dialog Widget Styles
+  // ============================================================================
+  // SHOW LOST TEXT WIDGET STYLES
+  // ============================================================================
+  
+  static const EdgeInsets showLostTextContainerPadding = EdgeInsets.symmetric(horizontal: 12, vertical: 6);
+  static const double showLostTextBorderRadius = 20.0;
+  static const Color showLostTextBackgroundColor = red;
+  static const Color showLostTextIconColor = Colors.white;
+  static const double showLostTextIconSize = 20.0;
+  static const double showLostTextIconSpacing = 4.0;
+  static const double showLostTextContainerWidth = 80.0;
+  static const double showLostTextHorizontalSpacing = 20.0;
+  static const double showLostTextContainerHeight = 50.0;
+
+  static const TextStyle showLostTextStyle = TextStyle(
+    fontSize: 16,
+    fontWeight: FontWeight.bold,
+    color: Colors.white,
+  );
+
+  // ============================================================================
+  // CHOOSE INPUT TYPE WIDGET STYLES
+  // ============================================================================
+  
+  static const double chooseInputTypeMinWidth = 90.0;
+  static const double chooseInputTypeMaxWidth = 140.0;
+  static const EdgeInsets chooseInputTypeLabelPadding = EdgeInsets.symmetric(vertical: 7.0, horizontal: 10.0);
+  static const double chooseInputTypeSpacing = 14.0;
+  static const Color chooseInputTypeSelectedTextColor = Colors.white;
+  static const Color chooseInputTypeNotSelectedTextColor = Colors.black;
+
+  static const TextStyle chooseInputTypeLabelTextStyle = TextStyle(
+    fontSize: 16,
+    fontWeight: FontWeight.w600,
+  );
+
+  static const TextStyle chooseInputTypeChoiceChipTextStyle = TextStyle(
+    fontWeight: FontWeight.w600,
+  );
+
+  // ============================================================================
+  // CHOOSE CALLER WIDGET STYLES
+  // ============================================================================
+  
+  static const EdgeInsets chooseCallerItemPadding = EdgeInsets.all(4.0);
+  static const double chooseCallerCircleAvatarRadius = 12.0;
+  static const double chooseCallerIconTextSpacing = 10.0;
+  static const double chooseCallerHorizontalSpacing = 20.0;
+
+  static const TextStyle chooseCallerTextStyle = TextStyle(
+    fontSize: 16,
+    fontWeight: FontWeight.bold,
+  );
+
+  // ============================================================================
+  // CALL SHOW WIDGET STYLES
+  // ============================================================================
+  
+  static const double callShowHeaderFontSize = 15.0;
+  static const double callShowClearButtonFontSize = 13.0;
+  static const double callShowBorderRadius = 10.0;
+  static const EdgeInsets callShowClearButtonPadding = EdgeInsets.symmetric(horizontal: 10, vertical: 4);
+  static const Size callShowClearButtonMinimumSize = Size(0, 32);
+  static const double callShowVerticalSpacing = 4.0;
+  static const EdgeInsets callShowListItemPadding = EdgeInsets.symmetric(vertical: 1.0);
+  static const double callShowDeleteIconSize = 18.0;
+  static const BoxConstraints callShowDeleteButtonConstraints = BoxConstraints(minWidth: 28, minHeight: 28);
+  static const EdgeInsets callShowContainerPadding = EdgeInsets.symmetric(vertical: 7);
+  static const double callShowBorderWidth = 1.3;
+  static const double callShowCallLabelFontSize = 15.0;
+  static const EdgeInsets callShowCountPadding = EdgeInsets.only(left: 5.0);
+  static const double callShowCountFontSize = 13.0;
+  static const double callShowWrapSpacing = 6.0;
+  static const double callShowWrapRunSpacing = 6.0;
+  static const double callShowButtonWidth = 70.0;
+  static const Size callShowButtonMinimumSize = Size(0, 32);
+  static const Color callShowButtonBackgroundColor = Colors.transparent;
+  static const Color callShowDisabledBackgroundColor = Color(0xFFE0E0E0); // Colors.grey[300]
+
+  static const TextStyle callShowHeaderTextStyle = TextStyle(
+    fontWeight: FontWeight.bold,
+  );
+
+  static const TextStyle callShowClearButtonTextStyle = TextStyle(
+    fontSize: callShowClearButtonFontSize,
+  );
+
+  static const TextStyle callShowCallLabelTextStyle = TextStyle(
+    fontSize: callShowCallLabelFontSize,
+    fontWeight: FontWeight.w600,
+  );
+
+  static const TextStyle callShowCountTextStyle = TextStyle(
+    fontSize: callShowCountFontSize,
+  );
+
+  static const TextStyle callShowButtonTextStyle = TextStyle(
+    fontSize: callShowCallLabelFontSize,
+    fontWeight: FontWeight.w600,
+  );
+
+  // ============================================================================
+  // HELP DIALOG WIDGET STYLES
+  // ============================================================================
+  
   static const Color helpDialogDarkBackgroundColor = Color(0xFF34495E);
   static const Color helpDialogLightBackgroundColor = Colors.white;
   static const Color helpDialogShadowColor = Colors.black;
@@ -321,110 +472,10 @@ class AppTheme {
     fontSize: 14,
   );
 
-  // Top Score Widget Styles
-  static const TextStyle topScoreTeamLabelTextStyle = TextStyle(
-    fontWeight: FontWeight.bold,
-    fontSize: 36,
-  );
-
-  static const TextStyle topScoreTeamScoreTextStyle = TextStyle(
-    fontWeight: FontWeight.normal,
-    fontSize: 36,
-  );
-
-  static const double topScoreVerticalSpacing = 10.0;
-  static const double topScoreHorizontalSpacing = 20.0;
-
-  // Show Lost Text Widget Styles
-  static const EdgeInsets showLostTextContainerPadding = EdgeInsets.symmetric(horizontal: 12, vertical: 6);
-  static const double showLostTextBorderRadius = 20.0;
-  static const Color showLostTextBackgroundColor = red;
-  static const Color showLostTextIconColor = Colors.white;
-  static const double showLostTextIconSize = 20.0;
-  static const double showLostTextIconSpacing = 4.0;
-  static const double showLostTextContainerWidth = 80.0;
-  static const double showLostTextHorizontalSpacing = 20.0;
-  static const double showLostTextContainerHeight = 50.0;
-
-  static const TextStyle showLostTextStyle = TextStyle(
-    fontSize: 16,
-    fontWeight: FontWeight.bold,
-    color: Colors.white,
-  );
-
-  // Choose Input Type Widget Styles
-  static const double chooseInputTypeMinWidth = 90.0;
-  static const double chooseInputTypeMaxWidth = 140.0;
-  static const EdgeInsets chooseInputTypeLabelPadding = EdgeInsets.symmetric(vertical: 7.0, horizontal: 10.0);
-  static const double chooseInputTypeSpacing = 14.0;
-  static const Color chooseInputTypeSelectedTextColor = Colors.white;
-  static const Color chooseInputTypeNotSelectedTextColor = Colors.black;
-
-  static const TextStyle chooseInputTypeLabelTextStyle = TextStyle(
-    fontSize: 16,
-    fontWeight: FontWeight.w600,
-  );
-
-  static const TextStyle chooseInputTypeChoiceChipTextStyle = TextStyle(
-    fontWeight: FontWeight.w600,
-  );
-
-  // Choose Caller Widget Styles
-  static const EdgeInsets chooseCallerItemPadding = EdgeInsets.all(4.0);
-  static const double chooseCallerCircleAvatarRadius = 12.0;
-  static const double chooseCallerIconTextSpacing = 10.0;
-  static const double chooseCallerHorizontalSpacing = 20.0;
-
-  static const TextStyle chooseCallerTextStyle = TextStyle(
-    fontSize: 16,
-    fontWeight: FontWeight.bold,
-  );
-
-  // Call Show Widget Styles
-  static const double callShowHeaderFontSize = 15.0;
-  static const double callShowClearButtonFontSize = 13.0;
-  static const double callShowBorderRadius = 10.0;
-  static const EdgeInsets callShowClearButtonPadding = EdgeInsets.symmetric(horizontal: 10, vertical: 4);
-  static const Size callShowClearButtonMinimumSize = Size(0, 32);
-  static const double callShowVerticalSpacing = 4.0;
-  static const EdgeInsets callShowListItemPadding = EdgeInsets.symmetric(vertical: 1.0);
-  static const double callShowDeleteIconSize = 18.0;
-  static const BoxConstraints callShowDeleteButtonConstraints = BoxConstraints(minWidth: 28, minHeight: 28);
-  static const EdgeInsets callShowContainerPadding = EdgeInsets.symmetric(vertical: 7);
-  static const double callShowBorderWidth = 1.3;
-  static const double callShowCallLabelFontSize = 15.0;
-  static const EdgeInsets callShowCountPadding = EdgeInsets.only(left: 5.0);
-  static const double callShowCountFontSize = 13.0;
-  static const double callShowWrapSpacing = 6.0;
-  static const double callShowWrapRunSpacing = 6.0;
-  static const double callShowButtonWidth = 70.0;
-  static const Size callShowButtonMinimumSize = Size(0, 32);
-  static const Color callShowButtonBackgroundColor = Colors.transparent;
-  static const Color callShowDisabledBackgroundColor = Color(0xFFE0E0E0); // Colors.grey[300]
-
-  static const TextStyle callShowHeaderTextStyle = TextStyle(
-    fontWeight: FontWeight.bold,
-  );
-
-  static const TextStyle callShowClearButtonTextStyle = TextStyle(
-    fontSize: callShowClearButtonFontSize,
-  );
-
-  static const TextStyle callShowCallLabelTextStyle = TextStyle(
-    fontSize: callShowCallLabelFontSize,
-    fontWeight: FontWeight.w600,
-  );
-
-  static const TextStyle callShowCountTextStyle = TextStyle(
-    fontSize: callShowCountFontSize,
-  );
-
-  static const TextStyle callShowButtonTextStyle = TextStyle(
-    fontSize: callShowCallLabelFontSize,
-    fontWeight: FontWeight.w600,
-  );
-
-  // Rules Widget Styles
+  // ============================================================================
+  // RULES WIDGET STYLES
+  // ============================================================================
+  
   static const double rulesWidgetBorderRadius = 16.0;
   static const double rulesWidgetBorderWidth = 2.0;
   static const double rulesWidgetShadowBlurRadius = 8.0;
@@ -467,7 +518,10 @@ class AppTheme {
     height: rulesWidgetSectionTextLineHeight,
   );
 
-  // Player Shuffling Widget Styles
+  // ============================================================================
+  // PLAYER SHUFFLING WIDGET STYLES
+  // ============================================================================
+  
   static const double playerShufflingChairContainerSize = 28.0;
   static const double playerShufflingChairBorderRadius = 4.0;
   static const double playerShufflingChairSpacing = 30.0;
@@ -483,7 +537,10 @@ class AppTheme {
     fontSize: playerShufflingChairTextFontSize,
   );
 
-  // Zvanja Help Dialog Widget Styles
+  // ============================================================================
+  // ZVANJA HELP DIALOG WIDGET STYLES
+  // ============================================================================
+  
   static const double zvanjaHelpDialogHeightRatio = 0.85;
   static const double zvanjaHelpDialogBorderRadius = 20.0;
   static const double zvanjaHelpDialogShadowBlurRadius = 10.0;
@@ -543,7 +600,10 @@ class AppTheme {
     height: zvanjaHelpDialogNotesTextLineHeight,
   );
 
-  // Falling Arrow Icon Widget Styles
+  // ============================================================================
+  // FALLING ARROW ICON WIDGET STYLES
+  // ============================================================================
+  
   static const Duration fallingArrowAnimationDuration = Duration(milliseconds: 600);
   static const double fallingArrowShakeBegin = 0.0;
   static const double fallingArrowShakeEnd = 12.0;
@@ -552,7 +612,11 @@ class AppTheme {
   static const double fallingArrowIconSize = 28.0;
   static const IconData fallingArrowIcon = Icons.arrow_downward;
 
-  // Pomoćne metode za boje prema temi
+  // ============================================================================
+  // THEME HELPER METHODS
+  // ============================================================================
+  
+  // General helper methods for color based on theme
   static Color getScreenBackground(BuildContext context) {
     return Theme.of(context).brightness == Brightness.dark
         ? screenBackgroundDark
@@ -589,7 +653,7 @@ class AppTheme {
         : lightScoreBackground;
   }
 
-  // Help Dialog Helper Methods
+  // Help Dialog helper methods
   static Color getHelpDialogBackgroundColor(BuildContext context) {
     return Theme.of(context).brightness == Brightness.dark 
         ? helpDialogDarkBackgroundColor 
@@ -640,7 +704,7 @@ class AppTheme {
     return helpDialogShadowColor.withValues(alpha: helpDialogShadowOpacity);
   }
 
-  // Rules Widget Helper Methods
+  // Rules Widget helper methods
   static Color getRulesWidgetBackgroundColor(BuildContext context) {
     return Theme.of(context).brightness == Brightness.dark 
         ? Colors.grey[800]! 
@@ -671,7 +735,7 @@ class AppTheme {
         : Colors.grey[700]!;
   }
 
-  // Zvanja Help Dialog Helper Methods
+  // Zvanja Help Dialog helper methods
   static Color getZvanjaHelpDialogBackgroundColor(BuildContext context) {
     return getCardBackgroundColor(context);
   }
