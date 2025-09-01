@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../themes/app_theme.dart';
 
 class TopScore extends StatelessWidget {
   final int teamOneScore;
@@ -15,50 +16,42 @@ class TopScore extends StatelessWidget {
           const Spacer(),
           Text(
             "MI",
-            style: TextStyle(
-                fontWeight: FontWeight.bold,
-                color: Theme.of(context).colorScheme.primary,
-                fontSize: 36),
+            style: AppTheme.topScoreTeamLabelTextStyle.copyWith(
+                color: Theme.of(context).colorScheme.primary),
           ),
           const Spacer(),
-          const SizedBox(
-            width: 20,
+         const SizedBox(
+            width: AppTheme.topScoreHorizontalSpacing,
           ),
           const Spacer(),
           Text(
             "VI",
-            style: TextStyle(
-                fontWeight: FontWeight.bold,
-                color: Theme.of(context).colorScheme.secondary,
-                fontSize: 36),
+            style: AppTheme.topScoreTeamLabelTextStyle.copyWith(
+                color: Theme.of(context).colorScheme.secondary),
           ),
           const Spacer(),
         ],
       ),
-      const SizedBox(
-        height: 10,
+    const  SizedBox(
+        height: AppTheme.topScoreVerticalSpacing,
       ),
       Row(
         children: [
           const Spacer(),
           Text(
             "$teamOneScore",
-            style: TextStyle(
-                fontWeight: FontWeight.normal,
-                color: Theme.of(context).colorScheme.secondary,
-                fontSize: 36),
+            style: AppTheme.topScoreTeamScoreTextStyle.copyWith(
+                color: Theme.of(context).colorScheme.secondary),
           ),
           const Spacer(),
-          const SizedBox(
-            width: 20,
+        const  SizedBox(
+            width: AppTheme.topScoreHorizontalSpacing,
           ),
           const Spacer(),
           Text(
             "$teamTwoScore",
-            style: TextStyle(
-                fontWeight: FontWeight.normal,
-                color: Theme.of(context).colorScheme.secondary,
-                fontSize: 36),
+            style: AppTheme.topScoreTeamScoreTextStyle.copyWith(
+                color: Theme.of(context).colorScheme.secondary),
           ),
           const Spacer(),
         ],

@@ -321,6 +321,20 @@ class AppTheme {
     fontSize: 14,
   );
 
+  // Top Score Widget Styles
+  static const TextStyle topScoreTeamLabelTextStyle = TextStyle(
+    fontWeight: FontWeight.bold,
+    fontSize: 36,
+  );
+
+  static const TextStyle topScoreTeamScoreTextStyle = TextStyle(
+    fontWeight: FontWeight.normal,
+    fontSize: 36,
+  );
+
+  static const double topScoreVerticalSpacing = 10.0;
+  static const double topScoreHorizontalSpacing = 20.0;
+
   // Falling Arrow Icon Widget Styles
   static const Duration fallingArrowAnimationDuration = Duration(milliseconds: 600);
   static const double fallingArrowShakeBegin = 0.0;
