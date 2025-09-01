@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../themes/app_theme.dart';
 
 class AnimatedButton extends StatefulWidget {
   final String text;
@@ -16,7 +17,7 @@ class AnimatedButton extends StatefulWidget {
     required this.textStyle,
     required this.bgColor,
     required this.onTap,
-    this.textPadding = 20.0,
+    this.textPadding = AppTheme.animatedButtonDefaultTextPadding,
     this.width,
     this.height,
     this.icon,
@@ -31,7 +32,7 @@ class _AnimatedButtonState extends State<AnimatedButton> {
 
   void _onTapDown(TapDownDetails details) {
     setState(() {
-      _scale = 0.95;
+      _scale = AppTheme.animatedButtonScale;
     });
   }
 
@@ -56,19 +57,19 @@ class _AnimatedButtonState extends State<AnimatedButton> {
       onTap: widget.onTap,
       child: AnimatedScale(
         scale: _scale,
-        duration: const Duration(milliseconds: 120),
+        duration: AppTheme.animatedButtonAnimationDuration,
         child: Container(
           width: widget.width,
           height: widget.height,
           padding: EdgeInsets.symmetric(vertical: widget.textPadding),
           decoration: BoxDecoration(
             color: widget.bgColor,
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: BorderRadius.circular(AppTheme.animatedButtonBorderRadius),
             boxShadow: [
               BoxShadow(
-                color: widget.bgColor.withValues(alpha: 0.3),
-                blurRadius: 10,
-                offset: const Offset(0, 4),
+                color: widget.bgColor.withValues(alpha: AppTheme.animatedButtonShadowOpacity),
+                blurRadius: AppTheme.animatedButtonShadowBlurRadius,
+                offset: AppTheme.animatedButtonShadowOffset,
               ),
             ],
           ),
@@ -81,11 +82,11 @@ class _AnimatedButtonState extends State<AnimatedButton> {
                   style: widget.textStyle,
                 ),
                 if (widget.icon != null) ...[
-                  const SizedBox(width: 12),
+                 const SizedBox(width: AppTheme.animatedButtonIconSpacing),
                   Icon(
                     widget.icon,
                     color: widget.textStyle.color,
-                    size: widget.textStyle.fontSize! * 0.8,
+                    size: widget.textStyle.fontSize! * AppTheme.animatedButtonIconSizeMultiplier,
                   ),
                 ],
               ],

@@ -184,6 +184,17 @@ class AppTheme {
   static const double animatedPlayDirectionClockwiseRotation = 1.0;
   static const double animatedPlayDirectionCounterClockwiseRotation = -1.0;
 
+  // Animated Button Widget Styles
+  static const double animatedButtonScale = 0.95;
+  static const Duration animatedButtonAnimationDuration = Duration(milliseconds: 120);
+  static const double animatedButtonBorderRadius = 16.0;
+  static const double animatedButtonShadowBlurRadius = 10.0;
+  static const Offset animatedButtonShadowOffset = Offset(0, 4);
+  static const double animatedButtonShadowOpacity = 0.3;
+  static const double animatedButtonIconSpacing = 12.0;
+  static const double animatedButtonIconSizeMultiplier = 0.8;
+  static const double animatedButtonDefaultTextPadding = 20.0;
+
   // Pomoćne metode za boje prema temi
   static Color getScreenBackground(BuildContext context) {
     return Theme.of(context).brightness == Brightness.dark
