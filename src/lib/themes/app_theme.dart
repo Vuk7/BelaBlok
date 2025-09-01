@@ -1,4 +1,4 @@
-// lib/themes/app_theme.dart
+
 import 'package:flutter/material.dart';
 
 class AppTheme {
@@ -147,6 +147,32 @@ class AppTheme {
   static const TextStyle gameTypeManualButtonTextStyle = TextStyle(
     color: gameTypeButtonTextColor,
     fontSize: 30,
+    fontWeight: FontWeight.bold,
+  );
+
+  // Game Settings Menu Widget Styles
+  static const EdgeInsets gameSettingsMenuMargin = EdgeInsets.symmetric(vertical: 10);
+  static const double gameSettingsMenuBorderRadius = 16.0;
+  static const EdgeInsets gameSettingsMenuHeaderPadding = EdgeInsets.all(16);
+  static const EdgeInsets gameSettingsMenuContentPadding = EdgeInsets.fromLTRB(16, 0, 16, 16);
+  static const double gameSettingsMenuIconSize = 28.0;
+  static const double gameSettingsMenuIconSpacing = 12.0;
+  static const double gameSettingsMenuSectionSpacing = 16.0;
+  static const double gameSettingsMenuItemSpacing = 12.0;
+  static const double gameSettingsMenuBottomSpacing = 8.0;
+  static const Duration gameSettingsMenuAnimationDuration = Duration(milliseconds: 300);
+  static const Curve gameSettingsMenuAnimationCurve = Curves.easeInOut;
+  static const double gameSettingsMenuShadowBlurRadius = 4.0;
+  static const Offset gameSettingsMenuShadowOffset = Offset(0, 2);
+  static const double gameSettingsMenuShadowOpacity = 0.1;
+
+  static const TextStyle gameSettingsMenuHeaderTextStyle = TextStyle(
+    fontSize: 18,
+    fontWeight: FontWeight.bold,
+  );
+
+  static const TextStyle gameSettingsMenuSectionTextStyle = TextStyle(
+    fontSize: 16,
     fontWeight: FontWeight.bold,
   );
 

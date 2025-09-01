@@ -22,17 +22,17 @@ class _GameSettingsMenuState extends State<GameSettingsMenu> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.symmetric(vertical: 10),
+      margin: AppTheme.gameSettingsMenuMargin,
       decoration: BoxDecoration(
         color: Theme.of(context).brightness == Brightness.dark 
           ? Colors.grey[800] 
           : Colors.white,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(AppTheme.gameSettingsMenuBorderRadius),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.1),
-            blurRadius: 4,
-            offset: const Offset(0, 2),
+            color: Colors.black.withValues(alpha: AppTheme.gameSettingsMenuShadowOpacity),
+            blurRadius: AppTheme.gameSettingsMenuShadowBlurRadius,
+            offset: AppTheme.gameSettingsMenuShadowOffset,
           ),
         ],
       ),
@@ -45,23 +45,21 @@ class _GameSettingsMenuState extends State<GameSettingsMenu> {
                 isExpanded = !isExpanded;
               });
             },
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: BorderRadius.circular(AppTheme.gameSettingsMenuBorderRadius),
             child: Padding(
-              padding: const EdgeInsets.all(16),
+              padding: AppTheme.gameSettingsMenuHeaderPadding,
               child: Row(
                 children: [
                   const Icon(
                     Icons.rotate_right,
                     color: AppTheme.green,
-                    size: 28,
+                    size: AppTheme.gameSettingsMenuIconSize,
                   ),
-                  const SizedBox(width: 12),
+                  const SizedBox(width: AppTheme.gameSettingsMenuIconSpacing),
                   Expanded(
                     child: Text(
                       "POSTAVKE SMJERA",
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
+                      style: AppTheme.gameSettingsMenuHeaderTextStyle.copyWith(
                         color: Theme.of(context).colorScheme.onSurface,
                       ),
                     ),
@@ -69,7 +67,7 @@ class _GameSettingsMenuState extends State<GameSettingsMenu> {
                   Icon(
                     isExpanded ? Icons.expand_less : Icons.expand_more,
                     color: Theme.of(context).colorScheme.onSurface,
-                    size: 28,
+                    size: AppTheme.gameSettingsMenuIconSize,
                   ),
                 ],
               ),
@@ -77,34 +75,32 @@ class _GameSettingsMenuState extends State<GameSettingsMenu> {
           ),
           // Expandable sadržaj
           AnimatedContainer(
-            duration: const Duration(milliseconds: 300),
-            curve: Curves.easeInOut,
+            duration: AppTheme.gameSettingsMenuAnimationDuration,
+            curve: AppTheme.gameSettingsMenuAnimationCurve,
             height: isExpanded ? null : 0,
             child: isExpanded
                 ? Padding(
-                    padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+                    padding: AppTheme.gameSettingsMenuContentPadding,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         const Divider(),
-                        const SizedBox(height: 16),
+                        const SizedBox(height: AppTheme.gameSettingsMenuSectionSpacing),
                         // Smjer sekcija
                         Text(
                           "SMJER",
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
+                          style: AppTheme.gameSettingsMenuSectionTextStyle.copyWith(
                             color: Theme.of(context).colorScheme.onSurface,
                           ),
                         ),
-                        const SizedBox(height: 12),
+                        const SizedBox(height: AppTheme.gameSettingsMenuItemSpacing),
                         AnimatedPlayDirectionChoice(
                           selectedChoice: widget.playDirectionSelect,
                           selectedColor: AppTheme.green,
                           notSelectedColor: Theme.of(context).colorScheme.onSurface,
                           onTap: widget.onPlayDirectionChanged,
                         ),
-                        const SizedBox(height: 8),
+                        const SizedBox(height: AppTheme.gameSettingsMenuBottomSpacing),
                       ],
                     ),
                   )
