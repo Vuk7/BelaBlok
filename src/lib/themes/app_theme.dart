@@ -380,6 +380,50 @@ class AppTheme {
     fontWeight: FontWeight.bold,
   );
 
+  // Call Show Widget Styles
+  static const double callShowHeaderFontSize = 15.0;
+  static const double callShowClearButtonFontSize = 13.0;
+  static const double callShowBorderRadius = 10.0;
+  static const EdgeInsets callShowClearButtonPadding = EdgeInsets.symmetric(horizontal: 10, vertical: 4);
+  static const Size callShowClearButtonMinimumSize = Size(0, 32);
+  static const double callShowVerticalSpacing = 4.0;
+  static const EdgeInsets callShowListItemPadding = EdgeInsets.symmetric(vertical: 1.0);
+  static const double callShowDeleteIconSize = 18.0;
+  static const BoxConstraints callShowDeleteButtonConstraints = BoxConstraints(minWidth: 28, minHeight: 28);
+  static const EdgeInsets callShowContainerPadding = EdgeInsets.symmetric(vertical: 7);
+  static const double callShowBorderWidth = 1.3;
+  static const double callShowCallLabelFontSize = 15.0;
+  static const EdgeInsets callShowCountPadding = EdgeInsets.only(left: 5.0);
+  static const double callShowCountFontSize = 13.0;
+  static const double callShowWrapSpacing = 6.0;
+  static const double callShowWrapRunSpacing = 6.0;
+  static const double callShowButtonWidth = 70.0;
+  static const Size callShowButtonMinimumSize = Size(0, 32);
+  static const Color callShowButtonBackgroundColor = Colors.transparent;
+  static const Color callShowDisabledBackgroundColor = Color(0xFFE0E0E0); // Colors.grey[300]
+
+  static const TextStyle callShowHeaderTextStyle = TextStyle(
+    fontWeight: FontWeight.bold,
+  );
+
+  static const TextStyle callShowClearButtonTextStyle = TextStyle(
+    fontSize: callShowClearButtonFontSize,
+  );
+
+  static const TextStyle callShowCallLabelTextStyle = TextStyle(
+    fontSize: callShowCallLabelFontSize,
+    fontWeight: FontWeight.w600,
+  );
+
+  static const TextStyle callShowCountTextStyle = TextStyle(
+    fontSize: callShowCountFontSize,
+  );
+
+  static const TextStyle callShowButtonTextStyle = TextStyle(
+    fontSize: callShowCallLabelFontSize,
+    fontWeight: FontWeight.w600,
+  );
+
   // Falling Arrow Icon Widget Styles
   static const Duration fallingArrowAnimationDuration = Duration(milliseconds: 600);
   static const double fallingArrowShakeBegin = 0.0;

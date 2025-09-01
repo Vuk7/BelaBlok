@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../themes/app_theme.dart';
 
 enum CallType { z20, z50, z100 }
 enum SpecialCall { belot }
@@ -99,90 +100,90 @@ class _CallShowWidgetState extends State<CallShowWidget> {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text('Zvanja: $sum${belotPoints > 0 ? ' +$belotPoints' : ''}', style: TextStyle(fontSize: 15, color: widget.color, fontWeight: FontWeight.bold)),
+            Text('Zvanja: $sum${belotPoints > 0 ? ' +$belotPoints' : ''}', style: AppTheme.callShowHeaderTextStyle.copyWith(fontSize: AppTheme.callShowHeaderFontSize, color: widget.color)),
             TextButton(
               onPressed: _clearAll,
               style: TextButton.styleFrom(
                 foregroundColor: widget.color,
                 side: BorderSide(color: widget.color),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                minimumSize:const Size(0, 32),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppTheme.callShowBorderRadius)),
+                padding: AppTheme.callShowClearButtonPadding,
+                minimumSize: AppTheme.callShowClearButtonMinimumSize,
               ),
-              child: const Text('Obriši', style: TextStyle(fontSize: 13)),
+              child:const  Text('Obriši', style: AppTheme.callShowClearButtonTextStyle),
             ),
           ],
         ),
-        const SizedBox(height: 4),
+         const SizedBox(height: AppTheme.callShowVerticalSpacing),
         ..._calls.asMap().entries.map((entry) {
           final idx = entry.key;
           final c = entry.value;
           if (c.type == SpecialCall.belot) {
             return Padding(
-              padding: const EdgeInsets.symmetric(vertical: 1.0),
+              padding:  AppTheme.callShowListItemPadding,
               child: Row(
                 children: [
                   IconButton(
-                    icon: const Icon(Icons.delete_outline, size: 18),
+                    icon:const Icon(Icons.delete_outline, size: AppTheme.callShowDeleteIconSize),
                     color: widget.color,
                     padding: EdgeInsets.zero,
-                    constraints: const BoxConstraints(minWidth: 28, minHeight: 28),
+                    constraints: AppTheme.callShowDeleteButtonConstraints,
                     onPressed: () => _removeCall(idx),
                   ),
                   Expanded(
                     child: Container(
                       alignment: Alignment.center,
-                      padding: const EdgeInsets.symmetric(vertical: 7),
+                      padding: AppTheme.callShowContainerPadding,
                       decoration: BoxDecoration(
-                        border: Border.all(color: widget.color, width: 1.3),
-                        borderRadius: BorderRadius.circular(10),
+                        border: Border.all(color: widget.color, width: AppTheme.callShowBorderWidth),
+                        borderRadius: BorderRadius.circular(AppTheme.callShowBorderRadius),
                       ),
-                      child: Text('Belot', style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: widget.color)),
+                      child: Text('Belot', style: AppTheme.callShowCallLabelTextStyle.copyWith(color: widget.color)),
                     ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.only(left: 5.0),
-                    child: Text('+${widget.gameType}', style: TextStyle(fontSize: 13, color: widget.color)),
+                    padding: AppTheme.callShowCountPadding,
+                    child: Text('+${widget.gameType}', style: AppTheme.callShowCountTextStyle.copyWith(color: widget.color)),
                   ),
                 ],
               ),
             );
           }
           return Padding(
-            padding: const EdgeInsets.symmetric(vertical: 1.0),
+            padding: AppTheme.callShowListItemPadding,
             child: Row(
               children: [
                 IconButton(
-                  icon: const Icon(Icons.delete_outline, size: 18),
+                  icon: const Icon(Icons.delete_outline, size: AppTheme.callShowDeleteIconSize),
                   color: widget.color,
                   padding: EdgeInsets.zero,
-                  constraints: const BoxConstraints(minWidth: 28, minHeight: 28),
+                  constraints: AppTheme.callShowDeleteButtonConstraints,
                   onPressed: () => _removeCall(idx),
                 ),
                 Expanded(
                   child: Container(
                     alignment: Alignment.center,
-                    padding: const EdgeInsets.symmetric(vertical: 7),
+                    padding: AppTheme.callShowContainerPadding,
                     decoration: BoxDecoration(
-                      border: Border.all(color: widget.color, width: 1.3),
-                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(color: widget.color, width: AppTheme.callShowBorderWidth),
+                      borderRadius: BorderRadius.circular(AppTheme.callShowBorderRadius),
                     ),
-                    child: Text(_callLabel(c.type), style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: widget.color)),
+                    child: Text(_callLabel(c.type), style: AppTheme.callShowCallLabelTextStyle.copyWith(color: widget.color)),
                   ),
                 ),
                 if (c.count > 1)
                   Padding(
-                    padding: const EdgeInsets.only(left: 5.0),
-                    child: Text('x${c.count}', style: TextStyle(fontSize: 13, color: widget.color)),
+                    padding: AppTheme.callShowCountPadding,
+                    child: Text('x${c.count}', style: AppTheme.callShowCountTextStyle.copyWith(color: widget.color)),
                   ),
               ],
             ),
           );
         }),
-        const SizedBox(height: 4),
+        const SizedBox(height: AppTheme.callShowVerticalSpacing),
         Wrap(
-          spacing: 6,
-          runSpacing: 6,
+          spacing: AppTheme.callShowWrapSpacing,
+          runSpacing: AppTheme.callShowWrapRunSpacing,
           children: [
             _callButton(CallType.z20),
             _callButton(CallType.z50),
@@ -196,19 +197,19 @@ class _CallShowWidgetState extends State<CallShowWidget> {
 
   Widget _callButton(CallType type) {
     return SizedBox(
-      width: 70,
+      width: AppTheme.callShowButtonWidth,
       child: ElevatedButton(
         onPressed: () => _addCall(type),
         style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.transparent,
+          backgroundColor: AppTheme.callShowButtonBackgroundColor,
           foregroundColor: widget.color,
-          side: BorderSide(color: widget.color, width: 1.3),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+          side: BorderSide(color: widget.color, width: AppTheme.callShowBorderWidth),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppTheme.callShowBorderRadius)),
           elevation: 0,
-          padding: const EdgeInsets.symmetric(vertical: 7),
-          minimumSize: const Size(0, 32),
+          padding: AppTheme.callShowContainerPadding,
+          minimumSize: AppTheme.callShowButtonMinimumSize,
         ),
-        child: Text(_callLabel(type), style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: widget.color)),
+        child: Text(_callLabel(type), style: AppTheme.callShowButtonTextStyle.copyWith(color: widget.color)),
       ),
     );
   }
@@ -216,7 +217,7 @@ class _CallShowWidgetState extends State<CallShowWidget> {
   Widget _belotButton() {
     final already = hasBelot;
     return SizedBox(
-      width: 70,
+      width: AppTheme.callShowButtonWidth,
       child: ElevatedButton(
         onPressed: already
             ? null
@@ -228,15 +229,15 @@ class _CallShowWidgetState extends State<CallShowWidget> {
                 });
               },
         style: ElevatedButton.styleFrom(
-          backgroundColor: already ? Colors.grey[300] : Colors.transparent,
+          backgroundColor: already ? AppTheme.callShowDisabledBackgroundColor : AppTheme.callShowButtonBackgroundColor,
           foregroundColor: widget.color,
-          side: BorderSide(color: widget.color, width: 1.3),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+          side: BorderSide(color: widget.color, width: AppTheme.callShowBorderWidth),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppTheme.callShowBorderRadius)),
           elevation: 0,
-          padding: const EdgeInsets.symmetric(vertical: 7),
-          minimumSize: const Size(0, 32),
+          padding: AppTheme.callShowContainerPadding,
+          minimumSize: AppTheme.callShowButtonMinimumSize,
         ),
-        child: Text('Belot', style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: widget.color)),
+        child: Text('Belot', style: AppTheme.callShowButtonTextStyle.copyWith(color: widget.color)),
       ),
     );
   }
