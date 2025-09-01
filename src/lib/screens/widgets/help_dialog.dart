@@ -18,18 +18,16 @@ class ZvanjaHelpBottomSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    
     return Container(
-      height: MediaQuery.of(context).size.height * 0.85,
+      height: MediaQuery.of(context).size.height * AppTheme.zvanjaHelpDialogHeightRatio,
       decoration: BoxDecoration(
-        color: AppTheme.getCardBackgroundColor(context),
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+        color: AppTheme.getZvanjaHelpDialogBackgroundColor(context),
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(AppTheme.zvanjaHelpDialogBorderRadius)),
         boxShadow: [
           BoxShadow(
-            color: AppTheme.getOverlayColor(context, opacity: 0.1),
-            blurRadius: 10,
-            offset: const Offset(0, -5),
+            color: AppTheme.getOverlayColor(context, opacity: AppTheme.zvanjaHelpDialogShadowOpacity),
+            blurRadius: AppTheme.zvanjaHelpDialogShadowBlurRadius,
+            offset: AppTheme.zvanjaHelpDialogShadowOffset,
           ),
         ],
       ),
@@ -37,34 +35,32 @@ class ZvanjaHelpBottomSheet extends StatelessWidget {
         children: [
           // Handle bar
           Container(
-            margin: const EdgeInsets.only(top: 12),
-            width: 40,
-            height: 4,
+            margin: AppTheme.zvanjaHelpDialogHandleBarMargin,
+            width: AppTheme.zvanjaHelpDialogHandleBarWidth,
+            height: AppTheme.zvanjaHelpDialogHandleBarHeight,
             decoration: BoxDecoration(
-              color: Colors.grey[400],
-              borderRadius: BorderRadius.circular(2),
+              color: AppTheme.getZvanjaHelpDialogHandleBarColor(),
+              borderRadius: BorderRadius.circular(AppTheme.zvanjaHelpDialogHandleBarBorderRadius),
             ),
           ),
           
           // Header
           Padding(
-            padding: const EdgeInsets.all(20),
+            padding: AppTheme.zvanjaHelpDialogHeaderPadding,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
                   'Sva moguća zvanja u Belotu',
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    color: isDark ? Colors.white : Colors.black87,
+                  style: AppTheme.zvanjaHelpDialogTitleTextStyle.copyWith(
+                    color: AppTheme.getZvanjaHelpDialogTextColor(context),
                   ),
                 ),
                 IconButton(
                   onPressed: () => Navigator.of(context).pop(),
                   icon: Icon(
                     Icons.close,
-                    color: isDark ? Colors.white : Colors.black87,
+                    color: AppTheme.getZvanjaHelpDialogTextColor(context),
                   ),
                 ),
               ],
@@ -75,9 +71,9 @@ class ZvanjaHelpBottomSheet extends StatelessWidget {
           Expanded(
             child: ListView(
               padding: EdgeInsets.only(
-                left: 20,
-                right: 20,
-                bottom: MediaQuery.of(context).padding.bottom + 20,
+                left: AppTheme.zvanjaHelpDialogContentPadding.left,
+                right: AppTheme.zvanjaHelpDialogContentPadding.right,
+                bottom: MediaQuery.of(context).padding.bottom + AppTheme.zvanjaHelpDialogContentBottomPadding,
               ),
               children: [
                 _buildZvanjeCard(
@@ -87,7 +83,6 @@ class ZvanjaHelpBottomSheet extends StatelessWidget {
                   'Dama i kralj adut boje',
                   null,
                   Colors.red,
-                  isDark,
                   svgAsset: 'assets/icons/bela.svg',
                 ),
                 _buildZvanjeCard(
@@ -97,7 +92,6 @@ class ZvanjaHelpBottomSheet extends StatelessWidget {
                   '3 uzastopne karte iste boje',
                   Icons.looks_3,
                   Colors.blue,
-                  isDark,
                 ),
                 _buildZvanjeCard(
                   context,
@@ -106,7 +100,6 @@ class ZvanjaHelpBottomSheet extends StatelessWidget {
                   '4 uzastopne karte iste boje',
                   Icons.looks_4,
                   Colors.green,
-                  isDark,
                 ),
                 _buildZvanjeCard(
                   context,
@@ -115,7 +108,6 @@ class ZvanjaHelpBottomSheet extends StatelessWidget {
                   '5 uzastopnih karata iste boje',
                   Icons.looks_5,
                   Colors.purple,
-                  isDark,
                 ),
                 _buildZvanjeCard(
                   context,
@@ -124,7 +116,6 @@ class ZvanjaHelpBottomSheet extends StatelessWidget {
                   '4 dečka (svih boja)',
                   Icons.man,
                   Colors.orange,
-                  isDark,
                 ),
                 _buildZvanjeCard(
                   context,
@@ -133,7 +124,6 @@ class ZvanjaHelpBottomSheet extends StatelessWidget {
                   '4 devetke (svih boja)',
                   null,
                   Colors.teal,
-                  isDark,
                   svgAsset: 'assets/icons/nine.svg',
                 ),
                 _buildZvanjeCard(
@@ -143,7 +133,6 @@ class ZvanjaHelpBottomSheet extends StatelessWidget {
                   '4 asa (svih boja)',
                   Icons.star, // fallback ikona
                   Colors.amber,
-                  isDark,
                   svgAsset: 'assets/icons/four-aces.svg',
                 ),
                 _buildZvanjeCard(
@@ -153,7 +142,6 @@ class ZvanjaHelpBottomSheet extends StatelessWidget {
                   '4 desetke (svih boja)',
                   null,
                   Colors.indigo,
-                  isDark,
                   svgAsset: 'assets/icons/ten.svg',
                 ),
                 _buildZvanjeCard(
@@ -163,7 +151,6 @@ class ZvanjaHelpBottomSheet extends StatelessWidget {
                   '4 kraljice (svih boja)',
                   null,
                   Colors.pink,
-                  isDark,
                   svgAsset: 'assets/icons/queen.svg',
                 ),
                 _buildZvanjeCard(
@@ -173,45 +160,40 @@ class ZvanjaHelpBottomSheet extends StatelessWidget {
                   '4 kralja (svih boja)',
                   null, 
                   Colors.brown,
-                  isDark,
                   svgAsset: 'assets/icons/king.svg',
                 ),
                 
                 // Napomene
-                const SizedBox(height: 20),
+               const SizedBox(height: AppTheme.zvanjaHelpDialogNotesTopSpacing),
                 Container(
-                  padding: const EdgeInsets.all(16),
+                  padding: AppTheme.zvanjaHelpDialogNotesPadding,
                   decoration: BoxDecoration(
-                    color: isDark ? Colors.grey[800] : Colors.grey[100],
-                    borderRadius: BorderRadius.circular(12),
+                    color: AppTheme.getZvanjaHelpDialogNotesBackgroundColor(context),
+                    borderRadius: BorderRadius.circular(AppTheme.zvanjaHelpDialogCardBorderRadius),
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
                         'Napomene:',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: isDark ? Colors.white : Colors.black87,
+                        style: AppTheme.zvanjaHelpDialogNotesHeaderTextStyle.copyWith(
+                          color: AppTheme.getZvanjaHelpDialogTextColor(context),
                         ),
                       ),
-                      const SizedBox(height: 8),
+                     const SizedBox(height: AppTheme.zvanjaHelpDialogNotesTitleSpacing),
                       Text(
                         '• Zvanja se prijavljuju prije početka igre\n'
                         '• Bodove za zvanja dobiva tim koji ima najveće zvanje\n'
                         '• Adut karte imaju prednost kod terz/kvinta/kvart zvanja\n'
                         '• Bela se može prijaviti samo ako se ima i dama i kralj adut boje',
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: isDark ? Colors.grey[300] : Colors.grey[700],
-                          height: 1.4,
+                        style: AppTheme.zvanjaHelpDialogNotesContentTextStyle.copyWith(
+                          color: AppTheme.getZvanjaHelpDialogNotesContentColor(context),
                         ),
                       ),
                     ],
                   ),
                 ),
-                const SizedBox(height: 20),
+              const  SizedBox(height: AppTheme.zvanjaHelpDialogContentBottomPadding),
               ],
             ),
           ),
@@ -226,48 +208,47 @@ class ZvanjaHelpBottomSheet extends StatelessWidget {
     String bodovi,
     String opis,
     IconData? icon,
-    Color iconColor,
-    bool isDark, {
+    Color iconColor, {
     String? svgAsset,
   }) {
     return Container(
-      margin: const EdgeInsets.only(bottom: 12),
-      padding: const EdgeInsets.all(16),
+      margin: AppTheme.zvanjaHelpDialogCardMargin,
+      padding: AppTheme.zvanjaHelpDialogCardPadding,
       decoration: BoxDecoration(
-        color: isDark ? Colors.grey[800] : Colors.grey[50],
-        borderRadius: BorderRadius.circular(12),
+        color: AppTheme.getZvanjaHelpDialogCardBackgroundColor(context),
+        borderRadius: BorderRadius.circular(AppTheme.zvanjaHelpDialogCardBorderRadius),
         border: Border.all(
-          color: isDark ? Colors.grey[700]! : Colors.grey[300]!,
-          width: 1,
+          color: AppTheme.getZvanjaHelpDialogCardBorderColor(context),
+          width: AppTheme.zvanjaHelpDialogCardBorderWidth,
         ),
       ),
       child: Row(
         children: [
           Container(
-            padding: const EdgeInsets.all(12),
+            padding: AppTheme.zvanjaHelpDialogIconContainerPadding,
             decoration: BoxDecoration(
-              color: iconColor.withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(8),
+              color: iconColor.withValues(alpha: AppTheme.zvanjaHelpDialogIconOpacity),
+              borderRadius: BorderRadius.circular(AppTheme.zvanjaHelpDialogIconContainerBorderRadius),
             ),
             child: svgAsset != null
                 ? SvgPicture.asset(
                     svgAsset,
-                    width: 24,
-                    height: 24,
+                    width: AppTheme.zvanjaHelpDialogIconSize,
+                    height: AppTheme.zvanjaHelpDialogIconSize,
                     // Ako SVG ne može biti učitan, koristi fallback ikonu
                     placeholderBuilder: (context) => Icon(
                       icon ?? Icons.help_outline,
                       color: iconColor,
-                      size: 24,
+                      size: AppTheme.zvanjaHelpDialogIconSize,
                     ),
                   )
                 : Icon(
                     icon!,
                     color: iconColor,
-                    size: 24,
+                    size: AppTheme.zvanjaHelpDialogIconSize,
                   ),
           ),
-          const SizedBox(width: 16),
+        const  SizedBox(width: AppTheme.zvanjaHelpDialogContentSpacing),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -277,38 +258,28 @@ class ZvanjaHelpBottomSheet extends StatelessWidget {
                   children: [
                     Text(
                       naziv,
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                        color: isDark ? Colors.white : Colors.black87,
+                      style: AppTheme.zvanjaHelpDialogCardTitleTextStyle.copyWith(
+                        color: AppTheme.getZvanjaHelpDialogTextColor(context),
                       ),
                     ),
                     Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 8,
-                        vertical: 4,
-                      ),
+                      padding: AppTheme.zvanjaHelpDialogBadgePadding,
                       decoration: BoxDecoration(
                         color: iconColor,
-                        borderRadius: BorderRadius.circular(12),
+                        borderRadius: BorderRadius.circular(AppTheme.zvanjaHelpDialogBadgeBorderRadius),
                       ),
                       child: Text(
                         bodovi,
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 12,
-                          fontWeight: FontWeight.bold,
-                        ),
+                        style: AppTheme.zvanjaHelpDialogBadgeTextStyle,
                       ),
                     ),
                   ],
                 ),
-                const SizedBox(height: 4),
+               const SizedBox(height: AppTheme.zvanjaHelpDialogTitleSpacing),
                 Text(
                   opis,
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: isDark ? Colors.grey[300] : Colors.grey[600],
+                  style: AppTheme.zvanjaHelpDialogCardDescriptionTextStyle.copyWith(
+                    color: AppTheme.getZvanjaHelpDialogDescriptionTextColor(context),
                   ),
                 ),
               ],

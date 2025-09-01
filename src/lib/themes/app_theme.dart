@@ -483,6 +483,66 @@ class AppTheme {
     fontSize: playerShufflingChairTextFontSize,
   );
 
+  // Zvanja Help Dialog Widget Styles
+  static const double zvanjaHelpDialogHeightRatio = 0.85;
+  static const double zvanjaHelpDialogBorderRadius = 20.0;
+  static const double zvanjaHelpDialogShadowBlurRadius = 10.0;
+  static const Offset zvanjaHelpDialogShadowOffset = Offset(0, -5);
+  static const double zvanjaHelpDialogShadowOpacity = 0.1;
+  static const EdgeInsets zvanjaHelpDialogHandleBarMargin = EdgeInsets.only(top: 12);
+  static const double zvanjaHelpDialogHandleBarWidth = 40.0;
+  static const double zvanjaHelpDialogHandleBarHeight = 4.0;
+  static const double zvanjaHelpDialogHandleBarBorderRadius = 2.0;
+  static const EdgeInsets zvanjaHelpDialogHeaderPadding = EdgeInsets.all(20);
+  static const EdgeInsets zvanjaHelpDialogContentPadding = EdgeInsets.only(left: 20, right: 20);
+  static const double zvanjaHelpDialogContentBottomPadding = 20.0;
+  static const EdgeInsets zvanjaHelpDialogCardMargin = EdgeInsets.only(bottom: 12);
+  static const EdgeInsets zvanjaHelpDialogCardPadding = EdgeInsets.all(16);
+  static const double zvanjaHelpDialogCardBorderRadius = 12.0;
+  static const double zvanjaHelpDialogCardBorderWidth = 1.0;
+  static const EdgeInsets zvanjaHelpDialogIconContainerPadding = EdgeInsets.all(12);
+  static const double zvanjaHelpDialogIconContainerBorderRadius = 8.0;
+  static const double zvanjaHelpDialogIconSize = 24.0;
+  static const double zvanjaHelpDialogIconOpacity = 0.1;
+  static const double zvanjaHelpDialogContentSpacing = 16.0;
+  static const double zvanjaHelpDialogTitleSpacing = 4.0;
+  static const EdgeInsets zvanjaHelpDialogBadgePadding = EdgeInsets.symmetric(horizontal: 8, vertical: 4);
+  static const double zvanjaHelpDialogBadgeBorderRadius = 12.0;
+  static const double zvanjaHelpDialogNotesTopSpacing = 20.0;
+  static const EdgeInsets zvanjaHelpDialogNotesPadding = EdgeInsets.all(16);
+  static const double zvanjaHelpDialogNotesTitleSpacing = 8.0;
+  static const double zvanjaHelpDialogNotesTextLineHeight = 1.4;
+
+  static const TextStyle zvanjaHelpDialogTitleTextStyle = TextStyle(
+    fontSize: 20,
+    fontWeight: FontWeight.bold,
+  );
+
+  static const TextStyle zvanjaHelpDialogCardTitleTextStyle = TextStyle(
+    fontSize: 16,
+    fontWeight: FontWeight.bold,
+  );
+
+  static const TextStyle zvanjaHelpDialogCardDescriptionTextStyle = TextStyle(
+    fontSize: 14,
+  );
+
+  static const TextStyle zvanjaHelpDialogBadgeTextStyle = TextStyle(
+    color: Colors.white,
+    fontSize: 12,
+    fontWeight: FontWeight.bold,
+  );
+
+  static const TextStyle zvanjaHelpDialogNotesHeaderTextStyle = TextStyle(
+    fontSize: 16,
+    fontWeight: FontWeight.bold,
+  );
+
+  static const TextStyle zvanjaHelpDialogNotesContentTextStyle = TextStyle(
+    fontSize: 14,
+    height: zvanjaHelpDialogNotesTextLineHeight,
+  );
+
   // Falling Arrow Icon Widget Styles
   static const Duration fallingArrowAnimationDuration = Duration(milliseconds: 600);
   static const double fallingArrowShakeBegin = 0.0;
@@ -606,6 +666,51 @@ class AppTheme {
   }
 
   static Color getRulesWidgetSectionContentColor(BuildContext context) {
+    return Theme.of(context).brightness == Brightness.dark 
+        ? Colors.grey[300]! 
+        : Colors.grey[700]!;
+  }
+
+  // Zvanja Help Dialog Helper Methods
+  static Color getZvanjaHelpDialogBackgroundColor(BuildContext context) {
+    return getCardBackgroundColor(context);
+  }
+
+  static Color getZvanjaHelpDialogHandleBarColor() {
+    return Colors.grey[400]!;
+  }
+
+  static Color getZvanjaHelpDialogTextColor(BuildContext context) {
+    return Theme.of(context).brightness == Brightness.dark 
+        ? Colors.white 
+        : Colors.black87;
+  }
+
+  static Color getZvanjaHelpDialogCardBackgroundColor(BuildContext context) {
+    return Theme.of(context).brightness == Brightness.dark 
+        ? Colors.grey[800]! 
+        : Colors.grey[50]!;
+  }
+
+  static Color getZvanjaHelpDialogCardBorderColor(BuildContext context) {
+    return Theme.of(context).brightness == Brightness.dark 
+        ? Colors.grey[700]! 
+        : Colors.grey[300]!;
+  }
+
+  static Color getZvanjaHelpDialogDescriptionTextColor(BuildContext context) {
+    return Theme.of(context).brightness == Brightness.dark 
+        ? Colors.grey[300]! 
+        : Colors.grey[600]!;
+  }
+
+  static Color getZvanjaHelpDialogNotesBackgroundColor(BuildContext context) {
+    return Theme.of(context).brightness == Brightness.dark 
+        ? Colors.grey[800]! 
+        : Colors.grey[100]!;
+  }
+
+  static Color getZvanjaHelpDialogNotesContentColor(BuildContext context) {
     return Theme.of(context).brightness == Brightness.dark 
         ? Colors.grey[300]! 
         : Colors.grey[700]!;
