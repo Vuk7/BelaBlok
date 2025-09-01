@@ -424,6 +424,49 @@ class AppTheme {
     fontWeight: FontWeight.w600,
   );
 
+  // Rules Widget Styles
+  static const double rulesWidgetBorderRadius = 16.0;
+  static const double rulesWidgetBorderWidth = 2.0;
+  static const double rulesWidgetShadowBlurRadius = 8.0;
+  static const Offset rulesWidgetShadowOffset = Offset(0, 4);
+  static const double rulesWidgetShadowOpacity = 0.1;
+  static const double rulesWidgetBorderOpacity = 0.3;
+  static const EdgeInsets rulesWidgetHeaderPadding = EdgeInsets.all(16);
+  static const double rulesWidgetHeaderIconSize = 24.0;
+  static const double rulesWidgetHeaderSpacing = 8.0;
+  static const Duration rulesWidgetRotationDuration = Duration(milliseconds: 200);
+  static const Duration rulesWidgetAnimationDuration = Duration(milliseconds: 300);
+  static const Curve rulesWidgetAnimationCurve = Curves.easeInOut;
+  static const EdgeInsets rulesWidgetContentPadding = EdgeInsets.only(left: 16, right: 16, bottom: 16);
+  static const double rulesWidgetContentSpacing = 16.0;
+  static const EdgeInsets rulesWidgetSectionBottomPadding = EdgeInsets.only(bottom: 16);
+  static const EdgeInsets rulesWidgetSectionPadding = EdgeInsets.all(12);
+  static const double rulesWidgetSectionBorderRadius = 8.0;
+  static const double rulesWidgetSectionBorderWidth = 1.0;
+  static const double rulesWidgetSectionBorderOpacity = 0.2;
+  static const double rulesWidgetSectionIconSize = 20.0;
+  static const double rulesWidgetSectionIconSpacing = 8.0;
+  static const double rulesWidgetSectionTitleSpacing = 8.0;
+  static const double rulesWidgetSectionTextLineHeight = 1.4;
+  static const Color rulesWidgetRedColor = Colors.red;
+
+  static const TextStyle rulesWidgetHeaderTextStyle = TextStyle(
+    fontSize: 18,
+    fontWeight: FontWeight.bold,
+    color: rulesWidgetRedColor,
+  );
+
+  static const TextStyle rulesWidgetSectionTitleTextStyle = TextStyle(
+    fontSize: 14,
+    fontWeight: FontWeight.bold,
+    color: rulesWidgetRedColor,
+  );
+
+  static const TextStyle rulesWidgetSectionContentTextStyle = TextStyle(
+    fontSize: 12,
+    height: rulesWidgetSectionTextLineHeight,
+  );
+
   // Falling Arrow Icon Widget Styles
   static const Duration fallingArrowAnimationDuration = Duration(milliseconds: 600);
   static const double fallingArrowShakeBegin = 0.0;
@@ -519,5 +562,36 @@ class AppTheme {
 
   static Color getHelpDialogShadowColor() {
     return helpDialogShadowColor.withValues(alpha: helpDialogShadowOpacity);
+  }
+
+  // Rules Widget Helper Methods
+  static Color getRulesWidgetBackgroundColor(BuildContext context) {
+    return Theme.of(context).brightness == Brightness.dark 
+        ? Colors.grey[800]! 
+        : Colors.white;
+  }
+
+  static Color getRulesWidgetShadowColor() {
+    return Colors.black.withValues(alpha: rulesWidgetShadowOpacity);
+  }
+
+  static Color getRulesWidgetBorderColor() {
+    return rulesWidgetRedColor.withValues(alpha: rulesWidgetBorderOpacity);
+  }
+
+  static Color getRulesWidgetSectionBackgroundColor(BuildContext context) {
+    return Theme.of(context).brightness == Brightness.dark 
+        ? Colors.grey[700]! 
+        : Colors.grey[50]!;
+  }
+
+  static Color getRulesWidgetSectionBorderColor() {
+    return rulesWidgetRedColor.withValues(alpha: rulesWidgetSectionBorderOpacity);
+  }
+
+  static Color getRulesWidgetSectionContentColor(BuildContext context) {
+    return Theme.of(context).brightness == Brightness.dark 
+        ? Colors.grey[300]! 
+        : Colors.grey[700]!;
   }
 }
