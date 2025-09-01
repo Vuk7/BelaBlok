@@ -352,6 +352,23 @@ class AppTheme {
     color: Colors.white,
   );
 
+  // Choose Input Type Widget Styles
+  static const double chooseInputTypeMinWidth = 90.0;
+  static const double chooseInputTypeMaxWidth = 140.0;
+  static const EdgeInsets chooseInputTypeLabelPadding = EdgeInsets.symmetric(vertical: 7.0, horizontal: 10.0);
+  static const double chooseInputTypeSpacing = 14.0;
+  static const Color chooseInputTypeSelectedTextColor = Colors.white;
+  static const Color chooseInputTypeNotSelectedTextColor = Colors.black;
+
+  static const TextStyle chooseInputTypeLabelTextStyle = TextStyle(
+    fontSize: 16,
+    fontWeight: FontWeight.w600,
+  );
+
+  static const TextStyle chooseInputTypeChoiceChipTextStyle = TextStyle(
+    fontWeight: FontWeight.w600,
+  );
+
   // Falling Arrow Icon Widget Styles
   static const Duration fallingArrowAnimationDuration = Duration(milliseconds: 600);
   static const double fallingArrowShakeBegin = 0.0;

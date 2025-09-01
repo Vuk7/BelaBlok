@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../themes/app_theme.dart';
 
 class ChooseInputType extends StatelessWidget {
   final int selectedChoice;
@@ -18,18 +19,18 @@ class ChooseInputType extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final double minWidth = boxWidth > 90 ? boxWidth : 90;
+    final double minWidth = boxWidth > AppTheme.chooseInputTypeMinWidth ? boxWidth : AppTheme.chooseInputTypeMinWidth;
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Container(
-          constraints: BoxConstraints(minWidth: minWidth, maxWidth: 140),
+          constraints: BoxConstraints(minWidth: minWidth, maxWidth: AppTheme.chooseInputTypeMaxWidth),
           child: ChoiceChip(
             label: const Padding(
-              padding:  EdgeInsets.symmetric(vertical: 7.0, horizontal: 10.0),
+              padding: AppTheme.chooseInputTypeLabelPadding,
               child: Text(
                 'Igra',
-                style:  TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                style: AppTheme.chooseInputTypeLabelTextStyle,
               ),
             ),
             selected: selectedChoice == 0,
@@ -39,21 +40,20 @@ class ChooseInputType extends StatelessWidget {
             },
             selectedColor: selectedColor,
             backgroundColor: notSelectedColor,
-            labelStyle: TextStyle(
-              color: selectedChoice == 0 ? Colors.white : Colors.black,
-              fontWeight: FontWeight.w600,
+            labelStyle: AppTheme.chooseInputTypeChoiceChipTextStyle.copyWith(
+              color: selectedChoice == 0 ? AppTheme.chooseInputTypeSelectedTextColor : AppTheme.chooseInputTypeNotSelectedTextColor,
             ),
           ),
         ),
-        const SizedBox(width: 14),
+       const SizedBox(width: AppTheme.chooseInputTypeSpacing),
         Container(
-          constraints: BoxConstraints(minWidth: minWidth, maxWidth: 140),
+          constraints: BoxConstraints(minWidth: minWidth, maxWidth: AppTheme.chooseInputTypeMaxWidth),
           child: ChoiceChip(
-            label:const Padding(
-              padding:  EdgeInsets.symmetric(vertical: 7.0, horizontal: 10.0),
+            label: const Padding(
+              padding: AppTheme.chooseInputTypeLabelPadding,
               child: Text(
                 'Zvanje',
-                style:  TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                style: AppTheme.chooseInputTypeLabelTextStyle,
               ),
             ),
             selected: selectedChoice == 1,
@@ -63,9 +63,8 @@ class ChooseInputType extends StatelessWidget {
             },
             selectedColor: selectedColor,
             backgroundColor: notSelectedColor,
-            labelStyle: TextStyle(
-              color: selectedChoice == 1 ? Colors.white : Colors.black,
-              fontWeight: FontWeight.w600,
+            labelStyle: AppTheme.chooseInputTypeChoiceChipTextStyle.copyWith(
+              color: selectedChoice == 1 ? AppTheme.chooseInputTypeSelectedTextColor : AppTheme.chooseInputTypeNotSelectedTextColor,
             ),
           ),
         ),
