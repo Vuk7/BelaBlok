@@ -132,6 +132,24 @@ class AppTheme {
   static const double playDirectionSpacingVertical = 10.0;
   static const Color playDirectionIconColor = Colors.white;
 
+  // Game Type Choice Widget Styles
+  static const EdgeInsets gameTypeButtonPadding = EdgeInsets.only(right: 90, left: 90, top: 10, bottom: 10);
+  static const EdgeInsets gameTypeButtonPaddingNoTop = EdgeInsets.only(right: 90, left: 90, bottom: 10);
+  static const double gameTypeButtonTextPadding = 10.0;
+  static const Color gameTypeButtonTextColor = Colors.black;
+
+  static const TextStyle gameTypeNumberButtonTextStyle = TextStyle(
+    color: gameTypeButtonTextColor,
+    fontSize: 36,
+    fontWeight: FontWeight.bold,
+  );
+
+  static const TextStyle gameTypeManualButtonTextStyle = TextStyle(
+    color: gameTypeButtonTextColor,
+    fontSize: 30,
+    fontWeight: FontWeight.bold,
+  );
+
   // Pomoćne metode za boje prema temi
   static Color getScreenBackground(BuildContext context) {
     return Theme.of(context).brightness == Brightness.dark

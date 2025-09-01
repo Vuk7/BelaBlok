@@ -1,5 +1,6 @@
 import 'package:bela_blok/screens/widgets/big_button.dart';
 import 'package:bela_blok/screens/widgets/big_button_input_number.dart';
+import 'package:bela_blok/themes/app_theme.dart';
 import 'package:flutter/material.dart';
 
 class GameTypeChoice extends StatelessWidget {
@@ -21,38 +22,34 @@ class GameTypeChoice extends StatelessWidget {
     return Column(
       children: [
         Padding(
-          padding:
-              const EdgeInsets.only(right: 90, left: 90, top: 10, bottom: 10),
+          padding: AppTheme.gameTypeButtonPadding,
           child: BigButton(
             text: "1001",
-            textStyle: const TextStyle(
-                color: Colors.black, fontSize: 36, fontWeight: FontWeight.bold),
+            textStyle: AppTheme.gameTypeNumberButtonTextStyle,
             bgColor: (selectedChoice == 0) ? selectedColor : notSelectedColor,
             onTap: () => onTap(0),
-            textPadding: 10,
+            textPadding: AppTheme.gameTypeButtonTextPadding,
           ),
         ),
         Padding(
-          padding: const EdgeInsets.only(right: 90, left: 90, bottom: 10),
+          padding: AppTheme.gameTypeButtonPaddingNoTop,
           child: BigButton(
             text: "501",
-            textStyle: const TextStyle(
-                color: Colors.black, fontSize: 36, fontWeight: FontWeight.bold),
+            textStyle: AppTheme.gameTypeNumberButtonTextStyle,
             bgColor: (selectedChoice == 1) ? selectedColor : notSelectedColor,
             onTap: () => onTap(1),
-            textPadding: 10,
+            textPadding: AppTheme.gameTypeButtonTextPadding,
           ),
         ),
         Padding(
-          padding: const EdgeInsets.only(right: 90, left: 90, bottom: 10),
+          padding: AppTheme.gameTypeButtonPaddingNoTop,
           child: BigButtonInputNumber(
             text: "RUČNO",
-            textStyle: const TextStyle(
-                color: Colors.black, fontSize: 30, fontWeight: FontWeight.bold),
+            textStyle: AppTheme.gameTypeManualButtonTextStyle,
             bgColor: (selectedChoice == 2) ? selectedColor : notSelectedColor,
             onTap: () => onTap(2),
             inputController: inputGameTypeController,
-            textPadding: 10,
+            textPadding: AppTheme.gameTypeButtonTextPadding,
           ),
         ),
       ],
