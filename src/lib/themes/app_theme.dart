@@ -467,6 +467,22 @@ class AppTheme {
     height: rulesWidgetSectionTextLineHeight,
   );
 
+  // Player Shuffling Widget Styles
+  static const double playerShufflingChairContainerSize = 28.0;
+  static const double playerShufflingChairBorderRadius = 4.0;
+  static const double playerShufflingChairSpacing = 30.0;
+  static const double playerShufflingChairIconSize = 14.0;
+  static const double playerShufflingChairTextFontSize = 8.0;
+  static const double playerShufflingTableContainerSize = 32.0;
+  static const double playerShufflingTableBorderRadius = 16.0;
+  static const double playerShufflingTableIconSize = 20.0;
+  static const Color playerShufflingTableColor = Color(0xFF8D6E63); // Colors.brown[600]
+
+  static const TextStyle playerShufflingChairTextStyle = TextStyle(
+    fontWeight: FontWeight.bold,
+    fontSize: playerShufflingChairTextFontSize,
+  );
+
   // Falling Arrow Icon Widget Styles
   static const Duration fallingArrowAnimationDuration = Duration(milliseconds: 600);
   static const double fallingArrowShakeBegin = 0.0;

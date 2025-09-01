@@ -22,11 +22,11 @@ class PlayerShuffling extends StatelessWidget {
             GestureDetector(
               onTap: () => onTap(2),
               child: Container(
-                height: 28.0,
-                width: 28.0,
+                height: AppTheme.playerShufflingChairContainerSize,
+                width: AppTheme.playerShufflingChairContainerSize,
                 decoration: BoxDecoration(
                   color: (selected == 2) ? selectedColor : AppTheme.gray,
-                  borderRadius: BorderRadius.circular(4),
+                  borderRadius: BorderRadius.circular(AppTheme.playerShufflingChairBorderRadius),
                 ),
                 child: Center(
                   child: Column(
@@ -35,31 +35,29 @@ class PlayerShuffling extends StatelessWidget {
                       Icon(
                         Icons.chair,
                         color: AppTheme.getInverseTextColor(context),
-                        size: 14,
+                        size: AppTheme.playerShufflingChairIconSize,
                       ),
                       Text(
                         "2",
-                        style: TextStyle(
-                            color: AppTheme.getInverseTextColor(context),
-                            fontWeight: FontWeight.bold,
-                            fontSize: 8),
+                        style: AppTheme.playerShufflingChairTextStyle.copyWith(
+                            color: AppTheme.getInverseTextColor(context)),
                       ),
                     ],
                   ),
                 ),
               ),
             ),
-            const SizedBox(
-              width: 30,
+           const SizedBox(
+              width: AppTheme.playerShufflingChairSpacing,
             ),
             GestureDetector(
               onTap: () => onTap(3),
               child: Container(
-                height: 28.0,
-                width: 28.0,
+                height: AppTheme.playerShufflingChairContainerSize,
+                width: AppTheme.playerShufflingChairContainerSize,
                 decoration: BoxDecoration(
                   color: (selected == 3) ? selectedColor : AppTheme.gray,
-                  borderRadius: BorderRadius.circular(4),
+                  borderRadius: BorderRadius.circular(AppTheme.playerShufflingChairBorderRadius),
                 ),
                 child: Center(
                   child: Column(
@@ -68,14 +66,12 @@ class PlayerShuffling extends StatelessWidget {
                       Icon(
                         Icons.chair,
                         color: AppTheme.getInverseTextColor(context),
-                        size: 14,
+                        size: AppTheme.playerShufflingChairIconSize,
                       ),
                       Text(
                         "3",
-                        style: TextStyle(
-                            color: AppTheme.getInverseTextColor(context),
-                            fontWeight: FontWeight.bold,
-                            fontSize: 8),
+                        style: AppTheme.playerShufflingChairTextStyle.copyWith(
+                            color: AppTheme.getInverseTextColor(context)),
                       ),
                     ],
                   ),
@@ -89,16 +85,16 @@ class PlayerShuffling extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Container(
-                height: 32,
-                width: 32,
+                height: AppTheme.playerShufflingTableContainerSize,
+                width: AppTheme.playerShufflingTableContainerSize,
                 decoration: BoxDecoration(
-                  color: Colors.brown[600],
-                  borderRadius: BorderRadius.circular(16),
+                  color: AppTheme.playerShufflingTableColor,
+                  borderRadius: BorderRadius.circular(AppTheme.playerShufflingTableBorderRadius),
                 ),
                 child: Icon(
                   Icons.table_restaurant,
                   color: AppTheme.getInverseTextColor(context),
-                  size: 20,
+                  size: AppTheme.playerShufflingTableIconSize,
                 ),
               )
             ]),
@@ -109,11 +105,11 @@ class PlayerShuffling extends StatelessWidget {
             GestureDetector(
               onTap: () => onTap(1),
               child: Container(
-                height: 28.0,
-                width: 28.0,
+                height: AppTheme.playerShufflingChairContainerSize,
+                width: AppTheme.playerShufflingChairContainerSize,
                 decoration: BoxDecoration(
                   color: (selected == 1) ? selectedColor : AppTheme.gray,
-                  borderRadius: BorderRadius.circular(4),
+                  borderRadius: BorderRadius.circular(AppTheme.playerShufflingChairBorderRadius),
                 ),
                 child: Center(
                   child: Column(
@@ -122,31 +118,29 @@ class PlayerShuffling extends StatelessWidget {
                       Icon(
                         Icons.chair,
                         color: AppTheme.getInverseTextColor(context),
-                        size: 14,
+                        size: AppTheme.playerShufflingChairIconSize,
                       ),
                       Text(
                         "1",
-                        style: TextStyle(
-                            color: AppTheme.getInverseTextColor(context),
-                            fontWeight: FontWeight.bold,
-                            fontSize: 8),
+                        style: AppTheme.playerShufflingChairTextStyle.copyWith(
+                            color: AppTheme.getInverseTextColor(context)),
                       ),
                     ],
                   ),
                 ),
               ),
             ),
-            const SizedBox(
-              width: 30,
+           const SizedBox(
+              width: AppTheme.playerShufflingChairSpacing,
             ),
             GestureDetector(
               onTap: () => onTap(4),
               child: Container(
-                height: 28.0,
-                width: 28.0,
+                height: AppTheme.playerShufflingChairContainerSize,
+                width: AppTheme.playerShufflingChairContainerSize,
                 decoration: BoxDecoration(
                   color: (selected == 4) ? selectedColor : AppTheme.gray,
-                  borderRadius: BorderRadius.circular(4),
+                  borderRadius: BorderRadius.circular(AppTheme.playerShufflingChairBorderRadius),
                 ),
                 child: Center(
                   child: Column(
@@ -155,14 +149,12 @@ class PlayerShuffling extends StatelessWidget {
                       Icon(
                         Icons.chair,
                         color: AppTheme.getInverseTextColor(context),
-                        size: 14,
+                        size: AppTheme.playerShufflingChairIconSize,
                       ),
                       Text(
                         "4",
-                        style: TextStyle(
-                            color: AppTheme.getInverseTextColor(context),
-                            fontWeight: FontWeight.bold,
-                            fontSize: 8),
+                        style: AppTheme.playerShufflingChairTextStyle.copyWith(
+                            color: AppTheme.getInverseTextColor(context)),
                       ),
                     ],
                   ),
