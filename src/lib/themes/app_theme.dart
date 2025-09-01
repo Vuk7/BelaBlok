@@ -176,6 +176,14 @@ class AppTheme {
     fontWeight: FontWeight.bold,
   );
 
+  // Animated Play Direction Choice Widget Styles
+  static const Duration animatedPlayDirectionAnimationDuration = Duration(milliseconds: 600);
+  static const Duration animatedPlayDirectionTapDelay = Duration(milliseconds: 50);
+  static const Curve animatedPlayDirectionAnimationCurve = Curves.easeInOut;
+  static const double animatedPlayDirectionRotationAngle = 6.28318; // 2 * pi (full rotation)
+  static const double animatedPlayDirectionClockwiseRotation = 1.0;
+  static const double animatedPlayDirectionCounterClockwiseRotation = -1.0;
+
   // Pomoćne metode za boje prema temi
   static Color getScreenBackground(BuildContext context) {
     return Theme.of(context).brightness == Brightness.dark

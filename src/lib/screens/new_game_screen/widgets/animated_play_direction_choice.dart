@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:bela_blok/themes/app_theme.dart';
 
 class AnimatedPlayDirectionChoice extends StatefulWidget {
   final int selectedChoice;
@@ -30,29 +31,29 @@ class _AnimatedPlayDirectionChoiceState extends State<AnimatedPlayDirectionChoic
     super.initState();
     
     _clockwiseController = AnimationController(
-      duration: const Duration(milliseconds: 600),
+      duration: AppTheme.animatedPlayDirectionAnimationDuration,
       vsync: this,
     );
     
     _counterClockwiseController = AnimationController(
-      duration: const Duration(milliseconds: 600),
+      duration: AppTheme.animatedPlayDirectionAnimationDuration,
       vsync: this,
     );
     
     _clockwiseAnimation = Tween<double>(
       begin: 0.0,
-      end: 1.0, // 360 degrees
+      end: AppTheme.animatedPlayDirectionClockwiseRotation,
     ).animate(CurvedAnimation(
       parent: _clockwiseController,
-      curve: Curves.easeInOut,
+      curve: AppTheme.animatedPlayDirectionAnimationCurve,
     ));
     
     _counterClockwiseAnimation = Tween<double>(
       begin: 0.0,
-      end: -1.0, // -360 degrees (counterclockwise)
+      end: AppTheme.animatedPlayDirectionCounterClockwiseRotation,
     ).animate(CurvedAnimation(
       parent: _counterClockwiseController,
-      curve: Curves.easeInOut,
+      curve: AppTheme.animatedPlayDirectionAnimationCurve,
     ));
   }
 
@@ -84,7 +85,7 @@ class _AnimatedPlayDirectionChoiceState extends State<AnimatedPlayDirectionChoic
           onTap: () {
             _animateClockwise();
             // Small delay to let animation start
-            Future.delayed(const Duration(milliseconds: 50), () {
+            Future.delayed(AppTheme.animatedPlayDirectionTapDelay, () {
               widget.onTap(0);
             });
           },
@@ -93,49 +94,47 @@ class _AnimatedPlayDirectionChoiceState extends State<AnimatedPlayDirectionChoic
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Container(
-                width: 32,
-                height: 32,
+                width: AppTheme.playDirectionIconContainerSize,
+                height: AppTheme.playDirectionIconContainerSize,
                 decoration: BoxDecoration(
                   color: (widget.selectedChoice == 0) 
                     ? widget.selectedColor 
                     : widget.notSelectedColor,
-                  borderRadius: BorderRadius.circular(16),
+                  borderRadius: BorderRadius.circular(AppTheme.playDirectionBorderRadius),
                 ),
                 child: AnimatedBuilder(
                   animation: _clockwiseAnimation,
                   builder: (context, child) {
                     return Transform.rotate(
-                      angle: _clockwiseAnimation.value * 2 * 3.14159, // Full rotation
+                      angle: _clockwiseAnimation.value * AppTheme.animatedPlayDirectionRotationAngle,
                       child: const Icon(
                         Icons.rotate_right,
-                        color: Colors.white,
-                        size: 20,
+                        color: AppTheme.playDirectionIconColor,
+                        size: AppTheme.playDirectionIconSize,
                       ),
                     );
                   },
                 ),
               ),
-              const SizedBox(width: 8),
+              const SizedBox(width: AppTheme.playDirectionSpacingHorizontal),
               Text(
                 "U SMJERU KAZALJKE NA SATU",
-                style: TextStyle(
+                style: AppTheme.playDirectionLabelTextStyle.copyWith(
                   color: (widget.selectedChoice == 0)
                     ? widget.selectedColor
                     : widget.notSelectedColor,
-                  fontSize: 12,
-                  fontWeight: FontWeight.bold,
                 ),
               )
             ],
           ),
         ),
-        const SizedBox(height: 10),
+        const SizedBox(height: AppTheme.playDirectionSpacingVertical),
         // Counter-clockwise option
         GestureDetector(
           onTap: () {
             _animateCounterClockwise();
             // Small delay to let animation start
-            Future.delayed(const Duration(milliseconds: 50), () {
+            Future.delayed(AppTheme.animatedPlayDirectionTapDelay, () {
               widget.onTap(1);
             });
           },
@@ -144,37 +143,35 @@ class _AnimatedPlayDirectionChoiceState extends State<AnimatedPlayDirectionChoic
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Container(
-                width: 32,
-                height: 32,
+                width: AppTheme.playDirectionIconContainerSize,
+                height: AppTheme.playDirectionIconContainerSize,
                 decoration: BoxDecoration(
                   color: (widget.selectedChoice == 1) 
                     ? widget.selectedColor 
                     : widget.notSelectedColor,
-                  borderRadius: BorderRadius.circular(16),
+                  borderRadius: BorderRadius.circular(AppTheme.playDirectionBorderRadius),
                 ),
                 child: AnimatedBuilder(
                   animation: _counterClockwiseAnimation,
                   builder: (context, child) {
                     return Transform.rotate(
-                      angle: _counterClockwiseAnimation.value * 2 * 3.14159, // Full rotation counterclockwise
+                      angle: _counterClockwiseAnimation.value * AppTheme.animatedPlayDirectionRotationAngle,
                       child: const Icon(
                         Icons.rotate_left,
-                        color: Colors.white,
-                        size: 20,
+                        color: AppTheme.playDirectionIconColor,
+                        size: AppTheme.playDirectionIconSize,
                       ),
                     );
                   },
                 ),
               ),
-              const SizedBox(width: 8),
+              const SizedBox(width: AppTheme.playDirectionSpacingHorizontal),
               Text(
                 "SUPROTNO OD KAZALJKE NA SATU",
-                style: TextStyle(
+                style: AppTheme.playDirectionLabelTextStyle.copyWith(
                   color: (widget.selectedChoice == 1)
                     ? widget.selectedColor
                     : widget.notSelectedColor,
-                  fontSize: 12,
-                  fontWeight: FontWeight.bold,
                 ),
               )
             ],
