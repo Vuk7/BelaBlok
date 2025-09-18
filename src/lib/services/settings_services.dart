@@ -10,47 +10,89 @@ class SettingsService {
   SettingsService(this.database) : dao = SettingsDao(database);
 
   Future<UserSettings> fetchSettings() async {
-    final settingsData = await dao.getOrCreateSettings();
-    return UserSettings(
-      id: settingsData.id,
-      createdAt: settingsData.createdAt,
-      updatedAt: settingsData.updatedAt,
-      deletedAt: settingsData.deletedAt,
-      showRules: settingsData.showRules,
-      showHelpDialog: settingsData.showHelpDialog,
-      showGameStats: settingsData.showGameStats,
-      themeMode: settingsData.themeMode,
-    );
+    final settingsData = await dao.getSettings();
+    if (settingsData == null) {
+      final settings = UserSettings(
+        showRules: true,
+        showHelpDialog: true,
+        showGameStats: true,
+        themeMode: AppThemeMode.light.index,
+      );
+      
+      await dao.insert(database.settingsTable, settings.toCompanion());
+      
+      final newSettingsData = await dao.getSettings();
+      return newSettingsData!.toModel();
+    }
+    
+    return settingsData.toModel();
   }
 
   Future<void> updateShowRules(bool showRules) async {
-    await dao.updateShowRules(showRules);
+    final settings = await fetchSettings();
+    settings.showRules = showRules;
+    await dao.update(
+      database.settingsTable,
+      database.settingsTable.id,
+      settings.id!,
+      settings.toCompanion()
+    );
   }
 
   Future<void> updateShowHelpDialog(bool showHelpDialog) async {
-    await dao.updateShowHelpDialog(showHelpDialog);
+    final settings = await fetchSettings();
+    settings.showHelpDialog = showHelpDialog;
+    await dao.update(
+      database.settingsTable,
+      database.settingsTable.id,
+      settings.id!,
+      settings.toCompanion()
+    );
   }
 
   Future<void> updateShowGameStats(bool showGameStats) async {
-    await dao.updateShowGameStats(showGameStats);
+    final settings = await fetchSettings();
+    settings.showGameStats = showGameStats;
+    await dao.update(
+      database.settingsTable,
+      database.settingsTable.id,
+      settings.id!,
+      settings.toCompanion()
+    );
   }
 
   Future<void> updateThemeMode(AppThemeMode themeMode) async {
-    await dao.updateThemeMode(themeMode);
+    final settings = await fetchSettings();
+    settings.themeMode = themeMode.index;
+    await dao.update(
+      database.settingsTable,
+      database.settingsTable.id,
+      settings.id!,
+      settings.toCompanion()
+    );
   }
 
   Future<void> updateSettings(UserSettings settings) async {
+    final currentSettings = await fetchSettings();
+    
     if (settings.showRules != null) {
-      await dao.updateShowRules(settings.showRules!);
+      currentSettings.showRules = settings.showRules;
     }
     if (settings.showHelpDialog != null) {
-      await dao.updateShowHelpDialog(settings.showHelpDialog!);
+      currentSettings.showHelpDialog = settings.showHelpDialog;
     }
     if (settings.showGameStats != null) {
-      await dao.updateShowGameStats(settings.showGameStats!);
+      currentSettings.showGameStats = settings.showGameStats;
     }
     if (settings.themeMode != null) {
-      await dao.updateThemeMode(AppThemeMode.values[settings.themeMode!]);
+      currentSettings.themeMode = settings.themeMode;
     }
+    
+    await dao.update(
+      database.settingsTable,
+      database.settingsTable.id,
+      currentSettings.id!,
+      currentSettings.toCompanion()
+    );
   }
 }

@@ -14,20 +14,4 @@ class SettingsModel {
     required this.showGameStats,
     required this.themeMode,
   });
-
-  SettingsModel copyWith({
-    String? id,
-    bool? showRules,
-    bool? showHelpDialog,
-    bool? showGameStats,
-    AppThemeMode? themeMode,
-  }) {
-    return SettingsModel(
-      id: id ?? this.id,
-      showRules: showRules ?? this.showRules,
-      showHelpDialog: showHelpDialog ?? this.showHelpDialog,
-      showGameStats: showGameStats ?? this.showGameStats,
-      themeMode: themeMode ?? this.themeMode,
-    );
-  }
 }
