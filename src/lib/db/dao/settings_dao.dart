@@ -1,5 +1,6 @@
 import 'package:bela_blok/db/dao/base_dao.dart';
 import 'package:bela_blok/enums/theme_mode_enum.dart';
+import 'package:bela_blok/models/settings.model.dart';
 import 'package:drift/drift.dart';
 import '../database.dart';
 
@@ -8,11 +9,31 @@ class SettingsDao extends BaseDao {
 
   SettingsDao(this._db) : super(_db);
 
-  Future<SettingsTableData?> getSettings() async {
-    return await _db.select(_db.settingsTable).getSingleOrNull();
+  SettingsModel _fromDatabaseEntity(SettingsTableData data) {
+    return SettingsModel(
+      id: data.id,
+      showRules: data.showRules,
+      showHelpDialog: data.showHelpDialog,
+      showGameStats: data.showGameStats,
+      themeMode: AppThemeMode.values[data.themeMode],
+    );
   }
 
-  Future<SettingsTableData> getOrCreateSettings() async {
+  Future<SettingsTableData?> _getSettingsEntity() async {
+    final results = await (_db.select(_db.settingsTable)
+          ..orderBy([(s) => OrderingTerm.desc(s.createdAt)])
+          ..limit(1))
+        .get();
+    
+    return results.isNotEmpty ? results.first : null;
+  }
+
+  Future<SettingsModel?> getSettings() async {
+    final settingsEntity = await _getSettingsEntity();
+    return settingsEntity != null ? _fromDatabaseEntity(settingsEntity) : null;
+  }
+
+  Future<SettingsModel> getOrCreateSettings() async {
     final settings = await getSettings();
     if (settings == null) {
       // Create default settings using BaseDao insert method
@@ -30,11 +51,6 @@ class SettingsDao extends BaseDao {
       return newSettings!;
     }
     return settings;
-  }
-
-  // Helper method to convert theme mode index to enum
-  AppThemeMode getThemeModeEnum(SettingsTableData settings) {
-    return AppThemeMode.values[settings.themeMode];
   }
 
   Future<int> updateShowRules(bool showRules) async {

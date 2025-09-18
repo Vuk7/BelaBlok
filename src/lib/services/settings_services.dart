@@ -10,8 +10,14 @@ class SettingsService {
   SettingsService(this.database) : dao = SettingsDao(database);
 
   Future<UserSettings> fetchSettings() async {
-    final settingsData = await dao.getOrCreateSettings();
-    return settingsData.toModel();
+    final settingsModel = await dao.getOrCreateSettings();
+    return UserSettings(
+      id: settingsModel.id,
+      showRules: settingsModel.showRules,
+      showHelpDialog: settingsModel.showHelpDialog,
+      showGameStats: settingsModel.showGameStats,
+      themeMode: settingsModel.themeMode.index,
+    );
   }
 
   Future<void> updateShowRules(bool showRules) async {
@@ -31,13 +37,17 @@ class SettingsService {
   }
 
   Future<void> updateSettings(UserSettings settings) async {
-    final update = settings.toCompanion();
-    final currentSettings = await dao.getOrCreateSettings();
-    await dao.update(
-      database.settingsTable,
-      database.settingsTable.id,
-      currentSettings.id,
-      update,
-    );
+    if (settings.showRules != null) {
+      await dao.updateShowRules(settings.showRules!);
+    }
+    if (settings.showHelpDialog != null) {
+      await dao.updateShowHelpDialog(settings.showHelpDialog!);
+    }
+    if (settings.showGameStats != null) {
+      await dao.updateShowGameStats(settings.showGameStats!);
+    }
+    if (settings.themeMode != null) {
+      await dao.updateThemeMode(AppThemeMode.values[settings.themeMode!]);
+    }
   }
 }
