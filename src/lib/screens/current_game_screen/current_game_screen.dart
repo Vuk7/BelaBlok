@@ -13,6 +13,7 @@ import 'package:bela_blok/services/rounds_service.dart';
 import 'package:bela_blok/db/models/game_model.dart';
 import 'package:bela_blok/db/models/round_model.dart';
 import 'package:bela_blok/themes/app_theme.dart';
+import 'package:bela_blok/models/game_stats_model.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -161,11 +162,61 @@ class _CurrentGameScreenState extends State<CurrentGameScreen> {
     return teamScore[Team.teamOne]! >= gameTargetScore ? 'Tim 1' : 'Tim 2';
   }
 
-  Map<String, dynamic> get gameStats => {
-        'totalRounds': totalRounds,
-        'averageScore': averageScore,
-        'winner': winningTeam,
-      };
+  GameStats get gameStats => _aggregateTeamStats();
+
+  GameStats _aggregateTeamStats() {
+    if (rounds == null || rounds!.isEmpty) {
+      return GameStats(
+        totalRounds: totalRounds,
+        averageScore: averageScore,
+        winner: winningTeam,
+        teamOneCalls: 0,
+        teamTwoCalls: 0,
+        teamOneFails: 0,
+        teamTwoFails: 0,
+        teamOneDeclarations: 0,
+        teamTwoDeclarations: 0,
+      );
+    }
+
+    int teamOneCalls = 0;
+    int teamTwoCalls = 0;
+    int teamOneFails = 0;
+    int teamTwoFails = 0;
+    int teamOneDeclarations = 0; //(sum of call amounts)
+    int teamTwoDeclarations = 0;
+
+    for (final r in rounds!) {
+      final called = r.teamCalled;
+      if (called == Team.teamOne.index) {
+        teamOneCalls++;
+      } else if (called == Team.teamTwo.index) {
+        teamTwoCalls++;
+      }
+      final failed = (r.teamFailed ?? false) && called != null;
+      if (failed) {
+        if (called == Team.teamOne.index) {
+          teamOneFails++;
+        } else if (called == Team.teamTwo.index) {
+          teamTwoFails++;
+        }
+      }
+      teamOneDeclarations += r.teamOneCallAmount ?? 0;
+      teamTwoDeclarations += r.teamTwoCallAmount ?? 0;
+    }
+
+    return GameStats(
+      totalRounds: totalRounds,
+      averageScore: averageScore,
+      winner: winningTeam,
+      teamOneCalls: teamOneCalls,
+      teamTwoCalls: teamTwoCalls,
+      teamOneFails: teamOneFails,
+      teamTwoFails: teamTwoFails,
+      teamOneDeclarations: teamOneDeclarations,
+      teamTwoDeclarations: teamTwoDeclarations,
+    );
+  }
 
   bool get isGameFinished =>
       teamScore[Team.teamOne]! >= gameTargetScore ||
@@ -228,21 +279,17 @@ class _CurrentGameScreenState extends State<CurrentGameScreen> {
                     child: TopScoreDetails(
                       teamOneScore: teamScore[Team.teamOne]!,
                       teamTwoScore: teamScore[Team.teamTwo]!,
-                      scoreDifference:
-                          teamScore[Team.teamTwo]! - teamScore[Team.teamOne]!,
+                      scoreDifference: teamScore[Team.teamTwo]! - teamScore[Team.teamOne]!,
                       teamInLead: Team.teamOne,
-                      teamOneLeftToWin:
-                          gameTargetScore - teamScore[Team.teamOne]!,
-                      teamTwoLeftToWin:
-                          gameTargetScore - teamScore[Team.teamTwo]!,
+                      teamOneLeftToWin: gameTargetScore - teamScore[Team.teamOne]!,
+                      teamTwoLeftToWin: gameTargetScore - teamScore[Team.teamTwo]!,
                       gameTargetScore: gameTargetScore,
                     ),
                   ),
                   const SizedBox(height: 10),
                   if (isGameFinished) ...[
                     GestureDetector(
-                      onTap: () => setState(
-                          () => _wobbleTrigger = !_wobbleTrigger),
+                      onTap: () => setState(() => _wobbleTrigger = !_wobbleTrigger),
                       child: WobbleWidget(
                         triggerWobble: _wobbleTrigger,
                         child: GameStatsWidget(gameStats: gameStats),
@@ -250,73 +297,77 @@ class _CurrentGameScreenState extends State<CurrentGameScreen> {
                     ),
                     const SizedBox(height: 10),
                   ],
-                  if (isLoadingRounds)
-                    const Center(child: CircularProgressIndicator())
-                  else
-                    Expanded(
-                      child: ListView.builder(
-                        controller: _scrollController,
-                        padding: const EdgeInsets.all(5.0),
-                        itemCount: rounds?.length ?? 0,
-                        itemBuilder: (context, index) {
-                          final round = rounds![index];
-                          return AnimatedListItem(
-                            index: index,
-                            animationType: AnimationType.slideUp,
-                            staggerDelay: 80,
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(vertical: 5.0),
-                              child: RoundScoreListItem(
-                                teamOneCallAmount: round.teamOneCallAmount ?? 0,
-                                teamTwoCallAmount: round.teamTwoCallAmount ?? 0,
-                                teamOneScore: round.teamOneScore ?? 0,
-                                teamTwoScore: round.teamTwoScore ?? 0,
-                                teamFailed: round.teamFailed ?? false,
-                                roundID: index, 
-                                teamCalled: Team.values[
-                                    round.teamCalled ??
-                                        Team.teamOne.index],
-                                onTap: () async {
-                                  await context.pushNamed(
-                                    'addround',
-                                    queryParameters: {
-                                      'id': currentGame!.id!,
-                                      'roundId': round.id ?? '',
-                                    },
-                                    extra: round, 
-                                  );
-                                  await handleInitializeGame(gameId: currentGame!.id!);
-                                  scrollToBottom();
-                                },
+                  Expanded(
+                    child: Stack(
+                      children: [
+                        Positioned.fill(
+                          child: isLoadingRounds
+                              ? const Center(child: CircularProgressIndicator())
+                              : ListView.builder(
+                                  controller: _scrollController,
+                                  padding: const EdgeInsets.fromLTRB(5, 5, 5, 100),
+                                  itemCount: rounds?.length ?? 0,
+                                  itemBuilder: (context, index) {
+                                    final round = rounds![index];
+                                    return AnimatedListItem(
+                                      index: index,
+                                      animationType: AnimationType.slideUp,
+                                      staggerDelay: 80,
+                                      child: Padding(
+                                        padding: const EdgeInsets.symmetric(vertical: 5.0),
+                                        child: RoundScoreListItem(
+                                          teamOneCallAmount: round.teamOneCallAmount ?? 0,
+                                          teamTwoCallAmount: round.teamTwoCallAmount ?? 0,
+                                          teamOneScore: round.teamOneScore ?? 0,
+                                          teamTwoScore: round.teamTwoScore ?? 0,
+                                          teamFailed: round.teamFailed ?? false,
+                                          roundID: index,
+                                          teamCalled: Team.values[round.teamCalled ?? Team.teamOne.index],
+                                          onTap: () async {
+                                            await context.pushNamed(
+                                              'addround',
+                                              queryParameters: {
+                                                'id': currentGame!.id!,
+                                                'roundId': round.id ?? '',
+                                              },
+                                              extra: round,
+                                            );
+                                            await handleInitializeGame(gameId: currentGame!.id!);
+                                            scrollToBottom();
+                                          },
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                ),
+                        ),
+                        Positioned(
+                          left: 0,
+                          right: 0,
+                          bottom: 0,
+                          child: Padding(
+                            padding: const EdgeInsets.fromLTRB(5, 8, 5, 5),
+                            child: Hero(
+                              tag: isGameFinished ? "return_to_main_button" : "add_round_button",
+                              child: button.AnimatedBigButton(
+                                text: isGameFinished ? "NOVA IGRA" : "DODAJ",
+                                icon: isGameFinished ? Icons.home : Icons.add,
+                                iconAnimationType: button.AnimationType.scale,
+                                textStyle: TextStyle(
+                                  color: AppTheme.getInverseTextColor(context),
+                                  fontSize: AppTheme.defaultButtonTextStyle.fontSize,
+                                  fontWeight: AppTheme.defaultButtonTextStyle.fontWeight,
+                                ),
+                                bgColor: isGameFinished ? AppTheme.primary : AppTheme.green,
+                                onTap: isGameFinished ? () => context.goNamed('main') : handleAddRound,
+                                textPadding: 15,
                               ),
                             ),
-                          );
-                        },
-                      ),
-                    ),
-                  const SizedBox(height: 20),
-                  Padding(
-                    padding: const EdgeInsets.all(5.0),
-                    child: Hero(
-                      tag: isGameFinished ? "return_to_main_button" : "add_round_button",
-                      child: button.AnimatedBigButton(
-                        text: isGameFinished ? "NOVA IGRA" : "DODAJ",
-                        icon: isGameFinished ? Icons.home : Icons.add,
-                        iconAnimationType: button.AnimationType.scale,
-                        textStyle: TextStyle(
-                          color: AppTheme.getInverseTextColor(context),
-                          fontSize:
-                              AppTheme.defaultButtonTextStyle.fontSize,
-                          fontWeight: AppTheme
-                              .defaultButtonTextStyle.fontWeight,
+                          ),
                         ),
-                        bgColor: isGameFinished ? AppTheme.primary : AppTheme.green,
-                        onTap: isGameFinished ? () => context.goNamed('main') : handleAddRound,
-                        textPadding: 15,
-                      ),
+                      ],
                     ),
                   ),
-                  const SizedBox(height: 10),
                 ],
               ),
             ),
