@@ -10,13 +10,16 @@ class SettingsService {
   SettingsService(this.database) : dao = SettingsDao(database);
 
   Future<UserSettings> fetchSettings() async {
-    final settingsModel = await dao.getOrCreateSettings();
+    final settingsData = await dao.getOrCreateSettings();
     return UserSettings(
-      id: settingsModel.id,
-      showRules: settingsModel.showRules,
-      showHelpDialog: settingsModel.showHelpDialog,
-      showGameStats: settingsModel.showGameStats,
-      themeMode: settingsModel.themeMode.index,
+      id: settingsData.id,
+      createdAt: settingsData.createdAt,
+      updatedAt: settingsData.updatedAt,
+      deletedAt: settingsData.deletedAt,
+      showRules: settingsData.showRules,
+      showHelpDialog: settingsData.showHelpDialog,
+      showGameStats: settingsData.showGameStats,
+      themeMode: settingsData.themeMode,
     );
   }
 

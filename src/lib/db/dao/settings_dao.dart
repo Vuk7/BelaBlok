@@ -1,6 +1,5 @@
 import 'package:bela_blok/db/dao/base_dao.dart';
 import 'package:bela_blok/enums/theme_mode_enum.dart';
-import 'package:bela_blok/models/settings.model.dart';
 import 'package:drift/drift.dart';
 import '../database.dart';
 
@@ -9,17 +8,7 @@ class SettingsDao extends BaseDao {
 
   SettingsDao(this._db) : super(_db);
 
-  SettingsModel _fromDatabaseEntity(SettingsTableData data) {
-    return SettingsModel(
-      id: data.id,
-      showRules: data.showRules,
-      showHelpDialog: data.showHelpDialog,
-      showGameStats: data.showGameStats,
-      themeMode: AppThemeMode.values[data.themeMode],
-    );
-  }
-
-  Future<SettingsTableData?> _getSettingsEntity() async {
+  Future<SettingsTableData?> getSettings() async {
     final results = await (_db.select(_db.settingsTable)
           ..orderBy([(s) => OrderingTerm.desc(s.createdAt)])
           ..limit(1))
@@ -28,12 +17,7 @@ class SettingsDao extends BaseDao {
     return results.isNotEmpty ? results.first : null;
   }
 
-  Future<SettingsModel?> getSettings() async {
-    final settingsEntity = await _getSettingsEntity();
-    return settingsEntity != null ? _fromDatabaseEntity(settingsEntity) : null;
-  }
-
-  Future<SettingsModel> getOrCreateSettings() async {
+  Future<SettingsTableData> getOrCreateSettings() async {
     final settings = await getSettings();
     if (settings == null) {
       // Create default settings using BaseDao insert method
