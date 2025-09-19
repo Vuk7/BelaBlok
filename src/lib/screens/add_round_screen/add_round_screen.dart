@@ -2,13 +2,12 @@ import 'package:bela_blok/screens/add_round_screen/widgets/call_show.dart';
 import 'package:bela_blok/db/database.dart'; 
 import 'package:bela_blok/db/models/round_model.dart'; 
 import 'package:bela_blok/db/dao/round_dao.dart';
-import 'package:bela_blok/db/dao/calculator_dao.dart';
 import 'package:bela_blok/models/score.model.dart';
 import 'package:bela_blok/models/fall_score.model.dart';
 import 'package:bela_blok/models/calculator_result_state.model.dart';
-import 'package:bela_blok/db/models/calculator.model.dart';
 import 'package:bela_blok/services/games_service.dart'; 
-import 'package:bela_blok/services/rounds_service.dart'; 
+import 'package:bela_blok/services/rounds_service.dart';
+import 'package:bela_blok/services/calculator_service.dart'; 
 import 'package:bela_blok/screens/add_round_screen/widgets/choose_caller.dart';
 import 'package:bela_blok/screens/add_round_screen/widgets/choose_input_type.dart';
 import 'package:bela_blok/screens/widgets/big_button_input_number.dart';
@@ -57,7 +56,7 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
   late final GamesService gamesService;
   late final RoundsService roundsService;
   late final RoundDao roundDao;
-  late final CalculatorDao calculatorDao;
+  late final CalculatorService calculatorService;
 
   int? currentlyShuffling;
   int? gameDirection;
@@ -73,7 +72,7 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
     gamesService = GamesService(db);
     roundsService = RoundsService(db);
     roundDao = RoundDao(db);
-    calculatorDao = CalculatorDao(db);
+    calculatorService = CalculatorService(db);
 
     _bounceController1 = AnimationController(
       duration: const Duration(milliseconds: 200),
@@ -296,32 +295,12 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
       actualRoundId = await roundsService.createRound(round); 
     }
 
-    if (_calculatorResult != null && actualRoundId != null) {
-      if (widget.roundToEdit != null) {
-        await calculatorDao.deleteCalculatorResultByRoundId(actualRoundId);
-      }
-      
-      final selectedCardsJson = _calculatorResult!.cardsList.isNotEmpty
-          ? _calculatorResult!.cardsList.join(',')
-          : null;
-      final trumpCardsJson = _calculatorResult!.trumpCardsList.isNotEmpty
-          ? _calculatorResult!.trumpCardsList.join(',')
-          : null;
-
-      final resultModel = CalculatorResult(
-        roundId: actualRoundId,
-        teamOneDeclarations: _calculatorResult?.calculatorResult?.teamOneDeclarations,
-        teamOneDeclarationsSum: _calculatorResult?.calculatorResult?.teamOneDeclarationsSum,
-        teamOneFails: _calculatorResult?.calculatorResult?.teamOneFails,
-        teamTwoDeclarations: _calculatorResult?.calculatorResult?.teamTwoDeclarations,
-        teamTwoDeclarationsSum: _calculatorResult?.calculatorResult?.teamTwoDeclarationsSum,
-        teamTwoFails: _calculatorResult?.calculatorResult?.teamTwoFails,
-        selectedCards: selectedCardsJson,
-        trumpCards: trumpCardsJson,
-        team: _calculatorResult?.calculatorResult?.team,
+   if (_calculatorResult != null && actualRoundId != null) {
+      await calculatorService.saveOrUpdateCalculatorResult(
+        actualRoundId,
+        _calculatorResult!,
+        widget.roundToEdit != null,
       );
-
-      await calculatorDao.insertCalculatorResult(resultModel);
     }
 
     await _updateGameScores(game);
@@ -456,9 +435,9 @@ class _AddRoundScreenState extends State<AddRoundScreen> with TickerProviderStat
     Map<String, dynamic>? initialData;
     
     if (widget.roundToEdit != null) {
-      final result = await calculatorDao.getCalculatorResultByRoundId(widget.roundToEdit!.id);
+      final result = await calculatorService.getCalculatorResultByRoundId(widget.roundToEdit!.id);
       if (result != null) {
-        initialData = CalculatorResultState.fromCalculatorResult(result.toModel()).toMap();
+        initialData = CalculatorResultState.fromCalculatorResult(result).toMap();
       }
     }
     

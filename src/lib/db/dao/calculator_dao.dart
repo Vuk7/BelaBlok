@@ -20,11 +20,6 @@ class CalculatorDao extends BaseDao<CalculatorResultTable, CalculatorResultTable
     await insert(_db.calculatorResultTable, calculatorResult.toCompanion());
   }
 
-  Future<int> deleteCalculatorResultByRoundId(String roundId) async {
-    return deleteById(
-      _db.calculatorResultTable,
-      _db.calculatorResultTable.roundId,
-      roundId,
-    );
-  }
+  
+  
 }
