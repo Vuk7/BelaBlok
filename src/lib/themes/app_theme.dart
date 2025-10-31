@@ -58,6 +58,8 @@ class AppTheme {
   static const Color accent = Colors.amber;
   static const Color brownShadow = Colors.brown;
   static const Color lightScoreBackground = Color(0xFFE8E8E8);
+  static const Color settingsButtonLightBg = Color(0xFF2D6FB6); 
+  static const Color settingsButtonDarkBg = Color(0xFF1F4E7A);  
 
   static const Color lightOverlay = Color(0x1A000000);
   static const Color mediumOverlay = Color(0x33000000);
@@ -171,6 +173,13 @@ class AppTheme {
     fontWeight: FontWeight.bold,
   );
 
+  static const TextStyle settingsButtonTextStyle = TextStyle(
+    fontSize: 28,
+    fontWeight: FontWeight.w700,
+    letterSpacing: 1,
+    color: Colors.white,
+  );
+
   static const TextStyle toggleTextStyle = TextStyle(
     fontSize: 12,
     fontWeight: FontWeight.w500,
@@ -210,5 +219,15 @@ class AppTheme {
     return Theme.of(context).brightness == Brightness.dark
         ? getCardBackgroundColor(context)
         : lightScoreBackground;
+  }
+
+  static Color getSettingsButtonBackground(BuildContext context) {
+    return Theme.of(context).brightness == Brightness.dark
+        ? settingsButtonDarkBg
+        : settingsButtonLightBg;
+  }
+
+  static TextStyle getSettingsButtonTextStyle(BuildContext context) {
+    return settingsButtonTextStyle;
   }
 }
