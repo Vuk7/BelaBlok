@@ -43,8 +43,10 @@ final GoRouter appRouter = GoRouter(
             path: '/newgame',
             name: 'newgame',
             pageBuilder: (BuildContext context, GoRouterState state) {
+              final VoidCallback? updateGamesListCallback = state.extra as VoidCallback?;
+
               return _slideTransition(
-                child: const NewGameScreen(),
+                child: NewGameScreen(updateGamesListCallback: updateGamesListCallback),
                 state: state,
                 beginOffset: const Offset(1.0, 0.0), // slide from right
               );
@@ -55,8 +57,10 @@ final GoRouter appRouter = GoRouter(
             name: 'currentgame',
             pageBuilder: (BuildContext context, GoRouterState state) {
               final id = state.uri.queryParameters['id'];
+              final VoidCallback? updateGamesListCallback = state.extra as VoidCallback?;
+              
               return _slideTransition(
-                child: CurrentGameScreen(gameId: id),
+                child: CurrentGameScreen(gameId: id, updateGamesListCallback: updateGamesListCallback,),
                 state: state,
                 beginOffset: const Offset(1.0, 0.0),
               );
@@ -68,12 +72,13 @@ final GoRouter appRouter = GoRouter(
                 pageBuilder: (BuildContext context, GoRouterState state) {
                   final id = state.uri.queryParameters['id'];
                   final roundId = state.uri.queryParameters['roundId'];
-                  final roundToEdit = state.extra; // može biti null ili Round
+                  final VoidCallback? updateGamesListCallback = state.extra as VoidCallback?;
+
                   return _slideTransition(
                     child: AddRoundScreen(
                       gameId: id,
                       roundId: roundId,
-                      roundToEdit: roundToEdit,
+                      updateGamesListCallback: updateGamesListCallback
                     ),
                     state: state,
                     beginOffset: const Offset(0.0, 1.0),

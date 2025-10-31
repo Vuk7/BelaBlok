@@ -43,7 +43,7 @@ class _MainScreenState extends State<MainScreen> {
 
     // Listen for app resume and update games
     _lifecycleHandler = LifecycleEventHandler(resumeCallback: () async {
-      _initGames();
+      _refreshGameHistory();
     });
     WidgetsBinding.instance.addObserver(_lifecycleHandler);
 
@@ -291,11 +291,12 @@ class _MainScreenState extends State<MainScreen> {
                                                       game.teamTwoScore ?? 0,
                                                   onTap: () async {
                                                     await context.pushNamed(
-                                                      "currentgame",
-                                                      queryParameters: {
-                                                        'id': game.id
-                                                      },
-                                                    );
+                                                        "currentgame",
+                                                        queryParameters: {
+                                                          'id': game.id
+                                                        }, extra: () {
+                                                      _refreshGameHistory();
+                                                    });
                                                     await _refreshGameHistory();
                                                     latestGame =
                                                         await gamesService
@@ -328,10 +329,11 @@ class _MainScreenState extends State<MainScreen> {
                             textStyle: AppTheme.defaultButtonTextStyle,
                             bgColor: AppTheme.green,
                             onTap: () {
-                              context.goNamed(
-                                "currentgame",
-                                queryParameters: {'id': latestGame!.id},
-                              );
+                              context.goNamed("currentgame",
+                                  queryParameters: {'id': latestGame!.id},
+                                  extra: () {
+                                _refreshGameHistory();
+                              });
                             },
                           ),
                         ),
@@ -347,7 +349,9 @@ class _MainScreenState extends State<MainScreen> {
                           textStyle: AppTheme.defaultButtonTextStyle,
                           bgColor: AppTheme.orange,
                           onTap: () async {
-                            await context.pushNamed("newgame");
+                            await context.pushNamed("newgame", extra: () {
+                              _refreshGameHistory();
+                            });
                             await _refreshGameHistory();
                           },
                         ),

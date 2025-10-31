@@ -1,4 +1,4 @@
-import 'package:bela_blok/db/database.dart'; 
+import 'package:bela_blok/db/database.dart';
 import 'package:bela_blok/enums/team_enum.dart';
 import 'package:bela_blok/screens/current_game_screen/widgets/round_score_list_item.dart';
 import 'package:bela_blok/screens/current_game_screen/widgets/top_score_details.dart';
@@ -9,7 +9,7 @@ import 'package:bela_blok/screens/widgets/game_stats_widget.dart';
 import 'package:bela_blok/screens/widgets/morphing_widgets.dart';
 import 'package:bela_blok/screens/widgets/error_message_widget.dart';
 import 'package:bela_blok/services/games_service.dart';
-import 'package:bela_blok/services/rounds_service.dart'; 
+import 'package:bela_blok/services/rounds_service.dart';
 import 'package:bela_blok/db/models/game_model.dart';
 import 'package:bela_blok/db/models/round_model.dart';
 import 'package:bela_blok/themes/app_theme.dart';
@@ -19,7 +19,10 @@ import 'package:go_router/go_router.dart';
 
 class CurrentGameScreen extends StatefulWidget {
   final String? gameId;
-  const CurrentGameScreen({super.key, this.gameId});
+  final VoidCallback? updateGamesListCallback;
+
+  const CurrentGameScreen(
+      {super.key, this.gameId, this.updateGamesListCallback});
 
   @override
   State<CurrentGameScreen> createState() => _CurrentGameScreenState();
@@ -30,7 +33,7 @@ class _CurrentGameScreenState extends State<CurrentGameScreen> {
   bool _wobbleTrigger = false;
 
   GamesService? gamesService;
-  RoundsService? roundsService; 
+  RoundsService? roundsService;
   Game? currentGame;
   bool isLoadingGame = true;
   String? errorMessage;
@@ -42,7 +45,7 @@ class _CurrentGameScreenState extends State<CurrentGameScreen> {
   void initState() {
     super.initState();
     gamesService = GamesService(AppDatabase());
-    roundsService = RoundsService(AppDatabase()); 
+    roundsService = RoundsService(AppDatabase());
     () async {
       await handleInitializeGame(gameId: widget.gameId);
     }();
@@ -83,7 +86,7 @@ class _CurrentGameScreenState extends State<CurrentGameScreen> {
 
   Future<void> loadRounds(String gameId) async {
     setState(() => isLoadingRounds = true);
-    final roundRows = await roundsService!.getRoundsForGameSorted(gameId); 
+    final roundRows = await roundsService!.getRoundsForGameSorted(gameId);
     setState(() {
       rounds = roundRows.map((r) => r.toModel()).toList();
       isLoadingRounds = false;
@@ -107,12 +110,11 @@ class _CurrentGameScreenState extends State<CurrentGameScreen> {
       showErrorMessage("Nema aktivne igre");
       return;
     }
-    
-    await context.pushNamed(
-      'addround',
-      queryParameters: {'id': currentGame!.id!},
-    );
-    
+
+    await context.pushNamed('addround',
+        queryParameters: {'id': currentGame!.id!},
+        extra: widget.updateGamesListCallback);
+
     await handleInitializeGame(gameId: currentGame!.id!);
     scrollToBottom();
   }
@@ -133,7 +135,6 @@ class _CurrentGameScreenState extends State<CurrentGameScreen> {
   }
 
   void showErrorMessage(String message) {
-    
     if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
@@ -279,17 +280,21 @@ class _CurrentGameScreenState extends State<CurrentGameScreen> {
                     child: TopScoreDetails(
                       teamOneScore: teamScore[Team.teamOne]!,
                       teamTwoScore: teamScore[Team.teamTwo]!,
-                      scoreDifference: teamScore[Team.teamTwo]! - teamScore[Team.teamOne]!,
+                      scoreDifference:
+                          teamScore[Team.teamTwo]! - teamScore[Team.teamOne]!,
                       teamInLead: Team.teamOne,
-                      teamOneLeftToWin: gameTargetScore - teamScore[Team.teamOne]!,
-                      teamTwoLeftToWin: gameTargetScore - teamScore[Team.teamTwo]!,
+                      teamOneLeftToWin:
+                          gameTargetScore - teamScore[Team.teamOne]!,
+                      teamTwoLeftToWin:
+                          gameTargetScore - teamScore[Team.teamTwo]!,
                       gameTargetScore: gameTargetScore,
                     ),
                   ),
                   const SizedBox(height: 10),
                   if (isGameFinished) ...[
                     GestureDetector(
-                      onTap: () => setState(() => _wobbleTrigger = !_wobbleTrigger),
+                      onTap: () =>
+                          setState(() => _wobbleTrigger = !_wobbleTrigger),
                       child: WobbleWidget(
                         triggerWobble: _wobbleTrigger,
                         child: GameStatsWidget(gameStats: gameStats),
@@ -305,7 +310,8 @@ class _CurrentGameScreenState extends State<CurrentGameScreen> {
                               ? const Center(child: CircularProgressIndicator())
                               : ListView.builder(
                                   controller: _scrollController,
-                                  padding: const EdgeInsets.fromLTRB(5, 5, 5, 100),
+                                  padding:
+                                      const EdgeInsets.fromLTRB(5, 5, 5, 100),
                                   itemCount: rounds?.length ?? 0,
                                   itemBuilder: (context, index) {
                                     final round = rounds![index];
@@ -314,25 +320,30 @@ class _CurrentGameScreenState extends State<CurrentGameScreen> {
                                       animationType: AnimationType.slideUp,
                                       staggerDelay: 80,
                                       child: Padding(
-                                        padding: const EdgeInsets.symmetric(vertical: 5.0),
+                                        padding: const EdgeInsets.symmetric(
+                                            vertical: 5.0),
                                         child: RoundScoreListItem(
-                                          teamOneCallAmount: round.teamOneCallAmount ?? 0,
-                                          teamTwoCallAmount: round.teamTwoCallAmount ?? 0,
+                                          teamOneCallAmount:
+                                              round.teamOneCallAmount ?? 0,
+                                          teamTwoCallAmount:
+                                              round.teamTwoCallAmount ?? 0,
                                           teamOneScore: round.teamOneScore ?? 0,
                                           teamTwoScore: round.teamTwoScore ?? 0,
                                           teamFailed: round.teamFailed ?? false,
                                           roundID: index,
-                                          teamCalled: Team.values[round.teamCalled ?? Team.teamOne.index],
+                                          teamCalled: Team.values[
+                                              round.teamCalled ??
+                                                  Team.teamOne.index],
                                           onTap: () async {
-                                            await context.pushNamed(
-                                              'addround',
-                                              queryParameters: {
-                                                'id': currentGame!.id!,
-                                                'roundId': round.id ?? '',
-                                              },
-                                              extra: round,
-                                            );
-                                            await handleInitializeGame(gameId: currentGame!.id!);
+                                            await context.pushNamed('addround',
+                                                queryParameters: {
+                                                  'id': currentGame!.id!,
+                                                  'roundId': round.id ?? '',
+                                                }, extra: () {
+                                              widget.updateGamesListCallback!();
+                                            });
+                                            await handleInitializeGame(
+                                                gameId: currentGame!.id!);
                                             scrollToBottom();
                                           },
                                         ),
@@ -348,18 +359,26 @@ class _CurrentGameScreenState extends State<CurrentGameScreen> {
                           child: Padding(
                             padding: const EdgeInsets.fromLTRB(5, 8, 5, 5),
                             child: Hero(
-                              tag: isGameFinished ? "return_to_main_button" : "add_round_button",
+                              tag: isGameFinished
+                                  ? "return_to_main_button"
+                                  : "add_round_button",
                               child: button.AnimatedBigButton(
                                 text: isGameFinished ? "NOVA IGRA" : "DODAJ",
                                 icon: isGameFinished ? Icons.home : Icons.add,
                                 iconAnimationType: button.AnimationType.scale,
                                 textStyle: TextStyle(
                                   color: AppTheme.getInverseTextColor(context),
-                                  fontSize: AppTheme.defaultButtonTextStyle.fontSize,
-                                  fontWeight: AppTheme.defaultButtonTextStyle.fontWeight,
+                                  fontSize:
+                                      AppTheme.defaultButtonTextStyle.fontSize,
+                                  fontWeight: AppTheme
+                                      .defaultButtonTextStyle.fontWeight,
                                 ),
-                                bgColor: isGameFinished ? AppTheme.primary : AppTheme.green,
-                                onTap: isGameFinished ? () => context.goNamed('main') : handleAddRound,
+                                bgColor: isGameFinished
+                                    ? AppTheme.primary
+                                    : AppTheme.green,
+                                onTap: isGameFinished
+                                    ? () => context.goNamed('main')
+                                    : handleAddRound,
                                 textPadding: 15,
                               ),
                             ),
