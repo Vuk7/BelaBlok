@@ -1,4 +1,4 @@
-import 'package:bela_blok/db/database.dart'; 
+import 'package:bela_blok/db/database.dart';
 import 'package:bela_blok/screens/new_game_screen/widgets/game_settings_menu.dart';
 import 'package:bela_blok/screens/main_screen/widgets/animated_button.dart';
 import 'package:bela_blok/screens/widgets/animated_big_button.dart';
@@ -10,7 +10,9 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 class NewGameScreen extends StatefulWidget {
-  const NewGameScreen({super.key});
+  final VoidCallback? updateGamesListCallback;
+
+  const NewGameScreen({super.key, this.updateGamesListCallback});
 
   @override
   State<NewGameScreen> createState() => _NewGameScreenState();
@@ -28,27 +30,26 @@ class _NewGameScreenState extends State<NewGameScreen> {
   @override
   void initState() {
     super.initState();
-    _db = AppDatabase(); 
+    _db = AppDatabase();
     _gamesService = GamesService(_db);
     _setDefaultGameSettings();
   }
 
   Future<void> _setDefaultGameSettings() async {
-
-    int nextShuffler = await _gamesService.getNextStartingShuffler(playerCount: 4);
+    int nextShuffler =
+        await _gamesService.getNextStartingShuffler(playerCount: 4);
     int previousDirection = await _gamesService.getPreviousGameDirection();
-    
+
     setState(() {
       playerShufflingSelect = nextShuffler;
       playDirectionSelect = previousDirection;
-
     });
   }
 
   Future<int?> getSelectedTargetScore() async {
     if (selectedGameType == 0) return 1001;
     if (selectedGameType == 1) return 501;
-    
+
     if (customGameController.text.isNotEmpty) {
       return int.tryParse(customGameController.text);
     }
@@ -59,20 +60,24 @@ class _NewGameScreenState extends State<NewGameScreen> {
     final targetScore = await getSelectedTargetScore();
     if (targetScore == null) return;
 
-    
-
     try {
       await _gamesService.createNewGameWithParameters(
-        gameType: targetScore, 
+        gameType: targetScore,
         playDirection: playDirectionSelect == 0
             ? PlayDirection.clockwise
             : PlayDirection.counterClockwise,
-        currentlyShuffling: playerShufflingSelect, 
+        currentlyShuffling: playerShufflingSelect,
       );
 
       final latestGame = await _gamesService.getLatestGame();
       if (latestGame != null && latestGame.id != null && mounted) {
-        context.goNamed('currentgame', queryParameters: {'id': latestGame.id!});
+        if (widget.updateGamesListCallback != null) {
+          widget.updateGamesListCallback!();
+        }
+
+        context.goNamed('currentgame',
+            queryParameters: {'id': latestGame.id!},
+            extra: widget.updateGamesListCallback);
       } else if (mounted) {
         Navigator.of(context).pop();
       }
@@ -123,8 +128,6 @@ class _NewGameScreenState extends State<NewGameScreen> {
 
   @override
   void dispose() {
-   
-
     super.dispose();
   }
 
@@ -148,12 +151,11 @@ class _NewGameScreenState extends State<NewGameScreen> {
               child: IntrinsicHeight(
                 child: Column(
                   children: [
-                   const Text(
+                    const Text(
                       'NOVA IGRA',
                       style: AppTheme.screenTitleTextStyle,
                     ),
                     const SizedBox(height: 20),
-                   
                     Row(
                       children: [
                         Expanded(
@@ -194,7 +196,6 @@ class _NewGameScreenState extends State<NewGameScreen> {
                       ],
                     ),
                     const SizedBox(height: 20),
-                    
                     AnimatedButton(
                       text: isCustomGame
                           ? "RUČNO (${customGameController.text.isEmpty ? '---' : customGameController.text})"
@@ -219,14 +220,12 @@ class _NewGameScreenState extends State<NewGameScreen> {
                       },
                     ),
                     const SizedBox(height: 5),
-                   
                     GameSettingsMenu(
                       playDirectionSelect: playDirectionSelect,
                       onPlayDirectionChanged: (id) =>
                           setState(() => playDirectionSelect = id),
                     ),
                     const SizedBox(height: 15),
-                
                     Container(
                       width: double.infinity,
                       padding: const EdgeInsets.all(16),
@@ -255,7 +254,8 @@ class _NewGameScreenState extends State<NewGameScreen> {
                               Text(
                                 'PRVI MIJEŠA',
                                 style: AppTheme.sectionHeaderTextStyle.copyWith(
-                                  color: Theme.of(context).colorScheme.onSurface,
+                                  color:
+                                      Theme.of(context).colorScheme.onSurface,
                                 ),
                               ),
                             ],
@@ -264,7 +264,8 @@ class _NewGameScreenState extends State<NewGameScreen> {
                           PlayerShuffling(
                             selected: playerShufflingSelect,
                             selectedColor: AppTheme.red,
-                            onTap: (id) => setState(() => playerShufflingSelect = id),
+                            onTap: (id) =>
+                                setState(() => playerShufflingSelect = id),
                           ),
                         ],
                       ),
