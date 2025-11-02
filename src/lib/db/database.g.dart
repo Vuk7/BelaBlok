@@ -1297,16 +1297,457 @@ class RoundTableCompanion extends UpdateCompanion<RoundTableData> {
   }
 }
 
+class $SettingsTableTable extends SettingsTable
+    with TableInfo<$SettingsTableTable, SettingsTableData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $SettingsTableTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+      'id', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: false,
+      clientDefault: () => const Uuid().v4());
+  static const VerificationMeta _createdAtMeta =
+      const VerificationMeta('createdAt');
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+      'created_at', aliasedName, false,
+      type: DriftSqlType.dateTime,
+      requiredDuringInsert: false,
+      defaultValue: currentDateAndTime);
+  static const VerificationMeta _updatedAtMeta =
+      const VerificationMeta('updatedAt');
+  @override
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+      'updated_at', aliasedName, false,
+      type: DriftSqlType.dateTime,
+      requiredDuringInsert: false,
+      defaultValue: currentDateAndTime);
+  static const VerificationMeta _deletedAtMeta =
+      const VerificationMeta('deletedAt');
+  @override
+  late final GeneratedColumn<DateTime> deletedAt = GeneratedColumn<DateTime>(
+      'deleted_at', aliasedName, true,
+      type: DriftSqlType.dateTime, requiredDuringInsert: false);
+  static const VerificationMeta _showRulesMeta =
+      const VerificationMeta('showRules');
+  @override
+  late final GeneratedColumn<bool> showRules = GeneratedColumn<bool>(
+      'show_rules', aliasedName, false,
+      type: DriftSqlType.bool,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('CHECK ("show_rules" IN (0, 1))'),
+      defaultValue: const Constant(true));
+  static const VerificationMeta _showHelpDialogMeta =
+      const VerificationMeta('showHelpDialog');
+  @override
+  late final GeneratedColumn<bool> showHelpDialog = GeneratedColumn<bool>(
+      'show_help_dialog', aliasedName, false,
+      type: DriftSqlType.bool,
+      requiredDuringInsert: false,
+      defaultConstraints: GeneratedColumn.constraintIsAlways(
+          'CHECK ("show_help_dialog" IN (0, 1))'),
+      defaultValue: const Constant(true));
+  static const VerificationMeta _showGameStatsMeta =
+      const VerificationMeta('showGameStats');
+  @override
+  late final GeneratedColumn<bool> showGameStats = GeneratedColumn<bool>(
+      'show_game_stats', aliasedName, false,
+      type: DriftSqlType.bool,
+      requiredDuringInsert: false,
+      defaultConstraints: GeneratedColumn.constraintIsAlways(
+          'CHECK ("show_game_stats" IN (0, 1))'),
+      defaultValue: const Constant(true));
+  static const VerificationMeta _themeModeMeta =
+      const VerificationMeta('themeMode');
+  @override
+  late final GeneratedColumn<int> themeMode = GeneratedColumn<int>(
+      'theme_mode', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(0));
+  @override
+  List<GeneratedColumn> get $columns => [
+        id,
+        createdAt,
+        updatedAt,
+        deletedAt,
+        showRules,
+        showHelpDialog,
+        showGameStats,
+        themeMode
+      ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'settings';
+  @override
+  VerificationContext validateIntegrity(Insertable<SettingsTableData> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(_createdAtMeta,
+          createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta));
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(_updatedAtMeta,
+          updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta));
+    }
+    if (data.containsKey('deleted_at')) {
+      context.handle(_deletedAtMeta,
+          deletedAt.isAcceptableOrUnknown(data['deleted_at']!, _deletedAtMeta));
+    }
+    if (data.containsKey('show_rules')) {
+      context.handle(_showRulesMeta,
+          showRules.isAcceptableOrUnknown(data['show_rules']!, _showRulesMeta));
+    }
+    if (data.containsKey('show_help_dialog')) {
+      context.handle(
+          _showHelpDialogMeta,
+          showHelpDialog.isAcceptableOrUnknown(
+              data['show_help_dialog']!, _showHelpDialogMeta));
+    }
+    if (data.containsKey('show_game_stats')) {
+      context.handle(
+          _showGameStatsMeta,
+          showGameStats.isAcceptableOrUnknown(
+              data['show_game_stats']!, _showGameStatsMeta));
+    }
+    if (data.containsKey('theme_mode')) {
+      context.handle(_themeModeMeta,
+          themeMode.isAcceptableOrUnknown(data['theme_mode']!, _themeModeMeta));
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  SettingsTableData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return SettingsTableData(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}id'])!,
+      createdAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}created_at'])!,
+      updatedAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}updated_at'])!,
+      deletedAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}deleted_at']),
+      showRules: attachedDatabase.typeMapping
+          .read(DriftSqlType.bool, data['${effectivePrefix}show_rules'])!,
+      showHelpDialog: attachedDatabase.typeMapping
+          .read(DriftSqlType.bool, data['${effectivePrefix}show_help_dialog'])!,
+      showGameStats: attachedDatabase.typeMapping
+          .read(DriftSqlType.bool, data['${effectivePrefix}show_game_stats'])!,
+      themeMode: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}theme_mode'])!,
+    );
+  }
+
+  @override
+  $SettingsTableTable createAlias(String alias) {
+    return $SettingsTableTable(attachedDatabase, alias);
+  }
+}
+
+class SettingsTableData extends DataClass
+    implements Insertable<SettingsTableData> {
+  final String id;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+  final DateTime? deletedAt;
+  final bool showRules;
+  final bool showHelpDialog;
+  final bool showGameStats;
+  final int themeMode;
+  const SettingsTableData(
+      {required this.id,
+      required this.createdAt,
+      required this.updatedAt,
+      this.deletedAt,
+      required this.showRules,
+      required this.showHelpDialog,
+      required this.showGameStats,
+      required this.themeMode});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['created_at'] = Variable<DateTime>(createdAt);
+    map['updated_at'] = Variable<DateTime>(updatedAt);
+    if (!nullToAbsent || deletedAt != null) {
+      map['deleted_at'] = Variable<DateTime>(deletedAt);
+    }
+    map['show_rules'] = Variable<bool>(showRules);
+    map['show_help_dialog'] = Variable<bool>(showHelpDialog);
+    map['show_game_stats'] = Variable<bool>(showGameStats);
+    map['theme_mode'] = Variable<int>(themeMode);
+    return map;
+  }
+
+  SettingsTableCompanion toCompanion(bool nullToAbsent) {
+    return SettingsTableCompanion(
+      id: Value(id),
+      createdAt: Value(createdAt),
+      updatedAt: Value(updatedAt),
+      deletedAt: deletedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(deletedAt),
+      showRules: Value(showRules),
+      showHelpDialog: Value(showHelpDialog),
+      showGameStats: Value(showGameStats),
+      themeMode: Value(themeMode),
+    );
+  }
+
+  factory SettingsTableData.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return SettingsTableData(
+      id: serializer.fromJson<String>(json['id']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+      deletedAt: serializer.fromJson<DateTime?>(json['deletedAt']),
+      showRules: serializer.fromJson<bool>(json['showRules']),
+      showHelpDialog: serializer.fromJson<bool>(json['showHelpDialog']),
+      showGameStats: serializer.fromJson<bool>(json['showGameStats']),
+      themeMode: serializer.fromJson<int>(json['themeMode']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'updatedAt': serializer.toJson<DateTime>(updatedAt),
+      'deletedAt': serializer.toJson<DateTime?>(deletedAt),
+      'showRules': serializer.toJson<bool>(showRules),
+      'showHelpDialog': serializer.toJson<bool>(showHelpDialog),
+      'showGameStats': serializer.toJson<bool>(showGameStats),
+      'themeMode': serializer.toJson<int>(themeMode),
+    };
+  }
+
+  SettingsTableData copyWith(
+          {String? id,
+          DateTime? createdAt,
+          DateTime? updatedAt,
+          Value<DateTime?> deletedAt = const Value.absent(),
+          bool? showRules,
+          bool? showHelpDialog,
+          bool? showGameStats,
+          int? themeMode}) =>
+      SettingsTableData(
+        id: id ?? this.id,
+        createdAt: createdAt ?? this.createdAt,
+        updatedAt: updatedAt ?? this.updatedAt,
+        deletedAt: deletedAt.present ? deletedAt.value : this.deletedAt,
+        showRules: showRules ?? this.showRules,
+        showHelpDialog: showHelpDialog ?? this.showHelpDialog,
+        showGameStats: showGameStats ?? this.showGameStats,
+        themeMode: themeMode ?? this.themeMode,
+      );
+  SettingsTableData copyWithCompanion(SettingsTableCompanion data) {
+    return SettingsTableData(
+      id: data.id.present ? data.id.value : this.id,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+      deletedAt: data.deletedAt.present ? data.deletedAt.value : this.deletedAt,
+      showRules: data.showRules.present ? data.showRules.value : this.showRules,
+      showHelpDialog: data.showHelpDialog.present
+          ? data.showHelpDialog.value
+          : this.showHelpDialog,
+      showGameStats: data.showGameStats.present
+          ? data.showGameStats.value
+          : this.showGameStats,
+      themeMode: data.themeMode.present ? data.themeMode.value : this.themeMode,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('SettingsTableData(')
+          ..write('id: $id, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('deletedAt: $deletedAt, ')
+          ..write('showRules: $showRules, ')
+          ..write('showHelpDialog: $showHelpDialog, ')
+          ..write('showGameStats: $showGameStats, ')
+          ..write('themeMode: $themeMode')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, createdAt, updatedAt, deletedAt,
+      showRules, showHelpDialog, showGameStats, themeMode);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is SettingsTableData &&
+          other.id == this.id &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt &&
+          other.deletedAt == this.deletedAt &&
+          other.showRules == this.showRules &&
+          other.showHelpDialog == this.showHelpDialog &&
+          other.showGameStats == this.showGameStats &&
+          other.themeMode == this.themeMode);
+}
+
+class SettingsTableCompanion extends UpdateCompanion<SettingsTableData> {
+  final Value<String> id;
+  final Value<DateTime> createdAt;
+  final Value<DateTime> updatedAt;
+  final Value<DateTime?> deletedAt;
+  final Value<bool> showRules;
+  final Value<bool> showHelpDialog;
+  final Value<bool> showGameStats;
+  final Value<int> themeMode;
+  final Value<int> rowid;
+  const SettingsTableCompanion({
+    this.id = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.deletedAt = const Value.absent(),
+    this.showRules = const Value.absent(),
+    this.showHelpDialog = const Value.absent(),
+    this.showGameStats = const Value.absent(),
+    this.themeMode = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  SettingsTableCompanion.insert({
+    this.id = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.deletedAt = const Value.absent(),
+    this.showRules = const Value.absent(),
+    this.showHelpDialog = const Value.absent(),
+    this.showGameStats = const Value.absent(),
+    this.themeMode = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  static Insertable<SettingsTableData> custom({
+    Expression<String>? id,
+    Expression<DateTime>? createdAt,
+    Expression<DateTime>? updatedAt,
+    Expression<DateTime>? deletedAt,
+    Expression<bool>? showRules,
+    Expression<bool>? showHelpDialog,
+    Expression<bool>? showGameStats,
+    Expression<int>? themeMode,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (deletedAt != null) 'deleted_at': deletedAt,
+      if (showRules != null) 'show_rules': showRules,
+      if (showHelpDialog != null) 'show_help_dialog': showHelpDialog,
+      if (showGameStats != null) 'show_game_stats': showGameStats,
+      if (themeMode != null) 'theme_mode': themeMode,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  SettingsTableCompanion copyWith(
+      {Value<String>? id,
+      Value<DateTime>? createdAt,
+      Value<DateTime>? updatedAt,
+      Value<DateTime?>? deletedAt,
+      Value<bool>? showRules,
+      Value<bool>? showHelpDialog,
+      Value<bool>? showGameStats,
+      Value<int>? themeMode,
+      Value<int>? rowid}) {
+    return SettingsTableCompanion(
+      id: id ?? this.id,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      deletedAt: deletedAt ?? this.deletedAt,
+      showRules: showRules ?? this.showRules,
+      showHelpDialog: showHelpDialog ?? this.showHelpDialog,
+      showGameStats: showGameStats ?? this.showGameStats,
+      themeMode: themeMode ?? this.themeMode,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    if (deletedAt.present) {
+      map['deleted_at'] = Variable<DateTime>(deletedAt.value);
+    }
+    if (showRules.present) {
+      map['show_rules'] = Variable<bool>(showRules.value);
+    }
+    if (showHelpDialog.present) {
+      map['show_help_dialog'] = Variable<bool>(showHelpDialog.value);
+    }
+    if (showGameStats.present) {
+      map['show_game_stats'] = Variable<bool>(showGameStats.value);
+    }
+    if (themeMode.present) {
+      map['theme_mode'] = Variable<int>(themeMode.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('SettingsTableCompanion(')
+          ..write('id: $id, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('deletedAt: $deletedAt, ')
+          ..write('showRules: $showRules, ')
+          ..write('showHelpDialog: $showHelpDialog, ')
+          ..write('showGameStats: $showGameStats, ')
+          ..write('themeMode: $themeMode, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
   late final $GameTableTable gameTable = $GameTableTable(this);
   late final $RoundTableTable roundTable = $RoundTableTable(this);
+  late final $SettingsTableTable settingsTable = $SettingsTableTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
   @override
-  List<DatabaseSchemaEntity> get allSchemaEntities => [gameTable, roundTable];
+  List<DatabaseSchemaEntity> get allSchemaEntities =>
+      [gameTable, roundTable, settingsTable];
 }
 
 typedef $$GameTableTableCreateCompanionBuilder = GameTableCompanion Function({
@@ -2059,6 +2500,227 @@ typedef $$RoundTableTableProcessedTableManager = ProcessedTableManager<
     (RoundTableData, $$RoundTableTableReferences),
     RoundTableData,
     PrefetchHooks Function({bool gameId})>;
+typedef $$SettingsTableTableCreateCompanionBuilder = SettingsTableCompanion
+    Function({
+  Value<String> id,
+  Value<DateTime> createdAt,
+  Value<DateTime> updatedAt,
+  Value<DateTime?> deletedAt,
+  Value<bool> showRules,
+  Value<bool> showHelpDialog,
+  Value<bool> showGameStats,
+  Value<int> themeMode,
+  Value<int> rowid,
+});
+typedef $$SettingsTableTableUpdateCompanionBuilder = SettingsTableCompanion
+    Function({
+  Value<String> id,
+  Value<DateTime> createdAt,
+  Value<DateTime> updatedAt,
+  Value<DateTime?> deletedAt,
+  Value<bool> showRules,
+  Value<bool> showHelpDialog,
+  Value<bool> showGameStats,
+  Value<int> themeMode,
+  Value<int> rowid,
+});
+
+class $$SettingsTableTableFilterComposer
+    extends Composer<_$AppDatabase, $SettingsTableTable> {
+  $$SettingsTableTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+      column: $table.createdAt, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
+      column: $table.updatedAt, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<DateTime> get deletedAt => $composableBuilder(
+      column: $table.deletedAt, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<bool> get showRules => $composableBuilder(
+      column: $table.showRules, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<bool> get showHelpDialog => $composableBuilder(
+      column: $table.showHelpDialog,
+      builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<bool> get showGameStats => $composableBuilder(
+      column: $table.showGameStats, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get themeMode => $composableBuilder(
+      column: $table.themeMode, builder: (column) => ColumnFilters(column));
+}
+
+class $$SettingsTableTableOrderingComposer
+    extends Composer<_$AppDatabase, $SettingsTableTable> {
+  $$SettingsTableTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+      column: $table.createdAt, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
+      column: $table.updatedAt, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<DateTime> get deletedAt => $composableBuilder(
+      column: $table.deletedAt, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<bool> get showRules => $composableBuilder(
+      column: $table.showRules, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<bool> get showHelpDialog => $composableBuilder(
+      column: $table.showHelpDialog,
+      builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<bool> get showGameStats => $composableBuilder(
+      column: $table.showGameStats,
+      builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get themeMode => $composableBuilder(
+      column: $table.themeMode, builder: (column) => ColumnOrderings(column));
+}
+
+class $$SettingsTableTableAnnotationComposer
+    extends Composer<_$AppDatabase, $SettingsTableTable> {
+  $$SettingsTableTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get deletedAt =>
+      $composableBuilder(column: $table.deletedAt, builder: (column) => column);
+
+  GeneratedColumn<bool> get showRules =>
+      $composableBuilder(column: $table.showRules, builder: (column) => column);
+
+  GeneratedColumn<bool> get showHelpDialog => $composableBuilder(
+      column: $table.showHelpDialog, builder: (column) => column);
+
+  GeneratedColumn<bool> get showGameStats => $composableBuilder(
+      column: $table.showGameStats, builder: (column) => column);
+
+  GeneratedColumn<int> get themeMode =>
+      $composableBuilder(column: $table.themeMode, builder: (column) => column);
+}
+
+class $$SettingsTableTableTableManager extends RootTableManager<
+    _$AppDatabase,
+    $SettingsTableTable,
+    SettingsTableData,
+    $$SettingsTableTableFilterComposer,
+    $$SettingsTableTableOrderingComposer,
+    $$SettingsTableTableAnnotationComposer,
+    $$SettingsTableTableCreateCompanionBuilder,
+    $$SettingsTableTableUpdateCompanionBuilder,
+    (
+      SettingsTableData,
+      BaseReferences<_$AppDatabase, $SettingsTableTable, SettingsTableData>
+    ),
+    SettingsTableData,
+    PrefetchHooks Function()> {
+  $$SettingsTableTableTableManager(_$AppDatabase db, $SettingsTableTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$SettingsTableTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$SettingsTableTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$SettingsTableTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback: ({
+            Value<String> id = const Value.absent(),
+            Value<DateTime> createdAt = const Value.absent(),
+            Value<DateTime> updatedAt = const Value.absent(),
+            Value<DateTime?> deletedAt = const Value.absent(),
+            Value<bool> showRules = const Value.absent(),
+            Value<bool> showHelpDialog = const Value.absent(),
+            Value<bool> showGameStats = const Value.absent(),
+            Value<int> themeMode = const Value.absent(),
+            Value<int> rowid = const Value.absent(),
+          }) =>
+              SettingsTableCompanion(
+            id: id,
+            createdAt: createdAt,
+            updatedAt: updatedAt,
+            deletedAt: deletedAt,
+            showRules: showRules,
+            showHelpDialog: showHelpDialog,
+            showGameStats: showGameStats,
+            themeMode: themeMode,
+            rowid: rowid,
+          ),
+          createCompanionCallback: ({
+            Value<String> id = const Value.absent(),
+            Value<DateTime> createdAt = const Value.absent(),
+            Value<DateTime> updatedAt = const Value.absent(),
+            Value<DateTime?> deletedAt = const Value.absent(),
+            Value<bool> showRules = const Value.absent(),
+            Value<bool> showHelpDialog = const Value.absent(),
+            Value<bool> showGameStats = const Value.absent(),
+            Value<int> themeMode = const Value.absent(),
+            Value<int> rowid = const Value.absent(),
+          }) =>
+              SettingsTableCompanion.insert(
+            id: id,
+            createdAt: createdAt,
+            updatedAt: updatedAt,
+            deletedAt: deletedAt,
+            showRules: showRules,
+            showHelpDialog: showHelpDialog,
+            showGameStats: showGameStats,
+            themeMode: themeMode,
+            rowid: rowid,
+          ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ));
+}
+
+typedef $$SettingsTableTableProcessedTableManager = ProcessedTableManager<
+    _$AppDatabase,
+    $SettingsTableTable,
+    SettingsTableData,
+    $$SettingsTableTableFilterComposer,
+    $$SettingsTableTableOrderingComposer,
+    $$SettingsTableTableAnnotationComposer,
+    $$SettingsTableTableCreateCompanionBuilder,
+    $$SettingsTableTableUpdateCompanionBuilder,
+    (
+      SettingsTableData,
+      BaseReferences<_$AppDatabase, $SettingsTableTable, SettingsTableData>
+    ),
+    SettingsTableData,
+    PrefetchHooks Function()>;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -2067,4 +2729,6 @@ class $AppDatabaseManager {
       $$GameTableTableTableManager(_db, _db.gameTable);
   $$RoundTableTableTableManager get roundTable =>
       $$RoundTableTableTableManager(_db, _db.roundTable);
+  $$SettingsTableTableTableManager get settingsTable =>
+      $$SettingsTableTableTableManager(_db, _db.settingsTable);
 }

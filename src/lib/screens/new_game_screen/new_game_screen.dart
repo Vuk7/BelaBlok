@@ -234,8 +234,7 @@ class _NewGameScreenState extends State<NewGameScreen> {
                         borderRadius: BorderRadius.circular(16),
                         boxShadow: [
                           BoxShadow(
-                            color:
-                                AppTheme.getOverlayColor(context, opacity: 0.1),
+                            color: AppTheme.getOverlayColor(context, opacity: 0),
                             blurRadius: 4,
                             offset: const Offset(0, 2),
                           ),
