@@ -183,219 +183,216 @@ class _MainScreenState extends State<MainScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      body: SafeArea(
-        child: isLoadingGameHistory
-            ? const Center(child: CircularProgressIndicator())
-            : SingleChildScrollView(
-                padding: const EdgeInsets.all(20.0),
-                child: Column(
-                  children: [
-                    const SizedBox(height: 40),
-                    const Text(
-                      "BELA BLOK",
-                      style: AppTheme.titleTextStyle,
-                    ),
-                    const SizedBox(
-                      height: 40,
-                    ),
-                    Card(
-                      elevation: 4,
-                      color: AppTheme.getCardBackgroundColor(context),
-                      shape: const RoundedRectangleBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(16)),
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        body: SafeArea(
+          child: isLoadingGameHistory
+              ? const Center(child: CircularProgressIndicator())
+              : SingleChildScrollView(
+                  padding: const EdgeInsets.all(20.0),
+                  child: Column(
+                    children: [
+                      const SizedBox(height: 40),
+                      const Text(
+                        "BELA BLOK",
+                        style: AppTheme.titleTextStyle,
                       ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(20.0),
-                        child: Column(
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Icon(
-                                  Icons.history,
-                                  color: Theme.of(context).colorScheme.primary,
-                                  size: 26,
-                                ),
-                                const SizedBox(width: 8),
-                                Text(
-                                  "Povijest:",
-                                  style: TextStyle(
-                                    fontSize: 22,
-                                    fontWeight: FontWeight.bold,
+                      const SizedBox(
+                        height: 40,
+                      ),
+                      Card(
+                        elevation: 4,
+                        color: AppTheme.getCardBackgroundColor(context),
+                        shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(16)),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(20.0),
+                          child: Column(
+                            children: [
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(
+                                    Icons.history,
                                     color:
-                                        Theme.of(context).colorScheme.onSurface,
+                                        Theme.of(context).colorScheme.primary,
+                                    size: 26,
                                   ),
-                                ),
-                              ],
-                            ),
-                            const SizedBox(height: 20),
-                            isLoadingGameHistory
-                                ? const Center(
-                                    child: CircularProgressIndicator())
-                                : SizedBox(
-                                    height: 200,
-                                    child: gamesHistory.isEmpty
-                                        ? Center(
-                                            child: Text(
-                                              "Trenutno nemate dostupnih igri.",
-                                              style: TextStyle(
-                                                  fontSize: 15,
-                                                  color: Theme.of(context)
-                                                      .colorScheme
-                                                      .error),
-                                            ),
-                                          )
-                                        : ListView.builder(
-                                            controller: _scrollController,
-                                            itemCount: gamesHistory.length +
-                                                (hasMoreGames ? 1 : 0),
-                                            itemBuilder: (context, index) {
-                                              if (index ==
-                                                  gamesHistory.length) {
-                                                return Container(
-                                                  padding:
-                                                      const EdgeInsets.all(16),
-                                                  alignment: Alignment.center,
-                                                  child: isLoadingMoreGames
-                                                      ? const SizedBox(
-                                                          height: 24,
-                                                          width: 24,
-                                                          child:
-                                                              CircularProgressIndicator(
-                                                                  strokeWidth:
-                                                                      2),
-                                                        )
-                                                      : const SizedBox.shrink(),
-                                                );
-                                              }
+                                  const SizedBox(width: 8),
+                                  Text(
+                                    "Povijest:",
+                                    style: TextStyle(
+                                      fontSize: 22,
+                                      fontWeight: FontWeight.bold,
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .onSurface,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 20),
+                              isLoadingGameHistory
+                                  ? const Center(
+                                      child: CircularProgressIndicator())
+                                  : SizedBox(
+                                      height: 200,
+                                      child: gamesHistory.isEmpty
+                                          ? Center(
+                                              child: Text(
+                                                "Trenutno nemate dostupnih igri.",
+                                                style: TextStyle(
+                                                    fontSize: 15,
+                                                    color: Theme.of(context)
+                                                        .colorScheme
+                                                        .error),
+                                              ),
+                                            )
+                                          : ListView.builder(
+                                              controller: _scrollController,
+                                              itemCount: gamesHistory.length +
+                                                  (hasMoreGames ? 1 : 0),
+                                              itemBuilder: (context, index) {
+                                                if (index ==
+                                                    gamesHistory.length) {
+                                                  return Container(
+                                                    padding:
+                                                        const EdgeInsets.all(
+                                                            16),
+                                                    alignment: Alignment.center,
+                                                    child: isLoadingMoreGames
+                                                        ? const SizedBox(
+                                                            height: 24,
+                                                            width: 24,
+                                                            child:
+                                                                CircularProgressIndicator(
+                                                                    strokeWidth:
+                                                                        2),
+                                                          )
+                                                        : const SizedBox
+                                                            .shrink(),
+                                                  );
+                                                }
 
-                                              final game = gamesHistory[index];
-                                              return Dismissible(
-                                                key: Key(game.id ??
-                                                    index.toString()),
-                                                direction:
-                                                    DismissDirection.endToStart,
-                                                background: Container(
-                                                  color: AppTheme.red,
-                                                  child: const Icon(
-                                                    Icons.delete,
-                                                    color: Colors.white,
-                                                    size: 30,
+                                                final game =
+                                                    gamesHistory[index];
+                                                return Dismissible(
+                                                  key: Key(game.id ??
+                                                      index.toString()),
+                                                  direction: DismissDirection
+                                                      .endToStart,
+                                                  background: Container(
+                                                    color: AppTheme.red,
+                                                    child: const Icon(
+                                                      Icons.delete,
+                                                      color: Colors.white,
+                                                      size: 30,
+                                                    ),
                                                   ),
-                                                ),
-                                                confirmDismiss: (direction) async {
-                                                  return await _showDeleteConfirmationDialog(game.id ?? "");
-                                                },
-                                                onDismissed: (direction) async {
-                                                  await handleDeleteGame(
-                                                      game.id ?? "");
-                                                },
-                                                child: AnimatedHistoryListItem(
-                                                  gameID: game.id ?? "N/A",
-                                                  date: formatDate(
-                                                      game.createdAt),
-                                                  teamOneScore:
-                                                      game.teamOneScore ?? 0,
-                                                  teamTwoScore:
-                                                      game.teamTwoScore ?? 0,
-                                                  onTap: () async {
-                                                    await context.pushNamed(
-                                                        "currentgame",
-                                                        queryParameters: {
-                                                          'id': game.id
-                                                        }, extra: () {
-                                                      _refreshGameHistory();
-                                                    });
-                                                    await _refreshGameHistory();
-                                                    latestGame =
-                                                        await gamesService
-                                                            .getLatestGame();
+                                                  confirmDismiss:
+                                                      (direction) async {
+                                                    return await _showDeleteConfirmationDialog(
+                                                        game.id ?? "");
                                                   },
-                                                ),
-                                              );
-                                            },
-                                          ),
-                                  ),
-                          ],
+                                                  onDismissed:
+                                                      (direction) async {
+                                                    await handleDeleteGame(
+                                                        game.id ?? "");
+                                                  },
+                                                  child:
+                                                      AnimatedHistoryListItem(
+                                                    gameID: game.id ?? "N/A",
+                                                    date: formatDate(
+                                                        game.createdAt),
+                                                    teamOneScore:
+                                                        game.teamOneScore ?? 0,
+                                                    teamTwoScore:
+                                                        game.teamTwoScore ?? 0,
+                                                    onTap: () async {
+                                                      await context.pushNamed(
+                                                          "currentgame",
+                                                          queryParameters: {
+                                                            'id': game.id
+                                                          }, extra: () {
+                                                        _refreshGameHistory();
+                                                      });
+                                                      await _refreshGameHistory();
+                                                      latestGame =
+                                                          await gamesService
+                                                              .getLatestGame();
+                                                    },
+                                                  ),
+                                                );
+                                              },
+                                            ),
+                                    ),
+                            ],
+                          ),
                         ),
                       ),
-                    ),
-                    const SizedBox(height: 20),
-
-                    // Conditionally show RulesWidget based on settings
-                    if (settings?.showRules == true) ...[
-                      const RulesWidget(),
                       const SizedBox(height: 20),
-                    ],
 
-                    // Continue game button if the latest game exists and is unfinished
-                    if (latestGame != null && latestGame!.finished != true)
+                      // Conditionally show RulesWidget based on settings
+                      if (settings?.showRules == true) ...[
+                        const RulesWidget(),
+                        const SizedBox(height: 20),
+                      ],
+
+                      // Continue game button if the latest game exists and is unfinished
+                      if (latestGame != null && latestGame!.finished != true)
+                        Padding(
+                          padding: const EdgeInsets.all(5.0),
+                          child: Hero(
+                            tag: "continue_button",
+                            child: AnimatedBigButton(
+                              text: "NASTAVI",
+                              icon: Icons.play_arrow,
+                              iconAnimationType: AnimationType.slideRight,
+                              textStyle: AppTheme.defaultButtonTextStyle,
+                              bgColor: AppTheme.green,
+                              onTap: () {
+                                context.goNamed("currentgame",
+                                    queryParameters: {'id': latestGame!.id},
+                                    extra: () {
+                                  _refreshGameHistory();
+                                });
+                              },
+                            ),
+                          ),
+                        ),
                       Padding(
                         padding: const EdgeInsets.all(5.0),
                         child: Hero(
-                          tag: "continue_button",
+                          tag: "new_game_button",
                           child: AnimatedBigButton(
-                            text: "NASTAVI",
-                            icon: Icons.play_arrow,
-                            iconAnimationType: AnimationType.slideRight,
+                            text: "NOVA IGRA",
+                            icon: Icons.refresh,
+                            iconAnimationType: AnimationType.rotate,
                             textStyle: AppTheme.defaultButtonTextStyle,
-                            bgColor: AppTheme.green,
-                            onTap: () {
-                              context.goNamed("currentgame",
-                                  queryParameters: {'id': latestGame!.id},
-                                  extra: () {
+                            bgColor: AppTheme.orange,
+                            onTap: () async {
+                              await context.pushNamed("newgame", extra: () {
                                 _refreshGameHistory();
                               });
+                              await _refreshGameHistory();
                             },
                           ),
                         ),
                       ),
-                    Padding(
-                      padding: const EdgeInsets.all(5.0),
-                      child: Hero(
-                        tag: "new_game_button",
-                        child: AnimatedBigButton(
-                          text: "NOVA IGRA",
-                          icon: Icons.refresh,
-                          iconAnimationType: AnimationType.rotate,
-                          textStyle: AppTheme.defaultButtonTextStyle,
-                          bgColor: AppTheme.orange,
+                      const SizedBox(height: 24),
+                      Align(
+                        alignment: Alignment.centerRight,
+                        child: SettingsButton(
                           onTap: () async {
-                            await context.pushNamed("newgame", extra: () {
-                              _refreshGameHistory();
-                            });
-                            await _refreshGameHistory();
+                            await context.pushNamed('settings');
+                            await _refreshSettings();
                           },
                         ),
                       ),
-                    ),
-                    const SizedBox(height: 24),
-                    Align(
-                      alignment: Alignment.centerRight,
-                      child: SettingsButton(
-                        onTap: () async {
-                          await context.pushNamed('settings');
-                          await _refreshSettings();
-                        },
-                      ),
-                    ),
-                    const SizedBox(height: 40),
-                  ],
+                      const SizedBox(height: 40),
+                    ],
+                  ),
                 ),
-              ),
-      ),
-      floatingActionButton: IconButton(
-        icon: Icon(
-          Theme.of(context).brightness == Brightness.dark
-              ? Icons.nightlight_round
-              : Icons.wb_sunny,
-          color: Colors.amber,
-        ),
-        onPressed: () {
-          Provider.of<ThemeNotifier>(context, listen: false).toggleTheme();
-        },
-      ),
-    );
+        ));
   }
 }
