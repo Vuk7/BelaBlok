@@ -16,6 +16,7 @@ class SettingsService {
         showRules: true,
         showHelpDialog: true,
         showGameStats: true,
+        showSmartCalculator: true,
         themeMode: AppThemeMode.light.index,
       );
       
@@ -61,6 +62,17 @@ class SettingsService {
     );
   }
 
+  Future<void> updateShowSmartCalculator(bool showSmartCalculator) async {
+    final settings = await fetchSettings();
+    settings.showSmartCalculator = showSmartCalculator;
+    await dao.update(
+      database.settingsTable,
+      database.settingsTable.id,
+      settings.id!,
+      settings.toCompanion()
+    );
+  }
+
   Future<void> updateThemeMode(AppThemeMode themeMode) async {
     final settings = await fetchSettings();
     settings.themeMode = themeMode.index;
@@ -83,6 +95,9 @@ class SettingsService {
     }
     if (settings.showGameStats != null) {
       currentSettings.showGameStats = settings.showGameStats;
+    }
+    if (settings.showSmartCalculator != null) {
+      currentSettings.showSmartCalculator = settings.showSmartCalculator;
     }
     if (settings.themeMode != null) {
       currentSettings.themeMode = settings.themeMode;

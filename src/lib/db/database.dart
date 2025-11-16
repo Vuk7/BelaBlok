@@ -29,7 +29,7 @@ class AppDatabase extends _$AppDatabase {
 
 
   @override
-  int get schemaVersion => 5;
+  int get schemaVersion => 6;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -45,6 +45,9 @@ class AppDatabase extends _$AppDatabase {
       }
       if (to >= 5 && from < 5) {
         await migrator.createTable(settingsTable);
+      }
+      if (to >= 6 && from < 6) {
+        await migrator.addColumn(settingsTable, settingsTable.showSmartCalculator);
       }
     },
     beforeOpen: (details) async {},

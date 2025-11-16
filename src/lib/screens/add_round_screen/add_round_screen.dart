@@ -884,20 +884,22 @@ class _AddRoundScreenState extends State<AddRoundScreen>
                         },
                       ),
                     ),
-                    const SizedBox(height: 16),
-                    ElevatedButton.icon(
-                      icon: const Icon(Icons.calculate),
-                      label: const Text('Pomoć kod izračuna'),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: AppTheme.green, 
-                        foregroundColor: Colors.white,
-                        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 20),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
+                    if (settings?.showSmartCalculator == true)
+                      const SizedBox(height: 16),
+                    if (settings?.showSmartCalculator == true)
+                      ElevatedButton.icon(
+                        icon: const Icon(Icons.calculate),
+                        label: const Text('Pomoć kod izračuna'),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: AppTheme.green, 
+                          foregroundColor: Colors.white,
+                          padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 20),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
                         ),
+                        onPressed: _handleCalculatorButtonPressed,
                       ),
-                      onPressed: _handleCalculatorButtonPressed,
-                    ),
                     const SizedBox(height: 40),
                   ],
                 ),

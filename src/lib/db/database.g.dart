@@ -1408,6 +1408,16 @@ class $SettingsTableTable extends SettingsTable
       defaultConstraints: GeneratedColumn.constraintIsAlways(
           'CHECK ("show_game_stats" IN (0, 1))'),
       defaultValue: const Constant(true));
+  static const VerificationMeta _showSmartCalculatorMeta =
+      const VerificationMeta('showSmartCalculator');
+  @override
+  late final GeneratedColumn<bool> showSmartCalculator = GeneratedColumn<bool>(
+      'show_smart_calculator', aliasedName, false,
+      type: DriftSqlType.bool,
+      requiredDuringInsert: false,
+      defaultConstraints: GeneratedColumn.constraintIsAlways(
+          'CHECK ("show_smart_calculator" IN (0, 1))'),
+      defaultValue: const Constant(true));
   static const VerificationMeta _themeModeMeta =
       const VerificationMeta('themeMode');
   @override
@@ -1425,6 +1435,7 @@ class $SettingsTableTable extends SettingsTable
         showRules,
         showHelpDialog,
         showGameStats,
+        showSmartCalculator,
         themeMode
       ];
   @override
@@ -1468,6 +1479,12 @@ class $SettingsTableTable extends SettingsTable
           showGameStats.isAcceptableOrUnknown(
               data['show_game_stats']!, _showGameStatsMeta));
     }
+    if (data.containsKey('show_smart_calculator')) {
+      context.handle(
+          _showSmartCalculatorMeta,
+          showSmartCalculator.isAcceptableOrUnknown(
+              data['show_smart_calculator']!, _showSmartCalculatorMeta));
+    }
     if (data.containsKey('theme_mode')) {
       context.handle(_themeModeMeta,
           themeMode.isAcceptableOrUnknown(data['theme_mode']!, _themeModeMeta));
@@ -1495,6 +1512,8 @@ class $SettingsTableTable extends SettingsTable
           .read(DriftSqlType.bool, data['${effectivePrefix}show_help_dialog'])!,
       showGameStats: attachedDatabase.typeMapping
           .read(DriftSqlType.bool, data['${effectivePrefix}show_game_stats'])!,
+      showSmartCalculator: attachedDatabase.typeMapping.read(
+          DriftSqlType.bool, data['${effectivePrefix}show_smart_calculator'])!,
       themeMode: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}theme_mode'])!,
     );
@@ -1515,6 +1534,7 @@ class SettingsTableData extends DataClass
   final bool showRules;
   final bool showHelpDialog;
   final bool showGameStats;
+  final bool showSmartCalculator;
   final int themeMode;
   const SettingsTableData(
       {required this.id,
@@ -1524,6 +1544,7 @@ class SettingsTableData extends DataClass
       required this.showRules,
       required this.showHelpDialog,
       required this.showGameStats,
+      required this.showSmartCalculator,
       required this.themeMode});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -1537,6 +1558,7 @@ class SettingsTableData extends DataClass
     map['show_rules'] = Variable<bool>(showRules);
     map['show_help_dialog'] = Variable<bool>(showHelpDialog);
     map['show_game_stats'] = Variable<bool>(showGameStats);
+    map['show_smart_calculator'] = Variable<bool>(showSmartCalculator);
     map['theme_mode'] = Variable<int>(themeMode);
     return map;
   }
@@ -1552,6 +1574,7 @@ class SettingsTableData extends DataClass
       showRules: Value(showRules),
       showHelpDialog: Value(showHelpDialog),
       showGameStats: Value(showGameStats),
+      showSmartCalculator: Value(showSmartCalculator),
       themeMode: Value(themeMode),
     );
   }
@@ -1567,6 +1590,8 @@ class SettingsTableData extends DataClass
       showRules: serializer.fromJson<bool>(json['showRules']),
       showHelpDialog: serializer.fromJson<bool>(json['showHelpDialog']),
       showGameStats: serializer.fromJson<bool>(json['showGameStats']),
+      showSmartCalculator:
+          serializer.fromJson<bool>(json['showSmartCalculator']),
       themeMode: serializer.fromJson<int>(json['themeMode']),
     );
   }
@@ -1581,6 +1606,7 @@ class SettingsTableData extends DataClass
       'showRules': serializer.toJson<bool>(showRules),
       'showHelpDialog': serializer.toJson<bool>(showHelpDialog),
       'showGameStats': serializer.toJson<bool>(showGameStats),
+      'showSmartCalculator': serializer.toJson<bool>(showSmartCalculator),
       'themeMode': serializer.toJson<int>(themeMode),
     };
   }
@@ -1593,6 +1619,7 @@ class SettingsTableData extends DataClass
           bool? showRules,
           bool? showHelpDialog,
           bool? showGameStats,
+          bool? showSmartCalculator,
           int? themeMode}) =>
       SettingsTableData(
         id: id ?? this.id,
@@ -1602,6 +1629,7 @@ class SettingsTableData extends DataClass
         showRules: showRules ?? this.showRules,
         showHelpDialog: showHelpDialog ?? this.showHelpDialog,
         showGameStats: showGameStats ?? this.showGameStats,
+        showSmartCalculator: showSmartCalculator ?? this.showSmartCalculator,
         themeMode: themeMode ?? this.themeMode,
       );
   SettingsTableData copyWithCompanion(SettingsTableCompanion data) {
@@ -1617,6 +1645,9 @@ class SettingsTableData extends DataClass
       showGameStats: data.showGameStats.present
           ? data.showGameStats.value
           : this.showGameStats,
+      showSmartCalculator: data.showSmartCalculator.present
+          ? data.showSmartCalculator.value
+          : this.showSmartCalculator,
       themeMode: data.themeMode.present ? data.themeMode.value : this.themeMode,
     );
   }
@@ -1631,6 +1662,7 @@ class SettingsTableData extends DataClass
           ..write('showRules: $showRules, ')
           ..write('showHelpDialog: $showHelpDialog, ')
           ..write('showGameStats: $showGameStats, ')
+          ..write('showSmartCalculator: $showSmartCalculator, ')
           ..write('themeMode: $themeMode')
           ..write(')'))
         .toString();
@@ -1638,7 +1670,7 @@ class SettingsTableData extends DataClass
 
   @override
   int get hashCode => Object.hash(id, createdAt, updatedAt, deletedAt,
-      showRules, showHelpDialog, showGameStats, themeMode);
+      showRules, showHelpDialog, showGameStats, showSmartCalculator, themeMode);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -1650,6 +1682,7 @@ class SettingsTableData extends DataClass
           other.showRules == this.showRules &&
           other.showHelpDialog == this.showHelpDialog &&
           other.showGameStats == this.showGameStats &&
+          other.showSmartCalculator == this.showSmartCalculator &&
           other.themeMode == this.themeMode);
 }
 
@@ -1661,6 +1694,7 @@ class SettingsTableCompanion extends UpdateCompanion<SettingsTableData> {
   final Value<bool> showRules;
   final Value<bool> showHelpDialog;
   final Value<bool> showGameStats;
+  final Value<bool> showSmartCalculator;
   final Value<int> themeMode;
   final Value<int> rowid;
   const SettingsTableCompanion({
@@ -1671,6 +1705,7 @@ class SettingsTableCompanion extends UpdateCompanion<SettingsTableData> {
     this.showRules = const Value.absent(),
     this.showHelpDialog = const Value.absent(),
     this.showGameStats = const Value.absent(),
+    this.showSmartCalculator = const Value.absent(),
     this.themeMode = const Value.absent(),
     this.rowid = const Value.absent(),
   });
@@ -1682,6 +1717,7 @@ class SettingsTableCompanion extends UpdateCompanion<SettingsTableData> {
     this.showRules = const Value.absent(),
     this.showHelpDialog = const Value.absent(),
     this.showGameStats = const Value.absent(),
+    this.showSmartCalculator = const Value.absent(),
     this.themeMode = const Value.absent(),
     this.rowid = const Value.absent(),
   });
@@ -1693,6 +1729,7 @@ class SettingsTableCompanion extends UpdateCompanion<SettingsTableData> {
     Expression<bool>? showRules,
     Expression<bool>? showHelpDialog,
     Expression<bool>? showGameStats,
+    Expression<bool>? showSmartCalculator,
     Expression<int>? themeMode,
     Expression<int>? rowid,
   }) {
@@ -1704,6 +1741,8 @@ class SettingsTableCompanion extends UpdateCompanion<SettingsTableData> {
       if (showRules != null) 'show_rules': showRules,
       if (showHelpDialog != null) 'show_help_dialog': showHelpDialog,
       if (showGameStats != null) 'show_game_stats': showGameStats,
+      if (showSmartCalculator != null)
+        'show_smart_calculator': showSmartCalculator,
       if (themeMode != null) 'theme_mode': themeMode,
       if (rowid != null) 'rowid': rowid,
     });
@@ -1717,6 +1756,7 @@ class SettingsTableCompanion extends UpdateCompanion<SettingsTableData> {
       Value<bool>? showRules,
       Value<bool>? showHelpDialog,
       Value<bool>? showGameStats,
+      Value<bool>? showSmartCalculator,
       Value<int>? themeMode,
       Value<int>? rowid}) {
     return SettingsTableCompanion(
@@ -1727,6 +1767,7 @@ class SettingsTableCompanion extends UpdateCompanion<SettingsTableData> {
       showRules: showRules ?? this.showRules,
       showHelpDialog: showHelpDialog ?? this.showHelpDialog,
       showGameStats: showGameStats ?? this.showGameStats,
+      showSmartCalculator: showSmartCalculator ?? this.showSmartCalculator,
       themeMode: themeMode ?? this.themeMode,
       rowid: rowid ?? this.rowid,
     );
@@ -1756,6 +1797,9 @@ class SettingsTableCompanion extends UpdateCompanion<SettingsTableData> {
     if (showGameStats.present) {
       map['show_game_stats'] = Variable<bool>(showGameStats.value);
     }
+    if (showSmartCalculator.present) {
+      map['show_smart_calculator'] = Variable<bool>(showSmartCalculator.value);
+    }
     if (themeMode.present) {
       map['theme_mode'] = Variable<int>(themeMode.value);
     }
@@ -1775,6 +1819,7 @@ class SettingsTableCompanion extends UpdateCompanion<SettingsTableData> {
           ..write('showRules: $showRules, ')
           ..write('showHelpDialog: $showHelpDialog, ')
           ..write('showGameStats: $showGameStats, ')
+          ..write('showSmartCalculator: $showSmartCalculator, ')
           ..write('themeMode: $themeMode, ')
           ..write('rowid: $rowid')
           ..write(')'))
@@ -3394,6 +3439,7 @@ typedef $$SettingsTableTableCreateCompanionBuilder = SettingsTableCompanion
   Value<bool> showRules,
   Value<bool> showHelpDialog,
   Value<bool> showGameStats,
+  Value<bool> showSmartCalculator,
   Value<int> themeMode,
   Value<int> rowid,
 });
@@ -3406,6 +3452,7 @@ typedef $$SettingsTableTableUpdateCompanionBuilder = SettingsTableCompanion
   Value<bool> showRules,
   Value<bool> showHelpDialog,
   Value<bool> showGameStats,
+  Value<bool> showSmartCalculator,
   Value<int> themeMode,
   Value<int> rowid,
 });
@@ -3440,6 +3487,10 @@ class $$SettingsTableTableFilterComposer
 
   ColumnFilters<bool> get showGameStats => $composableBuilder(
       column: $table.showGameStats, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<bool> get showSmartCalculator => $composableBuilder(
+      column: $table.showSmartCalculator,
+      builder: (column) => ColumnFilters(column));
 
   ColumnFilters<int> get themeMode => $composableBuilder(
       column: $table.themeMode, builder: (column) => ColumnFilters(column));
@@ -3477,6 +3528,10 @@ class $$SettingsTableTableOrderingComposer
       column: $table.showGameStats,
       builder: (column) => ColumnOrderings(column));
 
+  ColumnOrderings<bool> get showSmartCalculator => $composableBuilder(
+      column: $table.showSmartCalculator,
+      builder: (column) => ColumnOrderings(column));
+
   ColumnOrderings<int> get themeMode => $composableBuilder(
       column: $table.themeMode, builder: (column) => ColumnOrderings(column));
 }
@@ -3510,6 +3565,9 @@ class $$SettingsTableTableAnnotationComposer
 
   GeneratedColumn<bool> get showGameStats => $composableBuilder(
       column: $table.showGameStats, builder: (column) => column);
+
+  GeneratedColumn<bool> get showSmartCalculator => $composableBuilder(
+      column: $table.showSmartCalculator, builder: (column) => column);
 
   GeneratedColumn<int> get themeMode =>
       $composableBuilder(column: $table.themeMode, builder: (column) => column);
@@ -3548,6 +3606,7 @@ class $$SettingsTableTableTableManager extends RootTableManager<
             Value<bool> showRules = const Value.absent(),
             Value<bool> showHelpDialog = const Value.absent(),
             Value<bool> showGameStats = const Value.absent(),
+            Value<bool> showSmartCalculator = const Value.absent(),
             Value<int> themeMode = const Value.absent(),
             Value<int> rowid = const Value.absent(),
           }) =>
@@ -3559,6 +3618,7 @@ class $$SettingsTableTableTableManager extends RootTableManager<
             showRules: showRules,
             showHelpDialog: showHelpDialog,
             showGameStats: showGameStats,
+            showSmartCalculator: showSmartCalculator,
             themeMode: themeMode,
             rowid: rowid,
           ),
@@ -3570,6 +3630,7 @@ class $$SettingsTableTableTableManager extends RootTableManager<
             Value<bool> showRules = const Value.absent(),
             Value<bool> showHelpDialog = const Value.absent(),
             Value<bool> showGameStats = const Value.absent(),
+            Value<bool> showSmartCalculator = const Value.absent(),
             Value<int> themeMode = const Value.absent(),
             Value<int> rowid = const Value.absent(),
           }) =>
@@ -3581,6 +3642,7 @@ class $$SettingsTableTableTableManager extends RootTableManager<
             showRules: showRules,
             showHelpDialog: showHelpDialog,
             showGameStats: showGameStats,
+            showSmartCalculator: showSmartCalculator,
             themeMode: themeMode,
             rowid: rowid,
           ),
