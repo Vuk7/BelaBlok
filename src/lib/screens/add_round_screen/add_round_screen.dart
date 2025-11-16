@@ -8,6 +8,7 @@ import 'package:bela_blok/models/calculator_result_state.model.dart';
 import 'package:bela_blok/services/games_service.dart'; 
 import 'package:bela_blok/services/rounds_service.dart';
 import 'package:bela_blok/services/settings_services.dart';
+import 'package:bela_blok/services/calculator_service.dart';
 import 'package:bela_blok/screens/add_round_screen/widgets/choose_caller.dart';
 import 'package:bela_blok/screens/add_round_screen/widgets/choose_input_type.dart';
 import 'package:bela_blok/screens/widgets/big_button_input_number.dart';
@@ -299,7 +300,7 @@ class _AddRoundScreenState extends State<AddRoundScreen>
   Future<void> _saveNormalRound(dynamic game, ScoreModel scores) async {
     final Round round;
     
-    if (widget.roundToEdit != null) {
+    if (roundToEdit != null) {
       round = roundToEdit!;
     } else {
       round = Round(gameId: widget.gameId!);
@@ -325,7 +326,7 @@ class _AddRoundScreenState extends State<AddRoundScreen>
       await calculatorService.saveOrUpdateCalculatorResult(
         actualRoundId,
         _calculatorResult!,
-        widget.roundToEdit != null,
+        roundToEdit != null,
       );
     }
 
@@ -488,8 +489,8 @@ class _AddRoundScreenState extends State<AddRoundScreen>
   Future<void> _handleCalculatorButtonPressed() async {
     Map<String, dynamic>? initialData;
     
-    if (widget.roundToEdit != null) {
-      final result = await calculatorService.getCalculatorResultByRoundId(widget.roundToEdit!.id);
+    if (roundToEdit != null && roundToEdit!.id != null) {
+      final result = await calculatorService.getCalculatorResultByRoundId(roundToEdit!.id!);
       if (result != null) {
         initialData = CalculatorResultState.fromCalculatorResult(result).toMap();
       }

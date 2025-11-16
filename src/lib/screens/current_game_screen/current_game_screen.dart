@@ -34,6 +34,7 @@ class CurrentGameScreen extends StatefulWidget {
 class _CurrentGameScreenState extends State<CurrentGameScreen> {
   final ScrollController _scrollController = ScrollController();
   bool _showStatsPopup = false; // Popup NIJE aktivan na početku
+  bool _wobbleTrigger = false; // Za wobble animaciju
 
   GamesService? gamesService;
   RoundsService? roundsService;
@@ -424,18 +425,7 @@ class _CurrentGameScreenState extends State<CurrentGameScreen> {
                   content: SizedBox(
                     width: MediaQuery.of(context).size.width * 1, 
                     height: MediaQuery.of(context).size.height * 0.40, 
-                    child: FutureBuilder<GameStatsModel>(
-                      future: gameStats,
-                      builder: (context, snapshot) {
-                        if (snapshot.connectionState == ConnectionState.waiting) {
-                          return const Center(child: CircularProgressIndicator());
-                        }
-                        if (snapshot.hasError || !snapshot.hasData) {
-                          return const Center(child: Text('Greška pri učitavanju statistike.'));
-                        }
-                        return GameStatsWidget(gameStats: snapshot.data!);
-                      },
-                    ),
+                    child: GameStatsWidget(gameStats: gameStats),
                   ),
                   actions: [
                     TextButton(

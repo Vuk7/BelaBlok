@@ -16,8 +16,15 @@ class GameStatsWidget extends StatefulWidget {
   });
 
   @override
+  State<GameStatsWidget> createState() => _GameStatsWidgetState();
+}
+
+class _GameStatsWidgetState extends State<GameStatsWidget> {
+  bool isExpanded = false;
+
+  @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+  final isDark = Theme.of(context).brightness == Brightness.dark;
   final statsColors = Theme.of(context).extension<GameStatsColors>();
 
     return Container(
@@ -43,16 +50,17 @@ class GameStatsWidget extends StatefulWidget {
       ),
       child: Padding(
         padding: const EdgeInsets.all(16),
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              const Row(
+        child: Column(
+          children: [
+            GestureDetector(
+              onTap: () => setState(() => isExpanded = !isExpanded),
+              child: Row(
                 children: [
-                 Icon(Icons.analytics, color: AppTheme.green, size: 22),
-                  SizedBox(width: 8),
-                 Text(
+                  const Icon(Icons.analytics, color: AppTheme.green, size: 22),
+                  const SizedBox(width: 8),
+                  const Text(
                     'STATISTIKE IGRE',
-                    style:  TextStyle(
+                    style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
                       color: AppTheme.green,
@@ -65,31 +73,26 @@ class GameStatsWidget extends StatefulWidget {
                     size: 24,
                   ),
                   const SizedBox(width: 8),
-                  AnimatedRotation(
-                    turns: isExpanded ? 0.5 : 0,
-                    duration: const Duration(milliseconds: 200),
-                    child: const Icon(
-                      Icons.expand_more,
-                      color: AppTheme.green,
-                      size: 24,
-                    ),
+                  const Icon(
+                    Icons.expand_more,
+                    color: AppTheme.green,
+                    size: 24,
                   ),
                 ],
               ),
             ),
-          ),
-
-          // Expandable content
-          AnimatedCrossFade(
-            firstChild: const SizedBox.shrink(),
-            secondChild: _ExpandedStatsContent(
-              gameStats: widget.gameStats,
-              isDark: isDark,
-            ),
-            crossFadeState: isExpanded ? CrossFadeState.showSecond : CrossFadeState.showFirst,
-            duration: const Duration(milliseconds: 250),
-          )
-        ],
+            // Expandable content
+            AnimatedCrossFade(
+              firstChild: const SizedBox.shrink(),
+              secondChild: _ExpandedStatsContent(
+                gameStats: widget.gameStats,
+                isDark: isDark,
+              ),
+              crossFadeState: isExpanded ? CrossFadeState.showSecond : CrossFadeState.showFirst,
+              duration: const Duration(milliseconds: 250),
+            )
+          ],
+        ),
       ),
     );
   }

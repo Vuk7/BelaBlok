@@ -45,8 +45,8 @@ class GameStatsModel {
         final calculatorResult = await calculatorDao.getCalculatorResultByRoundId(round.id!);
 
         if (calculatorResult != null) {
-          teamOneFails += calculatorResult.teamOneFails ?? 0;
-          teamTwoFails += calculatorResult.teamTwoFails ?? 0;
+          teamOneFails = teamOneFails + ((calculatorResult.teamOneFails ?? 0) as num).toInt();
+          teamTwoFails = teamTwoFails + ((calculatorResult.teamTwoFails ?? 0) as num).toInt();
         }
       }
     }

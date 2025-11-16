@@ -1336,6 +1336,7 @@ class RoundTableCompanion extends UpdateCompanion<RoundTableData> {
           ..write('isTeamOneCallSuccessful: $isTeamOneCallSuccessful, ')
           ..write('isTeamTwoCallSuccessful: $isTeamTwoCallSuccessful, ')
           ..write('teamFailed: $teamFailed, ')
+          ..write('calculatorResult: $calculatorResult, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -1414,7 +1415,7 @@ class $SettingsTableTable extends SettingsTable
       'theme_mode', aliasedName, false,
       type: DriftSqlType.int,
       requiredDuringInsert: false,
-      defaultValue: const Constant(0));
+      defaultValue: Constant(AppThemeMode.light.index));
   @override
   List<GeneratedColumn> get $columns => [
         id,
@@ -1781,18 +1782,758 @@ class SettingsTableCompanion extends UpdateCompanion<SettingsTableData> {
   }
 }
 
+class $CalculatorResultTableTable extends CalculatorResultTable
+    with TableInfo<$CalculatorResultTableTable, CalculatorResultTableData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $CalculatorResultTableTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+      'id', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: false,
+      clientDefault: () => const Uuid().v4());
+  static const VerificationMeta _createdAtMeta =
+      const VerificationMeta('createdAt');
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+      'created_at', aliasedName, false,
+      type: DriftSqlType.dateTime,
+      requiredDuringInsert: false,
+      defaultValue: currentDateAndTime);
+  static const VerificationMeta _updatedAtMeta =
+      const VerificationMeta('updatedAt');
+  @override
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+      'updated_at', aliasedName, false,
+      type: DriftSqlType.dateTime,
+      requiredDuringInsert: false,
+      defaultValue: currentDateAndTime);
+  static const VerificationMeta _deletedAtMeta =
+      const VerificationMeta('deletedAt');
+  @override
+  late final GeneratedColumn<DateTime> deletedAt = GeneratedColumn<DateTime>(
+      'deleted_at', aliasedName, true,
+      type: DriftSqlType.dateTime, requiredDuringInsert: false);
+  static const VerificationMeta _roundIdMeta =
+      const VerificationMeta('roundId');
+  @override
+  late final GeneratedColumn<String> roundId = GeneratedColumn<String>(
+      'round_id', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: true,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('REFERENCES rounds (id)'));
+  static const VerificationMeta _teamOneDeclarationsMeta =
+      const VerificationMeta('teamOneDeclarations');
+  @override
+  late final GeneratedColumn<int> teamOneDeclarations = GeneratedColumn<int>(
+      'team_one_declarations', aliasedName, true,
+      type: DriftSqlType.int, requiredDuringInsert: false);
+  static const VerificationMeta _teamOneDeclarationsSumMeta =
+      const VerificationMeta('teamOneDeclarationsSum');
+  @override
+  late final GeneratedColumn<int> teamOneDeclarationsSum = GeneratedColumn<int>(
+      'team_one_declarations_sum', aliasedName, true,
+      type: DriftSqlType.int, requiredDuringInsert: false);
+  static const VerificationMeta _teamOneFailsMeta =
+      const VerificationMeta('teamOneFails');
+  @override
+  late final GeneratedColumn<int> teamOneFails = GeneratedColumn<int>(
+      'team_one_fails', aliasedName, true,
+      type: DriftSqlType.int, requiredDuringInsert: false);
+  static const VerificationMeta _teamTwoDeclarationsMeta =
+      const VerificationMeta('teamTwoDeclarations');
+  @override
+  late final GeneratedColumn<int> teamTwoDeclarations = GeneratedColumn<int>(
+      'team_two_declarations', aliasedName, true,
+      type: DriftSqlType.int, requiredDuringInsert: false);
+  static const VerificationMeta _teamTwoDeclarationsSumMeta =
+      const VerificationMeta('teamTwoDeclarationsSum');
+  @override
+  late final GeneratedColumn<int> teamTwoDeclarationsSum = GeneratedColumn<int>(
+      'team_two_declarations_sum', aliasedName, true,
+      type: DriftSqlType.int, requiredDuringInsert: false);
+  static const VerificationMeta _teamTwoFailsMeta =
+      const VerificationMeta('teamTwoFails');
+  @override
+  late final GeneratedColumn<int> teamTwoFails = GeneratedColumn<int>(
+      'team_two_fails', aliasedName, true,
+      type: DriftSqlType.int, requiredDuringInsert: false);
+  static const VerificationMeta _selectedCardsMeta =
+      const VerificationMeta('selectedCards');
+  @override
+  late final GeneratedColumn<String> selectedCards = GeneratedColumn<String>(
+      'selected_cards', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
+  static const VerificationMeta _trumpCardsMeta =
+      const VerificationMeta('trumpCards');
+  @override
+  late final GeneratedColumn<String> trumpCards = GeneratedColumn<String>(
+      'trump_cards', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
+  static const VerificationMeta _teamMeta = const VerificationMeta('team');
+  @override
+  late final GeneratedColumn<String> team = GeneratedColumn<String>(
+      'team', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
+  @override
+  List<GeneratedColumn> get $columns => [
+        id,
+        createdAt,
+        updatedAt,
+        deletedAt,
+        roundId,
+        teamOneDeclarations,
+        teamOneDeclarationsSum,
+        teamOneFails,
+        teamTwoDeclarations,
+        teamTwoDeclarationsSum,
+        teamTwoFails,
+        selectedCards,
+        trumpCards,
+        team
+      ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'calculator_results';
+  @override
+  VerificationContext validateIntegrity(
+      Insertable<CalculatorResultTableData> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(_createdAtMeta,
+          createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta));
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(_updatedAtMeta,
+          updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta));
+    }
+    if (data.containsKey('deleted_at')) {
+      context.handle(_deletedAtMeta,
+          deletedAt.isAcceptableOrUnknown(data['deleted_at']!, _deletedAtMeta));
+    }
+    if (data.containsKey('round_id')) {
+      context.handle(_roundIdMeta,
+          roundId.isAcceptableOrUnknown(data['round_id']!, _roundIdMeta));
+    } else if (isInserting) {
+      context.missing(_roundIdMeta);
+    }
+    if (data.containsKey('team_one_declarations')) {
+      context.handle(
+          _teamOneDeclarationsMeta,
+          teamOneDeclarations.isAcceptableOrUnknown(
+              data['team_one_declarations']!, _teamOneDeclarationsMeta));
+    }
+    if (data.containsKey('team_one_declarations_sum')) {
+      context.handle(
+          _teamOneDeclarationsSumMeta,
+          teamOneDeclarationsSum.isAcceptableOrUnknown(
+              data['team_one_declarations_sum']!, _teamOneDeclarationsSumMeta));
+    }
+    if (data.containsKey('team_one_fails')) {
+      context.handle(
+          _teamOneFailsMeta,
+          teamOneFails.isAcceptableOrUnknown(
+              data['team_one_fails']!, _teamOneFailsMeta));
+    }
+    if (data.containsKey('team_two_declarations')) {
+      context.handle(
+          _teamTwoDeclarationsMeta,
+          teamTwoDeclarations.isAcceptableOrUnknown(
+              data['team_two_declarations']!, _teamTwoDeclarationsMeta));
+    }
+    if (data.containsKey('team_two_declarations_sum')) {
+      context.handle(
+          _teamTwoDeclarationsSumMeta,
+          teamTwoDeclarationsSum.isAcceptableOrUnknown(
+              data['team_two_declarations_sum']!, _teamTwoDeclarationsSumMeta));
+    }
+    if (data.containsKey('team_two_fails')) {
+      context.handle(
+          _teamTwoFailsMeta,
+          teamTwoFails.isAcceptableOrUnknown(
+              data['team_two_fails']!, _teamTwoFailsMeta));
+    }
+    if (data.containsKey('selected_cards')) {
+      context.handle(
+          _selectedCardsMeta,
+          selectedCards.isAcceptableOrUnknown(
+              data['selected_cards']!, _selectedCardsMeta));
+    }
+    if (data.containsKey('trump_cards')) {
+      context.handle(
+          _trumpCardsMeta,
+          trumpCards.isAcceptableOrUnknown(
+              data['trump_cards']!, _trumpCardsMeta));
+    }
+    if (data.containsKey('team')) {
+      context.handle(
+          _teamMeta, team.isAcceptableOrUnknown(data['team']!, _teamMeta));
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  CalculatorResultTableData map(Map<String, dynamic> data,
+      {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return CalculatorResultTableData(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}id'])!,
+      createdAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}created_at'])!,
+      updatedAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}updated_at'])!,
+      deletedAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}deleted_at']),
+      roundId: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}round_id'])!,
+      teamOneDeclarations: attachedDatabase.typeMapping.read(
+          DriftSqlType.int, data['${effectivePrefix}team_one_declarations']),
+      teamOneDeclarationsSum: attachedDatabase.typeMapping.read(
+          DriftSqlType.int,
+          data['${effectivePrefix}team_one_declarations_sum']),
+      teamOneFails: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}team_one_fails']),
+      teamTwoDeclarations: attachedDatabase.typeMapping.read(
+          DriftSqlType.int, data['${effectivePrefix}team_two_declarations']),
+      teamTwoDeclarationsSum: attachedDatabase.typeMapping.read(
+          DriftSqlType.int,
+          data['${effectivePrefix}team_two_declarations_sum']),
+      teamTwoFails: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}team_two_fails']),
+      selectedCards: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}selected_cards']),
+      trumpCards: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}trump_cards']),
+      team: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}team']),
+    );
+  }
+
+  @override
+  $CalculatorResultTableTable createAlias(String alias) {
+    return $CalculatorResultTableTable(attachedDatabase, alias);
+  }
+}
+
+class CalculatorResultTableData extends DataClass
+    implements Insertable<CalculatorResultTableData> {
+  final String id;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+  final DateTime? deletedAt;
+  final String roundId;
+  final int? teamOneDeclarations;
+  final int? teamOneDeclarationsSum;
+  final int? teamOneFails;
+  final int? teamTwoDeclarations;
+  final int? teamTwoDeclarationsSum;
+  final int? teamTwoFails;
+  final String? selectedCards;
+  final String? trumpCards;
+  final String? team;
+  const CalculatorResultTableData(
+      {required this.id,
+      required this.createdAt,
+      required this.updatedAt,
+      this.deletedAt,
+      required this.roundId,
+      this.teamOneDeclarations,
+      this.teamOneDeclarationsSum,
+      this.teamOneFails,
+      this.teamTwoDeclarations,
+      this.teamTwoDeclarationsSum,
+      this.teamTwoFails,
+      this.selectedCards,
+      this.trumpCards,
+      this.team});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['created_at'] = Variable<DateTime>(createdAt);
+    map['updated_at'] = Variable<DateTime>(updatedAt);
+    if (!nullToAbsent || deletedAt != null) {
+      map['deleted_at'] = Variable<DateTime>(deletedAt);
+    }
+    map['round_id'] = Variable<String>(roundId);
+    if (!nullToAbsent || teamOneDeclarations != null) {
+      map['team_one_declarations'] = Variable<int>(teamOneDeclarations);
+    }
+    if (!nullToAbsent || teamOneDeclarationsSum != null) {
+      map['team_one_declarations_sum'] = Variable<int>(teamOneDeclarationsSum);
+    }
+    if (!nullToAbsent || teamOneFails != null) {
+      map['team_one_fails'] = Variable<int>(teamOneFails);
+    }
+    if (!nullToAbsent || teamTwoDeclarations != null) {
+      map['team_two_declarations'] = Variable<int>(teamTwoDeclarations);
+    }
+    if (!nullToAbsent || teamTwoDeclarationsSum != null) {
+      map['team_two_declarations_sum'] = Variable<int>(teamTwoDeclarationsSum);
+    }
+    if (!nullToAbsent || teamTwoFails != null) {
+      map['team_two_fails'] = Variable<int>(teamTwoFails);
+    }
+    if (!nullToAbsent || selectedCards != null) {
+      map['selected_cards'] = Variable<String>(selectedCards);
+    }
+    if (!nullToAbsent || trumpCards != null) {
+      map['trump_cards'] = Variable<String>(trumpCards);
+    }
+    if (!nullToAbsent || team != null) {
+      map['team'] = Variable<String>(team);
+    }
+    return map;
+  }
+
+  CalculatorResultTableCompanion toCompanion(bool nullToAbsent) {
+    return CalculatorResultTableCompanion(
+      id: Value(id),
+      createdAt: Value(createdAt),
+      updatedAt: Value(updatedAt),
+      deletedAt: deletedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(deletedAt),
+      roundId: Value(roundId),
+      teamOneDeclarations: teamOneDeclarations == null && nullToAbsent
+          ? const Value.absent()
+          : Value(teamOneDeclarations),
+      teamOneDeclarationsSum: teamOneDeclarationsSum == null && nullToAbsent
+          ? const Value.absent()
+          : Value(teamOneDeclarationsSum),
+      teamOneFails: teamOneFails == null && nullToAbsent
+          ? const Value.absent()
+          : Value(teamOneFails),
+      teamTwoDeclarations: teamTwoDeclarations == null && nullToAbsent
+          ? const Value.absent()
+          : Value(teamTwoDeclarations),
+      teamTwoDeclarationsSum: teamTwoDeclarationsSum == null && nullToAbsent
+          ? const Value.absent()
+          : Value(teamTwoDeclarationsSum),
+      teamTwoFails: teamTwoFails == null && nullToAbsent
+          ? const Value.absent()
+          : Value(teamTwoFails),
+      selectedCards: selectedCards == null && nullToAbsent
+          ? const Value.absent()
+          : Value(selectedCards),
+      trumpCards: trumpCards == null && nullToAbsent
+          ? const Value.absent()
+          : Value(trumpCards),
+      team: team == null && nullToAbsent ? const Value.absent() : Value(team),
+    );
+  }
+
+  factory CalculatorResultTableData.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return CalculatorResultTableData(
+      id: serializer.fromJson<String>(json['id']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+      deletedAt: serializer.fromJson<DateTime?>(json['deletedAt']),
+      roundId: serializer.fromJson<String>(json['roundId']),
+      teamOneDeclarations:
+          serializer.fromJson<int?>(json['teamOneDeclarations']),
+      teamOneDeclarationsSum:
+          serializer.fromJson<int?>(json['teamOneDeclarationsSum']),
+      teamOneFails: serializer.fromJson<int?>(json['teamOneFails']),
+      teamTwoDeclarations:
+          serializer.fromJson<int?>(json['teamTwoDeclarations']),
+      teamTwoDeclarationsSum:
+          serializer.fromJson<int?>(json['teamTwoDeclarationsSum']),
+      teamTwoFails: serializer.fromJson<int?>(json['teamTwoFails']),
+      selectedCards: serializer.fromJson<String?>(json['selectedCards']),
+      trumpCards: serializer.fromJson<String?>(json['trumpCards']),
+      team: serializer.fromJson<String?>(json['team']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'updatedAt': serializer.toJson<DateTime>(updatedAt),
+      'deletedAt': serializer.toJson<DateTime?>(deletedAt),
+      'roundId': serializer.toJson<String>(roundId),
+      'teamOneDeclarations': serializer.toJson<int?>(teamOneDeclarations),
+      'teamOneDeclarationsSum': serializer.toJson<int?>(teamOneDeclarationsSum),
+      'teamOneFails': serializer.toJson<int?>(teamOneFails),
+      'teamTwoDeclarations': serializer.toJson<int?>(teamTwoDeclarations),
+      'teamTwoDeclarationsSum': serializer.toJson<int?>(teamTwoDeclarationsSum),
+      'teamTwoFails': serializer.toJson<int?>(teamTwoFails),
+      'selectedCards': serializer.toJson<String?>(selectedCards),
+      'trumpCards': serializer.toJson<String?>(trumpCards),
+      'team': serializer.toJson<String?>(team),
+    };
+  }
+
+  CalculatorResultTableData copyWith(
+          {String? id,
+          DateTime? createdAt,
+          DateTime? updatedAt,
+          Value<DateTime?> deletedAt = const Value.absent(),
+          String? roundId,
+          Value<int?> teamOneDeclarations = const Value.absent(),
+          Value<int?> teamOneDeclarationsSum = const Value.absent(),
+          Value<int?> teamOneFails = const Value.absent(),
+          Value<int?> teamTwoDeclarations = const Value.absent(),
+          Value<int?> teamTwoDeclarationsSum = const Value.absent(),
+          Value<int?> teamTwoFails = const Value.absent(),
+          Value<String?> selectedCards = const Value.absent(),
+          Value<String?> trumpCards = const Value.absent(),
+          Value<String?> team = const Value.absent()}) =>
+      CalculatorResultTableData(
+        id: id ?? this.id,
+        createdAt: createdAt ?? this.createdAt,
+        updatedAt: updatedAt ?? this.updatedAt,
+        deletedAt: deletedAt.present ? deletedAt.value : this.deletedAt,
+        roundId: roundId ?? this.roundId,
+        teamOneDeclarations: teamOneDeclarations.present
+            ? teamOneDeclarations.value
+            : this.teamOneDeclarations,
+        teamOneDeclarationsSum: teamOneDeclarationsSum.present
+            ? teamOneDeclarationsSum.value
+            : this.teamOneDeclarationsSum,
+        teamOneFails:
+            teamOneFails.present ? teamOneFails.value : this.teamOneFails,
+        teamTwoDeclarations: teamTwoDeclarations.present
+            ? teamTwoDeclarations.value
+            : this.teamTwoDeclarations,
+        teamTwoDeclarationsSum: teamTwoDeclarationsSum.present
+            ? teamTwoDeclarationsSum.value
+            : this.teamTwoDeclarationsSum,
+        teamTwoFails:
+            teamTwoFails.present ? teamTwoFails.value : this.teamTwoFails,
+        selectedCards:
+            selectedCards.present ? selectedCards.value : this.selectedCards,
+        trumpCards: trumpCards.present ? trumpCards.value : this.trumpCards,
+        team: team.present ? team.value : this.team,
+      );
+  CalculatorResultTableData copyWithCompanion(
+      CalculatorResultTableCompanion data) {
+    return CalculatorResultTableData(
+      id: data.id.present ? data.id.value : this.id,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+      deletedAt: data.deletedAt.present ? data.deletedAt.value : this.deletedAt,
+      roundId: data.roundId.present ? data.roundId.value : this.roundId,
+      teamOneDeclarations: data.teamOneDeclarations.present
+          ? data.teamOneDeclarations.value
+          : this.teamOneDeclarations,
+      teamOneDeclarationsSum: data.teamOneDeclarationsSum.present
+          ? data.teamOneDeclarationsSum.value
+          : this.teamOneDeclarationsSum,
+      teamOneFails: data.teamOneFails.present
+          ? data.teamOneFails.value
+          : this.teamOneFails,
+      teamTwoDeclarations: data.teamTwoDeclarations.present
+          ? data.teamTwoDeclarations.value
+          : this.teamTwoDeclarations,
+      teamTwoDeclarationsSum: data.teamTwoDeclarationsSum.present
+          ? data.teamTwoDeclarationsSum.value
+          : this.teamTwoDeclarationsSum,
+      teamTwoFails: data.teamTwoFails.present
+          ? data.teamTwoFails.value
+          : this.teamTwoFails,
+      selectedCards: data.selectedCards.present
+          ? data.selectedCards.value
+          : this.selectedCards,
+      trumpCards:
+          data.trumpCards.present ? data.trumpCards.value : this.trumpCards,
+      team: data.team.present ? data.team.value : this.team,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('CalculatorResultTableData(')
+          ..write('id: $id, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('deletedAt: $deletedAt, ')
+          ..write('roundId: $roundId, ')
+          ..write('teamOneDeclarations: $teamOneDeclarations, ')
+          ..write('teamOneDeclarationsSum: $teamOneDeclarationsSum, ')
+          ..write('teamOneFails: $teamOneFails, ')
+          ..write('teamTwoDeclarations: $teamTwoDeclarations, ')
+          ..write('teamTwoDeclarationsSum: $teamTwoDeclarationsSum, ')
+          ..write('teamTwoFails: $teamTwoFails, ')
+          ..write('selectedCards: $selectedCards, ')
+          ..write('trumpCards: $trumpCards, ')
+          ..write('team: $team')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+      id,
+      createdAt,
+      updatedAt,
+      deletedAt,
+      roundId,
+      teamOneDeclarations,
+      teamOneDeclarationsSum,
+      teamOneFails,
+      teamTwoDeclarations,
+      teamTwoDeclarationsSum,
+      teamTwoFails,
+      selectedCards,
+      trumpCards,
+      team);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is CalculatorResultTableData &&
+          other.id == this.id &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt &&
+          other.deletedAt == this.deletedAt &&
+          other.roundId == this.roundId &&
+          other.teamOneDeclarations == this.teamOneDeclarations &&
+          other.teamOneDeclarationsSum == this.teamOneDeclarationsSum &&
+          other.teamOneFails == this.teamOneFails &&
+          other.teamTwoDeclarations == this.teamTwoDeclarations &&
+          other.teamTwoDeclarationsSum == this.teamTwoDeclarationsSum &&
+          other.teamTwoFails == this.teamTwoFails &&
+          other.selectedCards == this.selectedCards &&
+          other.trumpCards == this.trumpCards &&
+          other.team == this.team);
+}
+
+class CalculatorResultTableCompanion
+    extends UpdateCompanion<CalculatorResultTableData> {
+  final Value<String> id;
+  final Value<DateTime> createdAt;
+  final Value<DateTime> updatedAt;
+  final Value<DateTime?> deletedAt;
+  final Value<String> roundId;
+  final Value<int?> teamOneDeclarations;
+  final Value<int?> teamOneDeclarationsSum;
+  final Value<int?> teamOneFails;
+  final Value<int?> teamTwoDeclarations;
+  final Value<int?> teamTwoDeclarationsSum;
+  final Value<int?> teamTwoFails;
+  final Value<String?> selectedCards;
+  final Value<String?> trumpCards;
+  final Value<String?> team;
+  final Value<int> rowid;
+  const CalculatorResultTableCompanion({
+    this.id = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.deletedAt = const Value.absent(),
+    this.roundId = const Value.absent(),
+    this.teamOneDeclarations = const Value.absent(),
+    this.teamOneDeclarationsSum = const Value.absent(),
+    this.teamOneFails = const Value.absent(),
+    this.teamTwoDeclarations = const Value.absent(),
+    this.teamTwoDeclarationsSum = const Value.absent(),
+    this.teamTwoFails = const Value.absent(),
+    this.selectedCards = const Value.absent(),
+    this.trumpCards = const Value.absent(),
+    this.team = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  CalculatorResultTableCompanion.insert({
+    this.id = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.deletedAt = const Value.absent(),
+    required String roundId,
+    this.teamOneDeclarations = const Value.absent(),
+    this.teamOneDeclarationsSum = const Value.absent(),
+    this.teamOneFails = const Value.absent(),
+    this.teamTwoDeclarations = const Value.absent(),
+    this.teamTwoDeclarationsSum = const Value.absent(),
+    this.teamTwoFails = const Value.absent(),
+    this.selectedCards = const Value.absent(),
+    this.trumpCards = const Value.absent(),
+    this.team = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : roundId = Value(roundId);
+  static Insertable<CalculatorResultTableData> custom({
+    Expression<String>? id,
+    Expression<DateTime>? createdAt,
+    Expression<DateTime>? updatedAt,
+    Expression<DateTime>? deletedAt,
+    Expression<String>? roundId,
+    Expression<int>? teamOneDeclarations,
+    Expression<int>? teamOneDeclarationsSum,
+    Expression<int>? teamOneFails,
+    Expression<int>? teamTwoDeclarations,
+    Expression<int>? teamTwoDeclarationsSum,
+    Expression<int>? teamTwoFails,
+    Expression<String>? selectedCards,
+    Expression<String>? trumpCards,
+    Expression<String>? team,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (deletedAt != null) 'deleted_at': deletedAt,
+      if (roundId != null) 'round_id': roundId,
+      if (teamOneDeclarations != null)
+        'team_one_declarations': teamOneDeclarations,
+      if (teamOneDeclarationsSum != null)
+        'team_one_declarations_sum': teamOneDeclarationsSum,
+      if (teamOneFails != null) 'team_one_fails': teamOneFails,
+      if (teamTwoDeclarations != null)
+        'team_two_declarations': teamTwoDeclarations,
+      if (teamTwoDeclarationsSum != null)
+        'team_two_declarations_sum': teamTwoDeclarationsSum,
+      if (teamTwoFails != null) 'team_two_fails': teamTwoFails,
+      if (selectedCards != null) 'selected_cards': selectedCards,
+      if (trumpCards != null) 'trump_cards': trumpCards,
+      if (team != null) 'team': team,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  CalculatorResultTableCompanion copyWith(
+      {Value<String>? id,
+      Value<DateTime>? createdAt,
+      Value<DateTime>? updatedAt,
+      Value<DateTime?>? deletedAt,
+      Value<String>? roundId,
+      Value<int?>? teamOneDeclarations,
+      Value<int?>? teamOneDeclarationsSum,
+      Value<int?>? teamOneFails,
+      Value<int?>? teamTwoDeclarations,
+      Value<int?>? teamTwoDeclarationsSum,
+      Value<int?>? teamTwoFails,
+      Value<String?>? selectedCards,
+      Value<String?>? trumpCards,
+      Value<String?>? team,
+      Value<int>? rowid}) {
+    return CalculatorResultTableCompanion(
+      id: id ?? this.id,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      deletedAt: deletedAt ?? this.deletedAt,
+      roundId: roundId ?? this.roundId,
+      teamOneDeclarations: teamOneDeclarations ?? this.teamOneDeclarations,
+      teamOneDeclarationsSum:
+          teamOneDeclarationsSum ?? this.teamOneDeclarationsSum,
+      teamOneFails: teamOneFails ?? this.teamOneFails,
+      teamTwoDeclarations: teamTwoDeclarations ?? this.teamTwoDeclarations,
+      teamTwoDeclarationsSum:
+          teamTwoDeclarationsSum ?? this.teamTwoDeclarationsSum,
+      teamTwoFails: teamTwoFails ?? this.teamTwoFails,
+      selectedCards: selectedCards ?? this.selectedCards,
+      trumpCards: trumpCards ?? this.trumpCards,
+      team: team ?? this.team,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    if (deletedAt.present) {
+      map['deleted_at'] = Variable<DateTime>(deletedAt.value);
+    }
+    if (roundId.present) {
+      map['round_id'] = Variable<String>(roundId.value);
+    }
+    if (teamOneDeclarations.present) {
+      map['team_one_declarations'] = Variable<int>(teamOneDeclarations.value);
+    }
+    if (teamOneDeclarationsSum.present) {
+      map['team_one_declarations_sum'] =
+          Variable<int>(teamOneDeclarationsSum.value);
+    }
+    if (teamOneFails.present) {
+      map['team_one_fails'] = Variable<int>(teamOneFails.value);
+    }
+    if (teamTwoDeclarations.present) {
+      map['team_two_declarations'] = Variable<int>(teamTwoDeclarations.value);
+    }
+    if (teamTwoDeclarationsSum.present) {
+      map['team_two_declarations_sum'] =
+          Variable<int>(teamTwoDeclarationsSum.value);
+    }
+    if (teamTwoFails.present) {
+      map['team_two_fails'] = Variable<int>(teamTwoFails.value);
+    }
+    if (selectedCards.present) {
+      map['selected_cards'] = Variable<String>(selectedCards.value);
+    }
+    if (trumpCards.present) {
+      map['trump_cards'] = Variable<String>(trumpCards.value);
+    }
+    if (team.present) {
+      map['team'] = Variable<String>(team.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('CalculatorResultTableCompanion(')
+          ..write('id: $id, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('deletedAt: $deletedAt, ')
+          ..write('roundId: $roundId, ')
+          ..write('teamOneDeclarations: $teamOneDeclarations, ')
+          ..write('teamOneDeclarationsSum: $teamOneDeclarationsSum, ')
+          ..write('teamOneFails: $teamOneFails, ')
+          ..write('teamTwoDeclarations: $teamTwoDeclarations, ')
+          ..write('teamTwoDeclarationsSum: $teamTwoDeclarationsSum, ')
+          ..write('teamTwoFails: $teamTwoFails, ')
+          ..write('selectedCards: $selectedCards, ')
+          ..write('trumpCards: $trumpCards, ')
+          ..write('team: $team, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
   late final $GameTableTable gameTable = $GameTableTable(this);
   late final $RoundTableTable roundTable = $RoundTableTable(this);
   late final $SettingsTableTable settingsTable = $SettingsTableTable(this);
+  late final $CalculatorResultTableTable calculatorResultTable =
+      $CalculatorResultTableTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
   @override
   List<DatabaseSchemaEntity> get allSchemaEntities =>
-      [gameTable, roundTable, settingsTable];
+      [gameTable, roundTable, settingsTable, calculatorResultTable];
 }
 
 typedef $$GameTableTableCreateCompanionBuilder = GameTableCompanion Function({
@@ -2643,7 +3384,7 @@ typedef $$RoundTableTableProcessedTableManager = ProcessedTableManager<
     $$RoundTableTableUpdateCompanionBuilder,
     (RoundTableData, $$RoundTableTableReferences),
     RoundTableData,
-    PrefetchHooks Function({bool gameId})>;
+    PrefetchHooks Function({bool gameId, bool calculatorResultTableRefs})>;
 typedef $$SettingsTableTableCreateCompanionBuilder = SettingsTableCompanion
     Function({
   Value<String> id,
@@ -2865,6 +3606,434 @@ typedef $$SettingsTableTableProcessedTableManager = ProcessedTableManager<
     ),
     SettingsTableData,
     PrefetchHooks Function()>;
+typedef $$CalculatorResultTableTableCreateCompanionBuilder
+    = CalculatorResultTableCompanion Function({
+  Value<String> id,
+  Value<DateTime> createdAt,
+  Value<DateTime> updatedAt,
+  Value<DateTime?> deletedAt,
+  required String roundId,
+  Value<int?> teamOneDeclarations,
+  Value<int?> teamOneDeclarationsSum,
+  Value<int?> teamOneFails,
+  Value<int?> teamTwoDeclarations,
+  Value<int?> teamTwoDeclarationsSum,
+  Value<int?> teamTwoFails,
+  Value<String?> selectedCards,
+  Value<String?> trumpCards,
+  Value<String?> team,
+  Value<int> rowid,
+});
+typedef $$CalculatorResultTableTableUpdateCompanionBuilder
+    = CalculatorResultTableCompanion Function({
+  Value<String> id,
+  Value<DateTime> createdAt,
+  Value<DateTime> updatedAt,
+  Value<DateTime?> deletedAt,
+  Value<String> roundId,
+  Value<int?> teamOneDeclarations,
+  Value<int?> teamOneDeclarationsSum,
+  Value<int?> teamOneFails,
+  Value<int?> teamTwoDeclarations,
+  Value<int?> teamTwoDeclarationsSum,
+  Value<int?> teamTwoFails,
+  Value<String?> selectedCards,
+  Value<String?> trumpCards,
+  Value<String?> team,
+  Value<int> rowid,
+});
+
+final class $$CalculatorResultTableTableReferences extends BaseReferences<
+    _$AppDatabase, $CalculatorResultTableTable, CalculatorResultTableData> {
+  $$CalculatorResultTableTableReferences(
+      super.$_db, super.$_table, super.$_typedResult);
+
+  static $RoundTableTable _roundIdTable(_$AppDatabase db) =>
+      db.roundTable.createAlias($_aliasNameGenerator(
+          db.calculatorResultTable.roundId, db.roundTable.id));
+
+  $$RoundTableTableProcessedTableManager get roundId {
+    final $_column = $_itemColumn<String>('round_id')!;
+
+    final manager = $$RoundTableTableTableManager($_db, $_db.roundTable)
+        .filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_roundIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: [item]));
+  }
+}
+
+class $$CalculatorResultTableTableFilterComposer
+    extends Composer<_$AppDatabase, $CalculatorResultTableTable> {
+  $$CalculatorResultTableTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+      column: $table.createdAt, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
+      column: $table.updatedAt, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<DateTime> get deletedAt => $composableBuilder(
+      column: $table.deletedAt, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get teamOneDeclarations => $composableBuilder(
+      column: $table.teamOneDeclarations,
+      builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get teamOneDeclarationsSum => $composableBuilder(
+      column: $table.teamOneDeclarationsSum,
+      builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get teamOneFails => $composableBuilder(
+      column: $table.teamOneFails, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get teamTwoDeclarations => $composableBuilder(
+      column: $table.teamTwoDeclarations,
+      builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get teamTwoDeclarationsSum => $composableBuilder(
+      column: $table.teamTwoDeclarationsSum,
+      builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get teamTwoFails => $composableBuilder(
+      column: $table.teamTwoFails, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get selectedCards => $composableBuilder(
+      column: $table.selectedCards, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get trumpCards => $composableBuilder(
+      column: $table.trumpCards, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get team => $composableBuilder(
+      column: $table.team, builder: (column) => ColumnFilters(column));
+
+  $$RoundTableTableFilterComposer get roundId {
+    final $$RoundTableTableFilterComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.roundId,
+        referencedTable: $db.roundTable,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$RoundTableTableFilterComposer(
+              $db: $db,
+              $table: $db.roundTable,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+}
+
+class $$CalculatorResultTableTableOrderingComposer
+    extends Composer<_$AppDatabase, $CalculatorResultTableTable> {
+  $$CalculatorResultTableTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+      column: $table.createdAt, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
+      column: $table.updatedAt, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<DateTime> get deletedAt => $composableBuilder(
+      column: $table.deletedAt, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get teamOneDeclarations => $composableBuilder(
+      column: $table.teamOneDeclarations,
+      builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get teamOneDeclarationsSum => $composableBuilder(
+      column: $table.teamOneDeclarationsSum,
+      builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get teamOneFails => $composableBuilder(
+      column: $table.teamOneFails,
+      builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get teamTwoDeclarations => $composableBuilder(
+      column: $table.teamTwoDeclarations,
+      builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get teamTwoDeclarationsSum => $composableBuilder(
+      column: $table.teamTwoDeclarationsSum,
+      builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get teamTwoFails => $composableBuilder(
+      column: $table.teamTwoFails,
+      builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get selectedCards => $composableBuilder(
+      column: $table.selectedCards,
+      builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get trumpCards => $composableBuilder(
+      column: $table.trumpCards, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get team => $composableBuilder(
+      column: $table.team, builder: (column) => ColumnOrderings(column));
+
+  $$RoundTableTableOrderingComposer get roundId {
+    final $$RoundTableTableOrderingComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.roundId,
+        referencedTable: $db.roundTable,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$RoundTableTableOrderingComposer(
+              $db: $db,
+              $table: $db.roundTable,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+}
+
+class $$CalculatorResultTableTableAnnotationComposer
+    extends Composer<_$AppDatabase, $CalculatorResultTableTable> {
+  $$CalculatorResultTableTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get deletedAt =>
+      $composableBuilder(column: $table.deletedAt, builder: (column) => column);
+
+  GeneratedColumn<int> get teamOneDeclarations => $composableBuilder(
+      column: $table.teamOneDeclarations, builder: (column) => column);
+
+  GeneratedColumn<int> get teamOneDeclarationsSum => $composableBuilder(
+      column: $table.teamOneDeclarationsSum, builder: (column) => column);
+
+  GeneratedColumn<int> get teamOneFails => $composableBuilder(
+      column: $table.teamOneFails, builder: (column) => column);
+
+  GeneratedColumn<int> get teamTwoDeclarations => $composableBuilder(
+      column: $table.teamTwoDeclarations, builder: (column) => column);
+
+  GeneratedColumn<int> get teamTwoDeclarationsSum => $composableBuilder(
+      column: $table.teamTwoDeclarationsSum, builder: (column) => column);
+
+  GeneratedColumn<int> get teamTwoFails => $composableBuilder(
+      column: $table.teamTwoFails, builder: (column) => column);
+
+  GeneratedColumn<String> get selectedCards => $composableBuilder(
+      column: $table.selectedCards, builder: (column) => column);
+
+  GeneratedColumn<String> get trumpCards => $composableBuilder(
+      column: $table.trumpCards, builder: (column) => column);
+
+  GeneratedColumn<String> get team =>
+      $composableBuilder(column: $table.team, builder: (column) => column);
+
+  $$RoundTableTableAnnotationComposer get roundId {
+    final $$RoundTableTableAnnotationComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.roundId,
+        referencedTable: $db.roundTable,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$RoundTableTableAnnotationComposer(
+              $db: $db,
+              $table: $db.roundTable,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+}
+
+class $$CalculatorResultTableTableTableManager extends RootTableManager<
+    _$AppDatabase,
+    $CalculatorResultTableTable,
+    CalculatorResultTableData,
+    $$CalculatorResultTableTableFilterComposer,
+    $$CalculatorResultTableTableOrderingComposer,
+    $$CalculatorResultTableTableAnnotationComposer,
+    $$CalculatorResultTableTableCreateCompanionBuilder,
+    $$CalculatorResultTableTableUpdateCompanionBuilder,
+    (CalculatorResultTableData, $$CalculatorResultTableTableReferences),
+    CalculatorResultTableData,
+    PrefetchHooks Function({bool roundId})> {
+  $$CalculatorResultTableTableTableManager(
+      _$AppDatabase db, $CalculatorResultTableTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$CalculatorResultTableTableFilterComposer(
+                  $db: db, $table: table),
+          createOrderingComposer: () =>
+              $$CalculatorResultTableTableOrderingComposer(
+                  $db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$CalculatorResultTableTableAnnotationComposer(
+                  $db: db, $table: table),
+          updateCompanionCallback: ({
+            Value<String> id = const Value.absent(),
+            Value<DateTime> createdAt = const Value.absent(),
+            Value<DateTime> updatedAt = const Value.absent(),
+            Value<DateTime?> deletedAt = const Value.absent(),
+            Value<String> roundId = const Value.absent(),
+            Value<int?> teamOneDeclarations = const Value.absent(),
+            Value<int?> teamOneDeclarationsSum = const Value.absent(),
+            Value<int?> teamOneFails = const Value.absent(),
+            Value<int?> teamTwoDeclarations = const Value.absent(),
+            Value<int?> teamTwoDeclarationsSum = const Value.absent(),
+            Value<int?> teamTwoFails = const Value.absent(),
+            Value<String?> selectedCards = const Value.absent(),
+            Value<String?> trumpCards = const Value.absent(),
+            Value<String?> team = const Value.absent(),
+            Value<int> rowid = const Value.absent(),
+          }) =>
+              CalculatorResultTableCompanion(
+            id: id,
+            createdAt: createdAt,
+            updatedAt: updatedAt,
+            deletedAt: deletedAt,
+            roundId: roundId,
+            teamOneDeclarations: teamOneDeclarations,
+            teamOneDeclarationsSum: teamOneDeclarationsSum,
+            teamOneFails: teamOneFails,
+            teamTwoDeclarations: teamTwoDeclarations,
+            teamTwoDeclarationsSum: teamTwoDeclarationsSum,
+            teamTwoFails: teamTwoFails,
+            selectedCards: selectedCards,
+            trumpCards: trumpCards,
+            team: team,
+            rowid: rowid,
+          ),
+          createCompanionCallback: ({
+            Value<String> id = const Value.absent(),
+            Value<DateTime> createdAt = const Value.absent(),
+            Value<DateTime> updatedAt = const Value.absent(),
+            Value<DateTime?> deletedAt = const Value.absent(),
+            required String roundId,
+            Value<int?> teamOneDeclarations = const Value.absent(),
+            Value<int?> teamOneDeclarationsSum = const Value.absent(),
+            Value<int?> teamOneFails = const Value.absent(),
+            Value<int?> teamTwoDeclarations = const Value.absent(),
+            Value<int?> teamTwoDeclarationsSum = const Value.absent(),
+            Value<int?> teamTwoFails = const Value.absent(),
+            Value<String?> selectedCards = const Value.absent(),
+            Value<String?> trumpCards = const Value.absent(),
+            Value<String?> team = const Value.absent(),
+            Value<int> rowid = const Value.absent(),
+          }) =>
+              CalculatorResultTableCompanion.insert(
+            id: id,
+            createdAt: createdAt,
+            updatedAt: updatedAt,
+            deletedAt: deletedAt,
+            roundId: roundId,
+            teamOneDeclarations: teamOneDeclarations,
+            teamOneDeclarationsSum: teamOneDeclarationsSum,
+            teamOneFails: teamOneFails,
+            teamTwoDeclarations: teamTwoDeclarations,
+            teamTwoDeclarationsSum: teamTwoDeclarationsSum,
+            teamTwoFails: teamTwoFails,
+            selectedCards: selectedCards,
+            trumpCards: trumpCards,
+            team: team,
+            rowid: rowid,
+          ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (
+                    e.readTable(table),
+                    $$CalculatorResultTableTableReferences(db, table, e)
+                  ))
+              .toList(),
+          prefetchHooksCallback: ({roundId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins: <
+                  T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic>>(state) {
+                if (roundId) {
+                  state = state.withJoin(
+                    currentTable: table,
+                    currentColumn: table.roundId,
+                    referencedTable: $$CalculatorResultTableTableReferences
+                        ._roundIdTable(db),
+                    referencedColumn: $$CalculatorResultTableTableReferences
+                        ._roundIdTable(db)
+                        .id,
+                  ) as T;
+                }
+
+                return state;
+              },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ));
+}
+
+typedef $$CalculatorResultTableTableProcessedTableManager
+    = ProcessedTableManager<
+        _$AppDatabase,
+        $CalculatorResultTableTable,
+        CalculatorResultTableData,
+        $$CalculatorResultTableTableFilterComposer,
+        $$CalculatorResultTableTableOrderingComposer,
+        $$CalculatorResultTableTableAnnotationComposer,
+        $$CalculatorResultTableTableCreateCompanionBuilder,
+        $$CalculatorResultTableTableUpdateCompanionBuilder,
+        (CalculatorResultTableData, $$CalculatorResultTableTableReferences),
+        CalculatorResultTableData,
+        PrefetchHooks Function({bool roundId})>;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -2875,4 +4044,6 @@ class $AppDatabaseManager {
       $$RoundTableTableTableManager(_db, _db.roundTable);
   $$SettingsTableTableTableManager get settingsTable =>
       $$SettingsTableTableTableManager(_db, _db.settingsTable);
+  $$CalculatorResultTableTableTableManager get calculatorResultTable =>
+      $$CalculatorResultTableTableTableManager(_db, _db.calculatorResultTable);
 }
