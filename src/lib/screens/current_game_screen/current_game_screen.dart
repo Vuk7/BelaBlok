@@ -1,5 +1,6 @@
-import 'package:bela_blok/db/database.dart'; 
+import 'package:bela_blok/db/database.dart';
 import 'package:bela_blok/enums/team_enum.dart';
+import 'package:bela_blok/db/models/user_settings_model.dart';
 import 'package:bela_blok/screens/current_game_screen/widgets/round_score_list_item.dart';
 import 'package:bela_blok/screens/current_game_screen/widgets/top_score_details.dart';
 import 'package:bela_blok/screens/widgets/animated_big_button.dart' as button;
@@ -9,17 +10,22 @@ import 'package:bela_blok/screens/widgets/game_stats_widget.dart';
 import 'package:bela_blok/screens/widgets/morphing_widgets.dart';
 import 'package:bela_blok/screens/widgets/error_message_widget.dart';
 import 'package:bela_blok/services/games_service.dart';
-import 'package:bela_blok/services/rounds_service.dart'; 
+import 'package:bela_blok/services/rounds_service.dart';
+import 'package:bela_blok/services/settings_services.dart';
 import 'package:bela_blok/db/models/game_model.dart';
 import 'package:bela_blok/db/models/round_model.dart';
 import 'package:bela_blok/models/game_stats.dart'; 
 import 'package:bela_blok/themes/app_theme.dart';
+import 'package:bela_blok/models/game_stats_model.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 class CurrentGameScreen extends StatefulWidget {
   final String? gameId;
-  const CurrentGameScreen({super.key, this.gameId});
+  final VoidCallback? updateGamesListCallback;
+
+  const CurrentGameScreen(
+      {super.key, this.gameId, this.updateGamesListCallback});
 
   @override
   State<CurrentGameScreen> createState() => _CurrentGameScreenState();
@@ -30,10 +36,12 @@ class _CurrentGameScreenState extends State<CurrentGameScreen> {
   bool _showStatsPopup = false; // Popup NIJE aktivan na početku
 
   GamesService? gamesService;
-  RoundsService? roundsService; 
+  RoundsService? roundsService;
+  SettingsService? settingsService;
   Game? currentGame;
   bool isLoadingGame = true;
   String? errorMessage;
+  UserSettings? settings;
 
   List<Round>? rounds;
   bool isLoadingRounds = true;
@@ -42,7 +50,8 @@ class _CurrentGameScreenState extends State<CurrentGameScreen> {
   void initState() {
     super.initState();
     gamesService = GamesService(AppDatabase());
-    roundsService = RoundsService(AppDatabase()); 
+    roundsService = RoundsService(AppDatabase());
+    settingsService = SettingsService(AppDatabase());
     () async {
       await handleInitializeGame(gameId: widget.gameId);
     }();
@@ -78,16 +87,31 @@ class _CurrentGameScreenState extends State<CurrentGameScreen> {
     setState(() => currentGame = game);
     await loadRounds(game.id!);
 
+    // Load settings
+    settings = await settingsService!.fetchSettings();
+
     setState(() => isLoadingGame = false);
   }
 
   Future<void> loadRounds(String gameId) async {
     setState(() => isLoadingRounds = true);
-    final roundRows = await roundsService!.getRoundsForGameSorted(gameId); 
+    final roundRows = await roundsService!.getRoundsForGameSorted(gameId);
     setState(() {
       rounds = roundRows.map((r) => r.toModel()).toList();
       isLoadingRounds = false;
     });
+  }
+
+  void scrollToBottom() {
+    if (_scrollController.hasClients && rounds != null && rounds!.isNotEmpty) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _scrollController.animateTo(
+          _scrollController.position.maxScrollExtent,
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeOut,
+        );
+      });
+    }
   }
 
   void handleAddRound() async {
@@ -95,16 +119,13 @@ class _CurrentGameScreenState extends State<CurrentGameScreen> {
       showErrorMessage("Nema aktivne igre");
       return;
     }
-    if (isGameFinished) {
-      showErrorMessage("Igra je već završena");
-      return;
-    }
-    await context.pushNamed(
-      'addround',
-      queryParameters: {'id': currentGame!.id!},
-    );
-    
+
+    await context.pushNamed('addround',
+        queryParameters: {'id': currentGame!.id!},
+        extra: widget.updateGamesListCallback);
+
     await handleInitializeGame(gameId: currentGame!.id!);
+    scrollToBottom();
   }
 
   void handleGameError(String error) {
@@ -123,7 +144,6 @@ class _CurrentGameScreenState extends State<CurrentGameScreen> {
   }
 
   void showErrorMessage(String message) {
-    
     if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
@@ -152,8 +172,61 @@ class _CurrentGameScreenState extends State<CurrentGameScreen> {
     return teamScore[Team.teamOne]! >= gameTargetScore ? 'Tim 1' : 'Tim 2';
   }
 
-  Future<GameStatsModel> get gameStats async =>
-      await GameStatsModel.calculate(currentGame!, rounds ?? [], AppDatabase());
+  GameStats get gameStats => _aggregateTeamStats();
+
+  GameStats _aggregateTeamStats() {
+    if (rounds == null || rounds!.isEmpty) {
+      return GameStats(
+        totalRounds: totalRounds,
+        averageScore: averageScore,
+        winner: winningTeam,
+        teamOneCalls: 0,
+        teamTwoCalls: 0,
+        teamOneFails: 0,
+        teamTwoFails: 0,
+        teamOneDeclarations: 0,
+        teamTwoDeclarations: 0,
+      );
+    }
+
+    int teamOneCalls = 0;
+    int teamTwoCalls = 0;
+    int teamOneFails = 0;
+    int teamTwoFails = 0;
+    int teamOneDeclarations = 0; //(sum of call amounts)
+    int teamTwoDeclarations = 0;
+
+    for (final r in rounds!) {
+      final called = r.teamCalled;
+      if (called == Team.teamOne.index) {
+        teamOneCalls++;
+      } else if (called == Team.teamTwo.index) {
+        teamTwoCalls++;
+      }
+      final failed = (r.teamFailed ?? false) && called != null;
+      if (failed) {
+        if (called == Team.teamOne.index) {
+          teamOneFails++;
+        } else if (called == Team.teamTwo.index) {
+          teamTwoFails++;
+        }
+      }
+      teamOneDeclarations += r.teamOneCallAmount ?? 0;
+      teamTwoDeclarations += r.teamTwoCallAmount ?? 0;
+    }
+
+    return GameStats(
+      totalRounds: totalRounds,
+      averageScore: averageScore,
+      winner: winningTeam,
+      teamOneCalls: teamOneCalls,
+      teamTwoCalls: teamTwoCalls,
+      teamOneFails: teamOneFails,
+      teamTwoFails: teamTwoFails,
+      teamOneDeclarations: teamOneDeclarations,
+      teamTwoDeclarations: teamTwoDeclarations,
+    );
+  }
 
   bool get isGameFinished =>
       teamScore[Team.teamOne]! >= gameTargetScore ||
@@ -239,107 +312,101 @@ class _CurrentGameScreenState extends State<CurrentGameScreen> {
                     ),
                   ),
                   const SizedBox(height: 10),
-                  if (isGameFinished)
+                  if (isGameFinished && settings?.showGameStats == true)
                     GestureDetector(
-                      onTap: _openStatsPopup,
-                      child: Container(
-                        margin: const EdgeInsets.symmetric(vertical: 8),
-                        padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
-                        decoration: BoxDecoration(
-                          color: AppTheme.green.withValues(alpha: 0.08),
-                          border: Border.all(color: AppTheme.green, width: 2),
-                          borderRadius: BorderRadius.circular(14),
-                          boxShadow: [
-                            BoxShadow(
-                              color: AppTheme.green.withValues(alpha: 0.15),
-                              blurRadius: 8,
-                              offset: const Offset(0, 2),
-                            ),
-                          ],
-                        ),
-                        child:  const Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children:  [
-                            Icon(Icons.analytics, color: AppTheme.green, size: 28),
-                            SizedBox(width: 8),
-                            Text(
-                              'STATISTIKA IGRE',
-                              style: TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                                color: AppTheme.green,
-                              ),
-                            ),
-                          ],
-                        ),
+                      onTap: () =>
+                          setState(() => _wobbleTrigger = !_wobbleTrigger),
+                      child: WobbleWidget(
+                        triggerWobble: _wobbleTrigger,
+                        child: GameStatsWidget(gameStats: gameStats),
                       ),
                     ),
                   const SizedBox(height: 10),
-                  if (isLoadingRounds)
-                    const Center(child: CircularProgressIndicator())
-                  else
-                    Expanded(
-                      child: ListView.builder(
-                        controller: _scrollController,
-                        padding: const EdgeInsets.all(5.0),
-                        itemCount: rounds?.length ?? 0,
-                        itemBuilder: (context, index) {
-                          final round = rounds![index];
-                          return AnimatedListItem(
-                            index: index,
-                            animationType: AnimationType.slideUp,
-                            staggerDelay: 80,
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(vertical: 5.0),
-                              child: RoundScoreListItem(
-                                teamOneCallAmount: round.teamOneCallAmount ?? 0,
-                                teamTwoCallAmount: round.teamTwoCallAmount ?? 0,
-                                teamOneScore: round.teamOneScore ?? 0,
-                                teamTwoScore: round.teamTwoScore ?? 0,
-                                roundID: index, 
-                                teamCalled: Team.values[
-                                    round.teamCalled ??
-                                        Team.teamOne.index],
-                                onTap: () async {
-                                  await context.pushNamed(
-                                    'addround',
-                                    queryParameters: {
-                                      'id': currentGame!.id!,
-                                      'roundId': round.id ?? '',
-                                    },
-                                    extra: round, 
-                                  );
-                                  await handleInitializeGame(gameId: currentGame!.id!);
-                                },
+                  Expanded(
+                    child: Stack(
+                      children: [
+                        Positioned.fill(
+                          child: isLoadingRounds
+                              ? const Center(child: CircularProgressIndicator())
+                              : ListView.builder(
+                                  controller: _scrollController,
+                                  padding:
+                                      const EdgeInsets.fromLTRB(5, 5, 5, 100),
+                                  itemCount: rounds?.length ?? 0,
+                                  itemBuilder: (context, index) {
+                                    final round = rounds![index];
+                                    return AnimatedListItem(
+                                      index: index,
+                                      animationType: AnimationType.slideUp,
+                                      staggerDelay: 80,
+                                      child: Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            vertical: 5.0),
+                                        child: RoundScoreListItem(
+                                          teamOneCallAmount:
+                                              round.teamOneCallAmount ?? 0,
+                                          teamTwoCallAmount:
+                                              round.teamTwoCallAmount ?? 0,
+                                          teamOneScore: round.teamOneScore ?? 0,
+                                          teamTwoScore: round.teamTwoScore ?? 0,
+                                          teamFailed: round.teamFailed ?? false,
+                                          roundID: index,
+                                          teamCalled: Team.values[
+                                              round.teamCalled ??
+                                                  Team.teamOne.index],
+                                          onTap: () async {
+                                            await context.pushNamed('addround',
+                                                queryParameters: {
+                                                  'id': currentGame!.id!,
+                                                  'roundId': round.id ?? '',
+                                                }, extra: () {
+                                              widget.updateGamesListCallback!();
+                                            });
+                                            await handleInitializeGame(
+                                                gameId: currentGame!.id!);
+                                            scrollToBottom();
+                                          },
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                ),
+                        ),
+                        Positioned(
+                          left: 0,
+                          right: 0,
+                          bottom: 0,
+                          child: Padding(
+                            padding: const EdgeInsets.fromLTRB(5, 8, 5, 5),
+                            child: Hero(
+                              tag: isGameFinished
+                                  ? "return_to_main_button"
+                                  : "add_round_button",
+                              child: button.AnimatedBigButton(
+                                text: isGameFinished ? "NOVA IGRA" : "DODAJ",
+                                icon: isGameFinished ? Icons.home : Icons.add,
+                                iconAnimationType: button.AnimationType.scale,
+                                textStyle: TextStyle(
+                                  color: AppTheme.getInverseTextColor(context),
+                                  fontSize:
+                                      AppTheme.defaultButtonTextStyle.fontSize,
+                                  fontWeight: AppTheme
+                                      .defaultButtonTextStyle.fontWeight,
+                                ),
+                                bgColor: isGameFinished
+                                    ? AppTheme.primary
+                                    : AppTheme.green,
+                                onTap: isGameFinished
+                                    ? () => context.goNamed('main')
+                                    : handleAddRound,
+                                textPadding: 15,
                               ),
                             ),
-                          );
-                        },
-                      ),
-                    ),
-                  const SizedBox(height: 20),
-                  Padding(
-                    padding: const EdgeInsets.all(5.0),
-                    child: Hero(
-                      tag: "add_round_button",
-                      child: button.AnimatedBigButton(
-                        text: "DODAJ",
-                        icon: Icons.add,
-                        iconAnimationType: button.AnimationType.scale,
-                        textStyle: TextStyle(
-                          color: AppTheme.getInverseTextColor(context),
-                          fontSize:
-                              AppTheme.defaultButtonTextStyle.fontSize,
-                          fontWeight: AppTheme
-                              .defaultButtonTextStyle.fontWeight,
+                          ),
                         ),
-                        bgColor: AppTheme.green,
-                        onTap: handleAddRound,
-                        textPadding: 15,
-                      ),
+                      ],
                     ),
                   ),
-                  const SizedBox(height: 10),
                 ],
               ),
             ),

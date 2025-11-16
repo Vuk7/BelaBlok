@@ -19,6 +19,15 @@ class GamesService {
     return gameRows.map((row) => row.toModel()).toList();
   }
 
+  Future<List<Game>> getGamesPaginated({required int nextPage, required int perPage}) async {
+    final gameRows = await dao.getGamesPaginated(nextPage: nextPage, perPage: perPage);
+    return gameRows.map((row) => row.toModel()).toList();
+  }
+
+  Future<int> getTotalGamesCount() async {
+    return await dao.getTotalGamesCount();
+  }
+
   Future<Game?> createNewGameWithParameters({
     int? gameType,
     PlayDirection? playDirection,
@@ -57,25 +66,37 @@ class GamesService {
     );
   }
 
-  Future<Game?> getLatestUnfinishedGame() async {
-    final data = await dao.getLatestUnfinishedGame();
-    return data?.toModel();
-  }
-
   Future<Game?> getGameById(String gameId) async {
     final data = await dao.getById(database.gameTable, database.gameTable.id, gameId);
     return data?.toModel();
   }
 
 
-  /// [playerCount] 
   Future<int> getNextStartingShuffler({int playerCount = 4}) async {
     final latestGame = await getLatestGame();
-    if (latestGame != null && latestGame.currentlyShuffling != null) {
-
-      return (latestGame.currentlyShuffling! % playerCount) + 1;
+    if (latestGame == null) return 1;
+    final firstShuffler = latestGame.currentlyShuffling ?? 1;
+    final dir = latestGame.gameDirection ?? 0;
+    if (dir == 0) {
+      return (firstShuffler % playerCount) + 1;
+    } else {
+      final prev = firstShuffler - 1;
+      return prev < 1 ? playerCount : prev;
+    }
+  }
+  Future<int> getPreviousGameDirection() async {
+    final latestGame = await getLatestGame();
+    if (latestGame != null && latestGame.gameDirection != null) {
+      return latestGame.gameDirection!;
     }
     
-    return 1;
+    return 0; 
+  }
+  Future<PlayDirection> getPreviousPlayDirection() async {
+    final dirIndex = await getPreviousGameDirection();
+    if (dirIndex >= 0 && dirIndex < PlayDirection.values.length) {
+      return PlayDirection.values[dirIndex];
+    }
+    return PlayDirection.clockwise; // default
   }
 }

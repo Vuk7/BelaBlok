@@ -2,6 +2,7 @@ import 'package:bela_blok/screens/add_round_screen/add_round_screen.dart';
 import 'package:bela_blok/screens/current_game_screen/current_game_screen.dart';
 import 'package:bela_blok/screens/main_screen/main_screen.dart';
 import 'package:bela_blok/screens/new_game_screen/new_game_screen.dart';
+import 'package:bela_blok/screens/settings_screen/settings_screen.dart';
 import 'package:bela_blok/screens/smart_calculator_screen/smart_calculator_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -44,8 +45,10 @@ final GoRouter appRouter = GoRouter(
             path: '/newgame',
             name: 'newgame',
             pageBuilder: (BuildContext context, GoRouterState state) {
+              final VoidCallback? updateGamesListCallback = state.extra as VoidCallback?;
+
               return _slideTransition(
-                child: const NewGameScreen(),
+                child: NewGameScreen(updateGamesListCallback: updateGamesListCallback),
                 state: state,
                 beginOffset: const Offset(1.0, 0.0), // slide from right
               );
@@ -56,8 +59,10 @@ final GoRouter appRouter = GoRouter(
             name: 'currentgame',
             pageBuilder: (BuildContext context, GoRouterState state) {
               final id = state.uri.queryParameters['id'];
+              final VoidCallback? updateGamesListCallback = state.extra as VoidCallback?;
+              
               return _slideTransition(
-                child: CurrentGameScreen(gameId: id),
+                child: CurrentGameScreen(gameId: id, updateGamesListCallback: updateGamesListCallback,),
                 state: state,
                 beginOffset: const Offset(1.0, 0.0),
               );
@@ -69,12 +74,13 @@ final GoRouter appRouter = GoRouter(
                 pageBuilder: (BuildContext context, GoRouterState state) {
                   final id = state.uri.queryParameters['id'];
                   final roundId = state.uri.queryParameters['roundId'];
-                  final roundToEdit = state.extra;
+                  final VoidCallback? updateGamesListCallback = state.extra as VoidCallback?;
+
                   return _slideTransition(
                     child: AddRoundScreen(
                       gameId: id,
                       roundId: roundId,
-                      roundToEdit: roundToEdit,
+                      updateGamesListCallback: updateGamesListCallback
                     ),
                     state: state,
                     beginOffset: const Offset(0.0, 1.0),
@@ -96,6 +102,18 @@ final GoRouter appRouter = GoRouter(
               ),
             ],
           ),
+          GoRoute(
+            path: '/settings',
+            name: 'settings',
+            pageBuilder: (BuildContext context, GoRouterState state) {
+              return _slideTransition(
+                child: const SettingsScreen(),
+                state: state,
+                beginOffset: const Offset(1.0, 0.0),
+              );
+            },
+          ),
+         
         ]),
   ],
 );

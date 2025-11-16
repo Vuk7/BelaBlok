@@ -1,9 +1,14 @@
 import 'package:bela_blok/models/game_stats.dart';
 import 'package:bela_blok/themes/app_theme.dart';
 import 'package:flutter/material.dart';
+import 'components_stats/stats_utils.dart';
+import 'components_stats/team_column_widget.dart';
+import 'components_stats/vertical_divider_widget.dart';
+import 'components_stats/summary_row_widget.dart';
+import 'package:bela_blok/models/game_stats_model.dart';
 
-class GameStatsWidget extends StatelessWidget {
-  final GameStatsModel gameStats;
+class GameStatsWidget extends StatefulWidget {
+  final GameStats gameStats;
 
   const GameStatsWidget({
     super.key,
@@ -13,6 +18,7 @@ class GameStatsWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
+  final statsColors = Theme.of(context).extension<GameStatsColors>();
 
     return Container(
       width: double.infinity,
@@ -42,113 +48,108 @@ class GameStatsWidget extends StatelessWidget {
             children: [
               const Row(
                 children: [
-                  Icon(Icons.analytics, color: AppTheme.green, size: 22),
+                 Icon(Icons.analytics, color: AppTheme.green, size: 22),
                   SizedBox(width: 8),
-                  Text(
+                 Text(
                     'STATISTIKE IGRE',
-                    style: TextStyle(
+                    style:  TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
                       color: AppTheme.green,
                     ),
                   ),
-                  Spacer(),
-                  Icon(Icons.emoji_events, color: Colors.amber, size: 22),
-                ],
-              ),
-              const Divider(),
-              const SizedBox(height: 8),
-              Row(
-                children: [
-                  // MI tim
-                  Expanded(
-                    child: _buildTeamStats(
-                      context,
-                      'MI',
-                      Theme.of(context).colorScheme.primary,
-                      gameStats.teamOneDeclarations,
-                      gameStats.teamOneDeclarationsSum,
-                      gameStats.teamOneFails,
-                      isDark,
-                    ),
+                  const Spacer(),
+                  Icon(
+                    Icons.emoji_events,
+                    color: statsColors?.declarations ?? Colors.amber,
+                    size: 24,
                   ),
-                  Container(
-                    width: 2,
-                    height: 110,
-                    color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.2),
-                  ),
-                  // VI tim
-                  Expanded(
-                    child: _buildTeamStats(
-                      context,
-                      'VI',
-                      AppTheme.green,
-                      gameStats.teamTwoDeclarations,
-                      gameStats.teamTwoDeclarationsSum,
-                      gameStats.teamTwoFails,
-                      isDark,
+                  const SizedBox(width: 8),
+                  AnimatedRotation(
+                    turns: isExpanded ? 0.5 : 0,
+                    duration: const Duration(milliseconds: 200),
+                    child: const Icon(
+                      Icons.expand_more,
+                      color: AppTheme.green,
+                      size: 24,
                     ),
                   ),
                 ],
               ),
-            ],
+            ),
           ),
-        ),
+
+          // Expandable content
+          AnimatedCrossFade(
+            firstChild: const SizedBox.shrink(),
+            secondChild: _ExpandedStatsContent(
+              gameStats: widget.gameStats,
+              isDark: isDark,
+            ),
+            crossFadeState: isExpanded ? CrossFadeState.showSecond : CrossFadeState.showFirst,
+            duration: const Duration(milliseconds: 250),
+          )
+        ],
       ),
     );
   }
+}
 
-  Widget _buildTeamStats(
-    BuildContext context,
-    String teamLabel,
-    Color color,
-    int declarations,
-    int declarationsSum,
-    int fails,
-    bool isDark,
-  ) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          teamLabel,
-          style: TextStyle(
-            fontSize: 15,
-            fontWeight: FontWeight.bold,
-            color: color,
-          ),
-        ),
-        const SizedBox(height: 6),
-        _buildStatRow('Broj zvanja', declarations, Icons.star, Colors.amber, isDark),
-        _buildStatRow('Zbroj zvanja', declarationsSum, Icons.calculate, Colors.blue, isDark),
-        _buildStatRow('Broj padova', fails, Icons.trending_down, Colors.red, isDark),
-      ],
-    );
-  }
+class _ExpandedStatsContent extends StatelessWidget {
+  final GameStats gameStats;
+  final bool isDark;
 
-  Widget _buildStatRow(String label, int value, IconData icon, Color color, bool isDark) {
+  const _ExpandedStatsContent({required this.gameStats, required this.isDark});
+
+  @override
+  Widget build(BuildContext context) {
+  const double gap = 12;
+  final calls1 = gameStats.teamOneCalls;
+    final calls2 = gameStats.teamTwoCalls;
+    final fails1 = gameStats.teamOneFails;
+    final fails2 = gameStats.teamTwoFails;
+    final dec1 = gameStats.teamOneDeclarations;
+    final dec2 = gameStats.teamTwoDeclarations;
+    final success1 = StatsUtils.calculateSuccessRate(calls1, fails1);
+    final success2 = StatsUtils.calculateSuccessRate(calls2, fails2);
+
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 2),
-      child: Row(
+      padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+      child: Column(
         children: [
-          Icon(icon, size: 15, color: color),
-          const SizedBox(width: 6),
-          Expanded(
-            child: Text(
-              label,
-              style: TextStyle(
-                fontSize: 12,
-                color: isDark ? Colors.grey[300] : Colors.grey[700],
+          const Divider(),
+         const  SizedBox(height: gap),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                child: TeamColumnWidget(
+                  label: 'MI',
+                  labelColor: Theme.of(context).colorScheme.primary,
+                  calls: calls1,
+                  fails: fails1,
+                  declarations: dec1,
+                  isDark: isDark,
+                ),
               ),
-            ),
+              const VerticalDividerWidget(),
+              Expanded(
+                child: TeamColumnWidget(
+                  label: 'VI',
+                  labelColor: AppTheme.green,
+                  calls: calls2,
+                  fails: fails2,
+                  declarations: dec2,
+                  isDark: isDark,
+                ),
+              ),
+            ],
           ),
-          Text(
-            value.toString(),
-            style: TextStyle(
-              fontSize: 13,
-              fontWeight: FontWeight.bold,
-              color: isDark ? Colors.white : Colors.black87,
-            ),
+          const SizedBox(height: gap),
+          SummaryRowWidget(
+            success1: success1,
+            success2: success2,
+            isDark: isDark,
           ),
         ],
       ),

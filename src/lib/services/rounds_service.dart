@@ -5,17 +5,21 @@ import 'package:bela_blok/db/models/round_model.dart';
 import 'package:bela_blok/common/constants.dart';
 
 class RoundsService {
-  int getNextShuffler({
-    required int roundCount,
+  Future<int> getNextShuffler({
+    required String gameId,
     required int currentlyShuffling,
     required int gameDirection,
     int totalPlayers = 4,
-  }) {
-    int start = currentlyShuffling - 1;
-    int dir = gameDirection == 0 ? 1 : -1;
-    int next = (start + dir * roundCount) % totalPlayers;
-    if (next < 0) next += totalPlayers;
-    return next + 1;
+  }) async {
+    // Compute next shuffler from first shuffler and next round index 
+    final roundsCount = await dao.getRoundsForGameCount(gameId);
+    // Next round will be at index = roundsCount (0-based), first is 0
+    return computeShuffler(
+      firstShuffler: currentlyShuffling,
+      index: roundsCount,
+      gameDirection: gameDirection,
+      totalPlayers: totalPlayers,
+    );
   }
   final AppDatabase database;
   final RoundDao dao;
@@ -29,6 +33,16 @@ class RoundsService {
 
   Future<int> getRoundsForGameCount(String gameId) async {
     return await dao.getRoundsForGameCount(gameId);
+  }
+
+  Future<Round?> getRoundById(String roundId) async {
+  final roundData = await dao.getById(database.roundTable, database.roundTable.id, roundId);
+    return roundData?.toModel();
+  }
+
+  Future<Round?> getFirstRoundForGame(String gameId) async {
+    final roundData = await dao.getFirstRoundForGame(gameId);
+    return roundData?.toModel();
   }
 
   Future<String> createRound(Round round) async {
@@ -45,7 +59,6 @@ class RoundsService {
     );
   }
 
-  
  
   Map<String, int> calculateRoundScores({
     required int teamOneBase,
@@ -79,6 +92,24 @@ class RoundsService {
       );
     }
   }
+    int computeShuffler({
+      required int firstShuffler,
+      required int index,
+      required int gameDirection,
+      int totalPlayers = 4,
+    }) {
+      final zeroBased = firstShuffler - 1;
+      int computed;
+      if (gameDirection == 0) {
+        // clockwise: 1->2->3->4->1
+        computed = (zeroBased + index) % totalPlayers;
+      } else {
+        // counter-clockwise: 1->4->3->2->1
+        computed = (zeroBased - index) % totalPlayers;
+        if (computed < 0) computed += totalPlayers;
+      }
+      return computed + 1;
+    }
 
 
   Map<String, int> calculateFallScores({
