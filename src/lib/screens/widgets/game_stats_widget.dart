@@ -20,7 +20,7 @@ class GameStatsWidget extends StatefulWidget {
 }
 
 class _GameStatsWidgetState extends State<GameStatsWidget> {
-  bool isExpanded = false;
+  bool isExpanded = true;
 
   @override
   Widget build(BuildContext context) {
@@ -93,14 +93,18 @@ class _GameStatsWidgetState extends State<GameStatsWidget> {
             ),
             // Expandable content
             if (isExpanded)
-              AnimatedCrossFade(
-                firstChild: const SizedBox.shrink(),
-                secondChild: _ExpandedStatsContent(
-                  gameStats: widget.gameStats,
-                  isDark: isDark,
+              Expanded(
+                child: SingleChildScrollView(
+                  child: AnimatedCrossFade(
+                    firstChild: const SizedBox.shrink(),
+                    secondChild: _ExpandedStatsContent(
+                      gameStats: widget.gameStats,
+                      isDark: isDark,
+                    ),
+                    crossFadeState: isExpanded ? CrossFadeState.showSecond : CrossFadeState.showFirst,
+                    duration: const Duration(milliseconds: 250),
+                  ),
                 ),
-                crossFadeState: isExpanded ? CrossFadeState.showSecond : CrossFadeState.showFirst,
-                duration: const Duration(milliseconds: 250),
               )
           ],
         ),

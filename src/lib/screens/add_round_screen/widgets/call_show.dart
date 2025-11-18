@@ -84,35 +84,12 @@ class _CallShowWidgetState extends State<CallShowWidget> {
     });
   }
 
-  void _clearAll() {
-    setState(() {
-      _calls.clear();
-      widget.onChanged(_calls);
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text('Zvanja: $sum${belotPoints > 0 ? ' +$belotPoints' : ''}', style: TextStyle(fontSize: 15, color: widget.color, fontWeight: FontWeight.bold)),
-            TextButton(
-              onPressed: _clearAll,
-              style: TextButton.styleFrom(
-                foregroundColor: widget.color,
-                side: BorderSide(color: widget.color),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                minimumSize:const Size(0, 32),
-              ),
-              child: const Text('Obriši', style: TextStyle(fontSize: 13)),
-            ),
-          ],
-        ),
+        Text('Zvanja: $totalPoints', style: TextStyle(fontSize: 15, color: widget.color, fontWeight: FontWeight.bold)),
         const SizedBox(height: 4),
         ..._calls.asMap().entries.map((entry) {
           final idx = entry.key;
@@ -172,8 +149,8 @@ class _CallShowWidgetState extends State<CallShowWidget> {
                 ),
                 if (c.count > 1)
                   Padding(
-                    padding: const EdgeInsets.only(left: 5.0),
-                    child: Text('x${c.count}', style: TextStyle(fontSize: 13, color: widget.color)),
+                    padding: const EdgeInsets.only(left: 3.0),
+                    child: Text('x${c.count}', style: TextStyle(fontSize: 12, color: widget.color)),
                   ),
               ],
             ),
