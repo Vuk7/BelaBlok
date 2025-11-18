@@ -14,7 +14,6 @@ import 'package:bela_blok/services/rounds_service.dart';
 import 'package:bela_blok/services/settings_services.dart';
 import 'package:bela_blok/db/models/game_model.dart';
 import 'package:bela_blok/db/models/round_model.dart';
-import 'package:bela_blok/models/game_stats.dart'; 
 import 'package:bela_blok/themes/app_theme.dart';
 import 'package:bela_blok/models/game_stats_model.dart';
 import 'package:flutter/material.dart';
@@ -233,11 +232,7 @@ class _CurrentGameScreenState extends State<CurrentGameScreen> {
       teamScore[Team.teamOne]! >= gameTargetScore ||
       teamScore[Team.teamTwo]! >= gameTargetScore;
 
-  void _openStatsPopup() {
-    setState(() {
-      _showStatsPopup = true;
-    });
-  }
+  
 
   void _closeStatsPopup() {
     setState(() {
