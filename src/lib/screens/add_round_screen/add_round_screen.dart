@@ -418,6 +418,14 @@ class _AddRoundScreenState extends State<AddRoundScreen>
       setState(() {});
       return;
     }
+    if (value == 252) {
+      if (inputTeamTwo.text != '0') {
+        inputTeamTwo.text = '0';
+      }
+      _isAutoCompleting = false;
+      setState(() {});
+      return;
+    }
     if (value > 0 && value <= maxScore) {
       final other = maxScore - value;
       if (inputTeamTwo.text != other.toString()) {
@@ -444,6 +452,14 @@ class _AddRoundScreenState extends State<AddRoundScreen>
     if (value == 0) {
       if (inputTeamOne.text != '252') {
         inputTeamOne.text = '252';
+      }
+      _isAutoCompleting = false;
+      setState(() {});
+      return;
+    }
+    if (value == 252) {
+      if (inputTeamOne.text != '0') {
+        inputTeamOne.text = '0';
       }
       _isAutoCompleting = false;
       setState(() {});
