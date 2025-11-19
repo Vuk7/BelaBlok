@@ -1,6 +1,8 @@
 import 'package:bela_blok/common/constants.dart';
+import 'package:bela_blok/db/entities/calculator_result.dart';
 import 'package:bela_blok/db/entities/game_entities.dart';
 import 'package:bela_blok/db/entities/settings_entities.dart';
+import 'package:bela_blok/enums/theme_mode_enum.dart';
 import 'package:drift/drift.dart';
 import 'package:drift_flutter/drift_flutter.dart';
 import 'package:path_provider/path_provider.dart';
@@ -8,7 +10,13 @@ import 'package:uuid/uuid.dart';
 
 part 'database.g.dart';
 
-@DriftDatabase(tables: [GameTable, RoundTable, SettingsTable])
+@DriftDatabase(
+  tables: [
+    GameTable,
+    RoundTable, SettingsTable,
+    CalculatorResultTable, 
+  ]
+)
 class AppDatabase extends _$AppDatabase {
   static AppDatabase? _instance;
 
@@ -21,7 +29,7 @@ class AppDatabase extends _$AppDatabase {
 
 
   @override
-  int get schemaVersion => 5;
+  int get schemaVersion => 6;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -37,6 +45,9 @@ class AppDatabase extends _$AppDatabase {
       }
       if (to >= 5 && from < 5) {
         await migrator.createTable(settingsTable);
+      }
+      if (to >= 6 && from < 6) {
+        await migrator.addColumn(settingsTable, settingsTable.showSmartCalculator);
       }
     },
     beforeOpen: (details) async {},

@@ -49,6 +49,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
     await _loadSettings();
   }
 
+  Future<void> _updateShowSmartCalculator(bool value) async {
+    await _settingsService.updateShowSmartCalculator(value);
+    await _loadSettings();
+  }
+
   Future<void> _updateShowHelpDialog(bool value) async {
     await _settingsService.updateShowHelpDialog(value);
     await _loadSettings();
@@ -95,6 +100,15 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   value: _settings?.showGameStats ?? true,
                   onChanged: _updateShowGameStats,
                   secondary: const Icon(Icons.analytics),
+                ),
+                const SizedBox(height: 32),
+                Text('Pametni kalkulator', style: AppTheme.sectionHeaderTextStyle.copyWith(color: Theme.of(context).colorScheme.onSurface)),
+                const SizedBox(height: 4),
+                SwitchListTile(
+                  title: const Text('Prikaži gumb pametnog kalkulatora'),
+                  value: _settings?.showSmartCalculator ?? true,
+                  onChanged: _updateShowSmartCalculator,
+                  secondary: const Icon(Icons.calculate),
                 ),
               ],
             ),

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-enum CallType { z20, z50, z100 }
+enum CallType { z20, z50, z100, z150, z200 }
 enum SpecialCall { belot }
 
 class CallEntry {
@@ -43,6 +43,8 @@ class _CallShowWidgetState extends State<CallShowWidget> {
         case CallType.z20: return 20;
         case CallType.z50: return 50;
         case CallType.z100: return 100;
+        case CallType.z150: return 150;
+        case CallType.z200: return 200;
       }
     }
     // Belot nema vrijednost ovdje, rješava se vani
@@ -55,6 +57,8 @@ class _CallShowWidgetState extends State<CallShowWidget> {
         case CallType.z20: return '20';
         case CallType.z50: return '50';
         case CallType.z100: return '100';
+        case CallType.z150: return '150';
+        case CallType.z200: return '200';
       }
     }
     if (t == SpecialCall.belot) return 'Belot';
@@ -84,35 +88,12 @@ class _CallShowWidgetState extends State<CallShowWidget> {
     });
   }
 
-  void _clearAll() {
-    setState(() {
-      _calls.clear();
-      widget.onChanged(_calls);
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text('Zvanja: $sum${belotPoints > 0 ? ' +$belotPoints' : ''}', style: TextStyle(fontSize: 15, color: widget.color, fontWeight: FontWeight.bold)),
-            TextButton(
-              onPressed: _clearAll,
-              style: TextButton.styleFrom(
-                foregroundColor: widget.color,
-                side: BorderSide(color: widget.color),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                minimumSize:const Size(0, 32),
-              ),
-              child: const Text('Obriši', style: TextStyle(fontSize: 13)),
-            ),
-          ],
-        ),
+        Text('Zvanja: $totalPoints', style: TextStyle(fontSize: 15, color: widget.color, fontWeight: FontWeight.bold)),
         const SizedBox(height: 4),
         ..._calls.asMap().entries.map((entry) {
           final idx = entry.key;
@@ -172,8 +153,8 @@ class _CallShowWidgetState extends State<CallShowWidget> {
                 ),
                 if (c.count > 1)
                   Padding(
-                    padding: const EdgeInsets.only(left: 5.0),
-                    child: Text('x${c.count}', style: TextStyle(fontSize: 13, color: widget.color)),
+                    padding: const EdgeInsets.only(left: 3.0),
+                    child: Text('x${c.count}', style: TextStyle(fontSize: 12, color: widget.color)),
                   ),
               ],
             ),
@@ -187,6 +168,8 @@ class _CallShowWidgetState extends State<CallShowWidget> {
             _callButton(CallType.z20),
             _callButton(CallType.z50),
             _callButton(CallType.z100),
+            _callButton(CallType.z150),
+            _callButton(CallType.z200),
             _belotButton(),
           ],
         ),

@@ -18,12 +18,11 @@ class ChooseInputType extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final double minWidth = boxWidth > 90 ? boxWidth : 90;
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Container(
-          constraints: BoxConstraints(minWidth: minWidth, maxWidth: 140),
+          constraints: BoxConstraints(minWidth: 90, maxWidth: boxWidth),
           child: ChoiceChip(
             label: const Padding(
               padding:  EdgeInsets.symmetric(vertical: 7.0, horizontal: 10.0),
@@ -47,7 +46,7 @@ class ChooseInputType extends StatelessWidget {
         ),
         const SizedBox(width: 14),
         Container(
-          constraints: BoxConstraints(minWidth: minWidth, maxWidth: 140),
+          constraints: BoxConstraints(minWidth: 90, maxWidth: boxWidth),
           child: ChoiceChip(
             label:const Padding(
               padding:  EdgeInsets.symmetric(vertical: 7.0, horizontal: 10.0),

@@ -13,6 +13,7 @@ class RoundScoreListItem extends StatelessWidget {
   final Team teamCalled;
   final bool teamFailed;
   final Function() onTap;
+  final Function()? onDelete;
   const RoundScoreListItem({
     super.key,
     required this.teamOneCallAmount,
@@ -23,6 +24,7 @@ class RoundScoreListItem extends StatelessWidget {
     required this.teamCalled,
     required this.teamFailed,
     required this.onTap,
+    this.onDelete,
   });
 
   @override
@@ -30,9 +32,8 @@ class RoundScoreListItem extends StatelessWidget {
   
   final bool teamOneFell = teamFailed && teamCalled == Team.teamOne;
   final bool teamTwoFell = teamFailed && teamCalled == Team.teamTwo;
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
+    
+    final container = Container(
         width: double.infinity,
         margin: const EdgeInsets.symmetric(vertical: 6),
         decoration: BoxDecoration(
@@ -204,6 +205,65 @@ class RoundScoreListItem extends StatelessWidget {
             ],
           ),
         ),
+      );
+    
+    if (onDelete == null) {
+      return GestureDetector(
+        onTap: onTap,
+        child: container,
+      );
+    }
+    
+    return Dismissible(
+      key: Key('round_$roundID'),
+      direction: DismissDirection.endToStart,
+      confirmDismiss: (direction) async {
+        return await showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: const Text('Obriši rundu?'),
+              content: Text('Jeste li sigurni da želite obrisati ${roundID + 1}. rundu?'),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(16),
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop(false),
+                  child: const Text('Odustani'),
+                ),
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop(true),
+                  style: TextButton.styleFrom(
+                    foregroundColor: AppTheme.red,
+                  ),
+                  child: const Text('Obriši'),
+                ),
+              ],
+            );
+          },
+        );
+      },
+      onDismissed: (direction) {
+        onDelete!();
+      },
+      background: Container(
+        margin: const EdgeInsets.symmetric(vertical: 6),
+        decoration: BoxDecoration(
+          color: AppTheme.red,
+          borderRadius: BorderRadius.circular(16),
+        ),
+        alignment: Alignment.centerRight,
+        padding: const EdgeInsets.only(right: 20),
+        child: const Icon(
+          Icons.delete,
+          color: Colors.white,
+          size: 32,
+        ),
+      ),
+      child: GestureDetector(
+        onTap: onTap,
+        child: container,
       ),
     );
   }

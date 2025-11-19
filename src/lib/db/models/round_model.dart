@@ -2,6 +2,7 @@ import 'package:bela_blok/db/database.dart';
 import 'package:bela_blok/db/models/base_model.dart';
 import 'package:drift/drift.dart';
 
+
 class Round extends BaseModel {
   String gameId;
   int? teamCalled;

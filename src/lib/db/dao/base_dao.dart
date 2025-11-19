@@ -28,6 +28,10 @@ abstract class BaseDao<T extends BaseUUIDModel, D> {
     await database.into(table).insert(item);
   }
 
+  Future<D> insertReturning(TableInfo<T, D> table, Insertable<D> item) async {
+    return await database.into(table).insertReturning(item);
+  }
+
   Future<int> update(TableInfo<T, D> table, Column<String> idColumn, String id,
       Insertable<D> item) {
     return (database.update(table)..where((row) => idColumn.equals(id)))

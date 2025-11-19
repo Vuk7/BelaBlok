@@ -2,10 +2,13 @@ import 'package:bela_blok/screens/add_round_screen/widgets/call_show.dart';
 import 'package:bela_blok/db/database.dart'; 
 import 'package:bela_blok/db/models/round_model.dart';
 import 'package:bela_blok/db/models/user_settings_model.dart';
+import 'package:bela_blok/db/dao/round_dao.dart';
 import 'package:bela_blok/models/score.model.dart';
+import 'package:bela_blok/models/calculator_result_state.model.dart';
 import 'package:bela_blok/services/games_service.dart'; 
 import 'package:bela_blok/services/rounds_service.dart';
 import 'package:bela_blok/services/settings_services.dart';
+import 'package:bela_blok/services/calculator_service.dart';
 import 'package:bela_blok/screens/add_round_screen/widgets/choose_caller.dart';
 import 'package:bela_blok/screens/add_round_screen/widgets/choose_input_type.dart';
 import 'package:bela_blok/screens/widgets/big_button_input_number.dart';
@@ -17,6 +20,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:bela_blok/common/constants.dart';
 import 'package:bela_blok/enums/call_value_enum.dart';
+
 
 class AddRoundScreen extends StatefulWidget {
   final String? gameId;
@@ -56,6 +60,8 @@ class _AddRoundScreenState extends State<AddRoundScreen>
   UserSettings? settings;
 
   Round? roundToEdit;
+  late final RoundDao roundDao;
+  late final CalculatorService calculatorService;
 
   int? currentlyShuffling;
   int? gameDirection;
@@ -63,6 +69,8 @@ class _AddRoundScreenState extends State<AddRoundScreen>
   int roundsCount = 0;
   int currentGameTeamOneScore = 0;
   int currentGameTeamTwoScore = 0;
+
+  CalculatorResultState? _calculatorResult; 
 
   @override
   void initState() {
@@ -76,6 +84,8 @@ class _AddRoundScreenState extends State<AddRoundScreen>
     if (widget.roundId != null) {
       _loadRoundToEdit();
     }
+    roundDao = RoundDao(db);
+    calculatorService = CalculatorService(db);
 
     _bounceController1 = AnimationController(
       duration: const Duration(milliseconds: 200),
@@ -108,6 +118,7 @@ class _AddRoundScreenState extends State<AddRoundScreen>
           t2 > 0 ? [CallEntry(CallType.z20, (t2 / 20).round())] : [];
     }
 
+   
     _loadGameData();
     _loadRoundsCount();
   }
@@ -184,8 +195,7 @@ class _AddRoundScreenState extends State<AddRoundScreen>
       final roundData = _prepareRoundData();
       final scores = _calculateScores(roundData);
       await _saveNormalRound(game, scores);
-    } catch (e, stack) {
-      debugPrint('Greška pri spremanju runde: $e\n$stack');
+    } catch (e) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -288,7 +298,14 @@ class _AddRoundScreenState extends State<AddRoundScreen>
   }
 
   Future<void> _saveNormalRound(dynamic game, ScoreModel scores) async {
-    final round = roundToEdit ?? Round(gameId: widget.gameId!);
+    final Round round;
+    
+    if (roundToEdit != null) {
+      round = roundToEdit!;
+    } else {
+      round = Round(gameId: widget.gameId!);
+    }
+    
     round.teamCalled = selectedCaller;
     round.teamOneScore = scores.teamOneBase;
     round.teamTwoScore = scores.teamTwoBase;
@@ -296,11 +313,23 @@ class _AddRoundScreenState extends State<AddRoundScreen>
     round.teamOneCallAmount = scores.teamOneCallAmount;
     round.teamTwoCallAmount = scores.teamTwoCallAmount;
 
+
+    String? actualRoundId;
     if (roundToEdit != null) {
       await roundsService.updateRound(round);
+      actualRoundId = round.id; 
     } else {
-      await roundsService.createRound(round);
+      actualRoundId = await roundsService.createRound(round); 
     }
+
+   if (_calculatorResult != null && actualRoundId != null) {
+      await calculatorService.saveOrUpdateCalculatorResult(
+        actualRoundId,
+        _calculatorResult!,
+        roundToEdit != null,
+      );
+    }
+
     await _updateGameScores(game);
     if (!mounted) return;
 
@@ -389,6 +418,14 @@ class _AddRoundScreenState extends State<AddRoundScreen>
       setState(() {});
       return;
     }
+    if (value == 252) {
+      if (inputTeamTwo.text != '0') {
+        inputTeamTwo.text = '0';
+      }
+      _isAutoCompleting = false;
+      setState(() {});
+      return;
+    }
     if (value > 0 && value <= maxScore) {
       final other = maxScore - value;
       if (inputTeamTwo.text != other.toString()) {
@@ -415,6 +452,14 @@ class _AddRoundScreenState extends State<AddRoundScreen>
     if (value == 0) {
       if (inputTeamOne.text != '252') {
         inputTeamOne.text = '252';
+      }
+      _isAutoCompleting = false;
+      setState(() {});
+      return;
+    }
+    if (value == 252) {
+      if (inputTeamOne.text != '0') {
+        inputTeamOne.text = '0';
       }
       _isAutoCompleting = false;
       setState(() {});
@@ -455,6 +500,44 @@ class _AddRoundScreenState extends State<AddRoundScreen>
     if (widget.updateGamesListCallback != null) {
       widget.updateGamesListCallback!();
     }
+  }
+
+  Future<void> _handleCalculatorButtonPressed() async {
+    Map<String, dynamic>? initialData;
+    
+    if (roundToEdit != null && roundToEdit!.id != null) {
+      final result = await calculatorService.getCalculatorResultByRoundId(roundToEdit!.id!);
+      if (result != null) {
+        initialData = CalculatorResultState.fromCalculatorResult(result).toMap();
+      }
+    }
+    
+    if (!mounted) return;
+    
+    context.pushNamed(
+      'calculator',
+      extra: initialData,
+    ).then((result) {
+      if (result != null && result is Map) {
+        setState(() {
+          _calculatorResult = CalculatorResultState.fromMap(Map<String, dynamic>.from(result));
+        });
+        
+        final score = result['score'] as int? ?? 0;
+        final team = result['team'] as String? ?? 'mi';
+        if (mounted) {
+          setState(() {
+            if (team == 'mi') {
+              inputTeamOne.text = score.toString();
+              focusedInput = 0;
+            } else {
+              inputTeamTwo.text = score.toString();
+              focusedInput = 1;
+            }
+          });
+        }
+      }
+    });
   }
 
   @override
@@ -817,6 +900,22 @@ class _AddRoundScreenState extends State<AddRoundScreen>
                         },
                       ),
                     ),
+                    if (settings?.showSmartCalculator == true)
+                      const SizedBox(height: 16),
+                    if (settings?.showSmartCalculator == true)
+                      ElevatedButton.icon(
+                        icon: const Icon(Icons.calculate),
+                        label: const Text('Pomoć kod izračuna'),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: AppTheme.green, 
+                          foregroundColor: Colors.white,
+                          padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 20),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
+                        onPressed: _handleCalculatorButtonPressed,
+                      ),
                     const SizedBox(height: 40),
                   ],
                 ),
