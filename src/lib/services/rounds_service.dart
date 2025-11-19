@@ -59,6 +59,10 @@ class RoundsService {
     );
   }
 
+  Future<void> deleteRound(String roundId) async {
+    await dao.deleteById(database.roundTable, database.roundTable.id, roundId);
+  }
+
  
   Map<String, int> calculateRoundScores({
     required int teamOneBase,

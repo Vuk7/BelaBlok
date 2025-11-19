@@ -154,6 +154,65 @@ class _CurrentGameScreenState extends State<CurrentGameScreen> {
     );
   }
 
+  Future<void> handleDeleteRound(String roundId) async {
+    try {
+      await roundsService!.deleteRound(roundId);
+      
+     
+      if (currentGame?.id != null) {
+        await _recalculateGameScores(currentGame!.id!);
+        await handleInitializeGame(gameId: currentGame!.id!);
+      }
+      
+      showSuccessMessage('Runda je uspješno obrisana');
+    } catch (e) {
+      showErrorMessage('Greška pri brisanju runde');
+    }
+  }
+
+  Future<void> _recalculateGameScores(String gameId) async {
+    final game = await gamesService!.getGameById(gameId);
+    if (game == null) return;
+    
+    final rounds = await roundsService!.getRoundsForGameSorted(gameId);
+    int newScoreTeamOne = 0;
+    int newScoreTeamTwo = 0;
+    
+    for (final r in rounds) {
+      final baseOne = r.teamOneScore ?? 0;
+      final baseTwo = r.teamTwoScore ?? 0;
+      final callsOne = r.teamOneCallAmount ?? 0;
+      final callsTwo = r.teamTwoCallAmount ?? 0;
+      final failedTeam = (r.teamFailed ?? false) ? r.teamCalled : null;
+      
+      final computed = roundsService!.calculateRoundScores(
+        teamOneBase: baseOne,
+        teamTwoBase: baseTwo,
+        teamOneCallAmount: callsOne,
+        teamTwoCallAmount: callsTwo,
+        failedTeam: failedTeam,
+      );
+      
+      newScoreTeamOne += computed['teamOneTotal'] ?? 0;
+      newScoreTeamTwo += computed['teamTwoTotal'] ?? 0;
+    }
+    
+    game.teamOneScore = newScoreTeamOne;
+    game.teamTwoScore = newScoreTeamTwo;
+    
+   
+    final int gameTargetScore = game.gameType ?? 1001;
+    if (newScoreTeamOne >= gameTargetScore || newScoreTeamTwo >= gameTargetScore) {
+      game.finished = true;
+      game.winner = newScoreTeamOne >= gameTargetScore ? 0 : 1;
+    } else {
+      game.finished = false;
+      game.winner = null;
+    }
+    
+    await gamesService!.updateGame(game);
+  }
+
   Map<Team, int> get teamScore => {
         Team.teamOne: currentGame?.teamOneScore ?? 0,
         Team.teamTwo: currentGame?.teamTwoScore ?? 0,
@@ -355,6 +414,9 @@ class _CurrentGameScreenState extends State<CurrentGameScreen> {
                                 teamCalled: Team.values[
                                     round.teamCalled ??
                                         Team.teamOne.index],
+                                onDelete: round.id != null
+                                    ? () => handleDeleteRound(round.id!)
+                                    : null,
                                 onTap: () async {
                                   await context.pushNamed('addround',
                                       queryParameters: {
