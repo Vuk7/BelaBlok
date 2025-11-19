@@ -32,8 +32,8 @@ class CurrentGameScreen extends StatefulWidget {
 
 class _CurrentGameScreenState extends State<CurrentGameScreen> {
   final ScrollController _scrollController = ScrollController();
-  bool _showStatsPopup = false; // Popup NIJE aktivan na početku
-  bool _wobbleTrigger = false; // Za wobble animaciju
+  bool _showStatsPopup = false; 
+  bool _wobbleTrigger = false; 
 
   GamesService? gamesService;
   RoundsService? roundsService;
