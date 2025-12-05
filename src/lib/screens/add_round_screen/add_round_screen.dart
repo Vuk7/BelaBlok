@@ -79,11 +79,6 @@ class _AddRoundScreenState extends State<AddRoundScreen>
     gamesService = GamesService(db);
     roundsService = RoundsService(db);
     settingsService = SettingsService(db);
-
-    // Load round model
-    if (widget.roundId != null) {
-      _loadRoundToEdit();
-    }
     roundDao = RoundDao(db);
     calculatorService = CalculatorService(db);
 
@@ -105,19 +100,9 @@ class _AddRoundScreenState extends State<AddRoundScreen>
     inputTeamOne.addListener(_handleTeamOneInput);
     inputTeamTwo.addListener(_handleTeamTwoInput);
 
-    if (roundToEdit != null) {
-      inputTeamOne.text = (roundToEdit!.teamOneScore ?? 0).toString();
-      inputTeamTwo.text = (roundToEdit!.teamTwoScore ?? 0).toString();
-      selectedCaller = roundToEdit!.teamCalled ?? 0;
-
-      final t1 = roundToEdit!.teamOneCallAmount ?? 0;
-      final t2 = roundToEdit!.teamTwoCallAmount ?? 0;
-      _callsTeamOne =
-          t1 > 0 ? [CallEntry(CallType.z20, (t1 / 20).round())] : [];
-      _callsTeamTwo =
-          t2 > 0 ? [CallEntry(CallType.z20, (t2 / 20).round())] : [];
+    if (widget.roundId != null) {
+      _loadRoundToEdit();
     }
-
    
     _loadGameData();
     _loadRoundsCount();
@@ -125,6 +110,18 @@ class _AddRoundScreenState extends State<AddRoundScreen>
 
   Future<void> _loadRoundToEdit() async {
     roundToEdit = await roundsService.getRoundById(widget.roundId!);
+    
+    if (roundToEdit != null) {
+      setState(() {
+        inputTeamOne.text = (roundToEdit!.teamOneScore ?? 0).toString();
+        inputTeamTwo.text = (roundToEdit!.teamTwoScore ?? 0).toString();
+        selectedCaller = roundToEdit!.teamCalled ?? 0;
+        focusedInput = selectedCaller;
+
+        _callsTeamOne = [];
+        _callsTeamTwo = [];
+      });
+    }
   }
 
   Future<void> _loadGameData() async {
