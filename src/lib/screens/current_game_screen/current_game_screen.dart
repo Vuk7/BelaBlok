@@ -33,7 +33,8 @@ class CurrentGameScreen extends StatefulWidget {
 class _CurrentGameScreenState extends State<CurrentGameScreen> {
   final ScrollController _scrollController = ScrollController();
   bool _showStatsPopup = false; 
-  bool _wobbleTrigger = false; 
+  bool _wobbleTrigger = false;
+  bool _skipListAnimation = false; 
 
   GamesService? gamesService;
   RoundsService? roundsService;
@@ -63,10 +64,11 @@ class _CurrentGameScreenState extends State<CurrentGameScreen> {
     super.dispose();
   }
 
-  Future<void> handleInitializeGame({String? gameId}) async {
+  Future<void> handleInitializeGame({String? gameId, bool skipAnimation = false}) async {
     setState(() {
       isLoadingGame = true;
       errorMessage = null;
+      _skipListAnimation = skipAnimation;
     });
 
     Game? game;
@@ -91,6 +93,8 @@ class _CurrentGameScreenState extends State<CurrentGameScreen> {
     settings = await settingsService!.fetchSettings();
 
     setState(() => isLoadingGame = false);
+    
+    scrollToTop();
   }
 
   Future<void> loadRounds(String gameId) async {
@@ -102,16 +106,12 @@ class _CurrentGameScreenState extends State<CurrentGameScreen> {
     });
   }
 
-  void scrollToBottom() {
-    if (_scrollController.hasClients && rounds != null && rounds!.isNotEmpty) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        _scrollController.animateTo(
-          _scrollController.position.maxScrollExtent,
-          duration: const Duration(milliseconds: 300),
-          curve: Curves.easeOut,
-        );
-      });
-    }
+  void scrollToTop() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (_scrollController.hasClients && mounted) {
+        _scrollController.jumpTo(0);
+      }
+    });
   }
 
   void handleAddRound() async {
@@ -124,8 +124,7 @@ class _CurrentGameScreenState extends State<CurrentGameScreen> {
         queryParameters: {'id': currentGame!.id!},
         extra: widget.updateGamesListCallback);
 
-    await handleInitializeGame(gameId: currentGame!.id!);
-    scrollToBottom();
+    await handleInitializeGame(gameId: currentGame!.id!, skipAnimation: true);
   }
 
   void handleGameError(String error) {
@@ -393,13 +392,15 @@ class _CurrentGameScreenState extends State<CurrentGameScreen> {
                     )
                   else
                     SliverList(
+                      key: ValueKey('rounds_list_${rounds?.length ?? 0}'),
                       delegate: SliverChildBuilderDelegate(
                         (context, index) {
                           final round = rounds![index];
                           return AnimatedListItem(
                             index: index,
-                            animationType: AnimationType.slideUp,
-                            staggerDelay: 80,
+                            animationType: _skipListAnimation ? AnimationType.fade : AnimationType.slideUp,
+                            staggerDelay: _skipListAnimation ? 0 : 80,
+                            autoStart: !_skipListAnimation,
                             child: Padding(
                               padding: const EdgeInsets.symmetric(vertical: 5.0),
                               child: RoundScoreListItem(
@@ -426,8 +427,7 @@ class _CurrentGameScreenState extends State<CurrentGameScreen> {
                                     widget.updateGamesListCallback!();
                                   });
                                   await handleInitializeGame(
-                                      gameId: currentGame!.id!);
-                                  scrollToBottom();
+                                      gameId: currentGame!.id!, skipAnimation: true);
                                 },
                               ),
                             ),
