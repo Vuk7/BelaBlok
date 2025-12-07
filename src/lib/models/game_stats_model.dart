@@ -9,6 +9,8 @@ class GameStats {
   final int teamTwoFails;
   final int teamOneDeclarations;
   final int teamTwoDeclarations;
+  final int teamOneStihaks;
+  final int teamTwoStihaks;
 
   const GameStats({
     required this.totalRounds,
@@ -20,6 +22,8 @@ class GameStats {
     required this.teamTwoFails,
     required this.teamOneDeclarations,
     required this.teamTwoDeclarations,
+    required this.teamOneStihaks,
+    required this.teamTwoStihaks,
   });
 
 

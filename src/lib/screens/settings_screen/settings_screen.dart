@@ -79,7 +79,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 const SizedBox(height: 4),
                 SwitchListTile(
                   title: const Text('Prikaži pravila igre '),
-                  value: _settings?.showRules ?? true,
+                  value: _settings?.showRules ?? false,
                   onChanged: _updateShowRules,
                   secondary: const Icon(Icons.menu_book),
                 ),
@@ -88,7 +88,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 const SizedBox(height: 4),
                 SwitchListTile(
                   title: const Text('Prikaži pomoć zvanja'),
-                  value: _settings?.showHelpDialog ?? true,
+                  value: _settings?.showHelpDialog ?? false,
                   onChanged: _updateShowHelpDialog,
                   secondary: const Icon(Icons.quiz),
                 ),
@@ -106,7 +106,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 const SizedBox(height: 4),
                 SwitchListTile(
                   title: const Text('Prikaži gumb pametnog kalkulatora'),
-                  value: _settings?.showSmartCalculator ?? true,
+                  value: _settings?.showSmartCalculator ?? false,
                   onChanged: _updateShowSmartCalculator,
                   secondary: const Icon(Icons.calculate),
                 ),

@@ -11,6 +11,8 @@ import 'package:bela_blok/services/settings_services.dart';
 import 'package:bela_blok/services/calculator_service.dart';
 import 'package:bela_blok/screens/add_round_screen/widgets/choose_caller.dart';
 import 'package:bela_blok/screens/add_round_screen/widgets/choose_input_type.dart';
+import 'package:bela_blok/screens/add_round_screen/widgets/show_lost_text.dart';
+import 'package:bela_blok/enums/team_enum.dart';
 import 'package:bela_blok/screens/widgets/big_button_input_number.dart';
 import 'package:bela_blok/screens/widgets/help_dialog.dart';
 import 'package:bela_blok/screens/widgets/player_shuffling.dart';
@@ -79,11 +81,6 @@ class _AddRoundScreenState extends State<AddRoundScreen>
     gamesService = GamesService(db);
     roundsService = RoundsService(db);
     settingsService = SettingsService(db);
-
-    // Load round model
-    if (widget.roundId != null) {
-      _loadRoundToEdit();
-    }
     roundDao = RoundDao(db);
     calculatorService = CalculatorService(db);
 
@@ -105,19 +102,9 @@ class _AddRoundScreenState extends State<AddRoundScreen>
     inputTeamOne.addListener(_handleTeamOneInput);
     inputTeamTwo.addListener(_handleTeamTwoInput);
 
-    if (roundToEdit != null) {
-      inputTeamOne.text = (roundToEdit!.teamOneScore ?? 0).toString();
-      inputTeamTwo.text = (roundToEdit!.teamTwoScore ?? 0).toString();
-      selectedCaller = roundToEdit!.teamCalled ?? 0;
-
-      final t1 = roundToEdit!.teamOneCallAmount ?? 0;
-      final t2 = roundToEdit!.teamTwoCallAmount ?? 0;
-      _callsTeamOne =
-          t1 > 0 ? [CallEntry(CallType.z20, (t1 / 20).round())] : [];
-      _callsTeamTwo =
-          t2 > 0 ? [CallEntry(CallType.z20, (t2 / 20).round())] : [];
+    if (widget.roundId != null) {
+      _loadRoundToEdit();
     }
-
    
     _loadGameData();
     _loadRoundsCount();
@@ -125,6 +112,18 @@ class _AddRoundScreenState extends State<AddRoundScreen>
 
   Future<void> _loadRoundToEdit() async {
     roundToEdit = await roundsService.getRoundById(widget.roundId!);
+    
+    if (roundToEdit != null) {
+      setState(() {
+        inputTeamOne.text = (roundToEdit!.teamOneScore ?? 0).toString();
+        inputTeamTwo.text = (roundToEdit!.teamTwoScore ?? 0).toString();
+        selectedCaller = roundToEdit!.teamCalled ?? 0;
+        focusedInput = selectedCaller;
+
+        _callsTeamOne = [];
+        _callsTeamTwo = [];
+      });
+    }
   }
 
   Future<void> _loadGameData() async {
@@ -260,6 +259,9 @@ class _AddRoundScreenState extends State<AddRoundScreen>
     int teamOneCallAmount = roundData.teamOneCallAmount;
     int teamTwoCallAmount = roundData.teamTwoCallAmount;
 
+    // Provjeri da li je stihak (jedan tim ima 252)
+    bool isStihak = teamOneBase == 252 || teamTwoBase == 252;
+
     var scores = roundsService.calculateRoundScores(
       teamOneBase: teamOneBase,
       teamTwoBase: teamTwoBase,
@@ -272,7 +274,7 @@ class _AddRoundScreenState extends State<AddRoundScreen>
     int otherScore = selectedCaller == 0 ? teamTwoTotal : teamOneTotal;
 
     bool teamFailed = false;
-    if (callerScore <= otherScore || callerScore < 82) {
+    if (!isStihak && (callerScore <= otherScore || callerScore < 82)) {
       int failedTeam = selectedCaller;
       scores = roundsService.calculateRoundScores(
         teamOneBase: teamOneBase,
@@ -553,6 +555,21 @@ class _AddRoundScreenState extends State<AddRoundScreen>
             .fold(0, (prev, c) => prev + _callValue(c.type) * c.count) +
         (_callsTeamTwo.any((c) => c.type == SpecialCall.belot) ? 100 : 0);
     final screenWidth = MediaQuery.of(context).size.width;
+
+    // Provjera za stihak
+    bool isStihak = teamOneVal == 252 || teamTwoVal == 252;
+    bool showStihak = isStihak && (teamOneVal > 0 || teamTwoVal > 0);
+    Team? stihakTeam = isStihak ? (teamOneVal == 252 ? Team.teamOne : Team.teamTwo) : null;
+
+    // Provjera za pad
+    int teamOneTotal = teamOneVal + teamOneCallAmount;
+    int teamTwoTotal = teamTwoVal + teamTwoCallAmount;
+    int callerScore = selectedCaller == 0 ? teamOneTotal : teamTwoTotal;
+    int otherScore = selectedCaller == 0 ? teamTwoTotal : teamOneTotal;
+    bool showFall = !isStihak && selectedCaller >= 0 && 
+                    (teamOneVal > 0 || teamTwoVal > 0) &&
+                    (callerScore <= otherScore || callerScore < 82);
+    Team? fallTeam = showFall ? (selectedCaller == 0 ? Team.teamOne : Team.teamTwo) : null;
 
     String getInputSuffix(int i) {
       final base = i == 0 ? teamOneVal : teamTwoVal;
@@ -880,6 +897,19 @@ class _AddRoundScreenState extends State<AddRoundScreen>
                         ],
                       ),
                     ),
+                    // Prikaz stihak ili pad animacije
+                    if (showStihak && stihakTeam != null)
+                      ShowLostText(
+                        show: true,
+                        teamLost: stihakTeam,
+                        isStihak: true,
+                      ),
+                    if (showFall && fallTeam != null && !showStihak)
+                      ShowLostText(
+                        show: true,
+                        teamLost: fallTeam,
+                        isStihak: false,
+                      ),
                     const SizedBox(height: 30),
                     _buildSection(
                       context: context,

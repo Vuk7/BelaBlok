@@ -128,6 +128,8 @@ class _ExpandedStatsContent extends StatelessWidget {
     final fails2 = gameStats.teamTwoFails;
     final dec1 = gameStats.teamOneDeclarations;
     final dec2 = gameStats.teamTwoDeclarations;
+    final stihaks1 = gameStats.teamOneStihaks;
+    final stihaks2 = gameStats.teamTwoStihaks;
     final success1 = StatsUtils.calculateSuccessRate(calls1, fails1);
     final success2 = StatsUtils.calculateSuccessRate(calls2, fails2);
 
@@ -148,6 +150,7 @@ class _ExpandedStatsContent extends StatelessWidget {
                   calls: calls1,
                   fails: fails1,
                   declarations: dec1,
+                  stihaks: stihaks1,
                   isDark: isDark,
                 ),
               ),
@@ -159,6 +162,7 @@ class _ExpandedStatsContent extends StatelessWidget {
                   calls: calls2,
                   fails: fails2,
                   declarations: dec2,
+                  stihaks: stihaks2,
                   isDark: isDark,
                 ),
               ),

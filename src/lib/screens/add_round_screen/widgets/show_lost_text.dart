@@ -5,10 +5,12 @@ import 'package:flutter/material.dart';
 class ShowLostText extends StatelessWidget {
   final bool show;
   final Team teamLost;
+  final bool isStihak;
   const ShowLostText({
     super.key,
     required this.show,
     required this.teamLost,
+    this.isStihak = false,
   });
 
   @override
@@ -20,21 +22,21 @@ class ShowLostText extends StatelessWidget {
                 ? Container(
                     padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                     decoration: BoxDecoration(
-                      color: AppTheme.red,
+                      color: isStihak ? AppTheme.green : AppTheme.red,
                       borderRadius: BorderRadius.circular(20),
                     ),
-                    child: const Row(
+                    child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Icon(
-                          Icons.trending_down,
+                          isStihak ? Icons.stars : Icons.trending_down,
                           color: Colors.white,
                           size: 20,
                         ),
-                        SizedBox(width: 4),
+                        const SizedBox(width: 4),
                         Text(
-                          "PAD",
-                          style: TextStyle(
+                          isStihak ? "ŠTIHAK" : "PAD",
+                          style: const TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
                             color: Colors.white,
@@ -43,7 +45,7 @@ class ShowLostText extends StatelessWidget {
                       ],
                     ),
                   )
-                : const SizedBox(width: 80),
+                : SizedBox(width: isStihak ? 100 : 80),
             const Spacer(),
             const SizedBox(width: 20),
             const Spacer(),
@@ -51,21 +53,21 @@ class ShowLostText extends StatelessWidget {
                 ? Container(
                     padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                     decoration: BoxDecoration(
-                      color: AppTheme.red,
+                      color: isStihak ? AppTheme.primary : AppTheme.red,
                       borderRadius: BorderRadius.circular(20),
                     ),
-                    child: const Row(
+                    child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Icon(
-                          Icons.trending_down,
+                          isStihak ? Icons.stars : Icons.trending_down,
                           color: Colors.white,
                           size: 20,
                         ),
-                        SizedBox(width: 4),
+                        const SizedBox(width: 4),
                         Text(
-                          "PAD",
-                          style: TextStyle(
+                          isStihak ? "ŠTIHAK" : "PAD",
+                          style: const TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
                             color: Colors.white,
@@ -74,7 +76,7 @@ class ShowLostText extends StatelessWidget {
                       ],
                     ),
                   )
-                : const SizedBox(width: 80),
+                : SizedBox(width: isStihak ? 100 : 80),
             const Spacer(),
           ])
         : const SizedBox(height: 50);

@@ -96,6 +96,79 @@ class _AnimatedProgressBarState extends State<AnimatedProgressBar>
     super.dispose();
   }
 
+  Widget _buildScoreDifference() {
+    final difference = (widget.teamOneScore - widget.teamTwoScore).abs();
+    final teamOneLeading = widget.teamOneScore > widget.teamTwoScore;
+    final isEqual = widget.teamOneScore == widget.teamTwoScore;
+    
+    if (isEqual) {
+      return Container(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+        decoration: BoxDecoration(
+          color: Colors.amber.withValues(alpha: 0.2),
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(
+            color: Colors.amber.withValues(alpha: 0.4),
+            width: 1.5,
+          ),
+        ),
+        child:const Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              Icons.remove,
+              color: Colors.amber,
+              size: 16,
+            ),
+             SizedBox(width: 4),
+            Text(
+              'IZJEDNAČENO',
+              style: TextStyle(
+                fontSize: 11,
+                fontWeight: FontWeight.bold,
+                color: Colors.amber,
+                letterSpacing: 0.5,
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+    
+    final leadingColor = teamOneLeading ? widget.teamOneColor : widget.teamTwoColor;
+    
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+      decoration: BoxDecoration(
+        color: leadingColor.withValues(alpha: 0.15),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: leadingColor.withValues(alpha: 0.3),
+          width: 1.5,
+        ),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(
+            teamOneLeading ? Icons.arrow_back : Icons.arrow_forward,
+            color: leadingColor,
+            size: 16,
+          ),
+          const SizedBox(width: 4),
+          Text(
+            '+$difference',
+            style: TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.bold,
+              color: leadingColor,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
@@ -131,7 +204,7 @@ class _AnimatedProgressBarState extends State<AnimatedProgressBar>
                   ),
                   const SizedBox(width: 8),
                   Text(
-                    'MI',
+                    'VI',
                     style: TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
@@ -202,6 +275,8 @@ class _AnimatedProgressBarState extends State<AnimatedProgressBar>
                   color: widget.teamOneColor,
                 ),
               ),
+              // Prikaz razlike
+              _buildScoreDifference(),
               Text(
                 '${widget.teamTwoScore}',
                 style: TextStyle(

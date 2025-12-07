@@ -8,6 +8,7 @@ class TeamColumnWidget extends StatelessWidget {
   final int calls;
   final int fails;
   final int declarations;
+  final int stihaks;
   final bool isDark;
 
   const TeamColumnWidget({
@@ -17,6 +18,7 @@ class TeamColumnWidget extends StatelessWidget {
     required this.calls,
     required this.fails,
     required this.declarations,
+    required this.stihaks,
     required this.isDark,
   });
 
@@ -48,6 +50,13 @@ class TeamColumnWidget extends StatelessWidget {
           label: 'Padovi',
           value: fails.toString(),
           color: statsColors?.fails ?? Colors.red,
+          isDark: isDark,
+        ),
+        StatRowWidget(
+          icon: Icons.stars,
+          label: 'Štihaci',
+          value: stihaks.toString(),
+          color: labelColor,
           isDark: isDark,
         ),
         StatRowWidget(

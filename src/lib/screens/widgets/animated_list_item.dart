@@ -53,6 +53,8 @@ class _AnimatedListItemState extends State<AnimatedListItem>
           _controller.forward();
         }
       });
+    } else {
+      _controller.value = 1.0;
     }
   }
 
