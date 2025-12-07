@@ -36,7 +36,7 @@ class ChooseCaller extends StatelessWidget {
                     width: 10,
                   ),
                   Text(
-                    "ZOVE",
+                    "MI",
                     style: TextStyle(
                         color: (selectedChoice == 0)
                             ? selectedColor
@@ -70,7 +70,7 @@ class ChooseCaller extends StatelessWidget {
                     width: 10,
                   ),
                   Text(
-                    "ZOVE",
+                    "VI",
                     style: TextStyle(
                         color: (selectedChoice == 1)
                             ? selectedColor

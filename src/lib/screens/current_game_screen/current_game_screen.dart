@@ -121,7 +121,10 @@ class _CurrentGameScreenState extends State<CurrentGameScreen> {
     }
 
     await context.pushNamed('addround',
-        queryParameters: {'id': currentGame!.id!},
+        queryParameters: {
+          'id': currentGame!.id!,
+          'roundIndex': (rounds?.length ?? 0).toString(),
+        },
         extra: widget.updateGamesListCallback);
 
     await handleInitializeGame(gameId: currentGame!.id!, skipAnimation: true);
@@ -449,6 +452,7 @@ class _CurrentGameScreenState extends State<CurrentGameScreen> {
                                       queryParameters: {
                                         'id': currentGame!.id!,
                                         'roundId': round.id ?? '',
+                                        'roundIndex': index.toString(),
                                       }, extra: () {
                                     widget.updateGamesListCallback!();
                                   });

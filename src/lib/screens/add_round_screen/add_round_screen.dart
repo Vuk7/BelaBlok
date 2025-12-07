@@ -27,10 +27,11 @@ import 'package:bela_blok/enums/call_value_enum.dart';
 class AddRoundScreen extends StatefulWidget {
   final String? gameId;
   final String? roundId;
+  final int? roundIndex; 
   final VoidCallback? updateGamesListCallback;
 
   const AddRoundScreen(
-      {super.key, this.gameId, this.roundId, this.updateGamesListCallback});
+      {super.key, this.gameId, this.roundId, this.roundIndex, this.updateGamesListCallback});
 
   @override
   State<AddRoundScreen> createState() => _AddRoundScreenState();
@@ -259,7 +260,6 @@ class _AddRoundScreenState extends State<AddRoundScreen>
     int teamOneCallAmount = roundData.teamOneCallAmount;
     int teamTwoCallAmount = roundData.teamTwoCallAmount;
 
-    // Provjeri da li je stihak (jedan tim ima 252)
     bool isStihak = teamOneBase == 252 || teamTwoBase == 252;
 
     var scores = roundsService.calculateRoundScores(
@@ -780,14 +780,6 @@ class _AddRoundScreenState extends State<AddRoundScreen>
                                 Theme.of(context).colorScheme.primary,
                             onTap: handleCallerChange,
                           ),
-                          const SizedBox(height: 8),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: [
-                              _labelText('MI', selectedCaller == 0, context),
-                              _labelText('VI', selectedCaller == 1, context),
-                            ],
-                          ),
                         ],
                       ),
                     ),
@@ -1000,28 +992,17 @@ class _AddRoundScreenState extends State<AddRoundScreen>
         ),
       );
 
-  Widget _labelText(String text, bool selected, BuildContext context) => Text(
-        text,
-        style: AppTheme.toggleTextStyle.copyWith(
-          color: selected
-              ? AppTheme.green
-              : Theme.of(context)
-                  .colorScheme
-                  .onSurface
-                  .withValues(alpha: (0.6 * 255).toDouble()),
-        ),
-      );
-
   Future<int> _computeShufflerToShow() async {
     if (currentlyShuffling == null ||
-        gameDirection == null ||
-        widget.gameId == null) {
+        gameDirection == null) {
       return 1;
     }
-    final count = await roundsService.getRoundsForGameCount(widget.gameId!);
+    
+    final index = widget.roundIndex ?? 0;
+    
     return roundsService.computeShuffler(
       firstShuffler: currentlyShuffling!,
-      index: roundToEdit != null ? (count == 0 ? 0 : count - 1) : count,
+      index: index,
       gameDirection: gameDirection!,
       totalPlayers: totalPlayers,
     );
