@@ -122,7 +122,38 @@ class _AddRoundScreenState extends State<AddRoundScreen>
         focusedInput = selectedCaller;
 
         _callsTeamOne = [];
+        if ((roundToEdit!.mi20 ?? 0) > 0) {
+          _callsTeamOne.add(CallEntry(CallType.z20, roundToEdit!.mi20!));
+        }
+        if ((roundToEdit!.mi50 ?? 0) > 0) {
+          _callsTeamOne.add(CallEntry(CallType.z50, roundToEdit!.mi50!));
+        }
+        if ((roundToEdit!.mi100 ?? 0) > 0) {
+          _callsTeamOne.add(CallEntry(CallType.z100, roundToEdit!.mi100!));
+        }
+        if ((roundToEdit!.mi150 ?? 0) > 0) {
+          _callsTeamOne.add(CallEntry(CallType.z150, roundToEdit!.mi150!));
+        }
+        if ((roundToEdit!.mi200 ?? 0) > 0) {
+          _callsTeamOne.add(CallEntry(CallType.z200, roundToEdit!.mi200!));
+        }
+        
         _callsTeamTwo = [];
+        if ((roundToEdit!.vi20 ?? 0) > 0) {
+          _callsTeamTwo.add(CallEntry(CallType.z20, roundToEdit!.vi20!));
+        }
+        if ((roundToEdit!.vi50 ?? 0) > 0) {
+          _callsTeamTwo.add(CallEntry(CallType.z50, roundToEdit!.vi50!));
+        }
+        if ((roundToEdit!.vi100 ?? 0) > 0) {
+          _callsTeamTwo.add(CallEntry(CallType.z100, roundToEdit!.vi100!));
+        }
+        if ((roundToEdit!.vi150 ?? 0) > 0) {
+          _callsTeamTwo.add(CallEntry(CallType.z150, roundToEdit!.vi150!));
+        }
+        if ((roundToEdit!.vi200 ?? 0) > 0) {
+          _callsTeamTwo.add(CallEntry(CallType.z200, roundToEdit!.vi200!));
+        }
       });
     }
   }
@@ -207,6 +238,20 @@ class _AddRoundScreenState extends State<AddRoundScreen>
     }
   }
 
+  void _setRoundCallCounts(Round round, List<CallEntry> teamOneCalls, List<CallEntry> teamTwoCalls) {
+    round.mi20 = teamOneCalls.where((c) => c.type == CallType.z20).fold<int>(0, (sum, c) => sum + c.count);
+    round.mi50 = teamOneCalls.where((c) => c.type == CallType.z50).fold<int>(0, (sum, c) => sum + c.count);
+    round.mi100 = teamOneCalls.where((c) => c.type == CallType.z100).fold<int>(0, (sum, c) => sum + c.count);
+    round.mi150 = teamOneCalls.where((c) => c.type == CallType.z150).fold<int>(0, (sum, c) => sum + c.count);
+    round.mi200 = teamOneCalls.where((c) => c.type == CallType.z200).fold<int>(0, (sum, c) => sum + c.count);
+    
+    round.vi20 = teamTwoCalls.where((c) => c.type == CallType.z20).fold<int>(0, (sum, c) => sum + c.count);
+    round.vi50 = teamTwoCalls.where((c) => c.type == CallType.z50).fold<int>(0, (sum, c) => sum + c.count);
+    round.vi100 = teamTwoCalls.where((c) => c.type == CallType.z100).fold<int>(0, (sum, c) => sum + c.count);
+    round.vi150 = teamTwoCalls.where((c) => c.type == CallType.z150).fold<int>(0, (sum, c) => sum + c.count);
+    round.vi200 = teamTwoCalls.where((c) => c.type == CallType.z200).fold<int>(0, (sum, c) => sum + c.count);
+  }
+
   Future<void> _saveBelotRound(
       dynamic game, int gameType, bool teamOneBelot, bool teamTwoBelot) async {
     int teamOneCallAmount = teamOneBelot ? gameType : 0;
@@ -218,6 +263,8 @@ class _AddRoundScreenState extends State<AddRoundScreen>
     round.teamFailed = false;
     round.teamOneCallAmount = teamOneCallAmount;
     round.teamTwoCallAmount = teamTwoCallAmount;
+    
+    _setRoundCallCounts(round, _callsTeamOne, _callsTeamTwo);
 
     if (roundToEdit != null) {
       await roundsService.updateRound(round);
@@ -314,6 +361,8 @@ class _AddRoundScreenState extends State<AddRoundScreen>
     round.teamFailed = scores.teamFailed;
     round.teamOneCallAmount = scores.teamOneCallAmount;
     round.teamTwoCallAmount = scores.teamTwoCallAmount;
+    
+    _setRoundCallCounts(round, _callsTeamOne, _callsTeamTwo);
 
 
     String? actualRoundId;

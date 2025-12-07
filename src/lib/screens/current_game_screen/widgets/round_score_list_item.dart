@@ -15,6 +15,19 @@ class RoundScoreListItem extends StatelessWidget {
   final bool teamFailed;
   final Function() onTap;
   final Function()? onDelete;
+  
+  final int? mi20;
+  final int? mi50;
+  final int? mi100;
+  final int? mi150;
+  final int? mi200;
+  
+  final int? vi20;
+  final int? vi50;
+  final int? vi100;
+  final int? vi150;
+  final int? vi200;
+  
   const RoundScoreListItem({
     super.key,
     required this.teamOneCallAmount,
@@ -26,6 +39,16 @@ class RoundScoreListItem extends StatelessWidget {
     required this.teamFailed,
     required this.onTap,
     this.onDelete,
+    this.mi20,
+    this.mi50,
+    this.mi100,
+    this.mi150,
+    this.mi200,
+    this.vi20,
+    this.vi50,
+    this.vi100,
+    this.vi150,
+    this.vi200,
   });
 
   @override
@@ -34,7 +57,6 @@ class RoundScoreListItem extends StatelessWidget {
   final bool teamOneFell = teamFailed && teamCalled == Team.teamOne;
   final bool teamTwoFell = teamFailed && teamCalled == Team.teamTwo;
   
-  // Provjera za stihak (jedan tim ima 252)
   final bool isStihak = teamOneScore == 252 || teamTwoScore == 252;
   final bool teamOneStihak = isStihak && teamOneScore == 252;
   final bool teamTwoStihak = isStihak && teamTwoScore == 252;
@@ -57,7 +79,6 @@ class RoundScoreListItem extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           child: Row(
             children: [
-              // Lijevi tim (MI)
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -149,7 +170,6 @@ class RoundScoreListItem extends StatelessWidget {
                   ),
                 ],
               ),
-              // Desni tim (VI)
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.end,

@@ -699,6 +699,76 @@ class $RoundTableTable extends RoundTable
   late final GeneratedColumn<String> calculatorResult = GeneratedColumn<String>(
       'calculator_result', aliasedName, true,
       type: DriftSqlType.string, requiredDuringInsert: false);
+  static const VerificationMeta _mi20Meta = const VerificationMeta('mi20');
+  @override
+  late final GeneratedColumn<int> mi20 = GeneratedColumn<int>(
+      'mi20', aliasedName, true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(0));
+  static const VerificationMeta _mi50Meta = const VerificationMeta('mi50');
+  @override
+  late final GeneratedColumn<int> mi50 = GeneratedColumn<int>(
+      'mi50', aliasedName, true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(0));
+  static const VerificationMeta _mi100Meta = const VerificationMeta('mi100');
+  @override
+  late final GeneratedColumn<int> mi100 = GeneratedColumn<int>(
+      'mi100', aliasedName, true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(0));
+  static const VerificationMeta _mi150Meta = const VerificationMeta('mi150');
+  @override
+  late final GeneratedColumn<int> mi150 = GeneratedColumn<int>(
+      'mi150', aliasedName, true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(0));
+  static const VerificationMeta _mi200Meta = const VerificationMeta('mi200');
+  @override
+  late final GeneratedColumn<int> mi200 = GeneratedColumn<int>(
+      'mi200', aliasedName, true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(0));
+  static const VerificationMeta _vi20Meta = const VerificationMeta('vi20');
+  @override
+  late final GeneratedColumn<int> vi20 = GeneratedColumn<int>(
+      'vi20', aliasedName, true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(0));
+  static const VerificationMeta _vi50Meta = const VerificationMeta('vi50');
+  @override
+  late final GeneratedColumn<int> vi50 = GeneratedColumn<int>(
+      'vi50', aliasedName, true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(0));
+  static const VerificationMeta _vi100Meta = const VerificationMeta('vi100');
+  @override
+  late final GeneratedColumn<int> vi100 = GeneratedColumn<int>(
+      'vi100', aliasedName, true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(0));
+  static const VerificationMeta _vi150Meta = const VerificationMeta('vi150');
+  @override
+  late final GeneratedColumn<int> vi150 = GeneratedColumn<int>(
+      'vi150', aliasedName, true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(0));
+  static const VerificationMeta _vi200Meta = const VerificationMeta('vi200');
+  @override
+  late final GeneratedColumn<int> vi200 = GeneratedColumn<int>(
+      'vi200', aliasedName, true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(0));
   @override
   List<GeneratedColumn> get $columns => [
         id,
@@ -714,7 +784,17 @@ class $RoundTableTable extends RoundTable
         isTeamOneCallSuccessful,
         isTeamTwoCallSuccessful,
         teamFailed,
-        calculatorResult
+        calculatorResult,
+        mi20,
+        mi50,
+        mi100,
+        mi150,
+        mi200,
+        vi20,
+        vi50,
+        vi100,
+        vi150,
+        vi200
       ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -803,6 +883,46 @@ class $RoundTableTable extends RoundTable
           calculatorResult.isAcceptableOrUnknown(
               data['calculator_result']!, _calculatorResultMeta));
     }
+    if (data.containsKey('mi20')) {
+      context.handle(
+          _mi20Meta, mi20.isAcceptableOrUnknown(data['mi20']!, _mi20Meta));
+    }
+    if (data.containsKey('mi50')) {
+      context.handle(
+          _mi50Meta, mi50.isAcceptableOrUnknown(data['mi50']!, _mi50Meta));
+    }
+    if (data.containsKey('mi100')) {
+      context.handle(
+          _mi100Meta, mi100.isAcceptableOrUnknown(data['mi100']!, _mi100Meta));
+    }
+    if (data.containsKey('mi150')) {
+      context.handle(
+          _mi150Meta, mi150.isAcceptableOrUnknown(data['mi150']!, _mi150Meta));
+    }
+    if (data.containsKey('mi200')) {
+      context.handle(
+          _mi200Meta, mi200.isAcceptableOrUnknown(data['mi200']!, _mi200Meta));
+    }
+    if (data.containsKey('vi20')) {
+      context.handle(
+          _vi20Meta, vi20.isAcceptableOrUnknown(data['vi20']!, _vi20Meta));
+    }
+    if (data.containsKey('vi50')) {
+      context.handle(
+          _vi50Meta, vi50.isAcceptableOrUnknown(data['vi50']!, _vi50Meta));
+    }
+    if (data.containsKey('vi100')) {
+      context.handle(
+          _vi100Meta, vi100.isAcceptableOrUnknown(data['vi100']!, _vi100Meta));
+    }
+    if (data.containsKey('vi150')) {
+      context.handle(
+          _vi150Meta, vi150.isAcceptableOrUnknown(data['vi150']!, _vi150Meta));
+    }
+    if (data.containsKey('vi200')) {
+      context.handle(
+          _vi200Meta, vi200.isAcceptableOrUnknown(data['vi200']!, _vi200Meta));
+    }
     return context;
   }
 
@@ -842,6 +962,26 @@ class $RoundTableTable extends RoundTable
           .read(DriftSqlType.bool, data['${effectivePrefix}team_failed']),
       calculatorResult: attachedDatabase.typeMapping.read(
           DriftSqlType.string, data['${effectivePrefix}calculator_result']),
+      mi20: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}mi20']),
+      mi50: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}mi50']),
+      mi100: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}mi100']),
+      mi150: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}mi150']),
+      mi200: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}mi200']),
+      vi20: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}vi20']),
+      vi50: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}vi50']),
+      vi100: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}vi100']),
+      vi150: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}vi150']),
+      vi200: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}vi200']),
     );
   }
 
@@ -866,6 +1006,16 @@ class RoundTableData extends DataClass implements Insertable<RoundTableData> {
   final bool? isTeamTwoCallSuccessful;
   final bool? teamFailed;
   final String? calculatorResult;
+  final int? mi20;
+  final int? mi50;
+  final int? mi100;
+  final int? mi150;
+  final int? mi200;
+  final int? vi20;
+  final int? vi50;
+  final int? vi100;
+  final int? vi150;
+  final int? vi200;
   const RoundTableData(
       {required this.id,
       required this.createdAt,
@@ -880,7 +1030,17 @@ class RoundTableData extends DataClass implements Insertable<RoundTableData> {
       this.isTeamOneCallSuccessful,
       this.isTeamTwoCallSuccessful,
       this.teamFailed,
-      this.calculatorResult});
+      this.calculatorResult,
+      this.mi20,
+      this.mi50,
+      this.mi100,
+      this.mi150,
+      this.mi200,
+      this.vi20,
+      this.vi50,
+      this.vi100,
+      this.vi150,
+      this.vi200});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -919,6 +1079,36 @@ class RoundTableData extends DataClass implements Insertable<RoundTableData> {
     }
     if (!nullToAbsent || calculatorResult != null) {
       map['calculator_result'] = Variable<String>(calculatorResult);
+    }
+    if (!nullToAbsent || mi20 != null) {
+      map['mi20'] = Variable<int>(mi20);
+    }
+    if (!nullToAbsent || mi50 != null) {
+      map['mi50'] = Variable<int>(mi50);
+    }
+    if (!nullToAbsent || mi100 != null) {
+      map['mi100'] = Variable<int>(mi100);
+    }
+    if (!nullToAbsent || mi150 != null) {
+      map['mi150'] = Variable<int>(mi150);
+    }
+    if (!nullToAbsent || mi200 != null) {
+      map['mi200'] = Variable<int>(mi200);
+    }
+    if (!nullToAbsent || vi20 != null) {
+      map['vi20'] = Variable<int>(vi20);
+    }
+    if (!nullToAbsent || vi50 != null) {
+      map['vi50'] = Variable<int>(vi50);
+    }
+    if (!nullToAbsent || vi100 != null) {
+      map['vi100'] = Variable<int>(vi100);
+    }
+    if (!nullToAbsent || vi150 != null) {
+      map['vi150'] = Variable<int>(vi150);
+    }
+    if (!nullToAbsent || vi200 != null) {
+      map['vi200'] = Variable<int>(vi200);
     }
     return map;
   }
@@ -959,6 +1149,22 @@ class RoundTableData extends DataClass implements Insertable<RoundTableData> {
       calculatorResult: calculatorResult == null && nullToAbsent
           ? const Value.absent()
           : Value(calculatorResult),
+      mi20: mi20 == null && nullToAbsent ? const Value.absent() : Value(mi20),
+      mi50: mi50 == null && nullToAbsent ? const Value.absent() : Value(mi50),
+      mi100:
+          mi100 == null && nullToAbsent ? const Value.absent() : Value(mi100),
+      mi150:
+          mi150 == null && nullToAbsent ? const Value.absent() : Value(mi150),
+      mi200:
+          mi200 == null && nullToAbsent ? const Value.absent() : Value(mi200),
+      vi20: vi20 == null && nullToAbsent ? const Value.absent() : Value(vi20),
+      vi50: vi50 == null && nullToAbsent ? const Value.absent() : Value(vi50),
+      vi100:
+          vi100 == null && nullToAbsent ? const Value.absent() : Value(vi100),
+      vi150:
+          vi150 == null && nullToAbsent ? const Value.absent() : Value(vi150),
+      vi200:
+          vi200 == null && nullToAbsent ? const Value.absent() : Value(vi200),
     );
   }
 
@@ -982,6 +1188,16 @@ class RoundTableData extends DataClass implements Insertable<RoundTableData> {
           serializer.fromJson<bool?>(json['isTeamTwoCallSuccessful']),
       teamFailed: serializer.fromJson<bool?>(json['teamFailed']),
       calculatorResult: serializer.fromJson<String?>(json['calculatorResult']),
+      mi20: serializer.fromJson<int?>(json['mi20']),
+      mi50: serializer.fromJson<int?>(json['mi50']),
+      mi100: serializer.fromJson<int?>(json['mi100']),
+      mi150: serializer.fromJson<int?>(json['mi150']),
+      mi200: serializer.fromJson<int?>(json['mi200']),
+      vi20: serializer.fromJson<int?>(json['vi20']),
+      vi50: serializer.fromJson<int?>(json['vi50']),
+      vi100: serializer.fromJson<int?>(json['vi100']),
+      vi150: serializer.fromJson<int?>(json['vi150']),
+      vi200: serializer.fromJson<int?>(json['vi200']),
     );
   }
   @override
@@ -1004,6 +1220,16 @@ class RoundTableData extends DataClass implements Insertable<RoundTableData> {
           serializer.toJson<bool?>(isTeamTwoCallSuccessful),
       'teamFailed': serializer.toJson<bool?>(teamFailed),
       'calculatorResult': serializer.toJson<String?>(calculatorResult),
+      'mi20': serializer.toJson<int?>(mi20),
+      'mi50': serializer.toJson<int?>(mi50),
+      'mi100': serializer.toJson<int?>(mi100),
+      'mi150': serializer.toJson<int?>(mi150),
+      'mi200': serializer.toJson<int?>(mi200),
+      'vi20': serializer.toJson<int?>(vi20),
+      'vi50': serializer.toJson<int?>(vi50),
+      'vi100': serializer.toJson<int?>(vi100),
+      'vi150': serializer.toJson<int?>(vi150),
+      'vi200': serializer.toJson<int?>(vi200),
     };
   }
 
@@ -1021,7 +1247,17 @@ class RoundTableData extends DataClass implements Insertable<RoundTableData> {
           Value<bool?> isTeamOneCallSuccessful = const Value.absent(),
           Value<bool?> isTeamTwoCallSuccessful = const Value.absent(),
           Value<bool?> teamFailed = const Value.absent(),
-          Value<String?> calculatorResult = const Value.absent()}) =>
+          Value<String?> calculatorResult = const Value.absent(),
+          Value<int?> mi20 = const Value.absent(),
+          Value<int?> mi50 = const Value.absent(),
+          Value<int?> mi100 = const Value.absent(),
+          Value<int?> mi150 = const Value.absent(),
+          Value<int?> mi200 = const Value.absent(),
+          Value<int?> vi20 = const Value.absent(),
+          Value<int?> vi50 = const Value.absent(),
+          Value<int?> vi100 = const Value.absent(),
+          Value<int?> vi150 = const Value.absent(),
+          Value<int?> vi200 = const Value.absent()}) =>
       RoundTableData(
         id: id ?? this.id,
         createdAt: createdAt ?? this.createdAt,
@@ -1049,6 +1285,16 @@ class RoundTableData extends DataClass implements Insertable<RoundTableData> {
         calculatorResult: calculatorResult.present
             ? calculatorResult.value
             : this.calculatorResult,
+        mi20: mi20.present ? mi20.value : this.mi20,
+        mi50: mi50.present ? mi50.value : this.mi50,
+        mi100: mi100.present ? mi100.value : this.mi100,
+        mi150: mi150.present ? mi150.value : this.mi150,
+        mi200: mi200.present ? mi200.value : this.mi200,
+        vi20: vi20.present ? vi20.value : this.vi20,
+        vi50: vi50.present ? vi50.value : this.vi50,
+        vi100: vi100.present ? vi100.value : this.vi100,
+        vi150: vi150.present ? vi150.value : this.vi150,
+        vi200: vi200.present ? vi200.value : this.vi200,
       );
   RoundTableData copyWithCompanion(RoundTableCompanion data) {
     return RoundTableData(
@@ -1082,6 +1328,16 @@ class RoundTableData extends DataClass implements Insertable<RoundTableData> {
       calculatorResult: data.calculatorResult.present
           ? data.calculatorResult.value
           : this.calculatorResult,
+      mi20: data.mi20.present ? data.mi20.value : this.mi20,
+      mi50: data.mi50.present ? data.mi50.value : this.mi50,
+      mi100: data.mi100.present ? data.mi100.value : this.mi100,
+      mi150: data.mi150.present ? data.mi150.value : this.mi150,
+      mi200: data.mi200.present ? data.mi200.value : this.mi200,
+      vi20: data.vi20.present ? data.vi20.value : this.vi20,
+      vi50: data.vi50.present ? data.vi50.value : this.vi50,
+      vi100: data.vi100.present ? data.vi100.value : this.vi100,
+      vi150: data.vi150.present ? data.vi150.value : this.vi150,
+      vi200: data.vi200.present ? data.vi200.value : this.vi200,
     );
   }
 
@@ -1101,27 +1357,48 @@ class RoundTableData extends DataClass implements Insertable<RoundTableData> {
           ..write('isTeamOneCallSuccessful: $isTeamOneCallSuccessful, ')
           ..write('isTeamTwoCallSuccessful: $isTeamTwoCallSuccessful, ')
           ..write('teamFailed: $teamFailed, ')
-          ..write('calculatorResult: $calculatorResult')
+          ..write('calculatorResult: $calculatorResult, ')
+          ..write('mi20: $mi20, ')
+          ..write('mi50: $mi50, ')
+          ..write('mi100: $mi100, ')
+          ..write('mi150: $mi150, ')
+          ..write('mi200: $mi200, ')
+          ..write('vi20: $vi20, ')
+          ..write('vi50: $vi50, ')
+          ..write('vi100: $vi100, ')
+          ..write('vi150: $vi150, ')
+          ..write('vi200: $vi200')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(
-      id,
-      createdAt,
-      updatedAt,
-      deletedAt,
-      gameId,
-      teamCalled,
-      teamOneScore,
-      teamTwoScore,
-      teamOneCallAmount,
-      teamTwoCallAmount,
-      isTeamOneCallSuccessful,
-      isTeamTwoCallSuccessful,
-      teamFailed,
-      calculatorResult);
+  int get hashCode => Object.hashAll([
+        id,
+        createdAt,
+        updatedAt,
+        deletedAt,
+        gameId,
+        teamCalled,
+        teamOneScore,
+        teamTwoScore,
+        teamOneCallAmount,
+        teamTwoCallAmount,
+        isTeamOneCallSuccessful,
+        isTeamTwoCallSuccessful,
+        teamFailed,
+        calculatorResult,
+        mi20,
+        mi50,
+        mi100,
+        mi150,
+        mi200,
+        vi20,
+        vi50,
+        vi100,
+        vi150,
+        vi200
+      ]);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -1139,7 +1416,17 @@ class RoundTableData extends DataClass implements Insertable<RoundTableData> {
           other.isTeamOneCallSuccessful == this.isTeamOneCallSuccessful &&
           other.isTeamTwoCallSuccessful == this.isTeamTwoCallSuccessful &&
           other.teamFailed == this.teamFailed &&
-          other.calculatorResult == this.calculatorResult);
+          other.calculatorResult == this.calculatorResult &&
+          other.mi20 == this.mi20 &&
+          other.mi50 == this.mi50 &&
+          other.mi100 == this.mi100 &&
+          other.mi150 == this.mi150 &&
+          other.mi200 == this.mi200 &&
+          other.vi20 == this.vi20 &&
+          other.vi50 == this.vi50 &&
+          other.vi100 == this.vi100 &&
+          other.vi150 == this.vi150 &&
+          other.vi200 == this.vi200);
 }
 
 class RoundTableCompanion extends UpdateCompanion<RoundTableData> {
@@ -1157,6 +1444,16 @@ class RoundTableCompanion extends UpdateCompanion<RoundTableData> {
   final Value<bool?> isTeamTwoCallSuccessful;
   final Value<bool?> teamFailed;
   final Value<String?> calculatorResult;
+  final Value<int?> mi20;
+  final Value<int?> mi50;
+  final Value<int?> mi100;
+  final Value<int?> mi150;
+  final Value<int?> mi200;
+  final Value<int?> vi20;
+  final Value<int?> vi50;
+  final Value<int?> vi100;
+  final Value<int?> vi150;
+  final Value<int?> vi200;
   final Value<int> rowid;
   const RoundTableCompanion({
     this.id = const Value.absent(),
@@ -1173,6 +1470,16 @@ class RoundTableCompanion extends UpdateCompanion<RoundTableData> {
     this.isTeamTwoCallSuccessful = const Value.absent(),
     this.teamFailed = const Value.absent(),
     this.calculatorResult = const Value.absent(),
+    this.mi20 = const Value.absent(),
+    this.mi50 = const Value.absent(),
+    this.mi100 = const Value.absent(),
+    this.mi150 = const Value.absent(),
+    this.mi200 = const Value.absent(),
+    this.vi20 = const Value.absent(),
+    this.vi50 = const Value.absent(),
+    this.vi100 = const Value.absent(),
+    this.vi150 = const Value.absent(),
+    this.vi200 = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   RoundTableCompanion.insert({
@@ -1190,6 +1497,16 @@ class RoundTableCompanion extends UpdateCompanion<RoundTableData> {
     this.isTeamTwoCallSuccessful = const Value.absent(),
     this.teamFailed = const Value.absent(),
     this.calculatorResult = const Value.absent(),
+    this.mi20 = const Value.absent(),
+    this.mi50 = const Value.absent(),
+    this.mi100 = const Value.absent(),
+    this.mi150 = const Value.absent(),
+    this.mi200 = const Value.absent(),
+    this.vi20 = const Value.absent(),
+    this.vi50 = const Value.absent(),
+    this.vi100 = const Value.absent(),
+    this.vi150 = const Value.absent(),
+    this.vi200 = const Value.absent(),
     this.rowid = const Value.absent(),
   }) : gameId = Value(gameId);
   static Insertable<RoundTableData> custom({
@@ -1207,6 +1524,16 @@ class RoundTableCompanion extends UpdateCompanion<RoundTableData> {
     Expression<bool>? isTeamTwoCallSuccessful,
     Expression<bool>? teamFailed,
     Expression<String>? calculatorResult,
+    Expression<int>? mi20,
+    Expression<int>? mi50,
+    Expression<int>? mi100,
+    Expression<int>? mi150,
+    Expression<int>? mi200,
+    Expression<int>? vi20,
+    Expression<int>? vi50,
+    Expression<int>? vi100,
+    Expression<int>? vi150,
+    Expression<int>? vi200,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -1226,6 +1553,16 @@ class RoundTableCompanion extends UpdateCompanion<RoundTableData> {
         'is_team_two_call_successful': isTeamTwoCallSuccessful,
       if (teamFailed != null) 'team_failed': teamFailed,
       if (calculatorResult != null) 'calculator_result': calculatorResult,
+      if (mi20 != null) 'mi20': mi20,
+      if (mi50 != null) 'mi50': mi50,
+      if (mi100 != null) 'mi100': mi100,
+      if (mi150 != null) 'mi150': mi150,
+      if (mi200 != null) 'mi200': mi200,
+      if (vi20 != null) 'vi20': vi20,
+      if (vi50 != null) 'vi50': vi50,
+      if (vi100 != null) 'vi100': vi100,
+      if (vi150 != null) 'vi150': vi150,
+      if (vi200 != null) 'vi200': vi200,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -1245,6 +1582,16 @@ class RoundTableCompanion extends UpdateCompanion<RoundTableData> {
       Value<bool?>? isTeamTwoCallSuccessful,
       Value<bool?>? teamFailed,
       Value<String?>? calculatorResult,
+      Value<int?>? mi20,
+      Value<int?>? mi50,
+      Value<int?>? mi100,
+      Value<int?>? mi150,
+      Value<int?>? mi200,
+      Value<int?>? vi20,
+      Value<int?>? vi50,
+      Value<int?>? vi100,
+      Value<int?>? vi150,
+      Value<int?>? vi200,
       Value<int>? rowid}) {
     return RoundTableCompanion(
       id: id ?? this.id,
@@ -1263,6 +1610,16 @@ class RoundTableCompanion extends UpdateCompanion<RoundTableData> {
           isTeamTwoCallSuccessful ?? this.isTeamTwoCallSuccessful,
       teamFailed: teamFailed ?? this.teamFailed,
       calculatorResult: calculatorResult ?? this.calculatorResult,
+      mi20: mi20 ?? this.mi20,
+      mi50: mi50 ?? this.mi50,
+      mi100: mi100 ?? this.mi100,
+      mi150: mi150 ?? this.mi150,
+      mi200: mi200 ?? this.mi200,
+      vi20: vi20 ?? this.vi20,
+      vi50: vi50 ?? this.vi50,
+      vi100: vi100 ?? this.vi100,
+      vi150: vi150 ?? this.vi150,
+      vi200: vi200 ?? this.vi200,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -1314,6 +1671,36 @@ class RoundTableCompanion extends UpdateCompanion<RoundTableData> {
     if (calculatorResult.present) {
       map['calculator_result'] = Variable<String>(calculatorResult.value);
     }
+    if (mi20.present) {
+      map['mi20'] = Variable<int>(mi20.value);
+    }
+    if (mi50.present) {
+      map['mi50'] = Variable<int>(mi50.value);
+    }
+    if (mi100.present) {
+      map['mi100'] = Variable<int>(mi100.value);
+    }
+    if (mi150.present) {
+      map['mi150'] = Variable<int>(mi150.value);
+    }
+    if (mi200.present) {
+      map['mi200'] = Variable<int>(mi200.value);
+    }
+    if (vi20.present) {
+      map['vi20'] = Variable<int>(vi20.value);
+    }
+    if (vi50.present) {
+      map['vi50'] = Variable<int>(vi50.value);
+    }
+    if (vi100.present) {
+      map['vi100'] = Variable<int>(vi100.value);
+    }
+    if (vi150.present) {
+      map['vi150'] = Variable<int>(vi150.value);
+    }
+    if (vi200.present) {
+      map['vi200'] = Variable<int>(vi200.value);
+    }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
     }
@@ -1337,6 +1724,16 @@ class RoundTableCompanion extends UpdateCompanion<RoundTableData> {
           ..write('isTeamTwoCallSuccessful: $isTeamTwoCallSuccessful, ')
           ..write('teamFailed: $teamFailed, ')
           ..write('calculatorResult: $calculatorResult, ')
+          ..write('mi20: $mi20, ')
+          ..write('mi50: $mi50, ')
+          ..write('mi100: $mi100, ')
+          ..write('mi150: $mi150, ')
+          ..write('mi200: $mi200, ')
+          ..write('vi20: $vi20, ')
+          ..write('vi50: $vi50, ')
+          ..write('vi100: $vi100, ')
+          ..write('vi150: $vi150, ')
+          ..write('vi200: $vi200, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -2944,6 +3341,16 @@ typedef $$RoundTableTableCreateCompanionBuilder = RoundTableCompanion Function({
   Value<bool?> isTeamTwoCallSuccessful,
   Value<bool?> teamFailed,
   Value<String?> calculatorResult,
+  Value<int?> mi20,
+  Value<int?> mi50,
+  Value<int?> mi100,
+  Value<int?> mi150,
+  Value<int?> mi200,
+  Value<int?> vi20,
+  Value<int?> vi50,
+  Value<int?> vi100,
+  Value<int?> vi150,
+  Value<int?> vi200,
   Value<int> rowid,
 });
 typedef $$RoundTableTableUpdateCompanionBuilder = RoundTableCompanion Function({
@@ -2961,6 +3368,16 @@ typedef $$RoundTableTableUpdateCompanionBuilder = RoundTableCompanion Function({
   Value<bool?> isTeamTwoCallSuccessful,
   Value<bool?> teamFailed,
   Value<String?> calculatorResult,
+  Value<int?> mi20,
+  Value<int?> mi50,
+  Value<int?> mi100,
+  Value<int?> mi150,
+  Value<int?> mi200,
+  Value<int?> vi20,
+  Value<int?> vi50,
+  Value<int?> vi100,
+  Value<int?> vi150,
+  Value<int?> vi200,
   Value<int> rowid,
 });
 
@@ -3054,6 +3471,36 @@ class $$RoundTableTableFilterComposer
   ColumnFilters<String> get calculatorResult => $composableBuilder(
       column: $table.calculatorResult,
       builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get mi20 => $composableBuilder(
+      column: $table.mi20, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get mi50 => $composableBuilder(
+      column: $table.mi50, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get mi100 => $composableBuilder(
+      column: $table.mi100, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get mi150 => $composableBuilder(
+      column: $table.mi150, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get mi200 => $composableBuilder(
+      column: $table.mi200, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get vi20 => $composableBuilder(
+      column: $table.vi20, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get vi50 => $composableBuilder(
+      column: $table.vi50, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get vi100 => $composableBuilder(
+      column: $table.vi100, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get vi150 => $composableBuilder(
+      column: $table.vi150, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get vi200 => $composableBuilder(
+      column: $table.vi200, builder: (column) => ColumnFilters(column));
 
   $$GameTableTableFilterComposer get gameId {
     final $$GameTableTableFilterComposer composer = $composerBuilder(
@@ -3154,6 +3601,36 @@ class $$RoundTableTableOrderingComposer
       column: $table.calculatorResult,
       builder: (column) => ColumnOrderings(column));
 
+  ColumnOrderings<int> get mi20 => $composableBuilder(
+      column: $table.mi20, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get mi50 => $composableBuilder(
+      column: $table.mi50, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get mi100 => $composableBuilder(
+      column: $table.mi100, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get mi150 => $composableBuilder(
+      column: $table.mi150, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get mi200 => $composableBuilder(
+      column: $table.mi200, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get vi20 => $composableBuilder(
+      column: $table.vi20, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get vi50 => $composableBuilder(
+      column: $table.vi50, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get vi100 => $composableBuilder(
+      column: $table.vi100, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get vi150 => $composableBuilder(
+      column: $table.vi150, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get vi200 => $composableBuilder(
+      column: $table.vi200, builder: (column) => ColumnOrderings(column));
+
   $$GameTableTableOrderingComposer get gameId {
     final $$GameTableTableOrderingComposer composer = $composerBuilder(
         composer: this,
@@ -3222,6 +3699,36 @@ class $$RoundTableTableAnnotationComposer
 
   GeneratedColumn<String> get calculatorResult => $composableBuilder(
       column: $table.calculatorResult, builder: (column) => column);
+
+  GeneratedColumn<int> get mi20 =>
+      $composableBuilder(column: $table.mi20, builder: (column) => column);
+
+  GeneratedColumn<int> get mi50 =>
+      $composableBuilder(column: $table.mi50, builder: (column) => column);
+
+  GeneratedColumn<int> get mi100 =>
+      $composableBuilder(column: $table.mi100, builder: (column) => column);
+
+  GeneratedColumn<int> get mi150 =>
+      $composableBuilder(column: $table.mi150, builder: (column) => column);
+
+  GeneratedColumn<int> get mi200 =>
+      $composableBuilder(column: $table.mi200, builder: (column) => column);
+
+  GeneratedColumn<int> get vi20 =>
+      $composableBuilder(column: $table.vi20, builder: (column) => column);
+
+  GeneratedColumn<int> get vi50 =>
+      $composableBuilder(column: $table.vi50, builder: (column) => column);
+
+  GeneratedColumn<int> get vi100 =>
+      $composableBuilder(column: $table.vi100, builder: (column) => column);
+
+  GeneratedColumn<int> get vi150 =>
+      $composableBuilder(column: $table.vi150, builder: (column) => column);
+
+  GeneratedColumn<int> get vi200 =>
+      $composableBuilder(column: $table.vi200, builder: (column) => column);
 
   $$GameTableTableAnnotationComposer get gameId {
     final $$GameTableTableAnnotationComposer composer = $composerBuilder(
@@ -3304,6 +3811,16 @@ class $$RoundTableTableTableManager extends RootTableManager<
             Value<bool?> isTeamTwoCallSuccessful = const Value.absent(),
             Value<bool?> teamFailed = const Value.absent(),
             Value<String?> calculatorResult = const Value.absent(),
+            Value<int?> mi20 = const Value.absent(),
+            Value<int?> mi50 = const Value.absent(),
+            Value<int?> mi100 = const Value.absent(),
+            Value<int?> mi150 = const Value.absent(),
+            Value<int?> mi200 = const Value.absent(),
+            Value<int?> vi20 = const Value.absent(),
+            Value<int?> vi50 = const Value.absent(),
+            Value<int?> vi100 = const Value.absent(),
+            Value<int?> vi150 = const Value.absent(),
+            Value<int?> vi200 = const Value.absent(),
             Value<int> rowid = const Value.absent(),
           }) =>
               RoundTableCompanion(
@@ -3321,6 +3838,16 @@ class $$RoundTableTableTableManager extends RootTableManager<
             isTeamTwoCallSuccessful: isTeamTwoCallSuccessful,
             teamFailed: teamFailed,
             calculatorResult: calculatorResult,
+            mi20: mi20,
+            mi50: mi50,
+            mi100: mi100,
+            mi150: mi150,
+            mi200: mi200,
+            vi20: vi20,
+            vi50: vi50,
+            vi100: vi100,
+            vi150: vi150,
+            vi200: vi200,
             rowid: rowid,
           ),
           createCompanionCallback: ({
@@ -3338,6 +3865,16 @@ class $$RoundTableTableTableManager extends RootTableManager<
             Value<bool?> isTeamTwoCallSuccessful = const Value.absent(),
             Value<bool?> teamFailed = const Value.absent(),
             Value<String?> calculatorResult = const Value.absent(),
+            Value<int?> mi20 = const Value.absent(),
+            Value<int?> mi50 = const Value.absent(),
+            Value<int?> mi100 = const Value.absent(),
+            Value<int?> mi150 = const Value.absent(),
+            Value<int?> mi200 = const Value.absent(),
+            Value<int?> vi20 = const Value.absent(),
+            Value<int?> vi50 = const Value.absent(),
+            Value<int?> vi100 = const Value.absent(),
+            Value<int?> vi150 = const Value.absent(),
+            Value<int?> vi200 = const Value.absent(),
             Value<int> rowid = const Value.absent(),
           }) =>
               RoundTableCompanion.insert(
@@ -3355,6 +3892,16 @@ class $$RoundTableTableTableManager extends RootTableManager<
             isTeamTwoCallSuccessful: isTeamTwoCallSuccessful,
             teamFailed: teamFailed,
             calculatorResult: calculatorResult,
+            mi20: mi20,
+            mi50: mi50,
+            mi100: mi100,
+            mi150: mi150,
+            mi200: mi200,
+            vi20: vi20,
+            vi50: vi50,
+            vi100: vi100,
+            vi150: vi150,
+            vi200: vi200,
             rowid: rowid,
           ),
           withReferenceMapper: (p0) => p0

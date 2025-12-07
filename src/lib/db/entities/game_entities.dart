@@ -30,6 +30,18 @@ class RoundTable extends BaseUUIDModel {
   BoolColumn get isTeamTwoCallSuccessful => boolean().nullable()();
   BoolColumn get teamFailed => boolean().nullable()();
   TextColumn get calculatorResult => text().nullable()();
+  
+  IntColumn get mi20 => integer().withDefault(const Constant(0)).nullable()();
+  IntColumn get mi50 => integer().withDefault(const Constant(0)).nullable()();
+  IntColumn get mi100 => integer().withDefault(const Constant(0)).nullable()();
+  IntColumn get mi150 => integer().withDefault(const Constant(0)).nullable()();
+  IntColumn get mi200 => integer().withDefault(const Constant(0)).nullable()();
+  
+  IntColumn get vi20 => integer().withDefault(const Constant(0)).nullable()();
+  IntColumn get vi50 => integer().withDefault(const Constant(0)).nullable()();
+  IntColumn get vi100 => integer().withDefault(const Constant(0)).nullable()();
+  IntColumn get vi150 => integer().withDefault(const Constant(0)).nullable()();
+  IntColumn get vi200 => integer().withDefault(const Constant(0)).nullable()();
 
 
   @override

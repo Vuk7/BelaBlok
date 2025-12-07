@@ -14,6 +14,18 @@ class Round extends BaseModel {
   bool? isTeamTwoCallSuccessful;
   bool? teamFailed;
   
+  int? mi20;
+  int? mi50;
+  int? mi100;
+  int? mi150;
+  int? mi200;
+  
+  int? vi20;
+  int? vi50;
+  int? vi100;
+  int? vi150;
+  int? vi200;
+  
 
   Round({
     required this.gameId,
@@ -25,6 +37,16 @@ class Round extends BaseModel {
     this.isTeamOneCallSuccessful,
     this.isTeamTwoCallSuccessful,
     this.teamFailed,
+    this.mi20,
+    this.mi50,
+    this.mi100,
+    this.mi150,
+    this.mi200,
+    this.vi20,
+    this.vi50,
+    this.vi100,
+    this.vi150,
+    this.vi200,
     
     super.id,
     super.createdAt,
@@ -49,6 +71,16 @@ extension RoundMapper on RoundTableData {
       isTeamOneCallSuccessful: isTeamOneCallSuccessful,
       isTeamTwoCallSuccessful: isTeamTwoCallSuccessful,
       teamFailed: teamFailed,
+      mi20: mi20,
+      mi50: mi50,
+      mi100: mi100,
+      mi150: mi150,
+      mi200: mi200,
+      vi20: vi20,
+      vi50: vi50,
+      vi100: vi100,
+      vi150: vi150,
+      vi200: vi200,
     );
   }
 }
@@ -67,6 +99,16 @@ extension RoundModelMapper on Round {
       isTeamOneCallSuccessful: Value(isTeamOneCallSuccessful),
       isTeamTwoCallSuccessful: Value(isTeamTwoCallSuccessful),
       teamFailed: Value(teamFailed),
+      mi20: Value(mi20),
+      mi50: Value(mi50),
+      mi100: Value(mi100),
+      mi150: Value(mi150),
+      mi200: Value(mi200),
+      vi20: Value(vi20),
+      vi50: Value(vi50),
+      vi100: Value(vi100),
+      vi150: Value(vi150),
+      vi200: Value(vi200),
     );
   }
 }
