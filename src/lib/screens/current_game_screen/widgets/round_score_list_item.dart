@@ -16,17 +16,17 @@ class RoundScoreListItem extends StatelessWidget {
   final Function() onTap;
   final Function()? onDelete;
   
-  final int? mi20;
-  final int? mi50;
-  final int? mi100;
-  final int? mi150;
-  final int? mi200;
+  final int? us20;
+  final int? us50;
+  final int? us100;
+  final int? us150;
+  final int? us200;
   
-  final int? vi20;
-  final int? vi50;
-  final int? vi100;
-  final int? vi150;
-  final int? vi200;
+  final int? them20;
+  final int? them50;
+  final int? them100;
+  final int? them150;
+  final int? them200;
   
   const RoundScoreListItem({
     super.key,
@@ -39,16 +39,16 @@ class RoundScoreListItem extends StatelessWidget {
     required this.teamFailed,
     required this.onTap,
     this.onDelete,
-    this.mi20,
-    this.mi50,
-    this.mi100,
-    this.mi150,
-    this.mi200,
-    this.vi20,
-    this.vi50,
-    this.vi100,
-    this.vi150,
-    this.vi200,
+    this.us20,
+    this.us50,
+    this.us100,
+    this.us150,
+    this.us200,
+    this.them20,
+    this.them50,
+    this.them100,
+    this.them150,
+    this.them200,
   });
 
   @override

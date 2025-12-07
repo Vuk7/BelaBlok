@@ -444,16 +444,16 @@ class _CurrentGameScreenState extends State<CurrentGameScreen> {
                                 teamCalled: Team.values[
                                     round.teamCalled ??
                                         Team.teamOne.index],
-                                mi20: round.mi20,
-                                mi50: round.mi50,
-                                mi100: round.mi100,
-                                mi150: round.mi150,
-                                mi200: round.mi200,
-                                vi20: round.vi20,
-                                vi50: round.vi50,
-                                vi100: round.vi100,
-                                vi150: round.vi150,
-                                vi200: round.vi200,
+                                us20: round.us20,
+                                us50: round.us50,
+                                us100: round.us100,
+                                us150: round.us150,
+                                us200: round.us200,
+                                them20: round.them20,
+                                them50: round.them50,
+                                them100: round.them100,
+                                them150: round.them150,
+                                them200: round.them200,
                                 onDelete: round.id != null
                                     ? () => handleDeleteRound(round.id!)
                                     : null,

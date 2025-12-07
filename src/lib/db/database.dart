@@ -29,28 +29,11 @@ class AppDatabase extends _$AppDatabase {
 
 
   @override
-  int get schemaVersion => 2;
+  int get schemaVersion => 1;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
     beforeOpen: (details) async {},
-    onCreate: (m) async {
-      await m.createAll();
-    },
-    onUpgrade: (m, from, to) async {
-      if (from == 1 && to == 2) {
-        await m.addColumn(roundTable, roundTable.mi20);
-        await m.addColumn(roundTable, roundTable.mi50);
-        await m.addColumn(roundTable, roundTable.mi100);
-        await m.addColumn(roundTable, roundTable.mi150);
-        await m.addColumn(roundTable, roundTable.mi200);
-        await m.addColumn(roundTable, roundTable.vi20);
-        await m.addColumn(roundTable, roundTable.vi50);
-        await m.addColumn(roundTable, roundTable.vi100);
-        await m.addColumn(roundTable, roundTable.vi150);
-        await m.addColumn(roundTable, roundTable.vi200);
-      }
-    },
   );
 
 

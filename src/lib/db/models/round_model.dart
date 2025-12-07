@@ -14,17 +14,17 @@ class Round extends BaseModel {
   bool? isTeamTwoCallSuccessful;
   bool? teamFailed;
   
-  int? mi20;
-  int? mi50;
-  int? mi100;
-  int? mi150;
-  int? mi200;
+  int? us20;
+  int? us50;
+  int? us100;
+  int? us150;
+  int? us200;
   
-  int? vi20;
-  int? vi50;
-  int? vi100;
-  int? vi150;
-  int? vi200;
+  int? them20;
+  int? them50;
+  int? them100;
+  int? them150;
+  int? them200;
   
 
   Round({
@@ -37,16 +37,16 @@ class Round extends BaseModel {
     this.isTeamOneCallSuccessful,
     this.isTeamTwoCallSuccessful,
     this.teamFailed,
-    this.mi20,
-    this.mi50,
-    this.mi100,
-    this.mi150,
-    this.mi200,
-    this.vi20,
-    this.vi50,
-    this.vi100,
-    this.vi150,
-    this.vi200,
+    this.us20,
+    this.us50,
+    this.us100,
+    this.us150,
+    this.us200,
+    this.them20,
+    this.them50,
+    this.them100,
+    this.them150,
+    this.them200,
     
     super.id,
     super.createdAt,
@@ -71,16 +71,16 @@ extension RoundMapper on RoundTableData {
       isTeamOneCallSuccessful: isTeamOneCallSuccessful,
       isTeamTwoCallSuccessful: isTeamTwoCallSuccessful,
       teamFailed: teamFailed,
-      mi20: mi20,
-      mi50: mi50,
-      mi100: mi100,
-      mi150: mi150,
-      mi200: mi200,
-      vi20: vi20,
-      vi50: vi50,
-      vi100: vi100,
-      vi150: vi150,
-      vi200: vi200,
+      us20: us20,
+      us50: us50,
+      us100: us100,
+      us150: us150,
+      us200: us200,
+      them20: them20,
+      them50: them50,
+      them100: them100,
+      them150: them150,
+      them200: them200,
     );
   }
 }
@@ -99,16 +99,16 @@ extension RoundModelMapper on Round {
       isTeamOneCallSuccessful: Value(isTeamOneCallSuccessful),
       isTeamTwoCallSuccessful: Value(isTeamTwoCallSuccessful),
       teamFailed: Value(teamFailed),
-      mi20: Value(mi20),
-      mi50: Value(mi50),
-      mi100: Value(mi100),
-      mi150: Value(mi150),
-      mi200: Value(mi200),
-      vi20: Value(vi20),
-      vi50: Value(vi50),
-      vi100: Value(vi100),
-      vi150: Value(vi150),
-      vi200: Value(vi200),
+      us20: Value(us20),
+      us50: Value(us50),
+      us100: Value(us100),
+      us150: Value(us150),
+      us200: Value(us200),
+      them20: Value(them20),
+      them50: Value(them50),
+      them100: Value(them100),
+      them150: Value(them150),
+      them200: Value(them200),
     );
   }
 }
