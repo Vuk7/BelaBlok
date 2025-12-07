@@ -74,12 +74,15 @@ final GoRouter appRouter = GoRouter(
                 pageBuilder: (BuildContext context, GoRouterState state) {
                   final id = state.uri.queryParameters['id'];
                   final roundId = state.uri.queryParameters['roundId'];
+                  final roundIndexStr = state.uri.queryParameters['roundIndex'];
+                  final roundIndex = roundIndexStr != null ? int.tryParse(roundIndexStr) : null;
                   final VoidCallback? updateGamesListCallback = state.extra as VoidCallback?;
 
                   return _slideTransition(
                     child: AddRoundScreen(
                       gameId: id,
                       roundId: roundId,
+                      roundIndex: roundIndex,
                       updateGamesListCallback: updateGamesListCallback
                     ),
                     state: state,

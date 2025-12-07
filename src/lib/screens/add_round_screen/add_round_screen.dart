@@ -27,10 +27,11 @@ import 'package:bela_blok/enums/call_value_enum.dart';
 class AddRoundScreen extends StatefulWidget {
   final String? gameId;
   final String? roundId;
+  final int? roundIndex; 
   final VoidCallback? updateGamesListCallback;
 
   const AddRoundScreen(
-      {super.key, this.gameId, this.roundId, this.updateGamesListCallback});
+      {super.key, this.gameId, this.roundId, this.roundIndex, this.updateGamesListCallback});
 
   @override
   State<AddRoundScreen> createState() => _AddRoundScreenState();
@@ -259,7 +260,6 @@ class _AddRoundScreenState extends State<AddRoundScreen>
     int teamOneCallAmount = roundData.teamOneCallAmount;
     int teamTwoCallAmount = roundData.teamTwoCallAmount;
 
-    // Provjeri da li je stihak (jedan tim ima 252)
     bool isStihak = teamOneBase == 252 || teamTwoBase == 252;
 
     var scores = roundsService.calculateRoundScores(
@@ -994,14 +994,15 @@ class _AddRoundScreenState extends State<AddRoundScreen>
 
   Future<int> _computeShufflerToShow() async {
     if (currentlyShuffling == null ||
-        gameDirection == null ||
-        widget.gameId == null) {
+        gameDirection == null) {
       return 1;
     }
-    final count = await roundsService.getRoundsForGameCount(widget.gameId!);
+    
+    final index = widget.roundIndex ?? 0;
+    
     return roundsService.computeShuffler(
       firstShuffler: currentlyShuffling!,
-      index: roundToEdit != null ? (count == 0 ? 0 : count - 1) : count,
+      index: index,
       gameDirection: gameDirection!,
       totalPlayers: totalPlayers,
     );
