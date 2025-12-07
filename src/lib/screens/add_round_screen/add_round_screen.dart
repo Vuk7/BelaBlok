@@ -238,6 +238,20 @@ class _AddRoundScreenState extends State<AddRoundScreen>
     }
   }
 
+  void _setRoundCallCounts(Round round, List<CallEntry> teamOneCalls, List<CallEntry> teamTwoCalls) {
+    round.us20 = teamOneCalls.where((c) => c.type == CallType.z20).fold<int>(0, (sum, c) => sum + c.count);
+    round.us50 = teamOneCalls.where((c) => c.type == CallType.z50).fold<int>(0, (sum, c) => sum + c.count);
+    round.us100 = teamOneCalls.where((c) => c.type == CallType.z100).fold<int>(0, (sum, c) => sum + c.count);
+    round.us150 = teamOneCalls.where((c) => c.type == CallType.z150).fold<int>(0, (sum, c) => sum + c.count);
+    round.us200 = teamOneCalls.where((c) => c.type == CallType.z200).fold<int>(0, (sum, c) => sum + c.count);
+    
+    round.them20 = teamTwoCalls.where((c) => c.type == CallType.z20).fold<int>(0, (sum, c) => sum + c.count);
+    round.them50 = teamTwoCalls.where((c) => c.type == CallType.z50).fold<int>(0, (sum, c) => sum + c.count);
+    round.them100 = teamTwoCalls.where((c) => c.type == CallType.z100).fold<int>(0, (sum, c) => sum + c.count);
+    round.them150 = teamTwoCalls.where((c) => c.type == CallType.z150).fold<int>(0, (sum, c) => sum + c.count);
+    round.them200 = teamTwoCalls.where((c) => c.type == CallType.z200).fold<int>(0, (sum, c) => sum + c.count);
+  }
+
   Future<void> _saveBelotRound(
       dynamic game, int gameType, bool teamOneBelot, bool teamTwoBelot) async {
     int teamOneCallAmount = teamOneBelot ? gameType : 0;
@@ -249,6 +263,8 @@ class _AddRoundScreenState extends State<AddRoundScreen>
     round.teamFailed = false;
     round.teamOneCallAmount = teamOneCallAmount;
     round.teamTwoCallAmount = teamTwoCallAmount;
+    
+    _setRoundCallCounts(round, _callsTeamOne, _callsTeamTwo);
 
     if (roundToEdit != null) {
       await roundsService.updateRound(round);
@@ -345,6 +361,8 @@ class _AddRoundScreenState extends State<AddRoundScreen>
     round.teamFailed = scores.teamFailed;
     round.teamOneCallAmount = scores.teamOneCallAmount;
     round.teamTwoCallAmount = scores.teamTwoCallAmount;
+    
+    _setRoundCallCounts(round, _callsTeamOne, _callsTeamTwo);
 
     String? actualRoundId;
     if (roundToEdit != null) {
