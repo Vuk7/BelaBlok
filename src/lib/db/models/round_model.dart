@@ -14,6 +14,18 @@ class Round extends BaseModel {
   bool? isTeamTwoCallSuccessful;
   bool? teamFailed;
   
+  int? us20;
+  int? us50;
+  int? us100;
+  int? us150;
+  int? us200;
+  
+  int? them20;
+  int? them50;
+  int? them100;
+  int? them150;
+  int? them200;
+  
 
   Round({
     required this.gameId,
@@ -25,6 +37,16 @@ class Round extends BaseModel {
     this.isTeamOneCallSuccessful,
     this.isTeamTwoCallSuccessful,
     this.teamFailed,
+    this.us20,
+    this.us50,
+    this.us100,
+    this.us150,
+    this.us200,
+    this.them20,
+    this.them50,
+    this.them100,
+    this.them150,
+    this.them200,
     
     super.id,
     super.createdAt,
@@ -49,6 +71,16 @@ extension RoundMapper on RoundTableData {
       isTeamOneCallSuccessful: isTeamOneCallSuccessful,
       isTeamTwoCallSuccessful: isTeamTwoCallSuccessful,
       teamFailed: teamFailed,
+      us20: us20,
+      us50: us50,
+      us100: us100,
+      us150: us150,
+      us200: us200,
+      them20: them20,
+      them50: them50,
+      them100: them100,
+      them150: them150,
+      them200: them200,
     );
   }
 }
@@ -67,6 +99,16 @@ extension RoundModelMapper on Round {
       isTeamOneCallSuccessful: Value(isTeamOneCallSuccessful),
       isTeamTwoCallSuccessful: Value(isTeamTwoCallSuccessful),
       teamFailed: Value(teamFailed),
+      us20: Value(us20),
+      us50: Value(us50),
+      us100: Value(us100),
+      us150: Value(us150),
+      us200: Value(us200),
+      them20: Value(them20),
+      them50: Value(them50),
+      them100: Value(them100),
+      them150: Value(them150),
+      them200: Value(them200),
     );
   }
 }
