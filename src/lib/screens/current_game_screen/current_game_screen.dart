@@ -244,6 +244,8 @@ class _CurrentGameScreenState extends State<CurrentGameScreen> {
         teamTwoFails: 0,
         teamOneDeclarations: 0,
         teamTwoDeclarations: 0,
+        teamOneStihaks: 0,
+        teamTwoStihaks: 0,
       );
     }
 
@@ -253,6 +255,8 @@ class _CurrentGameScreenState extends State<CurrentGameScreen> {
     int teamTwoFails = 0;
     int teamOneDeclarations = 0; //(sum of call amounts)
     int teamTwoDeclarations = 0;
+    int teamOneStihaks = 0;
+    int teamTwoStihaks = 0;
 
     for (final r in rounds!) {
       final called = r.teamCalled;
@@ -261,14 +265,34 @@ class _CurrentGameScreenState extends State<CurrentGameScreen> {
       } else if (called == Team.teamTwo.index) {
         teamTwoCalls++;
       }
-      final failed = (r.teamFailed ?? false) && called != null;
-      if (failed) {
-        if (called == Team.teamOne.index) {
-          teamOneFails++;
-        } else if (called == Team.teamTwo.index) {
-          teamTwoFails++;
+      
+      final teamOneScore = r.teamOneScore ?? 0;
+      final teamTwoScore = r.teamTwoScore ?? 0;
+      final isStihak = teamOneScore == 252 || teamTwoScore == 252;
+      
+      if (isStihak) {
+        if (teamOneScore == 252) {
+          teamOneStihaks++;
+          if (called == Team.teamTwo.index) {
+            teamTwoFails++;
+          }
+        } else if (teamTwoScore == 252) {
+          teamTwoStihaks++;
+          if (called == Team.teamOne.index) {
+            teamOneFails++;
+          }
+        }
+      } else {
+        final failed = (r.teamFailed ?? false) && called != null;
+        if (failed) {
+          if (called == Team.teamOne.index) {
+            teamOneFails++;
+          } else if (called == Team.teamTwo.index) {
+            teamTwoFails++;
+          }
         }
       }
+      
       teamOneDeclarations += r.teamOneCallAmount ?? 0;
       teamTwoDeclarations += r.teamTwoCallAmount ?? 0;
     }
@@ -283,6 +307,8 @@ class _CurrentGameScreenState extends State<CurrentGameScreen> {
       teamTwoFails: teamTwoFails,
       teamOneDeclarations: teamOneDeclarations,
       teamTwoDeclarations: teamTwoDeclarations,
+      teamOneStihaks: teamOneStihaks,
+      teamTwoStihaks: teamTwoStihaks,
     );
   }
 

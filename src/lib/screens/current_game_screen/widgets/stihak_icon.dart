@@ -38,7 +38,6 @@ class _StihakIconState extends State<StihakIcon>
 
   @override
   Widget build(BuildContext context) {
-    // Provjera da li je boja narančasta (primary - AppTheme.primary)
     final bool isPrimary = widget.color == const Color(0xFFFF6B35);
     
     return AnimatedBuilder(
