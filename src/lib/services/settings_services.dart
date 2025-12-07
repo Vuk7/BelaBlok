@@ -13,10 +13,10 @@ class SettingsService {
     final settingsData = await dao.getSettings();
     if (settingsData == null) {
       final settings = UserSettings(
-        showRules: true,
-        showHelpDialog: true,
-        showGameStats: true,
-        showSmartCalculator: true,
+        showRules: false,
+        showHelpDialog: false,
+        showGameStats: false,
+        showSmartCalculator: false,
         themeMode: AppThemeMode.light.index,
       );
       
