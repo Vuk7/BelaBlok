@@ -3,6 +3,7 @@ import 'package:bela_blok/common/constants.dart';
 import 'package:bela_blok/themes/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'falling_arrow_icon.dart';
+import 'stihak_icon.dart';
 
 class RoundScoreListItem extends StatelessWidget {
   final int teamOneCallAmount;
@@ -32,6 +33,11 @@ class RoundScoreListItem extends StatelessWidget {
   
   final bool teamOneFell = teamFailed && teamCalled == Team.teamOne;
   final bool teamTwoFell = teamFailed && teamCalled == Team.teamTwo;
+  
+  // Provjera za stihak (jedan tim ima 252)
+  final bool isStihak = teamOneScore == 252 || teamTwoScore == 252;
+  final bool teamOneStihak = isStihak && teamOneScore == 252;
+  final bool teamTwoStihak = isStihak && teamTwoScore == 252;
     
     final container = Container(
         width: double.infinity,
@@ -100,6 +106,13 @@ class RoundScoreListItem extends StatelessWidget {
                        const   Tooltip(
                             message: 'Pad',
                             child: FallingArrowIcon(animateOnce: true),
+                          ),
+                        ],
+                        if (teamOneStihak && !teamOneFell) ...[
+                          const SizedBox(width: 6),
+                       const   Tooltip(
+                            message: 'Štihak',
+                            child: StihakIcon(animateOnce: true, color: AppTheme.green),
                           ),
                         ],
                       ],
@@ -187,6 +200,13 @@ class RoundScoreListItem extends StatelessWidget {
                        const   Tooltip(
                             message: 'Pad',
                             child: FallingArrowIcon(animateOnce: true),
+                          ),
+                        ],
+                        if (teamTwoStihak && !teamTwoFell) ...[
+                          const SizedBox(width: 6),
+                       const   Tooltip(
+                            message: 'Štihak',
+                            child: StihakIcon(animateOnce: true, color: AppTheme.primary),
                           ),
                         ],
                       ],
