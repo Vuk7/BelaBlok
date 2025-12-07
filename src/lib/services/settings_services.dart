@@ -15,7 +15,7 @@ class SettingsService {
       final settings = UserSettings(
         showRules: false,
         showHelpDialog: false,
-        showGameStats: false,
+        showGameStats: true,
         showSmartCalculator: false,
         themeMode: AppThemeMode.light.index,
       );

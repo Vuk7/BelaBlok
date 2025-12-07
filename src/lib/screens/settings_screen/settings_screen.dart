@@ -97,7 +97,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 const SizedBox(height: 4),
                 SwitchListTile(
                   title: const Text('Prikaz statistike '),
-                  value: _settings?.showGameStats ?? false,
+                  value: _settings?.showGameStats ?? true,
                   onChanged: _updateShowGameStats,
                   secondary: const Icon(Icons.analytics),
                 ),

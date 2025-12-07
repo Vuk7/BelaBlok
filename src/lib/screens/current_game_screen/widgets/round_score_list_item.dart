@@ -185,8 +185,22 @@ class RoundScoreListItem extends StatelessWidget {
                     ),
                     const SizedBox(height: 4),
                     Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
                       children: [
+                        const Spacer(),
+                        if (teamTwoStihak && !teamTwoFell) ...[
+                       const   Tooltip(
+                            message: 'Štihak',
+                            child: StihakIcon(animateOnce: true, color: AppTheme.primary),
+                          ),
+                          const SizedBox(width: 6),
+                        ],
+                        if (teamTwoFell) ...[
+                       const   Tooltip(
+                            message: 'Pad',
+                            child: FallingArrowIcon(animateOnce: true),
+                          ),
+                          const SizedBox(width: 6),
+                        ],
                         Text(
                           "${_displayTeamTwo()}",
                           style: const TextStyle(
@@ -195,20 +209,6 @@ class RoundScoreListItem extends StatelessWidget {
                             fontSize: 36,
                           ),
                         ),
-                        if (teamTwoFell) ...[
-                          const SizedBox(width: 6),
-                       const   Tooltip(
-                            message: 'Pad',
-                            child: FallingArrowIcon(animateOnce: true),
-                          ),
-                        ],
-                        if (teamTwoStihak && !teamTwoFell) ...[
-                          const SizedBox(width: 6),
-                       const   Tooltip(
-                            message: 'Štihak',
-                            child: StihakIcon(animateOnce: true, color: AppTheme.primary),
-                          ),
-                        ],
                       ],
                     ),
                     Text(
