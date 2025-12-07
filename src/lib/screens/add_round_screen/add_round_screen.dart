@@ -780,14 +780,6 @@ class _AddRoundScreenState extends State<AddRoundScreen>
                                 Theme.of(context).colorScheme.primary,
                             onTap: handleCallerChange,
                           ),
-                          const SizedBox(height: 8),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: [
-                              _labelText('MI', selectedCaller == 0, context),
-                              _labelText('VI', selectedCaller == 1, context),
-                            ],
-                          ),
                         ],
                       ),
                     ),
@@ -997,18 +989,6 @@ class _AddRoundScreenState extends State<AddRoundScreen>
             const SizedBox(height: 12),
             child,
           ],
-        ),
-      );
-
-  Widget _labelText(String text, bool selected, BuildContext context) => Text(
-        text,
-        style: AppTheme.toggleTextStyle.copyWith(
-          color: selected
-              ? AppTheme.green
-              : Theme.of(context)
-                  .colorScheme
-                  .onSurface
-                  .withValues(alpha: (0.6 * 255).toDouble()),
         ),
       );
 
