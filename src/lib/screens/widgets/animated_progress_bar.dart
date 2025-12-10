@@ -204,7 +204,7 @@ class _AnimatedProgressBarState extends State<AnimatedProgressBar>
                   ),
                   const SizedBox(width: 8),
                   Text(
-                    'VI',
+                    'MI',
                     style: TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
