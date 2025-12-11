@@ -47,7 +47,7 @@ class _CallShowWidgetState extends State<CallShowWidget> {
         case CallType.z200: return 200;
       }
     }
-    // Belot nema vrijednost ovdje, rješava se vani
+  
     return 0;
   }
 
