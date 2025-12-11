@@ -284,9 +284,9 @@ class _AddRoundScreenState extends State<AddRoundScreen>
     int teamTwoCallAmount =
         _callsTeamTwo.fold(0, (prev, c) => prev + _callValue(c.type) * c.count);
 
-    if (teamOneBase == 0 && teamTwoBase > 0) {
+    if (teamOneBase == 0 && teamTwoBase > 0 && teamTwoBase != 162) {
       teamTwoBase = 252;
-    } else if (teamTwoBase == 0 && teamOneBase > 0) {
+    } else if (teamTwoBase == 0 && teamOneBase > 0 && teamOneBase != 162) {
       teamOneBase = 252;
     }
 
