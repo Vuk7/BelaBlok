@@ -5,6 +5,7 @@ import 'package:bela_blok/themes/app_theme.dart';
 import 'package:bela_blok/services/settings_services.dart';
 import 'package:bela_blok/db/database.dart';
 import 'package:bela_blok/db/models/user_settings_model.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -109,6 +110,50 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   value: _settings?.showSmartCalculator ?? false,
                   onChanged: _updateShowSmartCalculator,
                   secondary: const Icon(Icons.calculate),
+                ),
+                const SizedBox(height: 32),
+                Text('Open Source', style: AppTheme.sectionHeaderTextStyle.copyWith(color: Theme.of(context).colorScheme.onSurface)),
+                const SizedBox(height: 4),
+                Card(
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'BelaBlok je open source aplikacija! ',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: Theme.of(context).colorScheme.onSurface,
+                          ),
+                        ),
+                        const SizedBox(height: 12),
+                        Text(
+                          'Izvorni kod aplikacije dostupan je na GitHubu. Sve greške, prijedloge i preporuke možete prijaviti na repozitoriju projekta.',
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: Theme.of(context).colorScheme.onSurface.withOpacity(0.8),
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+                        ElevatedButton.icon(
+                          onPressed: () async {
+                            final uri = Uri.parse('https://github.com/Vuk7/BelaBlok');
+                            if (await canLaunchUrl(uri)) {
+                              await launchUrl(uri, mode: LaunchMode.externalApplication);
+                            }
+                          },
+                          icon: const Icon(Icons.code),
+                          label: const Text('Otvori na GitHubu'),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Theme.of(context).colorScheme.primary,
+                            foregroundColor: Theme.of(context).colorScheme.onPrimary,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
               ],
             ),
