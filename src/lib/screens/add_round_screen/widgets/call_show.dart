@@ -95,6 +95,19 @@ class _CallShowWidgetState extends State<CallShowWidget> {
       children: [
         Text('Zvanja: $totalPoints', style: TextStyle(fontSize: 15, color: widget.color, fontWeight: FontWeight.bold)),
         const SizedBox(height: 4),
+        Wrap(
+          spacing: 6,
+          runSpacing: 6,
+          children: [
+            _callButton(CallType.z20),
+            _callButton(CallType.z50),
+            _callButton(CallType.z100),
+            _callButton(CallType.z150),
+            _callButton(CallType.z200),
+            _belotButton(),
+          ],
+        ),
+        const SizedBox(height: 4),
         ..._calls.asMap().entries.map((entry) {
           final idx = entry.key;
           final c = entry.value;
@@ -160,19 +173,6 @@ class _CallShowWidgetState extends State<CallShowWidget> {
             ),
           );
         }),
-        const SizedBox(height: 4),
-        Wrap(
-          spacing: 6,
-          runSpacing: 6,
-          children: [
-            _callButton(CallType.z20),
-            _callButton(CallType.z50),
-            _callButton(CallType.z100),
-            _callButton(CallType.z150),
-            _callButton(CallType.z200),
-            _belotButton(),
-          ],
-        ),
       ],
     );
   }
