@@ -308,6 +308,9 @@ class _MainScreenState extends State<MainScreen> {
                                                         game.teamOneScore ?? 0,
                                                     teamTwoScore:
                                                         game.teamTwoScore ?? 0,
+                                                    teamOneWins: game.teamOneWins ?? 0,
+                                                    teamTwoWins: game.teamTwoWins ?? 0,
+                                                    finished: game.finished ?? false,
                                                     onTap: () async {
                                                       await context.pushNamed(
                                                           "currentgame",

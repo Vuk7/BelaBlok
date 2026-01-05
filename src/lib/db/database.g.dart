@@ -87,6 +87,22 @@ class $GameTableTable extends GameTable
       defaultConstraints:
           GeneratedColumn.constraintIsAlways('CHECK ("finished" IN (0, 1))'),
       defaultValue: const Constant(false));
+  static const VerificationMeta _teamOneWinsMeta =
+      const VerificationMeta('teamOneWins');
+  @override
+  late final GeneratedColumn<int> teamOneWins = GeneratedColumn<int>(
+      'team_one_wins', aliasedName, true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(0));
+  static const VerificationMeta _teamTwoWinsMeta =
+      const VerificationMeta('teamTwoWins');
+  @override
+  late final GeneratedColumn<int> teamTwoWins = GeneratedColumn<int>(
+      'team_two_wins', aliasedName, true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(0));
   @override
   List<GeneratedColumn> get $columns => [
         id,
@@ -99,7 +115,9 @@ class $GameTableTable extends GameTable
         gameDirection,
         currentlyShuffling,
         winner,
-        finished
+        finished,
+        teamOneWins,
+        teamTwoWins
       ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -162,6 +180,18 @@ class $GameTableTable extends GameTable
       context.handle(_finishedMeta,
           finished.isAcceptableOrUnknown(data['finished']!, _finishedMeta));
     }
+    if (data.containsKey('team_one_wins')) {
+      context.handle(
+          _teamOneWinsMeta,
+          teamOneWins.isAcceptableOrUnknown(
+              data['team_one_wins']!, _teamOneWinsMeta));
+    }
+    if (data.containsKey('team_two_wins')) {
+      context.handle(
+          _teamTwoWinsMeta,
+          teamTwoWins.isAcceptableOrUnknown(
+              data['team_two_wins']!, _teamTwoWinsMeta));
+    }
     return context;
   }
 
@@ -193,6 +223,10 @@ class $GameTableTable extends GameTable
           .read(DriftSqlType.int, data['${effectivePrefix}winner']),
       finished: attachedDatabase.typeMapping
           .read(DriftSqlType.bool, data['${effectivePrefix}finished']),
+      teamOneWins: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}team_one_wins']),
+      teamTwoWins: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}team_two_wins']),
     );
   }
 
@@ -214,6 +248,8 @@ class GameTableData extends DataClass implements Insertable<GameTableData> {
   final int? currentlyShuffling;
   final int? winner;
   final bool? finished;
+  final int? teamOneWins;
+  final int? teamTwoWins;
   const GameTableData(
       {required this.id,
       required this.createdAt,
@@ -225,7 +261,9 @@ class GameTableData extends DataClass implements Insertable<GameTableData> {
       this.gameDirection,
       this.currentlyShuffling,
       this.winner,
-      this.finished});
+      this.finished,
+      this.teamOneWins,
+      this.teamTwoWins});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -255,6 +293,12 @@ class GameTableData extends DataClass implements Insertable<GameTableData> {
     }
     if (!nullToAbsent || finished != null) {
       map['finished'] = Variable<bool>(finished);
+    }
+    if (!nullToAbsent || teamOneWins != null) {
+      map['team_one_wins'] = Variable<int>(teamOneWins);
+    }
+    if (!nullToAbsent || teamTwoWins != null) {
+      map['team_two_wins'] = Variable<int>(teamTwoWins);
     }
     return map;
   }
@@ -287,6 +331,12 @@ class GameTableData extends DataClass implements Insertable<GameTableData> {
       finished: finished == null && nullToAbsent
           ? const Value.absent()
           : Value(finished),
+      teamOneWins: teamOneWins == null && nullToAbsent
+          ? const Value.absent()
+          : Value(teamOneWins),
+      teamTwoWins: teamTwoWins == null && nullToAbsent
+          ? const Value.absent()
+          : Value(teamTwoWins),
     );
   }
 
@@ -305,6 +355,8 @@ class GameTableData extends DataClass implements Insertable<GameTableData> {
       currentlyShuffling: serializer.fromJson<int?>(json['currentlyShuffling']),
       winner: serializer.fromJson<int?>(json['winner']),
       finished: serializer.fromJson<bool?>(json['finished']),
+      teamOneWins: serializer.fromJson<int?>(json['teamOneWins']),
+      teamTwoWins: serializer.fromJson<int?>(json['teamTwoWins']),
     );
   }
   @override
@@ -322,6 +374,8 @@ class GameTableData extends DataClass implements Insertable<GameTableData> {
       'currentlyShuffling': serializer.toJson<int?>(currentlyShuffling),
       'winner': serializer.toJson<int?>(winner),
       'finished': serializer.toJson<bool?>(finished),
+      'teamOneWins': serializer.toJson<int?>(teamOneWins),
+      'teamTwoWins': serializer.toJson<int?>(teamTwoWins),
     };
   }
 
@@ -336,7 +390,9 @@ class GameTableData extends DataClass implements Insertable<GameTableData> {
           Value<int?> gameDirection = const Value.absent(),
           Value<int?> currentlyShuffling = const Value.absent(),
           Value<int?> winner = const Value.absent(),
-          Value<bool?> finished = const Value.absent()}) =>
+          Value<bool?> finished = const Value.absent(),
+          Value<int?> teamOneWins = const Value.absent(),
+          Value<int?> teamTwoWins = const Value.absent()}) =>
       GameTableData(
         id: id ?? this.id,
         createdAt: createdAt ?? this.createdAt,
@@ -354,6 +410,8 @@ class GameTableData extends DataClass implements Insertable<GameTableData> {
             : this.currentlyShuffling,
         winner: winner.present ? winner.value : this.winner,
         finished: finished.present ? finished.value : this.finished,
+        teamOneWins: teamOneWins.present ? teamOneWins.value : this.teamOneWins,
+        teamTwoWins: teamTwoWins.present ? teamTwoWins.value : this.teamTwoWins,
       );
   GameTableData copyWithCompanion(GameTableCompanion data) {
     return GameTableData(
@@ -376,6 +434,10 @@ class GameTableData extends DataClass implements Insertable<GameTableData> {
           : this.currentlyShuffling,
       winner: data.winner.present ? data.winner.value : this.winner,
       finished: data.finished.present ? data.finished.value : this.finished,
+      teamOneWins:
+          data.teamOneWins.present ? data.teamOneWins.value : this.teamOneWins,
+      teamTwoWins:
+          data.teamTwoWins.present ? data.teamTwoWins.value : this.teamTwoWins,
     );
   }
 
@@ -392,7 +454,9 @@ class GameTableData extends DataClass implements Insertable<GameTableData> {
           ..write('gameDirection: $gameDirection, ')
           ..write('currentlyShuffling: $currentlyShuffling, ')
           ..write('winner: $winner, ')
-          ..write('finished: $finished')
+          ..write('finished: $finished, ')
+          ..write('teamOneWins: $teamOneWins, ')
+          ..write('teamTwoWins: $teamTwoWins')
           ..write(')'))
         .toString();
   }
@@ -409,7 +473,9 @@ class GameTableData extends DataClass implements Insertable<GameTableData> {
       gameDirection,
       currentlyShuffling,
       winner,
-      finished);
+      finished,
+      teamOneWins,
+      teamTwoWins);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -424,7 +490,9 @@ class GameTableData extends DataClass implements Insertable<GameTableData> {
           other.gameDirection == this.gameDirection &&
           other.currentlyShuffling == this.currentlyShuffling &&
           other.winner == this.winner &&
-          other.finished == this.finished);
+          other.finished == this.finished &&
+          other.teamOneWins == this.teamOneWins &&
+          other.teamTwoWins == this.teamTwoWins);
 }
 
 class GameTableCompanion extends UpdateCompanion<GameTableData> {
@@ -439,6 +507,8 @@ class GameTableCompanion extends UpdateCompanion<GameTableData> {
   final Value<int?> currentlyShuffling;
   final Value<int?> winner;
   final Value<bool?> finished;
+  final Value<int?> teamOneWins;
+  final Value<int?> teamTwoWins;
   final Value<int> rowid;
   const GameTableCompanion({
     this.id = const Value.absent(),
@@ -452,6 +522,8 @@ class GameTableCompanion extends UpdateCompanion<GameTableData> {
     this.currentlyShuffling = const Value.absent(),
     this.winner = const Value.absent(),
     this.finished = const Value.absent(),
+    this.teamOneWins = const Value.absent(),
+    this.teamTwoWins = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   GameTableCompanion.insert({
@@ -466,6 +538,8 @@ class GameTableCompanion extends UpdateCompanion<GameTableData> {
     this.currentlyShuffling = const Value.absent(),
     this.winner = const Value.absent(),
     this.finished = const Value.absent(),
+    this.teamOneWins = const Value.absent(),
+    this.teamTwoWins = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   static Insertable<GameTableData> custom({
@@ -480,6 +554,8 @@ class GameTableCompanion extends UpdateCompanion<GameTableData> {
     Expression<int>? currentlyShuffling,
     Expression<int>? winner,
     Expression<bool>? finished,
+    Expression<int>? teamOneWins,
+    Expression<int>? teamTwoWins,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -494,6 +570,8 @@ class GameTableCompanion extends UpdateCompanion<GameTableData> {
       if (currentlyShuffling != null) 'currently_shuffling': currentlyShuffling,
       if (winner != null) 'winner': winner,
       if (finished != null) 'finished': finished,
+      if (teamOneWins != null) 'team_one_wins': teamOneWins,
+      if (teamTwoWins != null) 'team_two_wins': teamTwoWins,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -510,6 +588,8 @@ class GameTableCompanion extends UpdateCompanion<GameTableData> {
       Value<int?>? currentlyShuffling,
       Value<int?>? winner,
       Value<bool?>? finished,
+      Value<int?>? teamOneWins,
+      Value<int?>? teamTwoWins,
       Value<int>? rowid}) {
     return GameTableCompanion(
       id: id ?? this.id,
@@ -523,6 +603,8 @@ class GameTableCompanion extends UpdateCompanion<GameTableData> {
       currentlyShuffling: currentlyShuffling ?? this.currentlyShuffling,
       winner: winner ?? this.winner,
       finished: finished ?? this.finished,
+      teamOneWins: teamOneWins ?? this.teamOneWins,
+      teamTwoWins: teamTwoWins ?? this.teamTwoWins,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -563,6 +645,12 @@ class GameTableCompanion extends UpdateCompanion<GameTableData> {
     if (finished.present) {
       map['finished'] = Variable<bool>(finished.value);
     }
+    if (teamOneWins.present) {
+      map['team_one_wins'] = Variable<int>(teamOneWins.value);
+    }
+    if (teamTwoWins.present) {
+      map['team_two_wins'] = Variable<int>(teamTwoWins.value);
+    }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
     }
@@ -583,6 +671,8 @@ class GameTableCompanion extends UpdateCompanion<GameTableData> {
           ..write('currentlyShuffling: $currentlyShuffling, ')
           ..write('winner: $winner, ')
           ..write('finished: $finished, ')
+          ..write('teamOneWins: $teamOneWins, ')
+          ..write('teamTwoWins: $teamTwoWins, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -2998,6 +3088,8 @@ typedef $$GameTableTableCreateCompanionBuilder = GameTableCompanion Function({
   Value<int?> currentlyShuffling,
   Value<int?> winner,
   Value<bool?> finished,
+  Value<int?> teamOneWins,
+  Value<int?> teamTwoWins,
   Value<int> rowid,
 });
 typedef $$GameTableTableUpdateCompanionBuilder = GameTableCompanion Function({
@@ -3012,6 +3104,8 @@ typedef $$GameTableTableUpdateCompanionBuilder = GameTableCompanion Function({
   Value<int?> currentlyShuffling,
   Value<int?> winner,
   Value<bool?> finished,
+  Value<int?> teamOneWins,
+  Value<int?> teamTwoWins,
   Value<int> rowid,
 });
 
@@ -3077,6 +3171,12 @@ class $$GameTableTableFilterComposer
 
   ColumnFilters<bool> get finished => $composableBuilder(
       column: $table.finished, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get teamOneWins => $composableBuilder(
+      column: $table.teamOneWins, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get teamTwoWins => $composableBuilder(
+      column: $table.teamTwoWins, builder: (column) => ColumnFilters(column));
 
   Expression<bool> roundTableRefs(
       Expression<bool> Function($$RoundTableTableFilterComposer f) f) {
@@ -3145,6 +3245,12 @@ class $$GameTableTableOrderingComposer
 
   ColumnOrderings<bool> get finished => $composableBuilder(
       column: $table.finished, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get teamOneWins => $composableBuilder(
+      column: $table.teamOneWins, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get teamTwoWins => $composableBuilder(
+      column: $table.teamTwoWins, builder: (column) => ColumnOrderings(column));
 }
 
 class $$GameTableTableAnnotationComposer
@@ -3188,6 +3294,12 @@ class $$GameTableTableAnnotationComposer
 
   GeneratedColumn<bool> get finished =>
       $composableBuilder(column: $table.finished, builder: (column) => column);
+
+  GeneratedColumn<int> get teamOneWins => $composableBuilder(
+      column: $table.teamOneWins, builder: (column) => column);
+
+  GeneratedColumn<int> get teamTwoWins => $composableBuilder(
+      column: $table.teamTwoWins, builder: (column) => column);
 
   Expression<T> roundTableRefs<T extends Object>(
       Expression<T> Function($$RoundTableTableAnnotationComposer a) f) {
@@ -3245,6 +3357,8 @@ class $$GameTableTableTableManager extends RootTableManager<
             Value<int?> currentlyShuffling = const Value.absent(),
             Value<int?> winner = const Value.absent(),
             Value<bool?> finished = const Value.absent(),
+            Value<int?> teamOneWins = const Value.absent(),
+            Value<int?> teamTwoWins = const Value.absent(),
             Value<int> rowid = const Value.absent(),
           }) =>
               GameTableCompanion(
@@ -3259,6 +3373,8 @@ class $$GameTableTableTableManager extends RootTableManager<
             currentlyShuffling: currentlyShuffling,
             winner: winner,
             finished: finished,
+            teamOneWins: teamOneWins,
+            teamTwoWins: teamTwoWins,
             rowid: rowid,
           ),
           createCompanionCallback: ({
@@ -3273,6 +3389,8 @@ class $$GameTableTableTableManager extends RootTableManager<
             Value<int?> currentlyShuffling = const Value.absent(),
             Value<int?> winner = const Value.absent(),
             Value<bool?> finished = const Value.absent(),
+            Value<int?> teamOneWins = const Value.absent(),
+            Value<int?> teamTwoWins = const Value.absent(),
             Value<int> rowid = const Value.absent(),
           }) =>
               GameTableCompanion.insert(
@@ -3287,6 +3405,8 @@ class $$GameTableTableTableManager extends RootTableManager<
             currentlyShuffling: currentlyShuffling,
             winner: winner,
             finished: finished,
+            teamOneWins: teamOneWins,
+            teamTwoWins: teamTwoWins,
             rowid: rowid,
           ),
           withReferenceMapper: (p0) => p0

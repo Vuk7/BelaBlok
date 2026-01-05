@@ -1,11 +1,11 @@
 import 'package:bela_blok/screens/add_round_screen/widgets/call_show.dart';
-import 'package:bela_blok/db/database.dart'; 
+import 'package:bela_blok/db/database.dart';
 import 'package:bela_blok/db/models/round_model.dart';
 import 'package:bela_blok/db/models/user_settings_model.dart';
 import 'package:bela_blok/db/dao/round_dao.dart';
 import 'package:bela_blok/models/score.model.dart';
 import 'package:bela_blok/models/calculator_result_state.model.dart';
-import 'package:bela_blok/services/games_service.dart'; 
+import 'package:bela_blok/services/games_service.dart';
 import 'package:bela_blok/services/rounds_service.dart';
 import 'package:bela_blok/services/settings_services.dart';
 import 'package:bela_blok/services/calculator_service.dart';
@@ -23,15 +23,18 @@ import 'package:go_router/go_router.dart';
 import 'package:bela_blok/common/constants.dart';
 import 'package:bela_blok/enums/call_value_enum.dart';
 
-
 class AddRoundScreen extends StatefulWidget {
   final String? gameId;
   final String? roundId;
-  final int? roundIndex; 
+  final int? roundIndex;
   final VoidCallback? updateGamesListCallback;
 
   const AddRoundScreen(
-      {super.key, this.gameId, this.roundId, this.roundIndex, this.updateGamesListCallback});
+      {super.key,
+      this.gameId,
+      this.roundId,
+      this.roundIndex,
+      this.updateGamesListCallback});
 
   @override
   State<AddRoundScreen> createState() => _AddRoundScreenState();
@@ -73,7 +76,7 @@ class _AddRoundScreenState extends State<AddRoundScreen>
   int currentGameTeamOneScore = 0;
   int currentGameTeamTwoScore = 0;
 
-  CalculatorResultState? _calculatorResult; 
+  CalculatorResultState? _calculatorResult;
 
   @override
   void initState() {
@@ -106,14 +109,14 @@ class _AddRoundScreenState extends State<AddRoundScreen>
     if (widget.roundId != null) {
       _loadRoundToEdit();
     }
-   
+
     _loadGameData();
     _loadRoundsCount();
   }
 
   Future<void> _loadRoundToEdit() async {
     roundToEdit = await roundsService.getRoundById(widget.roundId!);
-    
+
     if (roundToEdit != null) {
       setState(() {
         inputTeamOne.text = (roundToEdit!.teamOneScore ?? 0).toString();
@@ -137,7 +140,7 @@ class _AddRoundScreenState extends State<AddRoundScreen>
         if ((roundToEdit!.us200 ?? 0) > 0) {
           _callsTeamOne.add(CallEntry(CallType.z200, roundToEdit!.us200!));
         }
-        
+
         _callsTeamTwo = [];
         if ((roundToEdit!.them20 ?? 0) > 0) {
           _callsTeamTwo.add(CallEntry(CallType.z20, roundToEdit!.them20!));
@@ -171,7 +174,7 @@ class _AddRoundScreenState extends State<AddRoundScreen>
         });
       }
     }
-    
+
     // Load settings
     settings = await settingsService.fetchSettings();
     setState(() {});
@@ -238,18 +241,39 @@ class _AddRoundScreenState extends State<AddRoundScreen>
     }
   }
 
-  void _setRoundCallCounts(Round round, List<CallEntry> teamOneCalls, List<CallEntry> teamTwoCalls) {
-    round.us20 = teamOneCalls.where((c) => c.type == CallType.z20).fold<int>(0, (sum, c) => sum + c.count);
-    round.us50 = teamOneCalls.where((c) => c.type == CallType.z50).fold<int>(0, (sum, c) => sum + c.count);
-    round.us100 = teamOneCalls.where((c) => c.type == CallType.z100).fold<int>(0, (sum, c) => sum + c.count);
-    round.us150 = teamOneCalls.where((c) => c.type == CallType.z150).fold<int>(0, (sum, c) => sum + c.count);
-    round.us200 = teamOneCalls.where((c) => c.type == CallType.z200).fold<int>(0, (sum, c) => sum + c.count);
-    
-    round.them20 = teamTwoCalls.where((c) => c.type == CallType.z20).fold<int>(0, (sum, c) => sum + c.count);
-    round.them50 = teamTwoCalls.where((c) => c.type == CallType.z50).fold<int>(0, (sum, c) => sum + c.count);
-    round.them100 = teamTwoCalls.where((c) => c.type == CallType.z100).fold<int>(0, (sum, c) => sum + c.count);
-    round.them150 = teamTwoCalls.where((c) => c.type == CallType.z150).fold<int>(0, (sum, c) => sum + c.count);
-    round.them200 = teamTwoCalls.where((c) => c.type == CallType.z200).fold<int>(0, (sum, c) => sum + c.count);
+  void _setRoundCallCounts(
+      Round round, List<CallEntry> teamOneCalls, List<CallEntry> teamTwoCalls) {
+    round.us20 = teamOneCalls
+        .where((c) => c.type == CallType.z20)
+        .fold<int>(0, (sum, c) => sum + c.count);
+    round.us50 = teamOneCalls
+        .where((c) => c.type == CallType.z50)
+        .fold<int>(0, (sum, c) => sum + c.count);
+    round.us100 = teamOneCalls
+        .where((c) => c.type == CallType.z100)
+        .fold<int>(0, (sum, c) => sum + c.count);
+    round.us150 = teamOneCalls
+        .where((c) => c.type == CallType.z150)
+        .fold<int>(0, (sum, c) => sum + c.count);
+    round.us200 = teamOneCalls
+        .where((c) => c.type == CallType.z200)
+        .fold<int>(0, (sum, c) => sum + c.count);
+
+    round.them20 = teamTwoCalls
+        .where((c) => c.type == CallType.z20)
+        .fold<int>(0, (sum, c) => sum + c.count);
+    round.them50 = teamTwoCalls
+        .where((c) => c.type == CallType.z50)
+        .fold<int>(0, (sum, c) => sum + c.count);
+    round.them100 = teamTwoCalls
+        .where((c) => c.type == CallType.z100)
+        .fold<int>(0, (sum, c) => sum + c.count);
+    round.them150 = teamTwoCalls
+        .where((c) => c.type == CallType.z150)
+        .fold<int>(0, (sum, c) => sum + c.count);
+    round.them200 = teamTwoCalls
+        .where((c) => c.type == CallType.z200)
+        .fold<int>(0, (sum, c) => sum + c.count);
   }
 
   Future<void> _saveBelotRound(
@@ -263,7 +287,7 @@ class _AddRoundScreenState extends State<AddRoundScreen>
     round.teamFailed = false;
     round.teamOneCallAmount = teamOneCallAmount;
     round.teamTwoCallAmount = teamTwoCallAmount;
-    
+
     _setRoundCallCounts(round, _callsTeamOne, _callsTeamTwo);
 
     if (roundToEdit != null) {
@@ -348,31 +372,31 @@ class _AddRoundScreenState extends State<AddRoundScreen>
 
   Future<void> _saveNormalRound(dynamic game, ScoreModel scores) async {
     final Round round;
-    
+
     if (roundToEdit != null) {
       round = roundToEdit!;
     } else {
       round = Round(gameId: widget.gameId!);
     }
-    
+
     round.teamCalled = selectedCaller;
     round.teamOneScore = scores.teamOneBase;
     round.teamTwoScore = scores.teamTwoBase;
     round.teamFailed = scores.teamFailed;
     round.teamOneCallAmount = scores.teamOneCallAmount;
     round.teamTwoCallAmount = scores.teamTwoCallAmount;
-    
+
     _setRoundCallCounts(round, _callsTeamOne, _callsTeamTwo);
 
     String? actualRoundId;
     if (roundToEdit != null) {
       await roundsService.updateRound(round);
-      actualRoundId = round.id; 
+      actualRoundId = round.id;
     } else {
-      actualRoundId = await roundsService.createRound(round); 
+      actualRoundId = await roundsService.createRound(round);
     }
 
-   if (_calculatorResult != null && actualRoundId != null) {
+    if (_calculatorResult != null && actualRoundId != null) {
       await calculatorService.saveOrUpdateCalculatorResult(
         actualRoundId,
         _calculatorResult!,
@@ -418,6 +442,13 @@ class _AddRoundScreenState extends State<AddRoundScreen>
           newScoreTeamTwo >= gameTargetScore) {
         game.finished = true;
         game.winner = newScoreTeamOne >= gameTargetScore ? 0 : 1;
+
+        // Track team wins
+        if (game.winner == 0) {
+          game.teamOneWins++;
+        } else {
+          game.teamTwoWins++;
+        }
       }
 
       await gamesService.updateGame(game);
@@ -554,25 +585,30 @@ class _AddRoundScreenState extends State<AddRoundScreen>
 
   Future<void> _handleCalculatorButtonPressed() async {
     Map<String, dynamic>? initialData;
-    
+
     if (roundToEdit != null && roundToEdit!.id != null) {
-      final result = await calculatorService.getCalculatorResultByRoundId(roundToEdit!.id!);
+      final result = await calculatorService
+          .getCalculatorResultByRoundId(roundToEdit!.id!);
       if (result != null) {
-        initialData = CalculatorResultState.fromCalculatorResult(result).toMap();
+        initialData =
+            CalculatorResultState.fromCalculatorResult(result).toMap();
       }
     }
-    
+
     if (!mounted) return;
-    
-    context.pushNamed(
+
+    context
+        .pushNamed(
       'calculator',
       extra: initialData,
-    ).then((result) {
+    )
+        .then((result) {
       if (result != null && result is Map) {
         setState(() {
-          _calculatorResult = CalculatorResultState.fromMap(Map<String, dynamic>.from(result));
+          _calculatorResult =
+              CalculatorResultState.fromMap(Map<String, dynamic>.from(result));
         });
-        
+
         final score = result['score'] as int? ?? 0;
         final team = result['team'] as String? ?? 'mi';
         if (mounted) {
@@ -607,17 +643,20 @@ class _AddRoundScreenState extends State<AddRoundScreen>
     // Provjera za stihak
     bool isStihak = teamOneVal == 252 || teamTwoVal == 252;
     bool showStihak = isStihak && (teamOneVal > 0 || teamTwoVal > 0);
-    Team? stihakTeam = isStihak ? (teamOneVal == 252 ? Team.teamOne : Team.teamTwo) : null;
+    Team? stihakTeam =
+        isStihak ? (teamOneVal == 252 ? Team.teamOne : Team.teamTwo) : null;
 
     // Provjera za pad
     int teamOneTotal = teamOneVal + teamOneCallAmount;
     int teamTwoTotal = teamTwoVal + teamTwoCallAmount;
     int callerScore = selectedCaller == 0 ? teamOneTotal : teamTwoTotal;
     int otherScore = selectedCaller == 0 ? teamTwoTotal : teamOneTotal;
-    bool showFall = !isStihak && selectedCaller >= 0 && 
-                    (teamOneVal > 0 || teamTwoVal > 0) &&
-                    (callerScore <= otherScore || callerScore < 82);
-    Team? fallTeam = showFall ? (selectedCaller == 0 ? Team.teamOne : Team.teamTwo) : null;
+    bool showFall = !isStihak &&
+        selectedCaller >= 0 &&
+        (teamOneVal > 0 || teamTwoVal > 0) &&
+        (callerScore <= otherScore || callerScore < 82);
+    Team? fallTeam =
+        showFall ? (selectedCaller == 0 ? Team.teamOne : Team.teamTwo) : null;
 
     String getInputSuffix(int i) {
       final base = i == 0 ? teamOneVal : teamTwoVal;
@@ -977,9 +1016,10 @@ class _AddRoundScreenState extends State<AddRoundScreen>
                         icon: const Icon(Icons.calculate),
                         label: const Text('Pomoć kod izračuna'),
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: AppTheme.green, 
+                          backgroundColor: AppTheme.green,
                           foregroundColor: Colors.white,
-                          padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 20),
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 12, horizontal: 20),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10),
                           ),
@@ -1041,13 +1081,12 @@ class _AddRoundScreenState extends State<AddRoundScreen>
       );
 
   Future<int> _computeShufflerToShow() async {
-    if (currentlyShuffling == null ||
-        gameDirection == null) {
+    if (currentlyShuffling == null || gameDirection == null) {
       return 1;
     }
-    
+
     final index = widget.roundIndex ?? 0;
-    
+
     return roundsService.computeShuffler(
       firstShuffler: currentlyShuffling!,
       index: index,
