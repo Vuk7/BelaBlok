@@ -1,36 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-class MaxValueInputFormatter extends TextInputFormatter {
-  final int maxValue;
-
-  MaxValueInputFormatter(this.maxValue);
-
-  @override
-  TextEditingValue formatEditUpdate(
-    TextEditingValue oldValue,
-    TextEditingValue newValue,
-  ) {
-    if (newValue.text.isEmpty) {
-      return newValue;
-    }
-
-    final int? value = int.tryParse(newValue.text);
-    if (value == null) {
-      return oldValue;
-    }
-
-    if (value > maxValue) {
-      return TextEditingValue(
-        text: maxValue.toString(),
-        selection: TextSelection.collapsed(offset: maxValue.toString().length),
-      );
-    }
-
-    return newValue;
-  }
-}
-
 class BigButtonInputNumber extends StatelessWidget {
   final String text;
   final Color bgColor;
@@ -40,7 +10,6 @@ class BigButtonInputNumber extends StatelessWidget {
   final double textPadding;
   final double? width;
   final String? suffixText;
-  final int maxValue;
 
   const BigButtonInputNumber({
     super.key,
@@ -52,7 +21,6 @@ class BigButtonInputNumber extends StatelessWidget {
     this.textPadding = 20.0,
     this.width,
     this.suffixText,
-    this.maxValue = 252,
   });
 
   @override
@@ -84,8 +52,7 @@ class BigButtonInputNumber extends StatelessWidget {
           ),
           keyboardType: TextInputType.number,
           inputFormatters: <TextInputFormatter>[
-            FilteringTextInputFormatter.digitsOnly,
-            MaxValueInputFormatter(maxValue),
+            FilteringTextInputFormatter.digitsOnly
           ],
         ),
       ),
