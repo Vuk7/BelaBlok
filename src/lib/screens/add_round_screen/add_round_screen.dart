@@ -345,7 +345,20 @@ class _AddRoundScreenState extends State<AddRoundScreen>
     int otherScore = selectedCaller == 0 ? teamTwoTotal : teamOneTotal;
 
     bool teamFailed = false;
-    if (!isStihak && (callerScore <= otherScore || callerScore < 82)) {
+    
+    if (isStihak) {
+      int failedTeam = teamOneBase == 0 ? 0 : 1;
+      scores = roundsService.calculateRoundScores(
+        teamOneBase: teamOneBase,
+        teamTwoBase: teamTwoBase,
+        teamOneCallAmount: teamOneCallAmount,
+        teamTwoCallAmount: teamTwoCallAmount,
+        failedTeam: failedTeam,
+      );
+      teamOneTotal = scores['teamOneTotal']!;
+      teamTwoTotal = scores['teamTwoTotal']!;
+      teamFailed = false; 
+    } else if (callerScore <= otherScore || callerScore < 82) {
       int failedTeam = selectedCaller;
       scores = roundsService.calculateRoundScores(
         teamOneBase: teamOneBase,

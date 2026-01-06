@@ -138,7 +138,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           'Izvorni kod aplikacije dostupan je na GitHubu. Sve greške, prijedloge i preporuke možete prijaviti na repozitoriju projekta.',
                           style: TextStyle(
                             fontSize: 14,
-                            color: Theme.of(context).colorScheme.onSurface.withOpacity(0.8),
+                            color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.8 * 255),
                           ),
                         ),
                         const SizedBox(height: 16),
