@@ -4,16 +4,19 @@ class HistoryListItem extends StatelessWidget {
   final String date, gameID;
   final int teamOneScore, teamTwoScore;
   final Function() onTap;
+  final int teamOneWins, teamTwoWins;
+  final bool finished;
 
-  const HistoryListItem({
-    super.key,
-    required this.gameID,
-    required this.date,
-    required this.teamOneScore,
-    required this.teamTwoScore,
-    required this.onTap,
-  });
-
+  const HistoryListItem(
+      {super.key,
+      required this.gameID,
+      required this.date,
+      required this.teamOneScore,
+      required this.teamTwoScore,
+      required this.onTap,
+      required this.teamOneWins,
+      required this.teamTwoWins,
+      required this.finished});
 
   @override
   Widget build(BuildContext context) {
@@ -24,8 +27,12 @@ class HistoryListItem extends StatelessWidget {
 
     const miColor = Colors.blueAccent;
     const viColor = Colors.orangeAccent;
-    final bgColor = Theme.of(context).brightness == Brightness.dark ? Colors.grey[850] : Colors.white;
-    final borderColor = Theme.of(context).brightness == Brightness.dark ? Colors.blueGrey : Colors.grey[300];
+    final bgColor = Theme.of(context).brightness == Brightness.dark
+        ? Colors.grey[850]
+        : Colors.white;
+    final borderColor = Theme.of(context).brightness == Brightness.dark
+        ? Colors.blueGrey
+        : Colors.grey[300];
 
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 8),
@@ -66,69 +73,117 @@ class HistoryListItem extends StatelessWidget {
                   timeOnly,
                   style: TextStyle(
                     fontSize: 12,
-                    color: Theme.of(context).brightness == Brightness.dark ? Colors.white70 : Colors.black54,
+                    color: Theme.of(context).brightness == Brightness.dark
+                        ? Colors.white70
+                        : Colors.black54,
                   ),
                 ),
               ],
             ),
             const Spacer(),
-            // Score badges
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-              decoration: BoxDecoration(
-        color: miColor.withAlpha((0.15 * 255).toInt()),
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: Row(
-                children: [
-                  const Text(
-                    "MI",
-                    style:  TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: miColor,
-                      fontSize: 13,
+            Column(
+              children: [
+                Row(
+                  children: finished == false
+                      ? []
+                      : [
+                          Text(
+                            "$teamOneWins",
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: miColor,
+                              fontSize: 13,
+                            ),
+                          ),
+                          const SizedBox(
+                            width: 12,
+                          ),
+                          const Icon(
+                            Icons.emoji_events,
+                            size: 20,
+                            color: Colors.amber,
+                          ),
+                          const SizedBox(
+                            width: 12,
+                          ),
+                          Text(
+                            "$teamTwoWins",
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: viColor,
+                              fontSize: 13,
+                            ),
+                          ),
+                        ],
+                ),
+                const SizedBox(
+                  height: 6,
+                ),
+                Row(
+                  children: [
+                    // Score badges
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 8, vertical: 4),
+                      decoration: BoxDecoration(
+                        color: miColor.withAlpha((0.15 * 255).toInt()),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Row(
+                        children: [
+                          const Text(
+                            "MI",
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: miColor,
+                              fontSize: 13,
+                            ),
+                          ),
+                          const SizedBox(width: 4),
+                          Text(
+                            "$teamOneScore",
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: miColor,
+                              fontSize: 15,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                  const SizedBox(width: 4),
-                  Text(
-                    "$teamOneScore",
-                    style:const  TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: miColor,
-                      fontSize: 15,
+                    const SizedBox(width: 10),
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 8, vertical: 4),
+                      decoration: BoxDecoration(
+                        color: viColor.withAlpha((0.15 * 255).toInt()),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Row(
+                        children: [
+                          Text(
+                            "$teamTwoScore",
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: viColor,
+                              fontSize: 15,
+                            ),
+                          ),
+                          const SizedBox(width: 4),
+                          const Text(
+                            "VI",
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: viColor,
+                              fontSize: 13,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(width: 10),
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-              decoration: BoxDecoration(
-        color: viColor.withAlpha((0.15 * 255).toInt()),
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: Row(
-                children: [
-                  Text(
-                    "$teamTwoScore",
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: viColor,
-                      fontSize: 15,
-                    ),
-                  ),
-                  const SizedBox(width: 4),
-                  const Text(
-                    "VI",
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: viColor,
-                      fontSize: 13,
-                    ),
-                  ),
-                ],
-              ),
+                  ],
+                ),
+              ],
             ),
           ],
         ),

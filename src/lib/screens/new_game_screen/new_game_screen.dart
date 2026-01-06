@@ -1,6 +1,8 @@
 import 'package:bela_blok/db/database.dart';
+import 'package:bela_blok/db/models/game_model.dart';
 import 'package:bela_blok/screens/new_game_screen/widgets/game_settings_menu.dart';
 import 'package:bela_blok/screens/main_screen/widgets/animated_button.dart';
+import 'package:bela_blok/screens/new_game_screen/widgets/team_wins_reset_section.dart';
 import 'package:bela_blok/screens/widgets/animated_big_button.dart';
 import 'package:bela_blok/screens/widgets/player_shuffling.dart';
 import 'package:bela_blok/services/games_service.dart';
@@ -27,12 +29,31 @@ class _NewGameScreenState extends State<NewGameScreen> {
   int playDirectionSelect = 0;
   int playerShufflingSelect = 1;
 
+  late Game? latestGame;
+
+  // Track New Game Team Wins
+  int newGameTeamOneWins = 0;
+  int newGameTeamTwoWins = 0;
+
   @override
   void initState() {
     super.initState();
     _db = AppDatabase();
     _gamesService = GamesService(_db);
     _setDefaultGameSettings();
+    _loadLatestGame();
+  }
+
+  Future<void> _loadLatestGame() async {
+    latestGame = await _gamesService.getLatestGame();
+
+    // Update Team Wins
+    if (latestGame != null) {
+      setNewGameTeamWins(
+          latestGame?.teamOneWins ?? 0, latestGame?.teamTwoWins ?? 0);
+    } else {
+      setNewGameTeamWins(0, 0);
+    }
   }
 
   Future<void> _setDefaultGameSettings() async {
@@ -61,22 +82,23 @@ class _NewGameScreenState extends State<NewGameScreen> {
     if (targetScore == null) return;
 
     try {
-      await _gamesService.createNewGameWithParameters(
+      latestGame = await _gamesService.createNewGameWithParameters(
         gameType: targetScore,
         playDirection: playDirectionSelect == 0
             ? PlayDirection.clockwise
             : PlayDirection.counterClockwise,
+        teamOneWins: newGameTeamOneWins,
+        teamTwoWins: newGameTeamTwoWins,
         currentlyShuffling: playerShufflingSelect,
       );
 
-      final latestGame = await _gamesService.getLatestGame();
-      if (latestGame != null && latestGame.id != null && mounted) {
+      if (latestGame != null && latestGame?.id != null && mounted) {
         if (widget.updateGamesListCallback != null) {
           widget.updateGamesListCallback!();
         }
 
         context.goNamed('currentgame',
-            queryParameters: {'id': latestGame.id!},
+            queryParameters: {'id': latestGame?.id!},
             extra: widget.updateGamesListCallback);
       } else if (mounted) {
         Navigator.of(context).pop();
@@ -124,6 +146,17 @@ class _NewGameScreenState extends State<NewGameScreen> {
         ],
       ),
     );
+  }
+
+  setNewGameTeamWins(int teamOneWins, int teamTwoWins) {
+    setState(() {
+      newGameTeamOneWins = teamOneWins;
+      newGameTeamTwoWins = teamTwoWins;
+    });
+  }
+
+  void resetTeamWinsScore() {
+    setNewGameTeamWins(0, 0);
   }
 
   @override
@@ -226,6 +259,12 @@ class _NewGameScreenState extends State<NewGameScreen> {
                           setState(() => playDirectionSelect = id),
                     ),
                     const SizedBox(height: 15),
+                    // Team Wins Score
+                    TeamWinsResetSection(
+                        teamOneWins: newGameTeamOneWins,
+                        teamTwoWins: newGameTeamTwoWins,
+                        onTap: resetTeamWinsScore),
+                    const SizedBox(height: 15),
                     Container(
                       width: double.infinity,
                       padding: const EdgeInsets.all(16),
@@ -234,7 +273,8 @@ class _NewGameScreenState extends State<NewGameScreen> {
                         borderRadius: BorderRadius.circular(16),
                         boxShadow: [
                           BoxShadow(
-                            color: AppTheme.getOverlayColor(context, opacity: 0),
+                            color:
+                                AppTheme.getOverlayColor(context, opacity: 0),
                             blurRadius: 4,
                             offset: const Offset(0, 2),
                           ),

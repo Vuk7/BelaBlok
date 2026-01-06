@@ -10,6 +10,8 @@ class Game extends BaseModel {
   int? currentlyShuffling;
   int? winner;
   bool? finished;
+  int? teamOneWins;
+  int? teamTwoWins;
 
   Game({
     super.id,
@@ -23,6 +25,8 @@ class Game extends BaseModel {
     this.currentlyShuffling,
     this.winner,
     this.finished,
+    this.teamOneWins,
+    this.teamTwoWins
   });
 }
 
@@ -40,6 +44,8 @@ extension GameMapper on GameTableData {
       currentlyShuffling: currentlyShuffling,
       winner: winner,
       finished: finished,
+      teamOneWins: teamOneWins,
+      teamTwoWins: teamTwoWins
     );
   }
 }
@@ -56,6 +62,8 @@ extension GameModelMapper on Game {
       currentlyShuffling: Value(currentlyShuffling),
       winner: Value(winner),
       finished: Value(finished),
+      teamOneWins: Value(teamOneWins),
+      teamTwoWins: Value(teamTwoWins),
     );
   }
 }

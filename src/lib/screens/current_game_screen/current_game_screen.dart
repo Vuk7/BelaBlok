@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:bela_blok/db/database.dart';
 import 'package:bela_blok/enums/team_enum.dart';
 import 'package:bela_blok/db/models/user_settings_model.dart';
@@ -32,9 +34,9 @@ class CurrentGameScreen extends StatefulWidget {
 
 class _CurrentGameScreenState extends State<CurrentGameScreen> {
   final ScrollController _scrollController = ScrollController();
-  bool _showStatsPopup = false; 
+  bool _showStatsPopup = false;
   bool _wobbleTrigger = false;
-  bool _skipListAnimation = false; 
+  bool _skipListAnimation = false;
 
   GamesService? gamesService;
   RoundsService? roundsService;
@@ -64,7 +66,8 @@ class _CurrentGameScreenState extends State<CurrentGameScreen> {
     super.dispose();
   }
 
-  Future<void> handleInitializeGame({String? gameId, bool skipAnimation = false}) async {
+  Future<void> handleInitializeGame(
+      {String? gameId, bool skipAnimation = false}) async {
     setState(() {
       isLoadingGame = true;
       errorMessage = null;
@@ -93,7 +96,7 @@ class _CurrentGameScreenState extends State<CurrentGameScreen> {
     settings = await settingsService!.fetchSettings();
 
     setState(() => isLoadingGame = false);
-    
+
     scrollToTop();
   }
 
@@ -159,13 +162,12 @@ class _CurrentGameScreenState extends State<CurrentGameScreen> {
   Future<void> handleDeleteRound(String roundId) async {
     try {
       await roundsService!.deleteRound(roundId);
-      
-     
+
       if (currentGame?.id != null) {
         await _recalculateGameScores(currentGame!.id!);
         await handleInitializeGame(gameId: currentGame!.id!);
       }
-      
+
       showSuccessMessage('Runda je uspješno obrisana');
     } catch (e) {
       showErrorMessage('Greška pri brisanju runde');
@@ -175,18 +177,18 @@ class _CurrentGameScreenState extends State<CurrentGameScreen> {
   Future<void> _recalculateGameScores(String gameId) async {
     final game = await gamesService!.getGameById(gameId);
     if (game == null) return;
-    
+
     final rounds = await roundsService!.getRoundsForGameSorted(gameId);
     int newScoreTeamOne = 0;
     int newScoreTeamTwo = 0;
-    
+
     for (final r in rounds) {
       final baseOne = r.teamOneScore ?? 0;
       final baseTwo = r.teamTwoScore ?? 0;
       final callsOne = r.teamOneCallAmount ?? 0;
       final callsTwo = r.teamTwoCallAmount ?? 0;
       final failedTeam = (r.teamFailed ?? false) ? r.teamCalled : null;
-      
+
       final computed = roundsService!.calculateRoundScores(
         teamOneBase: baseOne,
         teamTwoBase: baseTwo,
@@ -194,24 +196,50 @@ class _CurrentGameScreenState extends State<CurrentGameScreen> {
         teamTwoCallAmount: callsTwo,
         failedTeam: failedTeam,
       );
-      
+
       newScoreTeamOne += computed['teamOneTotal'] ?? 0;
       newScoreTeamTwo += computed['teamTwoTotal'] ?? 0;
     }
-    
+
     game.teamOneScore = newScoreTeamOne;
     game.teamTwoScore = newScoreTeamTwo;
-    
-   
+
     final int gameTargetScore = game.gameType ?? 1001;
-    if (newScoreTeamOne >= gameTargetScore || newScoreTeamTwo >= gameTargetScore) {
+
+    final oldFinishedState = game.finished;
+    final oldWinner = game.winner;
+
+    if (newScoreTeamOne >= gameTargetScore ||
+        newScoreTeamTwo >= gameTargetScore) {
       game.finished = true;
       game.winner = newScoreTeamOne >= gameTargetScore ? 0 : 1;
     } else {
       game.finished = false;
       game.winner = null;
     }
-    
+
+    if (oldFinishedState != game.finished) {
+      if (game.finished == true) {
+        // Increase team wins
+        if (game.winner == 0) {
+          game.teamOneWins = (game.teamOneWins ?? 0) + 1;
+        } else {
+          game.teamTwoWins = (game.teamTwoWins ?? 0) + 1;
+        }
+      } else {
+        // Decrease team wins
+        if (oldWinner == 0) {
+          game.teamOneWins = max(0, (game.teamOneWins ?? 0) - 1);
+        } else {
+          game.teamTwoWins = max(0, (game.teamTwoWins ?? 0) - 1);
+        }
+      }
+
+      if (widget.updateGamesListCallback != null) {
+        widget.updateGamesListCallback!();
+      }
+    }
+
     await gamesService!.updateGame(game);
   }
 
@@ -268,11 +296,11 @@ class _CurrentGameScreenState extends State<CurrentGameScreen> {
       } else if (called == Team.teamTwo.index) {
         teamTwoCalls++;
       }
-      
+
       final teamOneScore = r.teamOneScore ?? 0;
       final teamTwoScore = r.teamTwoScore ?? 0;
       final isStihak = teamOneScore == 252 || teamTwoScore == 252;
-      
+
       if (isStihak) {
         if (teamOneScore == 252) {
           teamOneStihaks++;
@@ -295,7 +323,7 @@ class _CurrentGameScreenState extends State<CurrentGameScreen> {
           }
         }
       }
-      
+
       teamOneDeclarations += r.teamOneCallAmount ?? 0;
       teamTwoDeclarations += r.teamTwoCallAmount ?? 0;
     }
@@ -319,12 +347,21 @@ class _CurrentGameScreenState extends State<CurrentGameScreen> {
       teamScore[Team.teamOne]! >= gameTargetScore ||
       teamScore[Team.teamTwo]! >= gameTargetScore;
 
-  
-
   void _closeStatsPopup() {
     setState(() {
       _showStatsPopup = false;
     });
+  }
+
+  Future<void> updateCallbackWithGameRecalculation() async {
+    if (widget.updateGamesListCallback != null) {
+      widget.updateGamesListCallback!();
+    }
+
+    if (currentGame?.id != null) {
+      await _recalculateGameScores(currentGame!.id!);
+      await handleInitializeGame(gameId: currentGame!.id!);
+    }
   }
 
   @override
@@ -388,8 +425,8 @@ class _CurrentGameScreenState extends State<CurrentGameScreen> {
                           child: TopScoreDetails(
                             teamOneScore: teamScore[Team.teamOne]!,
                             teamTwoScore: teamScore[Team.teamTwo]!,
-                            scoreDifference:
-                                teamScore[Team.teamTwo]! - teamScore[Team.teamOne]!,
+                            scoreDifference: teamScore[Team.teamTwo]! -
+                                teamScore[Team.teamOne]!,
                             teamInLead: Team.teamOne,
                             teamOneLeftToWin:
                                 gameTargetScore - teamScore[Team.teamOne]!,
@@ -401,8 +438,8 @@ class _CurrentGameScreenState extends State<CurrentGameScreen> {
                         const SizedBox(height: 8),
                         if (isGameFinished && settings?.showGameStats == true)
                           GestureDetector(
-                            onTap: () =>
-                                setState(() => _wobbleTrigger = !_wobbleTrigger),
+                            onTap: () => setState(
+                                () => _wobbleTrigger = !_wobbleTrigger),
                             child: WobbleWidget(
                               triggerWobble: _wobbleTrigger,
                               child: GameStatsWidget(gameStats: gameStats),
@@ -427,23 +464,23 @@ class _CurrentGameScreenState extends State<CurrentGameScreen> {
                           final round = rounds![index];
                           return AnimatedListItem(
                             index: index,
-                            animationType: _skipListAnimation ? AnimationType.fade : AnimationType.slideUp,
+                            animationType: _skipListAnimation
+                                ? AnimationType.fade
+                                : AnimationType.slideUp,
                             staggerDelay: _skipListAnimation ? 0 : 80,
                             autoStart: !_skipListAnimation,
                             child: Padding(
-                              padding: const EdgeInsets.symmetric(vertical: 5.0),
+                              padding:
+                                  const EdgeInsets.symmetric(vertical: 5.0),
                               child: RoundScoreListItem(
-                                teamOneCallAmount:
-                                    round.teamOneCallAmount ?? 0,
-                                teamTwoCallAmount:
-                                    round.teamTwoCallAmount ?? 0,
+                                teamOneCallAmount: round.teamOneCallAmount ?? 0,
+                                teamTwoCallAmount: round.teamTwoCallAmount ?? 0,
                                 teamOneScore: round.teamOneScore ?? 0,
                                 teamTwoScore: round.teamTwoScore ?? 0,
                                 teamFailed: round.teamFailed ?? false,
                                 roundID: index,
                                 teamCalled: Team.values[
-                                    round.teamCalled ??
-                                        Team.teamOne.index],
+                                    round.teamCalled ?? Team.teamOne.index],
                                 us20: round.us20,
                                 us50: round.us50,
                                 us100: round.us100,
@@ -458,16 +495,17 @@ class _CurrentGameScreenState extends State<CurrentGameScreen> {
                                     ? () => handleDeleteRound(round.id!)
                                     : null,
                                 onTap: () async {
-                                  await context.pushNamed('addround',
-                                      queryParameters: {
-                                        'id': currentGame!.id!,
-                                        'roundId': round.id ?? '',
-                                        'roundIndex': index.toString(),
-                                      }, extra: () {
-                                    widget.updateGamesListCallback!();
+                                  await context
+                                      .pushNamed('addround', queryParameters: {
+                                    'id': currentGame!.id!,
+                                    'roundId': round.id ?? '',
+                                    'roundIndex': index.toString(),
+                                  }, extra: () {
+                                    updateCallbackWithGameRecalculation();
                                   });
                                   await handleInitializeGame(
-                                      gameId: currentGame!.id!, skipAnimation: true);
+                                      gameId: currentGame!.id!,
+                                      skipAnimation: true);
                                 },
                               ),
                             ),
@@ -500,14 +538,10 @@ class _CurrentGameScreenState extends State<CurrentGameScreen> {
                     iconAnimationType: button.AnimationType.scale,
                     textStyle: TextStyle(
                       color: AppTheme.getInverseTextColor(context),
-                      fontSize:
-                          AppTheme.defaultButtonTextStyle.fontSize,
-                      fontWeight: AppTheme
-                          .defaultButtonTextStyle.fontWeight,
+                      fontSize: AppTheme.defaultButtonTextStyle.fontSize,
+                      fontWeight: AppTheme.defaultButtonTextStyle.fontWeight,
                     ),
-                    bgColor: isGameFinished
-                        ? AppTheme.primary
-                        : AppTheme.green,
+                    bgColor: isGameFinished ? AppTheme.primary : AppTheme.green,
                     onTap: isGameFinished
                         ? () => context.goNamed('main')
                         : handleAddRound,
@@ -522,14 +556,15 @@ class _CurrentGameScreenState extends State<CurrentGameScreen> {
               height: MediaQuery.of(context).size.height,
               width: MediaQuery.of(context).size.width,
               alignment: Alignment.center,
-              padding: const EdgeInsets.symmetric(horizontal: 10), 
+              padding: const EdgeInsets.symmetric(horizontal: 10),
               child: Center(
                 child: AlertDialog(
                   contentPadding: EdgeInsets.zero,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16)),
                   content: SizedBox(
-                    width: MediaQuery.of(context).size.width * 1, 
-                    height: MediaQuery.of(context).size.height * 0.40, 
+                    width: MediaQuery.of(context).size.width * 1,
+                    height: MediaQuery.of(context).size.height * 0.40,
                     child: GameStatsWidget(gameStats: gameStats),
                   ),
                   actions: [

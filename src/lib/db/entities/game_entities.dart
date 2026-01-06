@@ -12,6 +12,10 @@ class GameTable extends BaseUUIDModel {
   IntColumn get winner => integer().nullable().nullable()();
   BoolColumn get finished =>
       boolean().withDefault(const Constant(false)).nullable()();
+  IntColumn get teamOneWins =>
+      integer().withDefault(const Constant(0)).nullable()();
+  IntColumn get teamTwoWins =>
+      integer().withDefault(const Constant(0)).nullable()();
 
   @override
   String get tableName => 'games';

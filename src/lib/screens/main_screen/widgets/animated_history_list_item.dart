@@ -7,6 +7,8 @@ class AnimatedHistoryListItem extends StatefulWidget {
   final Function() onTap;
   final int index;
   final Duration delay;
+  final int teamOneWins, teamTwoWins;
+  final bool finished;
 
   const AnimatedHistoryListItem({
     super.key,
@@ -15,12 +17,16 @@ class AnimatedHistoryListItem extends StatefulWidget {
     required this.teamOneScore,
     required this.teamTwoScore,
     required this.onTap,
+    required this.teamOneWins,
+    required this.teamTwoWins,
+    required this.finished,
     this.index = 0,
     this.delay = const Duration(milliseconds: 100),
   });
 
   @override
-  State<AnimatedHistoryListItem> createState() => _AnimatedHistoryListItemState();
+  State<AnimatedHistoryListItem> createState() =>
+      _AnimatedHistoryListItemState();
 }
 
 class _AnimatedHistoryListItemState extends State<AnimatedHistoryListItem>
@@ -34,19 +40,19 @@ class _AnimatedHistoryListItemState extends State<AnimatedHistoryListItem>
   @override
   void initState() {
     super.initState();
-    
+
     // Scale animation for tap
     _scaleController = AnimationController(
       duration: const Duration(milliseconds: 150),
       vsync: this,
     );
-    
+
     // Slide-in animation for staggered entry
     _slideController = AnimationController(
       duration: const Duration(milliseconds: 600),
       vsync: this,
     );
-    
+
     _scaleAnimation = Tween<double>(
       begin: 1.0,
       end: 0.95,
@@ -54,7 +60,7 @@ class _AnimatedHistoryListItemState extends State<AnimatedHistoryListItem>
       parent: _scaleController,
       curve: Curves.easeInOut,
     ));
-    
+
     _slideAnimation = Tween<Offset>(
       begin: const Offset(0.3, 0),
       end: Offset.zero,
@@ -62,7 +68,7 @@ class _AnimatedHistoryListItemState extends State<AnimatedHistoryListItem>
       parent: _slideController,
       curve: Curves.easeOutCubic,
     ));
-    
+
     _fadeAnimation = Tween<double>(
       begin: 0.0,
       end: 1.0,
@@ -105,7 +111,8 @@ class _AnimatedHistoryListItemState extends State<AnimatedHistoryListItem>
   @override
   Widget build(BuildContext context) {
     return AnimatedBuilder(
-      animation: Listenable.merge([_scaleAnimation, _slideAnimation, _fadeAnimation]),
+      animation:
+          Listenable.merge([_scaleAnimation, _slideAnimation, _fadeAnimation]),
       builder: (context, child) {
         return SlideTransition(
           position: _slideAnimation,
@@ -123,6 +130,9 @@ class _AnimatedHistoryListItemState extends State<AnimatedHistoryListItem>
                   teamOneScore: widget.teamOneScore,
                   teamTwoScore: widget.teamTwoScore,
                   onTap: _handleOnTap,
+                  teamOneWins: widget.teamOneWins,
+                  teamTwoWins: widget.teamTwoWins,
+                  finished: widget.finished,
                 ),
               ),
             ),
