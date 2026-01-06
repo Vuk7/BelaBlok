@@ -333,6 +333,16 @@ class _AddRoundScreenState extends State<AddRoundScreen>
 
     bool isStihak = teamOneBase == 252 || teamTwoBase == 252;
 
+    if (isStihak) {
+      if (teamOneBase == 252) {
+        teamOneCallAmount = teamOneCallAmount + teamTwoCallAmount;
+        teamTwoCallAmount = 0;
+      } else {
+        teamTwoCallAmount = teamOneCallAmount + teamTwoCallAmount;
+        teamOneCallAmount = 0;
+      }
+    }
+
     var scores = roundsService.calculateRoundScores(
       teamOneBase: teamOneBase,
       teamTwoBase: teamTwoBase,
