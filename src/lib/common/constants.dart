@@ -13,3 +13,5 @@ const String teamTwoDisplayName = "VI";
 const bool debugMode = true;
 
 const int maxScore = 162;
+
+const int maxManualScoreInput = 252;
