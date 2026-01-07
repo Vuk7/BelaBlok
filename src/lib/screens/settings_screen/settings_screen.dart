@@ -6,6 +6,7 @@ import 'package:bela_blok/services/settings_services.dart';
 import 'package:bela_blok/db/database.dart';
 import 'package:bela_blok/db/models/user_settings_model.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -138,7 +139,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           'Izvorni kod aplikacije dostupan je na GitHubu. Sve greške, prijedloge i preporuke možete prijaviti na repozitoriju projekta.',
                           style: TextStyle(
                             fontSize: 14,
-                            color: Theme.of(context).colorScheme.onSurface.withOpacity(0.8),
+                            color: Theme.of(context).colorScheme.onSurface,
                           ),
                         ),
                         const SizedBox(height: 16),
@@ -149,7 +150,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                               await launchUrl(uri, mode: LaunchMode.externalApplication);
                             }
                           },
-                          icon: const Icon(Icons.code),
+                          icon: const FaIcon(FontAwesomeIcons.github),
                           label: const Text('Otvori na GitHubu'),
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Theme.of(context).colorScheme.primary,
