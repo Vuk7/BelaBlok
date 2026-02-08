@@ -69,7 +69,7 @@ class AppTheme {
     primaryColor: primary,
     scaffoldBackgroundColor: lightBackground,
     appBarTheme: const AppBarTheme(
-      color: primary,
+      backgroundColor: primary,
       elevation: 2,
       titleTextStyle: TextStyle(color: black),
     ),
@@ -98,7 +98,7 @@ class AppTheme {
     primaryColor: primary,
     scaffoldBackgroundColor: darkBackground,
     appBarTheme: const AppBarTheme(
-      color: primary,
+      backgroundColor: primary,
       elevation: 2,
       titleTextStyle: TextStyle(color: black),
     ),
