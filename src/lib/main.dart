@@ -1,3 +1,4 @@
+import 'package:bela_blok/common/constants.dart';
 import 'package:bela_blok/themes/app_theme.dart';
 import 'package:bela_blok/services/settings_services.dart';
 import 'package:bela_blok/db/database.dart';
@@ -94,7 +95,7 @@ class MyApp extends StatelessWidget {
     return Consumer<ThemeNotifier>(
       builder: (context, themeNotifier, child) {
         return MaterialApp.router(
-          title: 'Bela Blok',
+          title: appName,
           debugShowCheckedModeBanner: false,
           routerConfig: appRouter,
           theme: AppTheme.lightTheme,

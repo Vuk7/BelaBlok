@@ -3,7 +3,7 @@
 const String databaseName = "bela_blok";
 
 // App metadata
-const String appName = "Bela Blok";
+const String appName = "Super Bela Blok";
 const String appVersion = '0.1.0';
 const String appRepositoryUrl = "https://github.com/Vuk7/BelaBlok";
 

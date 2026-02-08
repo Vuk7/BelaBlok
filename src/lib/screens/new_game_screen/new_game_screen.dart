@@ -148,7 +148,7 @@ class _NewGameScreenState extends State<NewGameScreen> {
     );
   }
 
-  setNewGameTeamWins(int teamOneWins, int teamTwoWins) {
+  void setNewGameTeamWins(int teamOneWins, int teamTwoWins) {
     setState(() {
       newGameTeamOneWins = teamOneWins;
       newGameTeamTwoWins = teamTwoWins;

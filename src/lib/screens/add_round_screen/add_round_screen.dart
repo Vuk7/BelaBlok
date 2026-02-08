@@ -600,7 +600,7 @@ class _AddRoundScreenState extends State<AddRoundScreen>
     return CallValueEnum.values[t.index].value;
   }
 
-  refreshMainScreenListOfGames() {
+  void refreshMainScreenListOfGames() {
     if (widget.updateGamesListCallback != null) {
       widget.updateGamesListCallback!();
     }
