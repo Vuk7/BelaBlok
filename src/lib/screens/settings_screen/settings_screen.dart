@@ -1,3 +1,4 @@
+import 'package:bela_blok/common/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:bela_blok/main.dart';
@@ -145,7 +146,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         const SizedBox(height: 16),
                         ElevatedButton.icon(
                           onPressed: () async {
-                            final uri = Uri.parse('https://github.com/Vuk7/BelaBlok');
+                            final uri = Uri.parse(appRepositoryUrl);
                             if (await canLaunchUrl(uri)) {
                               await launchUrl(uri, mode: LaunchMode.externalApplication);
                             }
