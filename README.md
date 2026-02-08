@@ -1,6 +1,44 @@
-# Bela Blok - Flutter App
+# Super Bela Blok - Flutter App
+
+**Super Bela Blok** je moderna aplikacija za praćenje i bilježenje rezultata u igri kartama **Bela**, osmišljena kako bi igru učinila jednostavnijom, preglednijom i ugodnijom za sve igrače.
+
+<p align="center">
+  <img src="screenshots/main_screen_dark.jpg" width="220" />
+  <img src="screenshots/new_game_screen_dark.jpg" width="220" />
+  <img src="screenshots/game_screen_dark.jpg" width="220" />
+  <img src="screenshots/round_screen_dark.jpg" width="220" />
+  <img src="screenshots/stats_dark.jpg" width="220" />
+</p>
+
+### Glavne značajke
+- Praćenje igara u stvarnom vremenu
+- Povijest odigranih igara
+- Praćenje tko miješa karte
+- Praćenje pobjeda i statistike timova
+- Tamna i svijetla tema
+- Ugrađena pravila igre Bela
+- Pomoć pri zvanju
+- Detaljna statistika igre
+- Pametni kalkulator bodova
+- Mogućnost promjene smjera igre
+
+---
 
 Card game "Bela" (Belot) score tracking application developed in Flutter with Drift ORM database.
+
+### Key features
+- Real-time game score tracking
+- Game history overview
+- Card shuffler tracking
+- Team win tracking and statistics
+- Dark and light theme support
+- Built-in Bela game rules
+- Bidding (calling) assistance
+- Detailed game statistics
+- Smart score calculator
+- Ability to change game direction
+
+**Documentation and codebase are in English.**
 
 ## How to start this project
 
