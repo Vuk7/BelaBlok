@@ -124,7 +124,7 @@ class AppTheme {
   );
 
   static const TextStyle titleTextStyle = TextStyle(
-    fontSize: 44,
+    fontSize: 36,
     fontWeight: FontWeight.bold,
     color: primary,
     letterSpacing: 2,

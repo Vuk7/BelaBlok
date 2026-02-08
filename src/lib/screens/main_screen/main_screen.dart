@@ -1,3 +1,4 @@
+import 'package:bela_blok/common/constants.dart';
 import 'package:bela_blok/db/database.dart';
 import 'package:bela_blok/db/models/game_model.dart';
 import 'package:bela_blok/db/models/user_settings_model.dart';
@@ -192,8 +193,8 @@ class _MainScreenState extends State<MainScreen> {
                   child: Column(
                     children: [
                       const SizedBox(height: 40),
-                      const Text(
-                        "BELA BLOK",
+                      Text(
+                        appName.toUpperCase(),
                         style: AppTheme.titleTextStyle,
                       ),
                       const SizedBox(
