@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../../common/constants.dart';
+
 class BigButtonInputNumber extends StatelessWidget {
   final String text;
   final Color bgColor;
@@ -9,15 +11,21 @@ class BigButtonInputNumber extends StatelessWidget {
   final TextEditingController inputController;
   final double textPadding;
   final double? width;
-  const BigButtonInputNumber(
-      {super.key,
-      required this.text,
-      required this.textStyle,
-      required this.bgColor,
-      required this.onTap,
-      required this.inputController,
-      this.textPadding = 20.0,
-      this.width});
+  final String? suffixText;
+  final int maxValue;
+
+  const BigButtonInputNumber({
+    super.key,
+    required this.text,
+    required this.textStyle,
+    required this.bgColor,
+    required this.onTap,
+    required this.inputController,
+    this.textPadding = 20.0,
+    this.width,
+    this.suffixText,
+    this.maxValue = maxManualScoreInput,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -36,19 +44,50 @@ class BigButtonInputNumber extends StatelessWidget {
           style: textStyle,
           onTap: onTap,
           decoration: InputDecoration(
-              border: InputBorder.none,
-              focusedBorder: InputBorder.none,
-              enabledBorder: InputBorder.none,
-              errorBorder: InputBorder.none,
-              disabledBorder: InputBorder.none,
-              hintText: text,
-              hintStyle: textStyle),
+            border: InputBorder.none,
+            focusedBorder: InputBorder.none,
+            enabledBorder: InputBorder.none,
+            errorBorder: InputBorder.none,
+            disabledBorder: InputBorder.none,
+            hintText: text,
+            hintStyle: textStyle,
+            suffixText: suffixText,
+            suffixStyle: textStyle.copyWith(fontSize: 15, color: Colors.grey[700]),
+          ),
           keyboardType: TextInputType.number,
           inputFormatters: <TextInputFormatter>[
-            FilteringTextInputFormatter.digitsOnly
+            FilteringTextInputFormatter.digitsOnly,
+            _MaxValueInputFormatter(maxValue),
           ],
         ),
       ),
     );
+  }
+}
+
+class _MaxValueInputFormatter extends TextInputFormatter {
+  final int maxValue;
+
+  _MaxValueInputFormatter(this.maxValue);
+
+  @override
+  TextEditingValue formatEditUpdate(
+    TextEditingValue oldValue,
+    TextEditingValue newValue,
+  ) {
+    if (newValue.text.isEmpty) {
+      return newValue;
+    }
+
+    final int? value = int.tryParse(newValue.text);
+    if (value == null) {
+      return oldValue;
+    }
+
+    if (value > maxValue) {
+      return oldValue;
+    }
+
+    return newValue;
   }
 }

@@ -1,4 +1,3 @@
-import 'package:bela_blok/screens/widgets/big_button.dart';
 import 'package:flutter/material.dart';
 
 class ChooseInputType extends StatelessWidget {
@@ -7,36 +6,67 @@ class ChooseInputType extends StatelessWidget {
   final Color notSelectedColor;
   final Function(int id) onTap;
   final double boxWidth;
-  const ChooseInputType(
-      {super.key,
-      required this.selectedChoice,
-      required this.selectedColor,
-      required this.notSelectedColor,
-      required this.onTap,
-      required this.boxWidth});
+
+  const ChooseInputType({
+    super.key,
+    required this.selectedChoice,
+    required this.selectedColor,
+    required this.notSelectedColor,
+    required this.onTap,
+    required this.boxWidth,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceAround,
+      mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        BigButton(
-          text: "IGRA",
-          textStyle: const TextStyle(
-              color: Colors.black, fontSize: 24, fontWeight: FontWeight.bold),
-          bgColor: (selectedChoice == 0) ? selectedColor : notSelectedColor,
-          onTap: () => onTap(0),
-          textPadding: 4,
-          width: boxWidth,
+        Container(
+          constraints: BoxConstraints(minWidth: 90, maxWidth: boxWidth),
+          child: ChoiceChip(
+            label: const Padding(
+              padding:  EdgeInsets.symmetric(vertical: 7.0, horizontal: 10.0),
+              child: Text(
+                'Igra',
+                style:  TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+              ),
+            ),
+            selected: selectedChoice == 0,
+            onSelected: (v) {
+              if (!v) return;
+              onTap(0);
+            },
+            selectedColor: selectedColor,
+            backgroundColor: notSelectedColor,
+            labelStyle: TextStyle(
+              color: selectedChoice == 0 ? Colors.white : Colors.black,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
         ),
-        BigButton(
-          text: "ZVANJE",
-          textStyle: const TextStyle(
-              color: Colors.black, fontSize: 24, fontWeight: FontWeight.bold),
-          bgColor: (selectedChoice == 1) ? selectedColor : notSelectedColor,
-          onTap: () => onTap(1),
-          textPadding: 4,
-          width: boxWidth,
+        const SizedBox(width: 14),
+        Container(
+          constraints: BoxConstraints(minWidth: 90, maxWidth: boxWidth),
+          child: ChoiceChip(
+            label:const Padding(
+              padding:  EdgeInsets.symmetric(vertical: 7.0, horizontal: 10.0),
+              child: Text(
+                'Zvanje',
+                style:  TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+              ),
+            ),
+            selected: selectedChoice == 1,
+            onSelected: (v) {
+              if (!v) return;
+              onTap(1);
+            },
+            selectedColor: selectedColor,
+            backgroundColor: notSelectedColor,
+            labelStyle: TextStyle(
+              color: selectedChoice == 1 ? Colors.white : Colors.black,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
         ),
       ],
     );

@@ -23,13 +23,21 @@ class PlayDirectionChoice extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                CircleAvatar(
-                  radius: 16,
-                  backgroundColor:
-                      (selectedChoice == 0) ? selectedColor : notSelectedColor,
+                Container(
+                  width: 32,
+                  height: 32,
+                  decoration: BoxDecoration(
+                    color: (selectedChoice == 0) ? selectedColor : notSelectedColor,
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  child: const Icon(
+                    Icons.rotate_right,
+                    color: Colors.white,
+                    size: 20,
+                  ),
                 ),
                 const SizedBox(
-                  width: 10,
+                  width: 8,
                 ),
                 Text(
                   "U SMJERU KAZALJKE NA SATU",
@@ -37,7 +45,7 @@ class PlayDirectionChoice extends StatelessWidget {
                       color: (selectedChoice == 0)
                           ? selectedColor
                           : notSelectedColor,
-                      fontSize: 16,
+                      fontSize: 12,
                       fontWeight: FontWeight.bold),
                 )
               ],
@@ -51,13 +59,21 @@ class PlayDirectionChoice extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                CircleAvatar(
-                  radius: 16,
-                  backgroundColor:
-                      (selectedChoice == 1) ? selectedColor : notSelectedColor,
+                Container(
+                  width: 32,
+                  height: 32,
+                  decoration: BoxDecoration(
+                    color: (selectedChoice == 1) ? selectedColor : notSelectedColor,
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  child: const Icon(
+                    Icons.rotate_left,
+                    color: Colors.white,
+                    size: 20,
+                  ),
                 ),
                 const SizedBox(
-                  width: 10,
+                  width: 8,
                 ),
                 Text(
                   "SUPROTNO OD KAZALJKE NA SATU",
@@ -65,7 +81,7 @@ class PlayDirectionChoice extends StatelessWidget {
                       color: (selectedChoice == 1)
                           ? selectedColor
                           : notSelectedColor,
-                      fontSize: 16,
+                      fontSize: 12,
                       fontWeight: FontWeight.bold),
                 )
               ],

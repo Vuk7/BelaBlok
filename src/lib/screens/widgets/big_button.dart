@@ -6,7 +6,7 @@ class BigButton extends StatelessWidget {
   final TextStyle textStyle;
   final Function() onTap;
   final double textPadding;
-
+  final IconData? icon;
   final double? width;
   final double? height;
   const BigButton({
@@ -16,6 +16,7 @@ class BigButton extends StatelessWidget {
     required this.bgColor,
     required this.onTap,
     this.textPadding = 20.0,
+    this.icon,
     this.width,
     this.height,
   });
@@ -35,9 +36,22 @@ class BigButton extends StatelessWidget {
         child: Padding(
           padding: EdgeInsets.all(textPadding),
           child: Center(
-            child: Text(
-              text,
-              style: textStyle,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  text,
+                  style: textStyle,
+                ),
+                if (icon != null) ...[
+                  const SizedBox(width: 8),
+                  Icon(
+                    icon,
+                    color: textStyle.color,
+                    size: textStyle.fontSize,
+                  ),
+                ],
+              ],
             ),
           ),
         ),
