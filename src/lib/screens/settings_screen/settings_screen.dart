@@ -79,11 +79,15 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 bottom: MediaQuery.of(context).padding.bottom + 80,
               ),
               children: [
-                Text('Tema aplikacije', style: AppTheme.sectionHeaderTextStyle.copyWith(color: Theme.of(context).colorScheme.onSurface)),
+                Text('Tema aplikacije',
+                    style: AppTheme.sectionHeaderTextStyle.copyWith(
+                        color: Theme.of(context).colorScheme.onSurface)),
                 const SizedBox(height: 4),
                 const _ThemeToggle(),
                 const SizedBox(height: 24),
-                Text('Pravila', style: AppTheme.sectionHeaderTextStyle.copyWith(color: Theme.of(context).colorScheme.onSurface)),
+                Text('Pravila',
+                    style: AppTheme.sectionHeaderTextStyle.copyWith(
+                        color: Theme.of(context).colorScheme.onSurface)),
                 const SizedBox(height: 4),
                 SwitchListTile(
                   title: const Text('Prikaži pravila igre '),
@@ -92,7 +96,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   secondary: const Icon(Icons.menu_book),
                 ),
                 const SizedBox(height: 24),
-                Text('Help dijalog', style: AppTheme.sectionHeaderTextStyle.copyWith(color: Theme.of(context).colorScheme.onSurface)),
+                Text('Help dijalog',
+                    style: AppTheme.sectionHeaderTextStyle.copyWith(
+                        color: Theme.of(context).colorScheme.onSurface)),
                 const SizedBox(height: 4),
                 SwitchListTile(
                   title: const Text('Prikaži pomoć zvanja'),
@@ -101,7 +107,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   secondary: const Icon(Icons.quiz),
                 ),
                 const SizedBox(height: 32),
-                Text('Statistike igre', style: AppTheme.sectionHeaderTextStyle.copyWith(color: Theme.of(context).colorScheme.onSurface)),
+                Text('Statistike igre',
+                    style: AppTheme.sectionHeaderTextStyle.copyWith(
+                        color: Theme.of(context).colorScheme.onSurface)),
                 const SizedBox(height: 4),
                 SwitchListTile(
                   title: const Text('Prikaz statistike '),
@@ -110,7 +118,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   secondary: const Icon(Icons.analytics),
                 ),
                 const SizedBox(height: 32),
-                Text('Pametni kalkulator', style: AppTheme.sectionHeaderTextStyle.copyWith(color: Theme.of(context).colorScheme.onSurface)),
+                Text('Pametni kalkulator',
+                    style: AppTheme.sectionHeaderTextStyle.copyWith(
+                        color: Theme.of(context).colorScheme.onSurface)),
                 const SizedBox(height: 4),
                 SwitchListTile(
                   title: const Text('Prikaži gumb pametnog kalkulatora'),
@@ -119,7 +129,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   secondary: const Icon(Icons.calculate),
                 ),
                 const SizedBox(height: 32),
-                Text('Open Source', style: AppTheme.sectionHeaderTextStyle.copyWith(color: Theme.of(context).colorScheme.onSurface)),
+                Text('Open Source',
+                    style: AppTheme.sectionHeaderTextStyle.copyWith(
+                        color: Theme.of(context).colorScheme.onSurface)),
                 const SizedBox(height: 4),
                 Card(
                   child: Padding(
@@ -148,20 +160,28 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           onPressed: () async {
                             final uri = Uri.parse(appRepositoryUrl);
                             if (await canLaunchUrl(uri)) {
-                              await launchUrl(uri, mode: LaunchMode.externalApplication);
+                              await launchUrl(uri,
+                                  mode: LaunchMode.externalApplication);
                             }
                           },
                           icon: const FaIcon(FontAwesomeIcons.github),
                           label: const Text('Otvori na GitHubu'),
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: Theme.of(context).colorScheme.primary,
-                            foregroundColor: Theme.of(context).colorScheme.onPrimary,
+                            backgroundColor:
+                                Theme.of(context).colorScheme.primary,
+                            foregroundColor:
+                                Theme.of(context).colorScheme.onPrimary,
                           ),
                         ),
                       ],
                     ),
                   ),
                 ),
+                // App Version
+                const SizedBox(height: 32),
+                Text('Verzija: $appVersion',
+                    style: AppTheme.sectionHeaderTextStyle.copyWith(
+                        color: Theme.of(context).colorScheme.onSurface)),
               ],
             ),
     );
@@ -181,7 +201,8 @@ class _ThemeToggle extends StatelessWidget {
           label: 'Odabir teme. Trenutno ${isDark ? 'tamna' : 'svijetla'}',
           toggled: isDark,
           child: GestureDetector(
-            onTap: () async => await themeNotifier.setThemeMode(isDark ? ThemeMode.light : ThemeMode.dark),
+            onTap: () async => await themeNotifier
+                .setThemeMode(isDark ? ThemeMode.light : ThemeMode.dark),
             child: AnimatedContainer(
               duration: const Duration(milliseconds: 250),
               curve: Curves.easeInOut,
@@ -189,7 +210,9 @@ class _ThemeToggle extends StatelessWidget {
               decoration: BoxDecoration(
                 color: AppTheme.getCardBackgroundColor(context),
                 borderRadius: BorderRadius.circular(32),
-                border: Border.all(color: colorScheme.primary.withValues(alpha: 0.4 * 255), width: 2),
+                border: Border.all(
+                    color: colorScheme.primary.withValues(alpha: 0.4 * 255),
+                    width: 2),
               ),
               child: Row(
                 mainAxisSize: MainAxisSize.max,
@@ -198,14 +221,16 @@ class _ThemeToggle extends StatelessWidget {
                     label: 'Svijetla',
                     icon: Icons.wb_sunny,
                     selected: !isDark,
-                    onTap: () async => await themeNotifier.setThemeMode(ThemeMode.light),
+                    onTap: () async =>
+                        await themeNotifier.setThemeMode(ThemeMode.light),
                     highlightColor: colorScheme.primary,
                   ),
                   _ThemeOption(
                     label: 'Tamna',
                     icon: Icons.nightlight_round,
                     selected: isDark,
-                    onTap: () async => await themeNotifier.setThemeMode(ThemeMode.dark),
+                    onTap: () async =>
+                        await themeNotifier.setThemeMode(ThemeMode.dark),
                     highlightColor: colorScheme.primary,
                   ),
                 ],
@@ -241,35 +266,39 @@ class _ThemeOption extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 4),
         child: InkWell(
           borderRadius: BorderRadius.circular(26),
-            onTap: onTap,
-            child: AnimatedContainer(
-              duration: const Duration(milliseconds: 220),
-              curve: Curves.easeInOut,
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-              decoration: BoxDecoration(
-                color: selected ? highlightColor : Colors.transparent,
-                borderRadius: BorderRadius.circular(26),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                    icon,
-                    size: 22,
-                    color: selected ? AppTheme.getInverseTextColor(context) : baseTextColor.withValues(alpha: 0.7 * 255),
-                  ),
-                  const SizedBox(width: 6),
-                  Text(
-                    label,
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w600,
-                      color: selected ? AppTheme.getInverseTextColor(context) : baseTextColor.withValues(alpha: 0.85 * 255),
-                    ),
-                  )
-                ],
-              ),
+          onTap: onTap,
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 220),
+            curve: Curves.easeInOut,
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+            decoration: BoxDecoration(
+              color: selected ? highlightColor : Colors.transparent,
+              borderRadius: BorderRadius.circular(26),
             ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  icon,
+                  size: 22,
+                  color: selected
+                      ? AppTheme.getInverseTextColor(context)
+                      : baseTextColor.withValues(alpha: 0.7 * 255),
+                ),
+                const SizedBox(width: 6),
+                Text(
+                  label,
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                    color: selected
+                        ? AppTheme.getInverseTextColor(context)
+                        : baseTextColor.withValues(alpha: 0.85 * 255),
+                  ),
+                )
+              ],
+            ),
+          ),
         ),
       ),
     );
