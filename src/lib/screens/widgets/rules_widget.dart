@@ -143,7 +143,7 @@ class _RulesWidgetState extends State<RulesWidget> {
                   ),
                   
                   _buildRuleSection(
-                    'Belot',
+                    'BELOT',
                     'Ako jedan od igrača ima 8 karata iste boje i zove to je automatksa pobjeda toga tima (znači piše ima se 1001)',
                     Icons.emoji_events,
                     isDark,
