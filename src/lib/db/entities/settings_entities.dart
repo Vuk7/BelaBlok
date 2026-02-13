@@ -11,6 +11,8 @@ class SettingsTable extends BaseUUIDModel {
       boolean().withDefault(const Constant(true))();
   BoolColumn get showSmartCalculator => 
       boolean().withDefault(const Constant(true))();
+  BoolColumn get lockPreviousRounds => 
+      boolean().withDefault(const Constant(false))();
   IntColumn get themeMode => 
       integer().withDefault(Constant(AppThemeMode.light.index))();
 

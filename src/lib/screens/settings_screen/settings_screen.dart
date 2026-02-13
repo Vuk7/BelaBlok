@@ -57,6 +57,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
     await _loadSettings();
   }
 
+  Future<void> _updateLockPreviousRounds(bool value) async {
+    await _settingsService.updateLockPreviousRounds(value);
+    await _loadSettings();
+  }
+
   Future<void> _updateShowHelpDialog(bool value) async {
     await _settingsService.updateShowHelpDialog(value);
     await _loadSettings();
@@ -127,6 +132,18 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   value: _settings?.showSmartCalculator ?? false,
                   onChanged: _updateShowSmartCalculator,
                   secondary: const Icon(Icons.calculate),
+                ),
+                const SizedBox(height: 32),
+                Text('Zaključavanje rundi',
+                    style: AppTheme.sectionHeaderTextStyle.copyWith(
+                        color: Theme.of(context).colorScheme.onSurface)),
+                const SizedBox(height: 4),
+                SwitchListTile(
+                  title: const Text('Zaključaj sve osim zadnje runde'),
+                  subtitle: const Text('Samo zadnja runda u igri se može uređivati'),
+                  value: _settings?.lockPreviousRounds ?? false,
+                  onChanged: _updateLockPreviousRounds,
+                  secondary: const Icon(Icons.lock_outline),
                 ),
                 const SizedBox(height: 32),
                 Text('Open Source',

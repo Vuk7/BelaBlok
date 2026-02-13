@@ -73,6 +73,17 @@ class SettingsService {
     );
   }
 
+  Future<void> updateLockPreviousRounds(bool lockPreviousRounds) async {
+    final settings = await fetchSettings();
+    settings.lockPreviousRounds = lockPreviousRounds;
+    await dao.update(
+      database.settingsTable,
+      database.settingsTable.id,
+      settings.id!,
+      settings.toCompanion()
+    );
+  }
+
   Future<void> updateThemeMode(AppThemeMode themeMode) async {
     final settings = await fetchSettings();
     settings.themeMode = themeMode.index;
@@ -98,6 +109,9 @@ class SettingsService {
     }
     if (settings.showSmartCalculator != null) {
       currentSettings.showSmartCalculator = settings.showSmartCalculator;
+    }
+    if (settings.lockPreviousRounds != null) {
+      currentSettings.lockPreviousRounds = settings.lockPreviousRounds;
     }
     if (settings.themeMode != null) {
       currentSettings.themeMode = settings.themeMode;

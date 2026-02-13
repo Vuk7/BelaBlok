@@ -462,6 +462,8 @@ class _CurrentGameScreenState extends State<CurrentGameScreen> {
                       delegate: SliverChildBuilderDelegate(
                         (context, index) {
                           final round = rounds![index];
+                          final isLastRound = index == rounds!.length - 1;
+                          final isLocked = (settings?.lockPreviousRounds ?? false) && !isLastRound;
                           return AnimatedListItem(
                             index: index,
                             animationType: _skipListAnimation
@@ -491,10 +493,10 @@ class _CurrentGameScreenState extends State<CurrentGameScreen> {
                                 them100: round.them100,
                                 them150: round.them150,
                                 them200: round.them200,
-                                onDelete: round.id != null
+                                onDelete: isLocked ? null : (round.id != null
                                     ? () => handleDeleteRound(round.id!)
-                                    : null,
-                                onTap: () async {
+                                    : null),
+                                onTap: isLocked ? () {} : () async {
                                   await context
                                       .pushNamed('addround', queryParameters: {
                                     'id': currentGame!.id!,

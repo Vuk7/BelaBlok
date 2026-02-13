@@ -8,6 +8,7 @@ class UserSettings extends BaseModel {
   bool? showHelpDialog;
   bool? showGameStats;
   bool? showSmartCalculator;
+  bool? lockPreviousRounds;
   int? themeMode;
 
   UserSettings({
@@ -19,6 +20,7 @@ class UserSettings extends BaseModel {
     this.showHelpDialog,
     this.showGameStats,
     this.showSmartCalculator,
+    this.lockPreviousRounds,
     this.themeMode,
   });
 
@@ -36,6 +38,7 @@ extension UserSettingsMapper on SettingsTableData {
       showHelpDialog: showHelpDialog,
       showGameStats: showGameStats,
       showSmartCalculator: showSmartCalculator,
+      lockPreviousRounds: lockPreviousRounds,
       themeMode: themeMode,
     );
   }
@@ -50,6 +53,7 @@ extension UserSettingsModelMapper on UserSettings {
       showHelpDialog: showHelpDialog != null ? Value(showHelpDialog!) : const Value.absent(),
       showGameStats: showGameStats != null ? Value(showGameStats!) : const Value.absent(),
       showSmartCalculator: showSmartCalculator != null ? Value(showSmartCalculator!) : const Value.absent(),
+      lockPreviousRounds: lockPreviousRounds != null ? Value(lockPreviousRounds!) : const Value.absent(),
       themeMode: themeMode != null ? Value(themeMode!) : const Value.absent(),
     );
   }
