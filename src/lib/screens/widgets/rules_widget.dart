@@ -109,7 +109,7 @@ class _RulesWidgetState extends State<RulesWidget> {
                   
                   _buildRuleSection(
                     'SNAGA KARATA (OBIČNA BOJA)',
-                    'As (11), Desetka (10), Kralj (4), Kraljica (3), Dečko (2), Deveta (0), Osmica (0), Sedmica (0)',
+                    'As (11), Desetka (10), Kralj (4), Kraljica (3), Dečko (2), Devetka (0), Osmica (0), Sedmica (0)',
                     Icons.style,
                     isDark,
                   ),
@@ -144,14 +144,14 @@ class _RulesWidgetState extends State<RulesWidget> {
                   
                   _buildRuleSection(
                     'BELOT',
-                    'Ako jedan od igrača ima 8 karata iste boje i zove to je automatksa pobjeda toga tima (znači piše ima se 1001)',
+                    'Ako jedan od igrača ima 8 karata iste boje i zove to je automatska pobjeda toga tima (znači automatski ima se 1001 bod)',
                     Icons.emoji_events,
                     isDark,
                   ),
 
                   _buildRuleSection(
                     'BODOVANJE',
-                    'Ukupno bodova u partiji je 162. Broj bodova partije se poveća proporcijalno znvanjima u rudni.',
+                    'Ukupno bodova u partiji je 162. Broj bodova partije se poveća proporcijalno zvanjima u rundi.',
                     Icons.calculate,
                     isDark,
                   ),
