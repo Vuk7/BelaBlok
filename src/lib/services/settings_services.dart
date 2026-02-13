@@ -17,6 +17,7 @@ class SettingsService {
         showHelpDialog: false,
         showGameStats: true,
         showSmartCalculator: false,
+        lockPreviousRounds: false,
         themeMode: AppThemeMode.light.index,
       );
       

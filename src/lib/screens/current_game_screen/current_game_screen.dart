@@ -496,7 +496,8 @@ class _CurrentGameScreenState extends State<CurrentGameScreen> {
                                 onDelete: isLocked ? null : (round.id != null
                                     ? () => handleDeleteRound(round.id!)
                                     : null),
-                                onTap: isLocked ? () {} : () async {
+                                isLocked: isLocked,
+                                onTap: isLocked ? null : () async {
                                   await context
                                       .pushNamed('addround', queryParameters: {
                                     'id': currentGame!.id!,
