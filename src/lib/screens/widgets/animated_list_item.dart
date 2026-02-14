@@ -1,4 +1,6 @@
+import 'package:bela_blok/main.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 enum AnimationType { slideUp, slideLeft, slideRight, scale, fade, bounce }
 
@@ -118,6 +120,9 @@ class _AnimatedListItemState extends State<AnimatedListItem>
 
   @override
   Widget build(BuildContext context) {
+    final ecoMode = context.watch<EcoModeNotifier>().isEcoMode;
+    if (ecoMode) return widget.child;
+
     Widget animatedChild = widget.child;
 
     switch (widget.animationType) {

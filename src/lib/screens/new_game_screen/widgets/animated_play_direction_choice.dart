@@ -1,4 +1,6 @@
+import 'package:bela_blok/main.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class AnimatedPlayDirectionChoice extends StatefulWidget {
   final int selectedChoice;
@@ -77,14 +79,15 @@ class _AnimatedPlayDirectionChoiceState extends State<AnimatedPlayDirectionChoic
 
   @override
   Widget build(BuildContext context) {
+    final ecoMode = context.watch<EcoModeNotifier>().isEcoMode;
+
     return Column(
       children: [
         // Clockwise option
         GestureDetector(
           onTap: () {
-            _animateClockwise();
-            // Small delay to let animation start
-            Future.delayed(const Duration(milliseconds: 50), () {
+            if (!ecoMode) _animateClockwise();
+            Future.delayed(Duration(milliseconds: ecoMode ? 0 : 50), () {
               widget.onTap(0);
             });
           },
@@ -101,19 +104,17 @@ class _AnimatedPlayDirectionChoiceState extends State<AnimatedPlayDirectionChoic
                     : widget.notSelectedColor,
                   borderRadius: BorderRadius.circular(16),
                 ),
-                child: AnimatedBuilder(
-                  animation: _clockwiseAnimation,
-                  builder: (context, child) {
-                    return Transform.rotate(
-                      angle: _clockwiseAnimation.value * 2 * 3.14159, // Full rotation
-                      child: const Icon(
-                        Icons.rotate_right,
-                        color: Colors.white,
-                        size: 20,
-                      ),
-                    );
-                  },
-                ),
+                child: ecoMode
+                  ? const Icon(Icons.rotate_right, color: Colors.white, size: 20)
+                  : AnimatedBuilder(
+                      animation: _clockwiseAnimation,
+                      builder: (context, child) {
+                        return Transform.rotate(
+                          angle: _clockwiseAnimation.value * 2 * 3.14159,
+                          child: const Icon(Icons.rotate_right, color: Colors.white, size: 20),
+                        );
+                      },
+                    ),
               ),
               const SizedBox(width: 8),
               Text(
@@ -133,9 +134,8 @@ class _AnimatedPlayDirectionChoiceState extends State<AnimatedPlayDirectionChoic
         // Counter-clockwise option
         GestureDetector(
           onTap: () {
-            _animateCounterClockwise();
-            // Small delay to let animation start
-            Future.delayed(const Duration(milliseconds: 50), () {
+            if (!ecoMode) _animateCounterClockwise();
+            Future.delayed(Duration(milliseconds: ecoMode ? 0 : 50), () {
               widget.onTap(1);
             });
           },
@@ -152,19 +152,17 @@ class _AnimatedPlayDirectionChoiceState extends State<AnimatedPlayDirectionChoic
                     : widget.notSelectedColor,
                   borderRadius: BorderRadius.circular(16),
                 ),
-                child: AnimatedBuilder(
-                  animation: _counterClockwiseAnimation,
-                  builder: (context, child) {
-                    return Transform.rotate(
-                      angle: _counterClockwiseAnimation.value * 2 * 3.14159, // Full rotation counterclockwise
-                      child: const Icon(
-                        Icons.rotate_left,
-                        color: Colors.white,
-                        size: 20,
-                      ),
-                    );
-                  },
-                ),
+                child: ecoMode
+                  ? const Icon(Icons.rotate_left, color: Colors.white, size: 20)
+                  : AnimatedBuilder(
+                      animation: _counterClockwiseAnimation,
+                      builder: (context, child) {
+                        return Transform.rotate(
+                          angle: _counterClockwiseAnimation.value * 2 * 3.14159,
+                          child: const Icon(Icons.rotate_left, color: Colors.white, size: 20),
+                        );
+                      },
+                    ),
               ),
               const SizedBox(width: 8),
               Text(

@@ -17,11 +17,13 @@ import 'package:bela_blok/screens/widgets/big_button_input_number.dart';
 import 'package:bela_blok/screens/widgets/help_dialog.dart';
 import 'package:bela_blok/screens/widgets/player_shuffling.dart';
 import 'package:bela_blok/screens/widgets/pulsing_fab.dart';
+import 'package:bela_blok/main.dart';
 import 'package:bela_blok/themes/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:bela_blok/common/constants.dart';
 import 'package:bela_blok/enums/call_value_enum.dart';
+import 'package:provider/provider.dart';
 
 class AddRoundScreen extends StatefulWidget {
   final String? gameId;
@@ -911,14 +913,46 @@ class _AddRoundScreenState extends State<AddRoundScreen>
                           ),
                           const SizedBox(height: 16),
                           if (selectedMode == 0) ...[
-                            Row(
+                            Builder(
+                              builder: (context) {
+                                final ecoMode = context.watch<EcoModeNotifier>().isEcoMode;
+                                return Row(
                               mainAxisAlignment: MainAxisAlignment.spaceAround,
                               children: List.generate(
                                 2,
                                 (i) => Column(
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
-                                    AnimatedBuilder(
+                                    ecoMode
+                                      ? BigButtonInputNumber(
+                                          text: '0',
+                                          textStyle: TextStyle(
+                                            color: focusedInput == i
+                                                ? AppTheme.getInverseTextColor(
+                                                    context)
+                                                : AppTheme.getTextColor(
+                                                    context),
+                                            fontSize: 30,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                          bgColor: focusedInput == i
+                                              ? AppTheme.green
+                                              : focusedInput == (1 - i)
+                                                  ? AppTheme.red
+                                                  : AppTheme
+                                                      .getDisabledButtonColor(
+                                                          context),
+                                          onTap: () {
+                                            setState(() => focusedInput = i);
+                                          },
+                                          inputController: i == 0
+                                              ? inputTeamOne
+                                              : inputTeamTwo,
+                                          textPadding: 10,
+                                          width: screenWidth / 3,
+                                          suffixText: getInputSuffix(i),
+                                        )
+                                      : AnimatedBuilder(
                                       animation: i == 0
                                           ? _bounceAnimation1
                                           : _bounceAnimation2,
@@ -964,6 +998,8 @@ class _AddRoundScreenState extends State<AddRoundScreen>
                                   ],
                                 ),
                               ),
+                            );
+                              },
                             ),
                           ],
                           if (selectedMode == 1) ...[
