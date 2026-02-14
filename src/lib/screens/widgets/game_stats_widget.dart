@@ -1,8 +1,6 @@
 
-import 'package:bela_blok/main.dart';
 import 'package:bela_blok/themes/app_theme.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'components_stats/stats_utils.dart';
 import 'components_stats/team_column_widget.dart';
 import 'components_stats/vertical_divider_widget.dart';
@@ -28,10 +26,9 @@ class _GameStatsWidgetState extends State<GameStatsWidget> {
   Widget build(BuildContext context) {
   final isDark = Theme.of(context).brightness == Brightness.dark;
   final statsColors = Theme.of(context).extension<GameStatsColors>();
-  final ecoMode = context.watch<EcoModeNotifier>().isEcoMode;
 
     return AnimatedContainer(
-      duration: Duration(milliseconds: ecoMode ? 0 : 250),
+      duration: const Duration(milliseconds: 250),
       width: double.infinity,
       constraints: BoxConstraints(
         maxHeight: isExpanded ? MediaQuery.of(context).size.height * 0.45 : 56, 
@@ -84,7 +81,7 @@ class _GameStatsWidgetState extends State<GameStatsWidget> {
                   if (isExpanded) const SizedBox(width: 8),
                   AnimatedRotation(
                     turns: isExpanded ? 0.5 : 0,
-                    duration: Duration(milliseconds: ecoMode ? 0 : 200),
+                    duration: const Duration(milliseconds: 200),
                     child: Icon(
                       Icons.expand_more,
                       color: AppTheme.green,
@@ -105,7 +102,7 @@ class _GameStatsWidgetState extends State<GameStatsWidget> {
                       isDark: isDark,
                     ),
                     crossFadeState: isExpanded ? CrossFadeState.showSecond : CrossFadeState.showFirst,
-                    duration: Duration(milliseconds: ecoMode ? 0 : 250),
+                    duration: const Duration(milliseconds: 250),
                   ),
                 ),
               )

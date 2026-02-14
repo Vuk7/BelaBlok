@@ -1,6 +1,4 @@
-import 'package:bela_blok/main.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 class PulsingFloatingActionButton extends StatefulWidget {
   final VoidCallback? onPressed; 
@@ -79,16 +77,6 @@ class _PulsingFloatingActionButtonState extends State<PulsingFloatingActionButto
 
   @override
   Widget build(BuildContext context) {
-    final ecoMode = context.watch<EcoModeNotifier>().isEcoMode;
-    if (ecoMode) {
-      return FloatingActionButton(
-        heroTag: widget.heroTag,
-        onPressed: widget.onPressed,
-        backgroundColor: widget.backgroundColor,
-        child: widget.child,
-      );
-    }
-
     return AnimatedBuilder(
       animation: _scaleAnimation,
       builder: (context, child) {

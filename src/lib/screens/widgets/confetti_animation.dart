@@ -1,7 +1,5 @@
 import 'dart:math';
-import 'package:bela_blok/main.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 class ConfettiAnimation extends StatefulWidget {
   final bool isActive;
@@ -74,8 +72,7 @@ class _ConfettiAnimationState extends State<ConfettiAnimation>
 
   @override
   Widget build(BuildContext context) {
-    final ecoMode = context.watch<EcoModeNotifier>().isEcoMode;
-    if (!widget.isActive || ecoMode) return const SizedBox.shrink();
+    if (!widget.isActive) return const SizedBox.shrink();
 
     return Positioned.fill(
       child: IgnorePointer(

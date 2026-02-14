@@ -1,6 +1,4 @@
-import 'package:bela_blok/main.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 class AnimatedButtonIcon extends StatefulWidget {
   final IconData icon;
@@ -87,15 +85,6 @@ class _AnimatedButtonIconState extends State<AnimatedButtonIcon>
 
   @override
   Widget build(BuildContext context) {
-    final ecoMode = context.watch<EcoModeNotifier>().isEcoMode;
-    if (ecoMode) {
-      return Icon(
-        widget.icon,
-        color: widget.color,
-        size: widget.size,
-      );
-    }
-
     return AnimatedBuilder(
       animation: _animation,
       builder: (context, child) {

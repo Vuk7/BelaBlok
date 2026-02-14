@@ -1,8 +1,6 @@
-import 'package:bela_blok/main.dart';
 import 'package:bela_blok/screens/new_game_screen/widgets/animated_play_direction_choice.dart';
 import 'package:bela_blok/themes/app_theme.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 class GameSettingsMenu extends StatefulWidget {
   final int playDirectionSelect;
@@ -78,43 +76,10 @@ class _GameSettingsMenuState extends State<GameSettingsMenu> {
             ),
           ),
           // Expandable sadržaj
-          Builder(
-            builder: (context) {
-              final ecoMode = context.watch<EcoModeNotifier>().isEcoMode;
-              if (ecoMode) {
-                return isExpanded
-                    ? Padding(
-                        padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Divider(),
-                            const SizedBox(height: 16),
-                            Text(
-                              "SMJER",
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                                color: Theme.of(context).colorScheme.onSurface,
-                              ),
-                            ),
-                            const SizedBox(height: 12),
-                            AnimatedPlayDirectionChoice(
-                              selectedChoice: widget.playDirectionSelect,
-                              selectedColor: AppTheme.green,
-                              notSelectedColor: Theme.of(context).colorScheme.onSurface,
-                              onTap: widget.onPlayDirectionChanged,
-                            ),
-                            const SizedBox(height: 8),
-                          ],
-                        ),
-                      )
-                    : const SizedBox.shrink();
-              }
-              return AnimatedContainer(
-                duration: const Duration(milliseconds: 300),
-                curve: Curves.easeInOut,
-                height: isExpanded ? null : 0,
+          AnimatedContainer(
+            duration: const Duration(milliseconds: 300),
+            curve: Curves.easeInOut,
+            height: isExpanded ? null : 0,
             child: isExpanded
                 ? Padding(
                     padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
@@ -144,8 +109,6 @@ class _GameSettingsMenuState extends State<GameSettingsMenu> {
                     ),
                   )
                 : const SizedBox.shrink(),
-              );
-            },
           ),
         ],
       ),

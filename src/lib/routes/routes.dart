@@ -4,27 +4,15 @@ import 'package:bela_blok/screens/main_screen/main_screen.dart';
 import 'package:bela_blok/screens/new_game_screen/new_game_screen.dart';
 import 'package:bela_blok/screens/settings_screen/settings_screen.dart';
 import 'package:bela_blok/screens/smart_calculator_screen/smart_calculator_screen.dart';
-import 'package:bela_blok/main.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:provider/provider.dart';
 
-// Custom page transitions 
+// Custom page transitions
 Page<void> _slideTransition({
   required Widget child,
   required GoRouterState state,
-  required BuildContext context,
   Offset beginOffset = const Offset(1.0, 0.0),
 }) {
-  final ecoMode = context.read<EcoModeNotifier>().isEcoMode;
-
-  if (ecoMode) {
-    return MaterialPage<void>(
-      key: state.pageKey,
-      child: child,
-    );
-  }
-
   return CustomTransitionPage<void>(
     key: state.pageKey,
     child: child,
@@ -62,7 +50,6 @@ final GoRouter appRouter = GoRouter(
               return _slideTransition(
                 child: NewGameScreen(updateGamesListCallback: updateGamesListCallback),
                 state: state,
-                context: context,
                 beginOffset: const Offset(1.0, 0.0), // slide from right
               );
             },
@@ -77,7 +64,6 @@ final GoRouter appRouter = GoRouter(
               return _slideTransition(
                 child: CurrentGameScreen(gameId: id, updateGamesListCallback: updateGamesListCallback,),
                 state: state,
-                context: context,
                 beginOffset: const Offset(1.0, 0.0),
               );
             },
@@ -100,7 +86,6 @@ final GoRouter appRouter = GoRouter(
                       updateGamesListCallback: updateGamesListCallback
                     ),
                     state: state,
-                    context: context,
                     beginOffset: const Offset(0.0, 1.0),
                   );
                 },
@@ -114,7 +99,6 @@ final GoRouter appRouter = GoRouter(
                       initialResult: state.extra as Map<String, dynamic>?,
                     ),
                     state: state,
-                    context: context,
                     beginOffset: const Offset(0.0, 1.0), // slide from bottom
                   );
                 },
@@ -128,7 +112,6 @@ final GoRouter appRouter = GoRouter(
               return _slideTransition(
                 child: const SettingsScreen(),
                 state: state,
-                context: context,
                 beginOffset: const Offset(1.0, 0.0),
               );
             },

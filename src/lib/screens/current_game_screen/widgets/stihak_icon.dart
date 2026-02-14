@@ -1,6 +1,4 @@
-import 'package:bela_blok/main.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 class StihakIcon extends StatefulWidget {
   final bool animateOnce;
@@ -40,21 +38,8 @@ class _StihakIconState extends State<StihakIcon>
 
   @override
   Widget build(BuildContext context) {
-    final ecoMode = context.watch<EcoModeNotifier>().isEcoMode;
     final bool isPrimary = widget.color == const Color(0xFFFF6B35);
-
-    final iconWidget = isPrimary 
-      ? Stack(
-          alignment: Alignment.center,
-          children: [
-            Icon(Icons.star, color: widget.color, size: 28),
-            const Icon(Icons.star, color: Colors.black, size: 18),
-          ],
-        )
-      : Icon(Icons.stars, color: widget.color, size: 28);
-
-    if (ecoMode) return iconWidget;
-
+    
     return AnimatedBuilder(
       animation: _controller,
       builder: (context, child) {
@@ -63,7 +48,27 @@ class _StihakIconState extends State<StihakIcon>
           child: child,
         );
       },
-      child: iconWidget,
+      child: isPrimary 
+        ? Stack(
+            alignment: Alignment.center,
+            children: [
+              Icon(
+                Icons.star,
+                color: widget.color,
+                size: 28,
+              ),
+             const Icon(
+                Icons.star,
+                color: Colors.black,
+                size: 18,
+              ),
+            ],
+          )
+        : Icon(
+            Icons.stars,
+            color: widget.color,
+            size: 28,
+          ),
     );
   }
 }

@@ -13,9 +13,8 @@ class RoundScoreListItem extends StatelessWidget {
   final int roundID;
   final Team teamCalled;
   final bool teamFailed;
-  final Function()? onTap;
+  final Function() onTap;
   final Function()? onDelete;
-  final bool isLocked;
   
   final int? us20;
   final int? us50;
@@ -38,9 +37,8 @@ class RoundScoreListItem extends StatelessWidget {
     required this.roundID,
     required this.teamCalled,
     required this.teamFailed,
-    this.onTap,
+    required this.onTap,
     this.onDelete,
-    this.isLocked = false,
     this.us20,
     this.us50,
     this.us100,
@@ -250,22 +248,9 @@ class RoundScoreListItem extends StatelessWidget {
       );
     
     if (onDelete == null) {
-      return Opacity(
-        opacity: isLocked ? 0.5 : 1.0,
-        child: Stack(
-          children: [
-            GestureDetector(
-              onTap: onTap,
-              child: container,
-            ),
-            if (isLocked)
-              Positioned(
-                top: 10,
-                right: 10,
-                child: Icon(Icons.lock, size: 16, color: Colors.black54),
-              ),
-          ],
-        ),
+      return GestureDetector(
+        onTap: onTap,
+        child: container,
       );
     }
     
