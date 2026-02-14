@@ -1,4 +1,6 @@
+import 'package:bela_blok/main.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class FallingArrowIcon extends StatefulWidget {
   final bool animateOnce;
@@ -37,6 +39,15 @@ class _FallingArrowIconState extends State<FallingArrowIcon>
 
   @override
   Widget build(BuildContext context) {
+    final ecoMode = context.watch<EcoModeNotifier>().isEcoMode;
+    if (ecoMode) {
+      return const Icon(
+        Icons.arrow_downward,
+        color: Colors.red,
+        size: 28,
+      );
+    }
+
     return AnimatedBuilder(
       animation: _controller,
       builder: (context, child) {

@@ -90,6 +90,26 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 const SizedBox(height: 4),
                 const _ThemeToggle(),
                 const SizedBox(height: 24),
+                Text('Performanse',
+                    style: AppTheme.sectionHeaderTextStyle.copyWith(
+                        color: Theme.of(context).colorScheme.onSurface)),
+                const SizedBox(height: 4),
+                Consumer<EcoModeNotifier>(
+                  builder: (context, ecoNotifier, _) {
+                    return SwitchListTile(
+                      title: const Text('Eco Mode'),
+                      subtitle: const Text(
+                        'Isključuje animacije i efekte za brži rad na starijim uređajima',
+                      ),
+                      value: ecoNotifier.isEcoMode,
+                      onChanged: (value) async {
+                        await ecoNotifier.setEcoMode(value);
+                      },
+                      secondary: const Icon(Icons.eco),
+                    );
+                  },
+                ),
+                const SizedBox(height: 24),
                 Text('Pravila',
                     style: AppTheme.sectionHeaderTextStyle.copyWith(
                         color: Theme.of(context).colorScheme.onSurface)),
@@ -210,10 +230,11 @@ class _ThemeToggle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<ThemeNotifier>(
-      builder: (context, themeNotifier, _) {
+    return Consumer2<ThemeNotifier, EcoModeNotifier>(
+      builder: (context, themeNotifier, ecoNotifier, _) {
         final isDark = themeNotifier.themeMode == ThemeMode.dark;
         final colorScheme = Theme.of(context).colorScheme;
+        final ecoMode = ecoNotifier.isEcoMode;
         return Semantics(
           label: 'Odabir teme. Trenutno ${isDark ? 'tamna' : 'svijetla'}',
           toggled: isDark,
@@ -221,7 +242,7 @@ class _ThemeToggle extends StatelessWidget {
             onTap: () async => await themeNotifier
                 .setThemeMode(isDark ? ThemeMode.light : ThemeMode.dark),
             child: AnimatedContainer(
-              duration: const Duration(milliseconds: 250),
+              duration: Duration(milliseconds: ecoMode ? 0 : 250),
               curve: Curves.easeInOut,
               padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
               decoration: BoxDecoration(
@@ -278,6 +299,7 @@ class _ThemeOption extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final baseTextColor = Theme.of(context).colorScheme.onSurface;
+    final ecoMode = context.watch<EcoModeNotifier>().isEcoMode;
     return Expanded(
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 4),
@@ -285,7 +307,7 @@ class _ThemeOption extends StatelessWidget {
           borderRadius: BorderRadius.circular(26),
           onTap: onTap,
           child: AnimatedContainer(
-            duration: const Duration(milliseconds: 220),
+            duration: Duration(milliseconds: ecoMode ? 0 : 220),
             curve: Curves.easeInOut,
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
             decoration: BoxDecoration(

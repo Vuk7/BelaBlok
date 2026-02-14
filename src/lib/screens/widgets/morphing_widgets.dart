@@ -1,4 +1,6 @@
+import 'package:bela_blok/main.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class MorphingContainer extends StatefulWidget {
   final Widget child;
@@ -96,6 +98,9 @@ class _MorphingContainerState extends State<MorphingContainer>
 
   @override
   Widget build(BuildContext context) {
+    final ecoMode = context.watch<EcoModeNotifier>().isEcoMode;
+    if (ecoMode) return widget.child;
+
     return AnimatedBuilder(
       animation: Listenable.merge([_scaleAnimation, _colorAnimation]),
       builder: (context, child) {
@@ -173,6 +178,9 @@ class _WobbleWidgetState extends State<WobbleWidget>
 
   @override
   Widget build(BuildContext context) {
+    final ecoMode = context.watch<EcoModeNotifier>().isEcoMode;
+    if (ecoMode) return widget.child;
+
     return AnimatedBuilder(
       animation: _rotationAnimation,
       builder: (context, child) {

@@ -19,6 +19,7 @@ class SettingsService {
         showSmartCalculator: false,
         lockPreviousRounds: false,
         themeMode: AppThemeMode.light.index,
+        ecoMode: false,
       );
       
       await dao.insert(database.settingsTable, settings.toCompanion());
@@ -96,6 +97,17 @@ class SettingsService {
     );
   }
 
+  Future<void> updateEcoMode(bool ecoMode) async {
+    final settings = await fetchSettings();
+    settings.ecoMode = ecoMode;
+    await dao.update(
+      database.settingsTable,
+      database.settingsTable.id,
+      settings.id!,
+      settings.toCompanion()
+    );
+  }
+
   Future<void> updateSettings(UserSettings settings) async {
     final currentSettings = await fetchSettings();
     
@@ -116,6 +128,9 @@ class SettingsService {
     }
     if (settings.themeMode != null) {
       currentSettings.themeMode = settings.themeMode;
+    }
+    if (settings.ecoMode != null) {
+      currentSettings.ecoMode = settings.ecoMode;
     }
     
     await dao.update(
