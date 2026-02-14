@@ -144,7 +144,11 @@ class _GameSettingsMenuState extends State<GameSettingsMenu> {
                     ),
                   )
                 : const SizedBox.shrink(),
-          );
+              );
             },
+          ),
+        ],
+      ),
+    );
   }
 }
