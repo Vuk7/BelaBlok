@@ -17,9 +17,11 @@ import 'package:bela_blok/services/settings_services.dart';
 import 'package:bela_blok/db/models/game_model.dart';
 import 'package:bela_blok/db/models/round_model.dart';
 import 'package:bela_blok/themes/app_theme.dart';
+import 'package:bela_blok/main.dart';
 import 'package:bela_blok/models/game_stats_model.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 
 class CurrentGameScreen extends StatefulWidget {
   final String? gameId;
@@ -531,7 +533,9 @@ class _CurrentGameScreenState extends State<CurrentGameScreen> {
             child: SafeArea(
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(25, 8, 25, 5),
-                child: Hero(
+                child: HeroMode(
+                  enabled: !context.watch<EcoModeNotifier>().isEcoMode,
+                  child: Hero(
                   tag: isGameFinished
                       ? "return_to_main_button"
                       : "add_round_button",
@@ -550,6 +554,7 @@ class _CurrentGameScreenState extends State<CurrentGameScreen> {
                         : handleAddRound,
                     textPadding: 15,
                   ),
+                ),
                 ),
               ),
             ),
