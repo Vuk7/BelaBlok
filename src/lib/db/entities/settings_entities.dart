@@ -3,16 +3,20 @@ import 'package:bela_blok/enums/theme_mode_enum.dart';
 import 'package:drift/drift.dart';
 
 class SettingsTable extends BaseUUIDModel {
-  BoolColumn get showRules => 
+  BoolColumn get showRules =>
       boolean().withDefault(const Constant(true))();
-  BoolColumn get showHelpDialog => 
+  BoolColumn get showHelpDialog =>
       boolean().withDefault(const Constant(true))();
-  BoolColumn get showGameStats => 
+  BoolColumn get showGameStats =>
       boolean().withDefault(const Constant(true))();
-  BoolColumn get showSmartCalculator => 
+  BoolColumn get showSmartCalculator =>
       boolean().withDefault(const Constant(true))();
-  IntColumn get themeMode => 
+  IntColumn get themeMode =>
       integer().withDefault(Constant(AppThemeMode.light.index))();
+  BoolColumn get lockPreviousRounds =>
+      boolean().withDefault(const Constant(false))();
+  BoolColumn get ecoMode =>
+      boolean().withDefault(const Constant(false))();
 
   @override
   String get tableName => 'settings';

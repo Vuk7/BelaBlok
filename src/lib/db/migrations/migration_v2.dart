@@ -1,5 +1,5 @@
 import 'package:bela_blok/db/database.dart';
-import 'package:bela_blok/db/migrations/db_migration.dart';
+import 'package:bela_blok/db/migrations/db_migrations.dart';
 import 'package:drift/drift.dart';
 
 class MigrationV2 extends DbMigration {
