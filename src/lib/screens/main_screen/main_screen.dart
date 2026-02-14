@@ -2,7 +2,6 @@ import 'package:bela_blok/common/constants.dart';
 import 'package:bela_blok/db/database.dart';
 import 'package:bela_blok/db/models/game_model.dart';
 import 'package:bela_blok/db/models/user_settings_model.dart';
-import 'package:bela_blok/main.dart';
 import 'package:bela_blok/screens/main_screen/widgets/animated_history_list_item.dart';
 import 'package:bela_blok/screens/widgets/rules_widget.dart';
 import 'package:bela_blok/services/games_service.dart';
@@ -14,7 +13,6 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:bela_blok/themes/app_theme.dart';
 import 'package:bela_blok/screens/widgets/settings_button.dart';
-import 'package:provider/provider.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -348,9 +346,7 @@ class _MainScreenState extends State<MainScreen> {
                       if (latestGame != null && latestGame!.finished != true)
                         Padding(
                           padding: const EdgeInsets.all(5.0),
-                          child: HeroMode(
-                            enabled: !context.watch<EcoModeNotifier>().isEcoMode,
-                            child: Hero(
+                          child: Hero(
                             tag: "continue_button",
                             child: AnimatedBigButton(
                               text: "NASTAVI",
@@ -367,13 +363,10 @@ class _MainScreenState extends State<MainScreen> {
                               },
                             ),
                           ),
-                          ),
                         ),
                       Padding(
                         padding: const EdgeInsets.all(5.0),
-                        child: HeroMode(
-                          enabled: !context.watch<EcoModeNotifier>().isEcoMode,
-                          child: Hero(
+                        child: Hero(
                           tag: "new_game_button",
                           child: AnimatedBigButton(
                             text: "NOVA IGRA",
@@ -388,7 +381,6 @@ class _MainScreenState extends State<MainScreen> {
                               await _refreshGameHistory();
                             },
                           ),
-                        ),
                         ),
                       ),
                       const SizedBox(height: 24),

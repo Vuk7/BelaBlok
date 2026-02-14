@@ -1,6 +1,4 @@
-import 'package:bela_blok/main.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 class GlowEffect extends StatefulWidget {
   final Widget child;
@@ -69,9 +67,6 @@ class _GlowEffectState extends State<GlowEffect>
 
   @override
   Widget build(BuildContext context) {
-    final ecoMode = context.watch<EcoModeNotifier>().isEcoMode;
-    if (ecoMode) return widget.child;
-
     return AnimatedBuilder(
       animation: _glowAnimation,
       builder: (context, child) {
@@ -190,9 +185,6 @@ class _AdvancedPulseState extends State<AdvancedPulse>
 
   @override
   Widget build(BuildContext context) {
-    final ecoMode = context.watch<EcoModeNotifier>().isEcoMode;
-    if (ecoMode) return widget.child;
-
     return AnimatedBuilder(
       animation: Listenable.merge([_scaleAnimation, _colorAnimation]),
       builder: (context, child) {
@@ -277,14 +269,6 @@ class _RippleEffectState extends State<RippleEffect>
 
   @override
   Widget build(BuildContext context) {
-    final ecoMode = context.watch<EcoModeNotifier>().isEcoMode;
-    if (ecoMode) {
-      return GestureDetector(
-        onTapDown: (_) => widget.onTap?.call(),
-        child: widget.child,
-      );
-    }
-
     return GestureDetector(
       onTapDown: _handleTap,
       child: AnimatedBuilder(

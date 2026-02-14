@@ -1,6 +1,4 @@
-import 'package:bela_blok/main.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 class RulesWidget extends StatefulWidget {
   const RulesWidget({super.key});
@@ -15,7 +13,6 @@ class _RulesWidgetState extends State<RulesWidget> {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final ecoMode = context.watch<EcoModeNotifier>().isEcoMode;
     
     return Container(
       width: double.infinity,
@@ -71,7 +68,7 @@ class _RulesWidgetState extends State<RulesWidget> {
                   const SizedBox(width: 8),
                   AnimatedRotation(
                     turns: isExpanded ? 0.5 : 0,
-                    duration: Duration(milliseconds: ecoMode ? 0 : 200),
+                    duration: const Duration(milliseconds: 200),
                     child: const Icon(
                       Icons.expand_more,
                       color: Colors.red,
@@ -85,7 +82,7 @@ class _RulesWidgetState extends State<RulesWidget> {
           
           // Expandable content
           AnimatedContainer(
-            duration: Duration(milliseconds: ecoMode ? 0 : 300),
+            duration: const Duration(milliseconds: 300),
             curve: Curves.easeInOut,
             height: isExpanded ? null : 0,
             child: isExpanded ? Padding(
@@ -112,7 +109,7 @@ class _RulesWidgetState extends State<RulesWidget> {
                   
                   _buildRuleSection(
                     'SNAGA KARATA (OBIČNA BOJA)',
-                    'As (11), Desetka (10), Kralj (4), Kraljica (3), Dečko (2), Devetka (0), Osmica (0), Sedmica (0)',
+                    'As (11), Desetka (10), Kralj (4), Kraljica (3), Dečko (2), Deveta (0), Osmica (0), Sedmica (0)',
                     Icons.style,
                     isDark,
                   ),
@@ -146,15 +143,15 @@ class _RulesWidgetState extends State<RulesWidget> {
                   ),
                   
                   _buildRuleSection(
-                    'BELOT',
-                    'Ako jedan od igrača ima 8 karata iste boje i zove to je automatska pobjeda toga tima (znači automatski ima se 1001 bod)',
+                    'Belot',
+                    'Ako jedan od igrača ima 8 karata iste boje i zove to je automatksa pobjeda toga tima (znači piše ima se 1001)',
                     Icons.emoji_events,
                     isDark,
                   ),
 
                   _buildRuleSection(
                     'BODOVANJE',
-                    'Ukupno bodova u partiji je 162. Broj bodova partije se poveća proporcijalno zvanjima u rundi.',
+                    'Ukupno bodova u partiji je 162. Broj bodova partije se poveća proporcijalno znvanjima u rudni.',
                     Icons.calculate,
                     isDark,
                   ),

@@ -1,6 +1,4 @@
-import 'package:bela_blok/main.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 class AnimatedProgressBar extends StatefulWidget {
   final double teamOneProgress; // 0.0 to 1.0
@@ -307,96 +305,56 @@ class _AnimatedProgressBarState extends State<AnimatedProgressBar>
                     ),
                   ),
                   // Team One Progress
-                  Builder(
-                    builder: (context) {
-                      final ecoMode = context.watch<EcoModeNotifier>().isEcoMode;
-                      if (ecoMode) {
-                        return Container(
-                          height: 30,
-                          width: availableWidth * widget.teamOneProgress,
-                          decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                              colors: [
-                                widget.teamOneColor.withValues(alpha: 0.8),
-                                widget.teamOneColor,
-                              ],
-                            ),
-                            borderRadius: BorderRadius.circular(15),
+                  AnimatedBuilder(
+                    animation: _progressAnimation1,
+                    builder: (context, child) {
+                      return Container(
+                        height: 30,
+                        width: availableWidth * _progressAnimation1.value,
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            colors: [
+                              widget.teamOneColor.withValues(alpha: 0.8),
+                              widget.teamOneColor,
+                            ],
                           ),
-                        );
-                      }
-                      return AnimatedBuilder(
-                        animation: _progressAnimation1,
-                        builder: (context, child) {
-                          return Container(
-                            height: 30,
-                            width: availableWidth * _progressAnimation1.value,
-                            decoration: BoxDecoration(
-                              gradient: LinearGradient(
-                                colors: [
-                                  widget.teamOneColor.withValues(alpha: 0.8),
-                                  widget.teamOneColor,
-                                ],
-                              ),
-                              borderRadius: BorderRadius.circular(15),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: widget.teamOneColor.withValues(alpha: 0.3),
-                                  blurRadius: 4,
-                                  offset: const Offset(0, 2),
-                                ),
-                              ],
+                          borderRadius: BorderRadius.circular(15),
+                          boxShadow: [
+                            BoxShadow(
+                              color: widget.teamOneColor.withValues(alpha: 0.3),
+                              blurRadius: 4,
+                              offset: const Offset(0, 2),
                             ),
-                          );
-                        },
+                          ],
+                        ),
                       );
                     },
                   ),
                   // Team Two Progress (from right)
                   Positioned(
                     right: 0,
-                    child: Builder(
-                      builder: (context) {
-                        final ecoMode = context.watch<EcoModeNotifier>().isEcoMode;
-                        if (ecoMode) {
-                          return Container(
-                            height: 30,
-                            width: availableWidth * widget.teamTwoProgress,
-                            decoration: BoxDecoration(
-                              gradient: LinearGradient(
-                                colors: [
-                                  widget.teamTwoColor,
-                                  widget.teamTwoColor.withValues(alpha: 0.8),
-                                ],
-                              ),
-                              borderRadius: BorderRadius.circular(15),
+                    child: AnimatedBuilder(
+                      animation: _progressAnimation2,
+                      builder: (context, child) {
+                        return Container(
+                          height: 30,
+                          width: availableWidth * _progressAnimation2.value,
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              colors: [
+                                widget.teamTwoColor,
+                                widget.teamTwoColor.withValues(alpha: 0.8),
+                              ],
                             ),
-                          );
-                        }
-                        return AnimatedBuilder(
-                          animation: _progressAnimation2,
-                          builder: (context, child) {
-                            return Container(
-                              height: 30,
-                              width: availableWidth * _progressAnimation2.value,
-                              decoration: BoxDecoration(
-                                gradient: LinearGradient(
-                                  colors: [
-                                    widget.teamTwoColor,
-                                    widget.teamTwoColor.withValues(alpha: 0.8),
-                                  ],
-                                ),
-                                borderRadius: BorderRadius.circular(15),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: widget.teamTwoColor.withValues(alpha: 0.3),
-                                    blurRadius: 4,
-                                    offset: const Offset(0, 2),
-                                  ),
-                                ],
+                            borderRadius: BorderRadius.circular(15),
+                            boxShadow: [
+                              BoxShadow(
+                                color: widget.teamTwoColor.withValues(alpha: 0.3),
+                                blurRadius: 4,
+                                offset: const Offset(0, 2),
                               ),
-                            );
-                          },
+                            ],
+                          ),
                         );
                       },
                     ),
