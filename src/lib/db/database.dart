@@ -19,12 +19,7 @@ import 'package:drift_flutter/drift_flutter.dart';
   int get schemaVersion => 3;
   MigrationStrategy get migration => MigrationStrategy(
     beforeOpen: (details) async {},
-    onUpgrade: (migrator, from, to) async {
-      if (from < 2) {
-        await migrator.addColumn(settingsTable, settingsTable.lockPreviousRounds);
-      }
-      if (from < 3) {
-        await migrator.addColumn(settingsTable, settingsTable.ecoMode);
+    onUpgrade: (migrator, from, to) async { 
       for (final migration in _migrations) {
         if (migration.version > from && migration.version <= to) {
           await migration.up(migrator);
