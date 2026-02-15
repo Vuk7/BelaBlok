@@ -174,12 +174,14 @@ class _MainScreenState extends State<MainScreen> {
     latestGame = await gamesService.getLatestGame();
 
     if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Igra je uspiješno obrisana'),
-          backgroundColor: AppTheme.green,
-        ),
-      );
+      ScaffoldMessenger.of(context)
+        ..clearSnackBars()
+        ..showSnackBar(
+          const SnackBar(
+            content: Text('Igra je uspiješno obrisana'),
+            backgroundColor: AppTheme.green,
+          ),
+        );
     }
   }
 

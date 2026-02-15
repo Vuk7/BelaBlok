@@ -39,6 +39,7 @@ class _CurrentGameScreenState extends State<CurrentGameScreen> {
   bool _showStatsPopup = false;
   bool _wobbleTrigger = false;
   bool _skipListAnimation = false;
+  bool _isProcessing = false;
 
   GamesService? gamesService;
   RoundsService? roundsService;
@@ -141,27 +142,33 @@ class _CurrentGameScreenState extends State<CurrentGameScreen> {
   }
 
   void showSuccessMessage(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        backgroundColor: AppTheme.green,
-        duration: const Duration(seconds: 2),
-      ),
-    );
+    ScaffoldMessenger.of(context)
+      ..clearSnackBars()
+      ..showSnackBar(
+        SnackBar(
+          content: Text(message),
+          backgroundColor: AppTheme.green,
+          duration: const Duration(seconds: 2),
+        ),
+      );
   }
 
   void showErrorMessage(String message) {
     if (!mounted) return;
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Došlo je do greške. Pokušajte ponovno.'),
-        backgroundColor: AppTheme.red,
-        duration: Duration(seconds: 3),
-      ),
-    );
+    ScaffoldMessenger.of(context)
+      ..clearSnackBars()
+      ..showSnackBar(
+        const SnackBar(
+          content: Text('Došlo je do greške. Pokušajte ponovno.'),
+          backgroundColor: AppTheme.red,
+          duration: Duration(seconds: 3),
+        ),
+      );
   }
 
   Future<void> handleDeleteRound(String roundId) async {
+    if (_isProcessing) return;
+    _isProcessing = true;
     try {
       await roundsService!.deleteRound(roundId);
 
@@ -173,6 +180,8 @@ class _CurrentGameScreenState extends State<CurrentGameScreen> {
       showSuccessMessage('Runda je uspješno obrisana');
     } catch (e) {
       showErrorMessage('Greška pri brisanju runde');
+    } finally {
+      _isProcessing = false;
     }
   }
 

@@ -51,6 +51,7 @@ class _AddRoundScreenState extends State<AddRoundScreen>
   final TextEditingController inputTeamOne = TextEditingController();
   final TextEditingController inputTeamTwo = TextEditingController();
   bool _isAutoCompleting = false;
+  bool _isSaving = false;
   int selectedInputType = 0;
   int selectedMode = 0;
   bool showGameScore = true;
@@ -233,12 +234,14 @@ class _AddRoundScreenState extends State<AddRoundScreen>
       await _saveNormalRound(game, scores);
     } catch (e) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Došlo je do greške. Pokušajte ponovno.'),
-          backgroundColor: Colors.red,
-        ),
-      );
+      ScaffoldMessenger.of(context)
+        ..clearSnackBars()
+        ..showSnackBar(
+          const SnackBar(
+            content: Text('Došlo je do greške. Pokušajte ponovno.'),
+            backgroundColor: Colors.red,
+          ),
+        );
       return;
     }
   }
@@ -585,16 +588,26 @@ class _AddRoundScreenState extends State<AddRoundScreen>
   }
 
   void handleSaveButtonPressed() {
+    if (_isSaving) return;
     final msg = isReadyToSaveMessage;
     if (msg == null) {
-      handleSaveRound();
+      _isSaving = true;
+      setState(() {});
+      handleSaveRound().whenComplete(() {
+        if (mounted) {
+          _isSaving = false;
+          setState(() {});
+        }
+      });
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(msg),
-          backgroundColor: Colors.red,
-        ),
-      );
+      ScaffoldMessenger.of(context)
+        ..clearSnackBars()
+        ..showSnackBar(
+          SnackBar(
+            content: Text(msg),
+            backgroundColor: Colors.red,
+          ),
+        );
     }
   }
 
