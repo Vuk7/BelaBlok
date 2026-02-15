@@ -73,12 +73,26 @@ class _SmartCalculatorScreenState extends State<SmartCalculatorScreen> {
     _calculateScore();
   }
 
+  bool get _hasAllCards => _selectedCards.length == _allCards.length;
+
+  bool get _hasTrumpNineAndJack {
+    final hasNine = _trumpCards.any((id) => id.startsWith('9_'));
+    final hasJack = _trumpCards.any((id) => id.startsWith('J_'));
+    return hasNine && hasJack;
+  }
+
+  bool get _isStihak => _hasAllCards && _hasTrumpNineAndJack;
+
   void _calculateScore() {
-    _currentScore = _calculatorService.calculateTotalScore(
-      _selectedCards,
-      _trumpSuit,
-      _trumpCards,
-    );
+    if (_isStihak) {
+      _currentScore = 252;
+    } else {
+      _currentScore = _calculatorService.calculateTotalScore(
+        _selectedCards,
+        _trumpSuit,
+        _trumpCards,
+      );
+    }
     setState(() {});
   }
 
@@ -406,13 +420,14 @@ class _SmartCalculatorScreenState extends State<SmartCalculatorScreen> {
   }
 
   Widget _buildConfirmButton() {
+    final bool canConfirm = _selectedCards.isNotEmpty && !(_hasAllCards && !_hasTrumpNineAndJack);
     return Container(
       width: double.infinity,
       margin: const EdgeInsets.all(16),
       child: ElevatedButton(
-        onPressed: _selectedCards.isNotEmpty ? _confirmScore : null,
+        onPressed: canConfirm ? _confirmScore : null,
         style: ElevatedButton.styleFrom(
-          backgroundColor: AppTheme.green,
+          backgroundColor: _hasAllCards && !_hasTrumpNineAndJack ? Colors.orange : AppTheme.green,
           foregroundColor: Colors.white,
           padding: const EdgeInsets.symmetric(vertical: 16),
           shape: RoundedRectangleBorder(
@@ -422,7 +437,11 @@ class _SmartCalculatorScreenState extends State<SmartCalculatorScreen> {
         child: FittedBox(
           fit: BoxFit.scaleDown,
           child: Text(
-            'POTVRDI REZULTAT ($_currentScore bodova za ${_selectedTeam.toUpperCase()})',
+            _isStihak
+                ? 'POTVRDI ŠTIHAK (252 bodova za ${_selectedTeam.toUpperCase()})'
+                : _hasAllCards && !_hasTrumpNineAndJack
+                    ? 'Označi 9 (14) i J (20) u adutu dugim pritiskom'
+                    : 'POTVRDI REZULTAT ($_currentScore bodova za ${_selectedTeam.toUpperCase()})',
             style: const TextStyle(
               fontSize: 14,
               fontWeight: FontWeight.bold,

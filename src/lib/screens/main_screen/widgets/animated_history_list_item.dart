@@ -1,5 +1,7 @@
+import 'package:bela_blok/main.dart';
 import 'package:flutter/material.dart';
 import 'package:bela_blok/screens/main_screen/widgets/history_list_item.dart';
+import 'package:provider/provider.dart';
 
 class AnimatedHistoryListItem extends StatefulWidget {
   final String date, gameID;
@@ -110,6 +112,23 @@ class _AnimatedHistoryListItemState extends State<AnimatedHistoryListItem>
 
   @override
   Widget build(BuildContext context) {
+    final ecoMode = context.watch<EcoModeNotifier>().isEcoMode;
+    if (ecoMode) {
+      return GestureDetector(
+        onTap: _handleOnTap,
+        child: HistoryListItem(
+          gameID: widget.gameID,
+          date: widget.date,
+          teamOneScore: widget.teamOneScore,
+          teamTwoScore: widget.teamTwoScore,
+          onTap: _handleOnTap,
+          teamOneWins: widget.teamOneWins,
+          teamTwoWins: widget.teamTwoWins,
+          finished: widget.finished,
+        ),
+      );
+    }
+
     return AnimatedBuilder(
       animation:
           Listenable.merge([_scaleAnimation, _slideAnimation, _fadeAnimation]),

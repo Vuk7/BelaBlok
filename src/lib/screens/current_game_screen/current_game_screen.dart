@@ -17,9 +17,11 @@ import 'package:bela_blok/services/settings_services.dart';
 import 'package:bela_blok/db/models/game_model.dart';
 import 'package:bela_blok/db/models/round_model.dart';
 import 'package:bela_blok/themes/app_theme.dart';
+import 'package:bela_blok/main.dart';
 import 'package:bela_blok/models/game_stats_model.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 
 class CurrentGameScreen extends StatefulWidget {
   final String? gameId;
@@ -37,6 +39,7 @@ class _CurrentGameScreenState extends State<CurrentGameScreen> {
   bool _showStatsPopup = false;
   bool _wobbleTrigger = false;
   bool _skipListAnimation = false;
+  bool _isProcessing = false;
 
   GamesService? gamesService;
   RoundsService? roundsService;
@@ -139,27 +142,33 @@ class _CurrentGameScreenState extends State<CurrentGameScreen> {
   }
 
   void showSuccessMessage(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        backgroundColor: AppTheme.green,
-        duration: const Duration(seconds: 2),
-      ),
-    );
+    ScaffoldMessenger.of(context)
+      ..clearSnackBars()
+      ..showSnackBar(
+        SnackBar(
+          content: Text(message),
+          backgroundColor: AppTheme.green,
+          duration: const Duration(seconds: 2),
+        ),
+      );
   }
 
   void showErrorMessage(String message) {
     if (!mounted) return;
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Došlo je do greške. Pokušajte ponovno.'),
-        backgroundColor: AppTheme.red,
-        duration: Duration(seconds: 3),
-      ),
-    );
+    ScaffoldMessenger.of(context)
+      ..clearSnackBars()
+      ..showSnackBar(
+        const SnackBar(
+          content: Text('Došlo je do greške. Pokušajte ponovno.'),
+          backgroundColor: AppTheme.red,
+          duration: Duration(seconds: 3),
+        ),
+      );
   }
 
   Future<void> handleDeleteRound(String roundId) async {
+    if (_isProcessing) return;
+    _isProcessing = true;
     try {
       await roundsService!.deleteRound(roundId);
 
@@ -171,6 +180,8 @@ class _CurrentGameScreenState extends State<CurrentGameScreen> {
       showSuccessMessage('Runda je uspješno obrisana');
     } catch (e) {
       showErrorMessage('Greška pri brisanju runde');
+    } finally {
+      _isProcessing = false;
     }
   }
 
@@ -462,6 +473,8 @@ class _CurrentGameScreenState extends State<CurrentGameScreen> {
                       delegate: SliverChildBuilderDelegate(
                         (context, index) {
                           final round = rounds![index];
+                          final isLastRound = index == rounds!.length - 1;
+                          final isLocked = (settings?.lockPreviousRounds ?? false) && !isLastRound;
                           return AnimatedListItem(
                             index: index,
                             animationType: _skipListAnimation
@@ -491,10 +504,11 @@ class _CurrentGameScreenState extends State<CurrentGameScreen> {
                                 them100: round.them100,
                                 them150: round.them150,
                                 them200: round.them200,
-                                onDelete: round.id != null
+                                onDelete: isLocked ? null : (round.id != null
                                     ? () => handleDeleteRound(round.id!)
-                                    : null,
-                                onTap: () async {
+                                    : null),
+                                isLocked: isLocked,
+                                onTap: isLocked ? null : () async {
                                   await context
                                       .pushNamed('addround', queryParameters: {
                                     'id': currentGame!.id!,
@@ -528,7 +542,9 @@ class _CurrentGameScreenState extends State<CurrentGameScreen> {
             child: SafeArea(
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(25, 8, 25, 5),
-                child: Hero(
+                child: HeroMode(
+                  enabled: !context.watch<EcoModeNotifier>().isEcoMode,
+                  child: Hero(
                   tag: isGameFinished
                       ? "return_to_main_button"
                       : "add_round_button",
@@ -547,6 +563,7 @@ class _CurrentGameScreenState extends State<CurrentGameScreen> {
                         : handleAddRound,
                     textPadding: 15,
                   ),
+                ),
                 ),
               ),
             ),

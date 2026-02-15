@@ -1913,6 +1913,16 @@ class $SettingsTableTable extends SettingsTable
       defaultConstraints: GeneratedColumn.constraintIsAlways(
           'CHECK ("show_smart_calculator" IN (0, 1))'),
       defaultValue: const Constant(true));
+  static const VerificationMeta _lockPreviousRoundsMeta =
+      const VerificationMeta('lockPreviousRounds');
+  @override
+  late final GeneratedColumn<bool> lockPreviousRounds = GeneratedColumn<bool>(
+      'lock_previous_rounds', aliasedName, false,
+      type: DriftSqlType.bool,
+      requiredDuringInsert: false,
+      defaultConstraints: GeneratedColumn.constraintIsAlways(
+          'CHECK ("lock_previous_rounds" IN (0, 1))'),
+      defaultValue: const Constant(false));
   static const VerificationMeta _themeModeMeta =
       const VerificationMeta('themeMode');
   @override
@@ -1921,6 +1931,16 @@ class $SettingsTableTable extends SettingsTable
       type: DriftSqlType.int,
       requiredDuringInsert: false,
       defaultValue: Constant(AppThemeMode.light.index));
+  static const VerificationMeta _ecoModeMeta =
+      const VerificationMeta('ecoMode');
+  @override
+  late final GeneratedColumn<bool> ecoMode = GeneratedColumn<bool>(
+      'eco_mode', aliasedName, false,
+      type: DriftSqlType.bool,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('CHECK ("eco_mode" IN (0, 1))'),
+      defaultValue: const Constant(false));
   @override
   List<GeneratedColumn> get $columns => [
         id,
@@ -1931,7 +1951,9 @@ class $SettingsTableTable extends SettingsTable
         showHelpDialog,
         showGameStats,
         showSmartCalculator,
-        themeMode
+        lockPreviousRounds,
+        themeMode,
+        ecoMode
       ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -1980,9 +2002,19 @@ class $SettingsTableTable extends SettingsTable
           showSmartCalculator.isAcceptableOrUnknown(
               data['show_smart_calculator']!, _showSmartCalculatorMeta));
     }
+    if (data.containsKey('lock_previous_rounds')) {
+      context.handle(
+          _lockPreviousRoundsMeta,
+          lockPreviousRounds.isAcceptableOrUnknown(
+              data['lock_previous_rounds']!, _lockPreviousRoundsMeta));
+    }
     if (data.containsKey('theme_mode')) {
       context.handle(_themeModeMeta,
           themeMode.isAcceptableOrUnknown(data['theme_mode']!, _themeModeMeta));
+    }
+    if (data.containsKey('eco_mode')) {
+      context.handle(_ecoModeMeta,
+          ecoMode.isAcceptableOrUnknown(data['eco_mode']!, _ecoModeMeta));
     }
     return context;
   }
@@ -2009,8 +2041,12 @@ class $SettingsTableTable extends SettingsTable
           .read(DriftSqlType.bool, data['${effectivePrefix}show_game_stats'])!,
       showSmartCalculator: attachedDatabase.typeMapping.read(
           DriftSqlType.bool, data['${effectivePrefix}show_smart_calculator'])!,
+      lockPreviousRounds: attachedDatabase.typeMapping.read(
+          DriftSqlType.bool, data['${effectivePrefix}lock_previous_rounds'])!,
       themeMode: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}theme_mode'])!,
+      ecoMode: attachedDatabase.typeMapping
+          .read(DriftSqlType.bool, data['${effectivePrefix}eco_mode'])!,
     );
   }
 
@@ -2030,7 +2066,9 @@ class SettingsTableData extends DataClass
   final bool showHelpDialog;
   final bool showGameStats;
   final bool showSmartCalculator;
+  final bool lockPreviousRounds;
   final int themeMode;
+  final bool ecoMode;
   const SettingsTableData(
       {required this.id,
       required this.createdAt,
@@ -2040,7 +2078,9 @@ class SettingsTableData extends DataClass
       required this.showHelpDialog,
       required this.showGameStats,
       required this.showSmartCalculator,
-      required this.themeMode});
+      required this.lockPreviousRounds,
+      required this.themeMode,
+      required this.ecoMode});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -2054,7 +2094,9 @@ class SettingsTableData extends DataClass
     map['show_help_dialog'] = Variable<bool>(showHelpDialog);
     map['show_game_stats'] = Variable<bool>(showGameStats);
     map['show_smart_calculator'] = Variable<bool>(showSmartCalculator);
+    map['lock_previous_rounds'] = Variable<bool>(lockPreviousRounds);
     map['theme_mode'] = Variable<int>(themeMode);
+    map['eco_mode'] = Variable<bool>(ecoMode);
     return map;
   }
 
@@ -2070,7 +2112,9 @@ class SettingsTableData extends DataClass
       showHelpDialog: Value(showHelpDialog),
       showGameStats: Value(showGameStats),
       showSmartCalculator: Value(showSmartCalculator),
+      lockPreviousRounds: Value(lockPreviousRounds),
       themeMode: Value(themeMode),
+      ecoMode: Value(ecoMode),
     );
   }
 
@@ -2087,7 +2131,9 @@ class SettingsTableData extends DataClass
       showGameStats: serializer.fromJson<bool>(json['showGameStats']),
       showSmartCalculator:
           serializer.fromJson<bool>(json['showSmartCalculator']),
+      lockPreviousRounds: serializer.fromJson<bool>(json['lockPreviousRounds']),
       themeMode: serializer.fromJson<int>(json['themeMode']),
+      ecoMode: serializer.fromJson<bool>(json['ecoMode']),
     );
   }
   @override
@@ -2102,7 +2148,9 @@ class SettingsTableData extends DataClass
       'showHelpDialog': serializer.toJson<bool>(showHelpDialog),
       'showGameStats': serializer.toJson<bool>(showGameStats),
       'showSmartCalculator': serializer.toJson<bool>(showSmartCalculator),
+      'lockPreviousRounds': serializer.toJson<bool>(lockPreviousRounds),
       'themeMode': serializer.toJson<int>(themeMode),
+      'ecoMode': serializer.toJson<bool>(ecoMode),
     };
   }
 
@@ -2115,7 +2163,9 @@ class SettingsTableData extends DataClass
           bool? showHelpDialog,
           bool? showGameStats,
           bool? showSmartCalculator,
-          int? themeMode}) =>
+          bool? lockPreviousRounds,
+          int? themeMode,
+          bool? ecoMode}) =>
       SettingsTableData(
         id: id ?? this.id,
         createdAt: createdAt ?? this.createdAt,
@@ -2125,7 +2175,9 @@ class SettingsTableData extends DataClass
         showHelpDialog: showHelpDialog ?? this.showHelpDialog,
         showGameStats: showGameStats ?? this.showGameStats,
         showSmartCalculator: showSmartCalculator ?? this.showSmartCalculator,
+        lockPreviousRounds: lockPreviousRounds ?? this.lockPreviousRounds,
         themeMode: themeMode ?? this.themeMode,
+        ecoMode: ecoMode ?? this.ecoMode,
       );
   SettingsTableData copyWithCompanion(SettingsTableCompanion data) {
     return SettingsTableData(
@@ -2143,7 +2195,11 @@ class SettingsTableData extends DataClass
       showSmartCalculator: data.showSmartCalculator.present
           ? data.showSmartCalculator.value
           : this.showSmartCalculator,
+      lockPreviousRounds: data.lockPreviousRounds.present
+          ? data.lockPreviousRounds.value
+          : this.lockPreviousRounds,
       themeMode: data.themeMode.present ? data.themeMode.value : this.themeMode,
+      ecoMode: data.ecoMode.present ? data.ecoMode.value : this.ecoMode,
     );
   }
 
@@ -2158,14 +2214,26 @@ class SettingsTableData extends DataClass
           ..write('showHelpDialog: $showHelpDialog, ')
           ..write('showGameStats: $showGameStats, ')
           ..write('showSmartCalculator: $showSmartCalculator, ')
-          ..write('themeMode: $themeMode')
+          ..write('lockPreviousRounds: $lockPreviousRounds, ')
+          ..write('themeMode: $themeMode, ')
+          ..write('ecoMode: $ecoMode')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(id, createdAt, updatedAt, deletedAt,
-      showRules, showHelpDialog, showGameStats, showSmartCalculator, themeMode);
+  int get hashCode => Object.hash(
+      id,
+      createdAt,
+      updatedAt,
+      deletedAt,
+      showRules,
+      showHelpDialog,
+      showGameStats,
+      showSmartCalculator,
+      lockPreviousRounds,
+      themeMode,
+      ecoMode);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -2178,7 +2246,9 @@ class SettingsTableData extends DataClass
           other.showHelpDialog == this.showHelpDialog &&
           other.showGameStats == this.showGameStats &&
           other.showSmartCalculator == this.showSmartCalculator &&
-          other.themeMode == this.themeMode);
+          other.lockPreviousRounds == this.lockPreviousRounds &&
+          other.themeMode == this.themeMode &&
+          other.ecoMode == this.ecoMode);
 }
 
 class SettingsTableCompanion extends UpdateCompanion<SettingsTableData> {
@@ -2190,7 +2260,9 @@ class SettingsTableCompanion extends UpdateCompanion<SettingsTableData> {
   final Value<bool> showHelpDialog;
   final Value<bool> showGameStats;
   final Value<bool> showSmartCalculator;
+  final Value<bool> lockPreviousRounds;
   final Value<int> themeMode;
+  final Value<bool> ecoMode;
   final Value<int> rowid;
   const SettingsTableCompanion({
     this.id = const Value.absent(),
@@ -2201,7 +2273,9 @@ class SettingsTableCompanion extends UpdateCompanion<SettingsTableData> {
     this.showHelpDialog = const Value.absent(),
     this.showGameStats = const Value.absent(),
     this.showSmartCalculator = const Value.absent(),
+    this.lockPreviousRounds = const Value.absent(),
     this.themeMode = const Value.absent(),
+    this.ecoMode = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   SettingsTableCompanion.insert({
@@ -2213,7 +2287,9 @@ class SettingsTableCompanion extends UpdateCompanion<SettingsTableData> {
     this.showHelpDialog = const Value.absent(),
     this.showGameStats = const Value.absent(),
     this.showSmartCalculator = const Value.absent(),
+    this.lockPreviousRounds = const Value.absent(),
     this.themeMode = const Value.absent(),
+    this.ecoMode = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   static Insertable<SettingsTableData> custom({
@@ -2225,7 +2301,9 @@ class SettingsTableCompanion extends UpdateCompanion<SettingsTableData> {
     Expression<bool>? showHelpDialog,
     Expression<bool>? showGameStats,
     Expression<bool>? showSmartCalculator,
+    Expression<bool>? lockPreviousRounds,
     Expression<int>? themeMode,
+    Expression<bool>? ecoMode,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -2238,7 +2316,10 @@ class SettingsTableCompanion extends UpdateCompanion<SettingsTableData> {
       if (showGameStats != null) 'show_game_stats': showGameStats,
       if (showSmartCalculator != null)
         'show_smart_calculator': showSmartCalculator,
+      if (lockPreviousRounds != null)
+        'lock_previous_rounds': lockPreviousRounds,
       if (themeMode != null) 'theme_mode': themeMode,
+      if (ecoMode != null) 'eco_mode': ecoMode,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -2252,7 +2333,9 @@ class SettingsTableCompanion extends UpdateCompanion<SettingsTableData> {
       Value<bool>? showHelpDialog,
       Value<bool>? showGameStats,
       Value<bool>? showSmartCalculator,
+      Value<bool>? lockPreviousRounds,
       Value<int>? themeMode,
+      Value<bool>? ecoMode,
       Value<int>? rowid}) {
     return SettingsTableCompanion(
       id: id ?? this.id,
@@ -2263,7 +2346,9 @@ class SettingsTableCompanion extends UpdateCompanion<SettingsTableData> {
       showHelpDialog: showHelpDialog ?? this.showHelpDialog,
       showGameStats: showGameStats ?? this.showGameStats,
       showSmartCalculator: showSmartCalculator ?? this.showSmartCalculator,
+      lockPreviousRounds: lockPreviousRounds ?? this.lockPreviousRounds,
       themeMode: themeMode ?? this.themeMode,
+      ecoMode: ecoMode ?? this.ecoMode,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -2295,8 +2380,14 @@ class SettingsTableCompanion extends UpdateCompanion<SettingsTableData> {
     if (showSmartCalculator.present) {
       map['show_smart_calculator'] = Variable<bool>(showSmartCalculator.value);
     }
+    if (lockPreviousRounds.present) {
+      map['lock_previous_rounds'] = Variable<bool>(lockPreviousRounds.value);
+    }
     if (themeMode.present) {
       map['theme_mode'] = Variable<int>(themeMode.value);
+    }
+    if (ecoMode.present) {
+      map['eco_mode'] = Variable<bool>(ecoMode.value);
     }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
@@ -2315,7 +2406,9 @@ class SettingsTableCompanion extends UpdateCompanion<SettingsTableData> {
           ..write('showHelpDialog: $showHelpDialog, ')
           ..write('showGameStats: $showGameStats, ')
           ..write('showSmartCalculator: $showSmartCalculator, ')
+          ..write('lockPreviousRounds: $lockPreviousRounds, ')
           ..write('themeMode: $themeMode, ')
+          ..write('ecoMode: $ecoMode, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -4115,6 +4208,7 @@ typedef $$SettingsTableTableCreateCompanionBuilder = SettingsTableCompanion
   Value<bool> showHelpDialog,
   Value<bool> showGameStats,
   Value<bool> showSmartCalculator,
+  Value<bool> lockPreviousRounds,
   Value<int> themeMode,
   Value<int> rowid,
 });
@@ -4128,6 +4222,7 @@ typedef $$SettingsTableTableUpdateCompanionBuilder = SettingsTableCompanion
   Value<bool> showHelpDialog,
   Value<bool> showGameStats,
   Value<bool> showSmartCalculator,
+  Value<bool> lockPreviousRounds,
   Value<int> themeMode,
   Value<int> rowid,
 });
@@ -4165,6 +4260,10 @@ class $$SettingsTableTableFilterComposer
 
   ColumnFilters<bool> get showSmartCalculator => $composableBuilder(
       column: $table.showSmartCalculator,
+      builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<bool> get lockPreviousRounds => $composableBuilder(
+      column: $table.lockPreviousRounds,
       builder: (column) => ColumnFilters(column));
 
   ColumnFilters<int> get themeMode => $composableBuilder(
@@ -4207,6 +4306,10 @@ class $$SettingsTableTableOrderingComposer
       column: $table.showSmartCalculator,
       builder: (column) => ColumnOrderings(column));
 
+  ColumnOrderings<bool> get lockPreviousRounds => $composableBuilder(
+      column: $table.lockPreviousRounds,
+      builder: (column) => ColumnOrderings(column));
+
   ColumnOrderings<int> get themeMode => $composableBuilder(
       column: $table.themeMode, builder: (column) => ColumnOrderings(column));
 }
@@ -4243,6 +4346,9 @@ class $$SettingsTableTableAnnotationComposer
 
   GeneratedColumn<bool> get showSmartCalculator => $composableBuilder(
       column: $table.showSmartCalculator, builder: (column) => column);
+
+  GeneratedColumn<bool> get lockPreviousRounds => $composableBuilder(
+      column: $table.lockPreviousRounds, builder: (column) => column);
 
   GeneratedColumn<int> get themeMode =>
       $composableBuilder(column: $table.themeMode, builder: (column) => column);
@@ -4282,6 +4388,7 @@ class $$SettingsTableTableTableManager extends RootTableManager<
             Value<bool> showHelpDialog = const Value.absent(),
             Value<bool> showGameStats = const Value.absent(),
             Value<bool> showSmartCalculator = const Value.absent(),
+            Value<bool> lockPreviousRounds = const Value.absent(),
             Value<int> themeMode = const Value.absent(),
             Value<int> rowid = const Value.absent(),
           }) =>
@@ -4294,6 +4401,7 @@ class $$SettingsTableTableTableManager extends RootTableManager<
             showHelpDialog: showHelpDialog,
             showGameStats: showGameStats,
             showSmartCalculator: showSmartCalculator,
+            lockPreviousRounds: lockPreviousRounds,
             themeMode: themeMode,
             rowid: rowid,
           ),
@@ -4306,6 +4414,7 @@ class $$SettingsTableTableTableManager extends RootTableManager<
             Value<bool> showHelpDialog = const Value.absent(),
             Value<bool> showGameStats = const Value.absent(),
             Value<bool> showSmartCalculator = const Value.absent(),
+            Value<bool> lockPreviousRounds = const Value.absent(),
             Value<int> themeMode = const Value.absent(),
             Value<int> rowid = const Value.absent(),
           }) =>
@@ -4318,6 +4427,7 @@ class $$SettingsTableTableTableManager extends RootTableManager<
             showHelpDialog: showHelpDialog,
             showGameStats: showGameStats,
             showSmartCalculator: showSmartCalculator,
+            lockPreviousRounds: lockPreviousRounds,
             themeMode: themeMode,
             rowid: rowid,
           ),

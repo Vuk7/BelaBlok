@@ -106,12 +106,14 @@ class _NewGameScreenState extends State<NewGameScreen> {
     } catch (e, stack) {
       debugPrint('Greška pri kreiranju igre: $e\n$stack');
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Došlo je do greške. Pokušajte ponovno.'),
-          backgroundColor: AppTheme.red,
-        ),
-      );
+      ScaffoldMessenger.of(context)
+        ..clearSnackBars()
+        ..showSnackBar(
+          const SnackBar(
+            content: Text('Došlo je do greške. Pokušajte ponovno.'),
+            backgroundColor: AppTheme.red,
+          ),
+        );
     }
   }
 
