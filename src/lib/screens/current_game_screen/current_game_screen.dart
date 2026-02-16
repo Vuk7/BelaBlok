@@ -220,14 +220,13 @@ class _CurrentGameScreenState extends State<CurrentGameScreen> {
     final oldFinishedState = game.finished;
     final oldWinner = game.winner;
 
-    if (newScoreTeamOne >= gameTargetScore ||
-        newScoreTeamTwo >= gameTargetScore) {
-      game.finished = true;
-      game.winner = newScoreTeamOne >= gameTargetScore ? 0 : 1;
-    } else {
-      game.finished = false;
-      game.winner = null;
-    }
+    final newWinner = GamesService.determineWinner(
+      teamOneScore: newScoreTeamOne,
+      teamTwoScore: newScoreTeamTwo,
+      gameTargetScore: gameTargetScore,
+    );
+    game.finished = newWinner != null;
+    game.winner = newWinner;
 
     if (oldFinishedState != game.finished) {
       if (game.finished == true) {
@@ -269,7 +268,12 @@ class _CurrentGameScreenState extends State<CurrentGameScreen> {
 
   String? get winningTeam {
     if (!isGameFinished) return null;
-    return teamScore[Team.teamOne]! >= gameTargetScore ? 'Tim 1' : 'Tim 2';
+    final winner = GamesService.determineWinner(
+      teamOneScore: teamScore[Team.teamOne]!,
+      teamTwoScore: teamScore[Team.teamTwo]!,
+      gameTargetScore: gameTargetScore,
+    );
+    return winner == 0 ? 'Tim 1' : 'Tim 2';
   }
 
   GameStats get gameStats => _aggregateTeamStats();
@@ -354,9 +358,11 @@ class _CurrentGameScreenState extends State<CurrentGameScreen> {
     );
   }
 
-  bool get isGameFinished =>
-      teamScore[Team.teamOne]! >= gameTargetScore ||
-      teamScore[Team.teamTwo]! >= gameTargetScore;
+  bool get isGameFinished => GamesService.isGameFinished(
+      teamOneScore: teamScore[Team.teamOne]!,
+      teamTwoScore: teamScore[Team.teamTwo]!,
+      gameTargetScore: gameTargetScore,
+    );
 
   void _closeStatsPopup() {
     setState(() {
@@ -415,7 +421,12 @@ class _CurrentGameScreenState extends State<CurrentGameScreen> {
       );
     }
 
-    final teamOneWon = teamScore[Team.teamOne]! >= gameTargetScore;
+    final winner = GamesService.determineWinner(
+      teamOneScore: teamScore[Team.teamOne]!,
+      teamTwoScore: teamScore[Team.teamTwo]!,
+      gameTargetScore: gameTargetScore,
+    );
+    final teamOneWon = winner == 0;
     final winnerColor = teamOneWon ? AppTheme.orange : AppTheme.blue;
 
     return Scaffold(

@@ -103,4 +103,31 @@ class GamesService {
     }
     return PlayDirection.clockwise; // default
   }
+
+
+  static int? determineWinner({
+    required int teamOneScore,
+    required int teamTwoScore,
+    required int gameTargetScore,
+  }) {
+    final bool teamOneReached = teamOneScore >= gameTargetScore;
+    final bool teamTwoReached = teamTwoScore >= gameTargetScore;
+
+    if (!teamOneReached && !teamTwoReached) return null;
+
+    if (teamOneReached && teamTwoReached) {
+      // Both crossed the target — higher score wins
+      return teamOneScore >= teamTwoScore ? 0 : 1;
+    }
+
+    return teamOneReached ? 0 : 1;
+  }
+
+  static bool isGameFinished({
+    required int teamOneScore,
+    required int teamTwoScore,
+    required int gameTargetScore,
+  }) {
+    return teamOneScore >= gameTargetScore || teamTwoScore >= gameTargetScore;
+  }
 }

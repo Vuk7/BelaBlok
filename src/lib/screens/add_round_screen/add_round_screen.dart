@@ -466,13 +466,17 @@ class _AddRoundScreenState extends State<AddRoundScreen>
 
       // Check if game is finished and mark it as such
       final int gameTargetScore = game.gameType ?? 1001;
-      if (newScoreTeamOne >= gameTargetScore ||
-          newScoreTeamTwo >= gameTargetScore) {
+      final newWinner = GamesService.determineWinner(
+        teamOneScore: newScoreTeamOne,
+        teamTwoScore: newScoreTeamTwo,
+        gameTargetScore: gameTargetScore,
+      );
+      if (newWinner != null) {
         game.finished = true;
-        game.winner = newScoreTeamOne >= gameTargetScore ? 0 : 1;
+        game.winner = newWinner;
 
         // Track team wins
-        if (game.winner == 0) {
+        if (newWinner == 0) {
           game.teamOneWins++;
         } else {
           game.teamTwoWins++;
