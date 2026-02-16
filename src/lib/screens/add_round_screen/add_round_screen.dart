@@ -464,24 +464,7 @@ class _AddRoundScreenState extends State<AddRoundScreen>
       game.teamOneScore = newScoreTeamOne;
       game.teamTwoScore = newScoreTeamTwo;
 
-      // Check if game is finished and mark it as such
-      final int gameTargetScore = game.gameType ?? 1001;
-      final newWinner = GamesService.determineWinner(
-        teamOneScore: newScoreTeamOne,
-        teamTwoScore: newScoreTeamTwo,
-        gameTargetScore: gameTargetScore,
-      );
-      if (newWinner != null) {
-        game.finished = true;
-        game.winner = newWinner;
-
-        // Track team wins
-        if (newWinner == 0) {
-          game.teamOneWins++;
-        } else {
-          game.teamTwoWins++;
-        }
-      }
+      GamesService.updateGameWinState(game, newScoreTeamOne, newScoreTeamTwo);
 
       await gamesService.updateGame(game);
     }

@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:bela_blok/db/database.dart';
 import 'package:bela_blok/enums/team_enum.dart';
 import 'package:bela_blok/db/models/user_settings_model.dart';
@@ -215,36 +213,12 @@ class _CurrentGameScreenState extends State<CurrentGameScreen> {
     game.teamOneScore = newScoreTeamOne;
     game.teamTwoScore = newScoreTeamTwo;
 
-    final int gameTargetScore = game.gameType ?? 1001;
-
-    final oldFinishedState = game.finished;
+    final oldFinished = game.finished;
     final oldWinner = game.winner;
 
-    final newWinner = GamesService.determineWinner(
-      teamOneScore: newScoreTeamOne,
-      teamTwoScore: newScoreTeamTwo,
-      gameTargetScore: gameTargetScore,
-    );
-    game.finished = newWinner != null;
-    game.winner = newWinner;
+    GamesService.updateGameWinState(game, newScoreTeamOne, newScoreTeamTwo);
 
-    if (oldFinishedState != game.finished) {
-      if (game.finished == true) {
-        // Increase team wins
-        if (game.winner == 0) {
-          game.teamOneWins = (game.teamOneWins ?? 0) + 1;
-        } else {
-          game.teamTwoWins = (game.teamTwoWins ?? 0) + 1;
-        }
-      } else {
-        // Decrease team wins
-        if (oldWinner == 0) {
-          game.teamOneWins = max(0, (game.teamOneWins ?? 0) - 1);
-        } else {
-          game.teamTwoWins = max(0, (game.teamTwoWins ?? 0) - 1);
-        }
-      }
-
+    if (oldFinished != game.finished || oldWinner != game.winner) {
       if (widget.updateGamesListCallback != null) {
         widget.updateGamesListCallback!();
       }

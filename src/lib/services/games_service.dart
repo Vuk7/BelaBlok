@@ -105,6 +105,7 @@ class GamesService {
   }
 
 
+
   static int? determineWinner({
     required int teamOneScore,
     required int teamTwoScore,
@@ -116,8 +117,8 @@ class GamesService {
     if (!teamOneReached && !teamTwoReached) return null;
 
     if (teamOneReached && teamTwoReached) {
-      // Both crossed the target — higher score wins
-      return teamOneScore >= teamTwoScore ? 0 : 1;
+      if (teamOneScore == teamTwoScore) return null;
+      return teamOneScore > teamTwoScore ? 0 : 1;
     }
 
     return teamOneReached ? 0 : 1;
@@ -128,6 +129,42 @@ class GamesService {
     required int teamTwoScore,
     required int gameTargetScore,
   }) {
-    return teamOneScore >= gameTargetScore || teamTwoScore >= gameTargetScore;
+    return determineWinner(
+      teamOneScore: teamOneScore,
+      teamTwoScore: teamTwoScore,
+      gameTargetScore: gameTargetScore,
+    ) != null;
+  }
+
+ 
+  static void updateGameWinState(Game game, int teamOneScore, int teamTwoScore) {
+    final int gameTargetScore = game.gameType ?? 1001;
+    final oldFinished = game.finished;
+    final oldWinner = game.winner;
+
+    final newWinner = determineWinner(
+      teamOneScore: teamOneScore,
+      teamTwoScore: teamTwoScore,
+      gameTargetScore: gameTargetScore,
+    );
+
+    game.finished = newWinner != null;
+    game.winner = newWinner;
+
+    if (oldFinished == true && oldWinner != newWinner) {
+      if (oldWinner == 0) {
+        game.teamOneWins = ((game.teamOneWins ?? 1) - 1).clamp(0, 999999);
+      } else if (oldWinner == 1) {
+        game.teamTwoWins = ((game.teamTwoWins ?? 1) - 1).clamp(0, 999999);
+      }
+    }
+
+    if (newWinner != null && (oldFinished != true || oldWinner != newWinner)) {
+      if (newWinner == 0) {
+        game.teamOneWins = (game.teamOneWins ?? 0) + 1;
+      } else {
+        game.teamTwoWins = (game.teamTwoWins ?? 0) + 1;
+      }
+    }
   }
 }
