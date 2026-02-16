@@ -951,6 +951,7 @@ class _AddRoundScreenState extends State<AddRoundScreen>
                                           textPadding: 10,
                                           width: screenWidth / 3,
                                           suffixText: getInputSuffix(i),
+                                          baseGameOnly: true,
                                         )
                                       : AnimatedBuilder(
                                       animation: i == 0
@@ -992,6 +993,7 @@ class _AddRoundScreenState extends State<AddRoundScreen>
                                           textPadding: 10,
                                           width: screenWidth / 3,
                                           suffixText: getInputSuffix(i),
+                                          baseGameOnly: true,
                                         ),
                                       ),
                                     ),
