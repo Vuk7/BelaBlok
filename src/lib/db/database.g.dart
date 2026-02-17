@@ -1941,6 +1941,14 @@ class $SettingsTableTable extends SettingsTable
       defaultConstraints:
           GeneratedColumn.constraintIsAlways('CHECK ("eco_mode" IN (0, 1))'),
       defaultValue: const Constant(false));
+  static const VerificationMeta _roundSortOrderMeta =
+      const VerificationMeta('roundSortOrder');
+  @override
+  late final GeneratedColumn<int> roundSortOrder = GeneratedColumn<int>(
+      'round_sort_order', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(0));
   @override
   List<GeneratedColumn> get $columns => [
         id,
@@ -1953,7 +1961,8 @@ class $SettingsTableTable extends SettingsTable
         showSmartCalculator,
         lockPreviousRounds,
         themeMode,
-        ecoMode
+        ecoMode,
+        roundSortOrder
       ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -2016,6 +2025,12 @@ class $SettingsTableTable extends SettingsTable
       context.handle(_ecoModeMeta,
           ecoMode.isAcceptableOrUnknown(data['eco_mode']!, _ecoModeMeta));
     }
+    if (data.containsKey('round_sort_order')) {
+      context.handle(
+          _roundSortOrderMeta,
+          roundSortOrder.isAcceptableOrUnknown(
+              data['round_sort_order']!, _roundSortOrderMeta));
+    }
     return context;
   }
 
@@ -2047,6 +2062,8 @@ class $SettingsTableTable extends SettingsTable
           .read(DriftSqlType.int, data['${effectivePrefix}theme_mode'])!,
       ecoMode: attachedDatabase.typeMapping
           .read(DriftSqlType.bool, data['${effectivePrefix}eco_mode'])!,
+      roundSortOrder: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}round_sort_order'])!,
     );
   }
 
@@ -2069,6 +2086,7 @@ class SettingsTableData extends DataClass
   final bool lockPreviousRounds;
   final int themeMode;
   final bool ecoMode;
+  final int roundSortOrder;
   const SettingsTableData(
       {required this.id,
       required this.createdAt,
@@ -2080,7 +2098,8 @@ class SettingsTableData extends DataClass
       required this.showSmartCalculator,
       required this.lockPreviousRounds,
       required this.themeMode,
-      required this.ecoMode});
+      required this.ecoMode,
+      required this.roundSortOrder});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -2097,6 +2116,7 @@ class SettingsTableData extends DataClass
     map['lock_previous_rounds'] = Variable<bool>(lockPreviousRounds);
     map['theme_mode'] = Variable<int>(themeMode);
     map['eco_mode'] = Variable<bool>(ecoMode);
+    map['round_sort_order'] = Variable<int>(roundSortOrder);
     return map;
   }
 
@@ -2115,6 +2135,7 @@ class SettingsTableData extends DataClass
       lockPreviousRounds: Value(lockPreviousRounds),
       themeMode: Value(themeMode),
       ecoMode: Value(ecoMode),
+      roundSortOrder: Value(roundSortOrder),
     );
   }
 
@@ -2134,6 +2155,7 @@ class SettingsTableData extends DataClass
       lockPreviousRounds: serializer.fromJson<bool>(json['lockPreviousRounds']),
       themeMode: serializer.fromJson<int>(json['themeMode']),
       ecoMode: serializer.fromJson<bool>(json['ecoMode']),
+      roundSortOrder: serializer.fromJson<int>(json['roundSortOrder']),
     );
   }
   @override
@@ -2151,6 +2173,7 @@ class SettingsTableData extends DataClass
       'lockPreviousRounds': serializer.toJson<bool>(lockPreviousRounds),
       'themeMode': serializer.toJson<int>(themeMode),
       'ecoMode': serializer.toJson<bool>(ecoMode),
+      'roundSortOrder': serializer.toJson<int>(roundSortOrder),
     };
   }
 
@@ -2165,7 +2188,8 @@ class SettingsTableData extends DataClass
           bool? showSmartCalculator,
           bool? lockPreviousRounds,
           int? themeMode,
-          bool? ecoMode}) =>
+          bool? ecoMode,
+          int? roundSortOrder}) =>
       SettingsTableData(
         id: id ?? this.id,
         createdAt: createdAt ?? this.createdAt,
@@ -2178,6 +2202,7 @@ class SettingsTableData extends DataClass
         lockPreviousRounds: lockPreviousRounds ?? this.lockPreviousRounds,
         themeMode: themeMode ?? this.themeMode,
         ecoMode: ecoMode ?? this.ecoMode,
+        roundSortOrder: roundSortOrder ?? this.roundSortOrder,
       );
   SettingsTableData copyWithCompanion(SettingsTableCompanion data) {
     return SettingsTableData(
@@ -2200,6 +2225,9 @@ class SettingsTableData extends DataClass
           : this.lockPreviousRounds,
       themeMode: data.themeMode.present ? data.themeMode.value : this.themeMode,
       ecoMode: data.ecoMode.present ? data.ecoMode.value : this.ecoMode,
+      roundSortOrder: data.roundSortOrder.present
+          ? data.roundSortOrder.value
+          : this.roundSortOrder,
     );
   }
 
@@ -2216,7 +2244,8 @@ class SettingsTableData extends DataClass
           ..write('showSmartCalculator: $showSmartCalculator, ')
           ..write('lockPreviousRounds: $lockPreviousRounds, ')
           ..write('themeMode: $themeMode, ')
-          ..write('ecoMode: $ecoMode')
+          ..write('ecoMode: $ecoMode, ')
+          ..write('roundSortOrder: $roundSortOrder')
           ..write(')'))
         .toString();
   }
@@ -2233,7 +2262,8 @@ class SettingsTableData extends DataClass
       showSmartCalculator,
       lockPreviousRounds,
       themeMode,
-      ecoMode);
+      ecoMode,
+      roundSortOrder);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -2248,7 +2278,8 @@ class SettingsTableData extends DataClass
           other.showSmartCalculator == this.showSmartCalculator &&
           other.lockPreviousRounds == this.lockPreviousRounds &&
           other.themeMode == this.themeMode &&
-          other.ecoMode == this.ecoMode);
+          other.ecoMode == this.ecoMode &&
+          other.roundSortOrder == this.roundSortOrder);
 }
 
 class SettingsTableCompanion extends UpdateCompanion<SettingsTableData> {
@@ -2263,6 +2294,7 @@ class SettingsTableCompanion extends UpdateCompanion<SettingsTableData> {
   final Value<bool> lockPreviousRounds;
   final Value<int> themeMode;
   final Value<bool> ecoMode;
+  final Value<int> roundSortOrder;
   final Value<int> rowid;
   const SettingsTableCompanion({
     this.id = const Value.absent(),
@@ -2276,6 +2308,7 @@ class SettingsTableCompanion extends UpdateCompanion<SettingsTableData> {
     this.lockPreviousRounds = const Value.absent(),
     this.themeMode = const Value.absent(),
     this.ecoMode = const Value.absent(),
+    this.roundSortOrder = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   SettingsTableCompanion.insert({
@@ -2290,6 +2323,7 @@ class SettingsTableCompanion extends UpdateCompanion<SettingsTableData> {
     this.lockPreviousRounds = const Value.absent(),
     this.themeMode = const Value.absent(),
     this.ecoMode = const Value.absent(),
+    this.roundSortOrder = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   static Insertable<SettingsTableData> custom({
@@ -2304,6 +2338,7 @@ class SettingsTableCompanion extends UpdateCompanion<SettingsTableData> {
     Expression<bool>? lockPreviousRounds,
     Expression<int>? themeMode,
     Expression<bool>? ecoMode,
+    Expression<int>? roundSortOrder,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -2320,6 +2355,7 @@ class SettingsTableCompanion extends UpdateCompanion<SettingsTableData> {
         'lock_previous_rounds': lockPreviousRounds,
       if (themeMode != null) 'theme_mode': themeMode,
       if (ecoMode != null) 'eco_mode': ecoMode,
+      if (roundSortOrder != null) 'round_sort_order': roundSortOrder,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -2336,6 +2372,7 @@ class SettingsTableCompanion extends UpdateCompanion<SettingsTableData> {
       Value<bool>? lockPreviousRounds,
       Value<int>? themeMode,
       Value<bool>? ecoMode,
+      Value<int>? roundSortOrder,
       Value<int>? rowid}) {
     return SettingsTableCompanion(
       id: id ?? this.id,
@@ -2349,6 +2386,7 @@ class SettingsTableCompanion extends UpdateCompanion<SettingsTableData> {
       lockPreviousRounds: lockPreviousRounds ?? this.lockPreviousRounds,
       themeMode: themeMode ?? this.themeMode,
       ecoMode: ecoMode ?? this.ecoMode,
+      roundSortOrder: roundSortOrder ?? this.roundSortOrder,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -2389,6 +2427,9 @@ class SettingsTableCompanion extends UpdateCompanion<SettingsTableData> {
     if (ecoMode.present) {
       map['eco_mode'] = Variable<bool>(ecoMode.value);
     }
+    if (roundSortOrder.present) {
+      map['round_sort_order'] = Variable<int>(roundSortOrder.value);
+    }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
     }
@@ -2409,6 +2450,7 @@ class SettingsTableCompanion extends UpdateCompanion<SettingsTableData> {
           ..write('lockPreviousRounds: $lockPreviousRounds, ')
           ..write('themeMode: $themeMode, ')
           ..write('ecoMode: $ecoMode, ')
+          ..write('roundSortOrder: $roundSortOrder, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -4210,6 +4252,8 @@ typedef $$SettingsTableTableCreateCompanionBuilder = SettingsTableCompanion
   Value<bool> showSmartCalculator,
   Value<bool> lockPreviousRounds,
   Value<int> themeMode,
+  Value<bool> ecoMode,
+  Value<int> roundSortOrder,
   Value<int> rowid,
 });
 typedef $$SettingsTableTableUpdateCompanionBuilder = SettingsTableCompanion
@@ -4224,6 +4268,8 @@ typedef $$SettingsTableTableUpdateCompanionBuilder = SettingsTableCompanion
   Value<bool> showSmartCalculator,
   Value<bool> lockPreviousRounds,
   Value<int> themeMode,
+  Value<bool> ecoMode,
+  Value<int> roundSortOrder,
   Value<int> rowid,
 });
 
@@ -4268,6 +4314,13 @@ class $$SettingsTableTableFilterComposer
 
   ColumnFilters<int> get themeMode => $composableBuilder(
       column: $table.themeMode, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<bool> get ecoMode => $composableBuilder(
+      column: $table.ecoMode, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get roundSortOrder => $composableBuilder(
+      column: $table.roundSortOrder,
+      builder: (column) => ColumnFilters(column));
 }
 
 class $$SettingsTableTableOrderingComposer
@@ -4312,6 +4365,13 @@ class $$SettingsTableTableOrderingComposer
 
   ColumnOrderings<int> get themeMode => $composableBuilder(
       column: $table.themeMode, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<bool> get ecoMode => $composableBuilder(
+      column: $table.ecoMode, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get roundSortOrder => $composableBuilder(
+      column: $table.roundSortOrder,
+      builder: (column) => ColumnOrderings(column));
 }
 
 class $$SettingsTableTableAnnotationComposer
@@ -4352,6 +4412,12 @@ class $$SettingsTableTableAnnotationComposer
 
   GeneratedColumn<int> get themeMode =>
       $composableBuilder(column: $table.themeMode, builder: (column) => column);
+
+  GeneratedColumn<bool> get ecoMode =>
+      $composableBuilder(column: $table.ecoMode, builder: (column) => column);
+
+  GeneratedColumn<int> get roundSortOrder => $composableBuilder(
+      column: $table.roundSortOrder, builder: (column) => column);
 }
 
 class $$SettingsTableTableTableManager extends RootTableManager<
@@ -4390,6 +4456,8 @@ class $$SettingsTableTableTableManager extends RootTableManager<
             Value<bool> showSmartCalculator = const Value.absent(),
             Value<bool> lockPreviousRounds = const Value.absent(),
             Value<int> themeMode = const Value.absent(),
+            Value<bool> ecoMode = const Value.absent(),
+            Value<int> roundSortOrder = const Value.absent(),
             Value<int> rowid = const Value.absent(),
           }) =>
               SettingsTableCompanion(
@@ -4403,6 +4471,8 @@ class $$SettingsTableTableTableManager extends RootTableManager<
             showSmartCalculator: showSmartCalculator,
             lockPreviousRounds: lockPreviousRounds,
             themeMode: themeMode,
+            ecoMode: ecoMode,
+            roundSortOrder: roundSortOrder,
             rowid: rowid,
           ),
           createCompanionCallback: ({
@@ -4416,6 +4486,8 @@ class $$SettingsTableTableTableManager extends RootTableManager<
             Value<bool> showSmartCalculator = const Value.absent(),
             Value<bool> lockPreviousRounds = const Value.absent(),
             Value<int> themeMode = const Value.absent(),
+            Value<bool> ecoMode = const Value.absent(),
+            Value<int> roundSortOrder = const Value.absent(),
             Value<int> rowid = const Value.absent(),
           }) =>
               SettingsTableCompanion.insert(
@@ -4429,6 +4501,8 @@ class $$SettingsTableTableTableManager extends RootTableManager<
             showSmartCalculator: showSmartCalculator,
             lockPreviousRounds: lockPreviousRounds,
             themeMode: themeMode,
+            ecoMode: ecoMode,
+            roundSortOrder: roundSortOrder,
             rowid: rowid,
           ),
           withReferenceMapper: (p0) => p0

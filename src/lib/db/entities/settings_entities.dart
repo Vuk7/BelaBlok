@@ -17,6 +17,8 @@ class SettingsTable extends BaseUUIDModel {
       integer().withDefault(Constant(AppThemeMode.light.index))();
   BoolColumn get ecoMode => 
       boolean().withDefault(const Constant(false))();
+  IntColumn get roundSortOrder =>
+      integer().withDefault(const Constant(0))(); // 0 = newestFirst
 
   @override
   String get tableName => 'settings';

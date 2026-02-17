@@ -1,4 +1,5 @@
 import 'package:bela_blok/db/database.dart';
+import 'package:bela_blok/enums/round_sort_order_enum.dart';
 import 'package:bela_blok/enums/team_enum.dart';
 import 'package:bela_blok/db/models/user_settings_model.dart';
 import 'package:bela_blok/screens/current_game_screen/widgets/round_score_list_item.dart';
@@ -104,8 +105,12 @@ class _CurrentGameScreenState extends State<CurrentGameScreen> {
   Future<void> loadRounds(String gameId) async {
     setState(() => isLoadingRounds = true);
     final roundRows = await roundsService!.getRoundsForGameSorted(gameId);
+    final sortOrder = settings?.roundSortOrderEnum ?? RoundSortOrder.newestFirst;
     setState(() {
       rounds = roundRows.map((r) => r.toModel()).toList();
+      if (sortOrder == RoundSortOrder.newestFirst) {
+        rounds = rounds!.reversed.toList();
+      }
       isLoadingRounds = false;
     });
   }
@@ -458,8 +463,15 @@ class _CurrentGameScreenState extends State<CurrentGameScreen> {
                       delegate: SliverChildBuilderDelegate(
                         (context, index) {
                           final round = rounds![index];
-                          final isLastRound = index == rounds!.length - 1;
+                          final sortOrder = settings?.roundSortOrderEnum ?? RoundSortOrder.newestFirst;
+                          final isNewestFirst = sortOrder == RoundSortOrder.newestFirst;
+                          final isLastRound = isNewestFirst
+                              ? index == 0
+                              : index == rounds!.length - 1;
                           final isLocked = (settings?.lockPreviousRounds ?? false) && !isLastRound;
+                          final displayIndex = isNewestFirst
+                              ? rounds!.length - 1 - index
+                              : index;
                           return AnimatedListItem(
                             index: index,
                             animationType: _skipListAnimation
@@ -476,7 +488,7 @@ class _CurrentGameScreenState extends State<CurrentGameScreen> {
                                 teamOneScore: round.teamOneScore ?? 0,
                                 teamTwoScore: round.teamTwoScore ?? 0,
                                 teamFailed: round.teamFailed ?? false,
-                                roundID: index,
+                                roundID: displayIndex,
                                 teamCalled: Team.values[
                                     round.teamCalled ?? Team.teamOne.index],
                                 us20: round.us20,
@@ -498,7 +510,7 @@ class _CurrentGameScreenState extends State<CurrentGameScreen> {
                                       .pushNamed('addround', queryParameters: {
                                     'id': currentGame!.id!,
                                     'roundId': round.id ?? '',
-                                    'roundIndex': index.toString(),
+                                    'roundIndex': displayIndex.toString(),
                                   }, extra: () {
                                     updateCallbackWithGameRecalculation();
                                   });
