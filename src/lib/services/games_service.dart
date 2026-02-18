@@ -2,6 +2,7 @@ import 'package:bela_blok/db/dao/game_dao.dart';
 import 'package:bela_blok/db/database.dart';
 import 'package:bela_blok/db/models/game_model.dart';
 import 'package:bela_blok/enums/play_direction_enum.dart';
+import 'package:bela_blok/enums/team_enum.dart';
 
 class GamesService {
   final AppDatabase database;
@@ -106,7 +107,7 @@ class GamesService {
 
 
 
-  static int? determineWinner({
+  static Team? determineWinner({
     required int teamOneScore,
     required int teamTwoScore,
     required int gameTargetScore,
@@ -118,10 +119,10 @@ class GamesService {
 
     if (teamOneReached && teamTwoReached) {
       if (teamOneScore == teamTwoScore) return null;
-      return teamOneScore > teamTwoScore ? 0 : 1;
+      return teamOneScore > teamTwoScore ? Team.teamOne : Team.teamTwo;
     }
 
-    return teamOneReached ? 0 : 1;
+    return teamOneReached ? Team.teamOne : Team.teamTwo;
   }
 
   static bool isGameFinished({
@@ -140,7 +141,7 @@ class GamesService {
   static void updateGameWinState(Game game, int teamOneScore, int teamTwoScore) {
     final int gameTargetScore = game.gameType ?? 1001;
     final oldFinished = game.finished;
-    final oldWinner = game.winner;
+    final oldWinner = game.winner != null ? Team.values[game.winner!] : null;
 
     final newWinner = determineWinner(
       teamOneScore: teamOneScore,
@@ -149,18 +150,18 @@ class GamesService {
     );
 
     game.finished = newWinner != null;
-    game.winner = newWinner;
+    game.winner = newWinner?.index;
 
     if (oldFinished == true && oldWinner != newWinner) {
-      if (oldWinner == 0) {
+      if (oldWinner == Team.teamOne) {
         game.teamOneWins = ((game.teamOneWins ?? 1) - 1).clamp(0, 999999);
-      } else if (oldWinner == 1) {
+      } else if (oldWinner == Team.teamTwo) {
         game.teamTwoWins = ((game.teamTwoWins ?? 1) - 1).clamp(0, 999999);
       }
     }
 
     if (newWinner != null && (oldFinished != true || oldWinner != newWinner)) {
-      if (newWinner == 0) {
+      if (newWinner == Team.teamOne) {
         game.teamOneWins = (game.teamOneWins ?? 0) + 1;
       } else {
         game.teamTwoWins = (game.teamTwoWins ?? 0) + 1;

@@ -1,4 +1,5 @@
 import 'package:bela_blok/db/entities/base_model.dart';
+import 'package:bela_blok/enums/round_sort_order_enum.dart';
 import 'package:bela_blok/enums/theme_mode_enum.dart';
 import 'package:drift/drift.dart';
 
@@ -18,7 +19,7 @@ class SettingsTable extends BaseUUIDModel {
   BoolColumn get ecoMode => 
       boolean().withDefault(const Constant(false))();
   IntColumn get roundSortOrder =>
-      integer().withDefault(const Constant(0))(); // 0 = newestFirst
+      integer().withDefault(Constant(RoundSortOrder.newestFirst.index))();
 
   @override
   String get tableName => 'settings';

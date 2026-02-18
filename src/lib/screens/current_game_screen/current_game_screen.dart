@@ -252,7 +252,7 @@ class _CurrentGameScreenState extends State<CurrentGameScreen> {
       teamTwoScore: teamScore[Team.teamTwo]!,
       gameTargetScore: gameTargetScore,
     );
-    return winner == 0 ? 'Tim 1' : 'Tim 2';
+    return winner == Team.teamOne ? 'Tim 1' : 'Tim 2';
   }
 
   GameStats get gameStats => _aggregateTeamStats();
@@ -405,7 +405,7 @@ class _CurrentGameScreenState extends State<CurrentGameScreen> {
       teamTwoScore: teamScore[Team.teamTwo]!,
       gameTargetScore: gameTargetScore,
     );
-    final teamOneWon = winner == 0;
+    final teamOneWon = winner == Team.teamOne;
     final winnerColor = teamOneWon ? AppTheme.orange : AppTheme.blue;
 
     return Scaffold(
