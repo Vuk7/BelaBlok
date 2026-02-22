@@ -1,4 +1,5 @@
 import 'package:bela_blok/common/constants.dart';
+import 'package:bela_blok/enums/round_sort_order_enum.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:bela_blok/main.dart';
@@ -64,6 +65,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   Future<void> _updateShowHelpDialog(bool value) async {
     await _settingsService.updateShowHelpDialog(value);
+    await _loadSettings();
+  }
+
+  Future<void> _updateRoundSortOrder(bool newestFirst) async {
+    final sortOrder = newestFirst
+        ? RoundSortOrder.newestFirst
+        : RoundSortOrder.oldestFirst;
+    await _settingsService.updateRoundSortOrder(sortOrder);
     await _loadSettings();
   }
 
@@ -164,6 +173,21 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   value: _settings?.lockPreviousRounds ?? false,
                   onChanged: _updateLockPreviousRounds,
                   secondary: const Icon(Icons.lock_outline),
+                ),
+                const SizedBox(height: 32),
+                Text('Redoslijed rundi',
+                    style: AppTheme.sectionHeaderTextStyle.copyWith(
+                        color: Theme.of(context).colorScheme.onSurface)),
+                const SizedBox(height: 4),
+                SwitchListTile(
+                  subtitle: Text(
+                    (_settings?.roundSortOrderEnum ?? RoundSortOrder.newestFirst) == RoundSortOrder.newestFirst
+                        ? 'Runde se prikazuju od najnovije prema starijima'
+                        : 'Runde se prikazuju od najstarije prema najnovijima',
+                  ),
+                  value: (_settings?.roundSortOrderEnum ?? RoundSortOrder.newestFirst) == RoundSortOrder.oldestFirst,
+                  onChanged: (value) => _updateRoundSortOrder(!value),
+                  secondary: const Icon(Icons.sort),
                 ),
                 const SizedBox(height: 32),
                 Text('Open Source',

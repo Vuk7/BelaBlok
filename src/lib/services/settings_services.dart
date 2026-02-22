@@ -1,6 +1,7 @@
 import 'package:bela_blok/db/dao/settings_dao.dart';
 import 'package:bela_blok/db/database.dart';
 import 'package:bela_blok/db/models/user_settings_model.dart';
+import 'package:bela_blok/enums/round_sort_order_enum.dart';
 import 'package:bela_blok/enums/theme_mode_enum.dart';
 
 class SettingsService {
@@ -20,6 +21,7 @@ class SettingsService {
         lockPreviousRounds: false,
         themeMode: AppThemeMode.light.index,
         ecoMode: false,
+        roundSortOrder: RoundSortOrder.newestFirst.index,
       );
       
       await dao.insert(database.settingsTable, settings.toCompanion());
@@ -108,6 +110,17 @@ class SettingsService {
     );
   }
 
+  Future<void> updateRoundSortOrder(RoundSortOrder sortOrder) async {
+    final settings = await fetchSettings();
+    settings.roundSortOrder = sortOrder.index;
+    await dao.update(
+      database.settingsTable,
+      database.settingsTable.id,
+      settings.id!,
+      settings.toCompanion()
+    );
+  }
+
   Future<void> updateSettings(UserSettings settings) async {
     final currentSettings = await fetchSettings();
     
@@ -131,6 +144,9 @@ class SettingsService {
     }
     if (settings.ecoMode != null) {
       currentSettings.ecoMode = settings.ecoMode;
+    }
+    if (settings.roundSortOrder != null) {
+      currentSettings.roundSortOrder = settings.roundSortOrder;
     }
     
     await dao.update(

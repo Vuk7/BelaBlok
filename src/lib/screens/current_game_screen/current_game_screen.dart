@@ -1,6 +1,5 @@
-import 'dart:math';
-
 import 'package:bela_blok/db/database.dart';
+import 'package:bela_blok/enums/round_sort_order_enum.dart';
 import 'package:bela_blok/enums/team_enum.dart';
 import 'package:bela_blok/db/models/user_settings_model.dart';
 import 'package:bela_blok/screens/current_game_screen/widgets/round_score_list_item.dart';
@@ -106,8 +105,12 @@ class _CurrentGameScreenState extends State<CurrentGameScreen> {
   Future<void> loadRounds(String gameId) async {
     setState(() => isLoadingRounds = true);
     final roundRows = await roundsService!.getRoundsForGameSorted(gameId);
+    final sortOrder = settings?.roundSortOrderEnum ?? RoundSortOrder.newestFirst;
     setState(() {
       rounds = roundRows.map((r) => r.toModel()).toList();
+      if (sortOrder == RoundSortOrder.newestFirst) {
+        rounds = rounds!.reversed.toList();
+      }
       isLoadingRounds = false;
     });
   }
@@ -215,37 +218,12 @@ class _CurrentGameScreenState extends State<CurrentGameScreen> {
     game.teamOneScore = newScoreTeamOne;
     game.teamTwoScore = newScoreTeamTwo;
 
-    final int gameTargetScore = game.gameType ?? 1001;
-
-    final oldFinishedState = game.finished;
+    final oldFinished = game.finished;
     final oldWinner = game.winner;
 
-    if (newScoreTeamOne >= gameTargetScore ||
-        newScoreTeamTwo >= gameTargetScore) {
-      game.finished = true;
-      game.winner = newScoreTeamOne >= gameTargetScore ? 0 : 1;
-    } else {
-      game.finished = false;
-      game.winner = null;
-    }
+    GamesService.updateGameWinState(game, newScoreTeamOne, newScoreTeamTwo);
 
-    if (oldFinishedState != game.finished) {
-      if (game.finished == true) {
-        // Increase team wins
-        if (game.winner == 0) {
-          game.teamOneWins = (game.teamOneWins ?? 0) + 1;
-        } else {
-          game.teamTwoWins = (game.teamTwoWins ?? 0) + 1;
-        }
-      } else {
-        // Decrease team wins
-        if (oldWinner == 0) {
-          game.teamOneWins = max(0, (game.teamOneWins ?? 0) - 1);
-        } else {
-          game.teamTwoWins = max(0, (game.teamTwoWins ?? 0) - 1);
-        }
-      }
-
+    if (oldFinished != game.finished || oldWinner != game.winner) {
       if (widget.updateGamesListCallback != null) {
         widget.updateGamesListCallback!();
       }
@@ -269,7 +247,12 @@ class _CurrentGameScreenState extends State<CurrentGameScreen> {
 
   String? get winningTeam {
     if (!isGameFinished) return null;
-    return teamScore[Team.teamOne]! >= gameTargetScore ? 'Tim 1' : 'Tim 2';
+    final winner = GamesService.determineWinner(
+      teamOneScore: teamScore[Team.teamOne]!,
+      teamTwoScore: teamScore[Team.teamTwo]!,
+      gameTargetScore: gameTargetScore,
+    );
+    return winner == Team.teamOne ? 'Tim 1' : 'Tim 2';
   }
 
   GameStats get gameStats => _aggregateTeamStats();
@@ -354,9 +337,11 @@ class _CurrentGameScreenState extends State<CurrentGameScreen> {
     );
   }
 
-  bool get isGameFinished =>
-      teamScore[Team.teamOne]! >= gameTargetScore ||
-      teamScore[Team.teamTwo]! >= gameTargetScore;
+  bool get isGameFinished => GamesService.isGameFinished(
+      teamOneScore: teamScore[Team.teamOne]!,
+      teamTwoScore: teamScore[Team.teamTwo]!,
+      gameTargetScore: gameTargetScore,
+    );
 
   void _closeStatsPopup() {
     setState(() {
@@ -415,7 +400,12 @@ class _CurrentGameScreenState extends State<CurrentGameScreen> {
       );
     }
 
-    final teamOneWon = teamScore[Team.teamOne]! >= gameTargetScore;
+    final winner = GamesService.determineWinner(
+      teamOneScore: teamScore[Team.teamOne]!,
+      teamTwoScore: teamScore[Team.teamTwo]!,
+      gameTargetScore: gameTargetScore,
+    );
+    final teamOneWon = winner == Team.teamOne;
     final winnerColor = teamOneWon ? AppTheme.orange : AppTheme.blue;
 
     return Scaffold(
@@ -473,8 +463,15 @@ class _CurrentGameScreenState extends State<CurrentGameScreen> {
                       delegate: SliverChildBuilderDelegate(
                         (context, index) {
                           final round = rounds![index];
-                          final isLastRound = index == rounds!.length - 1;
+                          final sortOrder = settings?.roundSortOrderEnum ?? RoundSortOrder.newestFirst;
+                          final isNewestFirst = sortOrder == RoundSortOrder.newestFirst;
+                          final isLastRound = isNewestFirst
+                              ? index == 0
+                              : index == rounds!.length - 1;
                           final isLocked = (settings?.lockPreviousRounds ?? false) && !isLastRound;
+                          final displayIndex = isNewestFirst
+                              ? rounds!.length - 1 - index
+                              : index;
                           return AnimatedListItem(
                             index: index,
                             animationType: _skipListAnimation
@@ -491,7 +488,7 @@ class _CurrentGameScreenState extends State<CurrentGameScreen> {
                                 teamOneScore: round.teamOneScore ?? 0,
                                 teamTwoScore: round.teamTwoScore ?? 0,
                                 teamFailed: round.teamFailed ?? false,
-                                roundID: index,
+                                roundID: displayIndex,
                                 teamCalled: Team.values[
                                     round.teamCalled ?? Team.teamOne.index],
                                 us20: round.us20,
@@ -513,7 +510,7 @@ class _CurrentGameScreenState extends State<CurrentGameScreen> {
                                       .pushNamed('addround', queryParameters: {
                                     'id': currentGame!.id!,
                                     'roundId': round.id ?? '',
-                                    'roundIndex': index.toString(),
+                                    'roundIndex': displayIndex.toString(),
                                   }, extra: () {
                                     updateCallbackWithGameRecalculation();
                                   });

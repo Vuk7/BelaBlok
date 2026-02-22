@@ -80,6 +80,8 @@ class _AnimatedPlayDirectionChoiceState extends State<AnimatedPlayDirectionChoic
   @override
   Widget build(BuildContext context) {
     final ecoMode = context.watch<EcoModeNotifier>().isEcoMode;
+    final iconColorOnSelected = Colors.white;
+    final iconColorOnNotSelected = Theme.of(context).colorScheme.surface;
 
     return Column(
       children: [
@@ -99,19 +101,23 @@ class _AnimatedPlayDirectionChoiceState extends State<AnimatedPlayDirectionChoic
                 width: 32,
                 height: 32,
                 decoration: BoxDecoration(
-                  color: (widget.selectedChoice == 0) 
-                    ? widget.selectedColor 
+                  color: (widget.selectedChoice == 0)
+                    ? widget.selectedColor
                     : widget.notSelectedColor,
                   borderRadius: BorderRadius.circular(16),
                 ),
                 child: ecoMode
-                  ? const Icon(Icons.rotate_right, color: Colors.white, size: 20)
+                  ? Icon(Icons.rotate_right,
+                      color: widget.selectedChoice == 0 ? iconColorOnSelected : iconColorOnNotSelected,
+                      size: 20)
                   : AnimatedBuilder(
                       animation: _clockwiseAnimation,
                       builder: (context, child) {
                         return Transform.rotate(
                           angle: _clockwiseAnimation.value * 2 * 3.14159,
-                          child: const Icon(Icons.rotate_right, color: Colors.white, size: 20),
+                          child: Icon(Icons.rotate_right,
+                              color: widget.selectedChoice == 0 ? iconColorOnSelected : iconColorOnNotSelected,
+                              size: 20),
                         );
                       },
                     ),
@@ -147,19 +153,23 @@ class _AnimatedPlayDirectionChoiceState extends State<AnimatedPlayDirectionChoic
                 width: 32,
                 height: 32,
                 decoration: BoxDecoration(
-                  color: (widget.selectedChoice == 1) 
-                    ? widget.selectedColor 
+                  color: (widget.selectedChoice == 1)
+                    ? widget.selectedColor
                     : widget.notSelectedColor,
                   borderRadius: BorderRadius.circular(16),
                 ),
                 child: ecoMode
-                  ? const Icon(Icons.rotate_left, color: Colors.white, size: 20)
+                  ? Icon(Icons.rotate_left,
+                      color: widget.selectedChoice == 1 ? iconColorOnSelected : iconColorOnNotSelected,
+                      size: 20)
                   : AnimatedBuilder(
                       animation: _counterClockwiseAnimation,
                       builder: (context, child) {
                         return Transform.rotate(
                           angle: _counterClockwiseAnimation.value * 2 * 3.14159,
-                          child: const Icon(Icons.rotate_left, color: Colors.white, size: 20),
+                          child: Icon(Icons.rotate_left,
+                              color: widget.selectedChoice == 1 ? iconColorOnSelected : iconColorOnNotSelected,
+                              size: 20),
                         );
                       },
                     ),

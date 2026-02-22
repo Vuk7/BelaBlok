@@ -119,7 +119,7 @@ class _RulesWidgetState extends State<RulesWidget> {
                   
                   _buildRuleSection(
                     'ZVANJE',
-                    '20 - Tri uzastopne karte iste boje\n50 - Četiri uzastopne karte iste boje\n100 - Pet uzastopnih karata iste boje\n100 - Četiri desetke, četiri kralja, četiri kraljice\n150 - Četiri devetke, četiri asa\n200 - Četiri dečka',
+                    '20 - Tri uzastopne karte iste boje\n50 - Četiri uzastopne karte iste boje\n100 - Pet uzastopnih karata iste boje\n100 -Četiri asa, četiri desetke, četiri kralja, četiri kraljice \n150 - Četiri devetke\n200 - Četiri dečka',
                     Icons.star,
                     isDark,
                   ),
