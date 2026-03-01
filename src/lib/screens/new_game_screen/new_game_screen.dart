@@ -9,6 +9,7 @@ import 'package:bela_blok/services/games_service.dart';
 import 'package:bela_blok/themes/app_theme.dart';
 import 'package:bela_blok/enums/play_direction_enum.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 
 class NewGameScreen extends StatefulWidget {
@@ -79,7 +80,32 @@ class _NewGameScreenState extends State<NewGameScreen> {
 
   Future<void> handleCreateNewGame() async {
     final targetScore = await getSelectedTargetScore();
-    if (targetScore == null) return;
+    if (targetScore == null) {
+      if (isCustomGame && mounted) {
+        ScaffoldMessenger.of(context)
+          ..clearSnackBars()
+          ..showSnackBar(
+            const SnackBar(
+              content: Text('Unesite ispravan cilj igre (1 - 10000).'),
+              backgroundColor: AppTheme.red,
+            ),
+          );
+      }
+      return;
+    }
+    if (targetScore < 1 || targetScore > 10000) {
+      if (mounted) {
+        ScaffoldMessenger.of(context)
+          ..clearSnackBars()
+          ..showSnackBar(
+            const SnackBar(
+              content: Text('Cilj igre mora biti između 1 i 10000.'),
+              backgroundColor: AppTheme.red,
+            ),
+          );
+      }
+      return;
+    }
 
     try {
       latestGame = await _gamesService.createNewGameWithParameters(
@@ -119,33 +145,81 @@ class _NewGameScreenState extends State<NewGameScreen> {
 
   Future<String?> _showCustomGameDialog() async {
     final TextEditingController dialogController = TextEditingController();
+    String? errorText;
+
+    void clearError(StateSetter setDialogState) {
+      if (errorText != null) {
+        setDialogState(() => errorText = null);
+      }
+    }
+
+    void submitCustomGame(BuildContext ctx, StateSetter setDialogState) {
+      final text = dialogController.text.trim();
+      if (text.isEmpty) {
+        setDialogState(() => errorText = 'Unesite broj.');
+        return;
+      }
+      final value = int.tryParse(text);
+      if (value == null) {
+        setDialogState(() => errorText = 'Neispravan unos.');
+        return;
+      }
+      if (value < 1) {
+        setDialogState(() => errorText = 'Broj mora biti najmanje 1.');
+        return;
+      }
+      if (value > 10000) {
+        setDialogState(
+            () => errorText = 'Broj ne smije biti veći od 10000.');
+        return;
+      }
+      Navigator.of(ctx).pop(text);
+    }
+
     return showDialog<String>(
       context: context,
-      builder: (ctx) => AlertDialog(
-        title: const Text('Unesite broj za igru'),
-        content: TextField(
-          controller: dialogController,
-          keyboardType: TextInputType.number,
-          decoration: const InputDecoration(
-            hintText: 'Npr. 751',
-            border: OutlineInputBorder(),
+      builder: (ctx) => StatefulBuilder(
+        builder: (ctx, setDialogState) => AlertDialog(
+          title: const Text('Unesite cilj igre'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                controller: dialogController,
+                keyboardType: TextInputType.number,
+                inputFormatters: [
+                  FilteringTextInputFormatter.digitsOnly,
+                  LengthLimitingTextInputFormatter(5),
+                ],
+                decoration: InputDecoration(
+                  hintText: 'Npr. 751',
+                  border: const OutlineInputBorder(),
+                  errorText: errorText,
+                ),
+                autofocus: true,
+                onChanged: (_) => clearError(setDialogState),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                'Dozvoljeni raspon: 1 - 10000',
+                style: TextStyle(
+                  fontSize: 12,
+                  color: Colors.grey[600],
+                ),
+              ),
+            ],
           ),
-          autofocus: true,
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(ctx).pop(),
+              child: const Text('ODUSTANI'),
+            ),
+            TextButton(
+              onPressed: () => submitCustomGame(ctx, setDialogState),
+              child: const Text('POTVRDI'),
+            ),
+          ],
         ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(ctx).pop(),
-            child: const Text('ODUSTANI'),
-          ),
-          TextButton(
-            onPressed: () {
-              if (dialogController.text.isNotEmpty) {
-                Navigator.of(ctx).pop(dialogController.text);
-              }
-            },
-            child: const Text('POTVRDI'),
-          ),
-        ],
       ),
     );
   }
