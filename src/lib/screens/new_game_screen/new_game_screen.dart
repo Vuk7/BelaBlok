@@ -146,6 +146,36 @@ class _NewGameScreenState extends State<NewGameScreen> {
   Future<String?> _showCustomGameDialog() async {
     final TextEditingController dialogController = TextEditingController();
     String? errorText;
+
+    void clearError(StateSetter setDialogState) {
+      if (errorText != null) {
+        setDialogState(() => errorText = null);
+      }
+    }
+
+    void submitCustomGame(BuildContext ctx, StateSetter setDialogState) {
+      final text = dialogController.text.trim();
+      if (text.isEmpty) {
+        setDialogState(() => errorText = 'Unesite broj.');
+        return;
+      }
+      final value = int.tryParse(text);
+      if (value == null) {
+        setDialogState(() => errorText = 'Neispravan unos.');
+        return;
+      }
+      if (value < 1) {
+        setDialogState(() => errorText = 'Broj mora biti najmanje 1.');
+        return;
+      }
+      if (value > 10000) {
+        setDialogState(
+            () => errorText = 'Broj ne smije biti veći od 10000.');
+        return;
+      }
+      Navigator.of(ctx).pop(text);
+    }
+
     return showDialog<String>(
       context: context,
       builder: (ctx) => StatefulBuilder(
@@ -167,11 +197,7 @@ class _NewGameScreenState extends State<NewGameScreen> {
                   errorText: errorText,
                 ),
                 autofocus: true,
-                onChanged: (_) {
-                  if (errorText != null) {
-                    setDialogState(() => errorText = null);
-                  }
-                },
+                onChanged: (_) => clearError(setDialogState),
               ),
               const SizedBox(height: 8),
               Text(
@@ -189,29 +215,7 @@ class _NewGameScreenState extends State<NewGameScreen> {
               child: const Text('ODUSTANI'),
             ),
             TextButton(
-              onPressed: () {
-                final text = dialogController.text.trim();
-                if (text.isEmpty) {
-                  setDialogState(() => errorText = 'Unesite broj.');
-                  return;
-                }
-                final value = int.tryParse(text);
-                if (value == null) {
-                  setDialogState(() => errorText = 'Neispravan unos.');
-                  return;
-                }
-                if (value < 1) {
-                  setDialogState(
-                      () => errorText = 'Broj mora biti najmanje 1.');
-                  return;
-                }
-                if (value > 10000) {
-                  setDialogState(
-                      () => errorText = 'Broj ne smije biti veći od 10000.');
-                  return;
-                }
-                Navigator.of(ctx).pop(text);
-              },
+              onPressed: () => submitCustomGame(ctx, setDialogState),
               child: const Text('POTVRDI'),
             ),
           ],
