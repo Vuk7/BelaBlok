@@ -1,6 +1,5 @@
-import 'dart:math';
-
 import 'package:bela_blok/db/database.dart';
+import 'package:bela_blok/enums/round_sort_order_enum.dart';
 import 'package:bela_blok/enums/team_enum.dart';
 import 'package:bela_blok/db/models/user_settings_model.dart';
 import 'package:bela_blok/screens/current_game_screen/widgets/round_score_list_item.dart';
@@ -17,9 +16,11 @@ import 'package:bela_blok/services/settings_services.dart';
 import 'package:bela_blok/db/models/game_model.dart';
 import 'package:bela_blok/db/models/round_model.dart';
 import 'package:bela_blok/themes/app_theme.dart';
+import 'package:bela_blok/main.dart';
 import 'package:bela_blok/models/game_stats_model.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 
 class CurrentGameScreen extends StatefulWidget {
   final String? gameId;
@@ -37,6 +38,7 @@ class _CurrentGameScreenState extends State<CurrentGameScreen> {
   bool _showStatsPopup = false;
   bool _wobbleTrigger = false;
   bool _skipListAnimation = false;
+  bool _isProcessing = false;
 
   GamesService? gamesService;
   RoundsService? roundsService;
@@ -103,8 +105,12 @@ class _CurrentGameScreenState extends State<CurrentGameScreen> {
   Future<void> loadRounds(String gameId) async {
     setState(() => isLoadingRounds = true);
     final roundRows = await roundsService!.getRoundsForGameSorted(gameId);
+    final sortOrder = settings?.roundSortOrderEnum ?? RoundSortOrder.newestFirst;
     setState(() {
       rounds = roundRows.map((r) => r.toModel()).toList();
+      if (sortOrder == RoundSortOrder.newestFirst) {
+        rounds = rounds!.reversed.toList();
+      }
       isLoadingRounds = false;
     });
   }
@@ -139,27 +145,33 @@ class _CurrentGameScreenState extends State<CurrentGameScreen> {
   }
 
   void showSuccessMessage(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        backgroundColor: AppTheme.green,
-        duration: const Duration(seconds: 2),
-      ),
-    );
+    ScaffoldMessenger.of(context)
+      ..clearSnackBars()
+      ..showSnackBar(
+        SnackBar(
+          content: Text(message),
+          backgroundColor: AppTheme.green,
+          duration: const Duration(seconds: 2),
+        ),
+      );
   }
 
   void showErrorMessage(String message) {
     if (!mounted) return;
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Došlo je do greške. Pokušajte ponovno.'),
-        backgroundColor: AppTheme.red,
-        duration: Duration(seconds: 3),
-      ),
-    );
+    ScaffoldMessenger.of(context)
+      ..clearSnackBars()
+      ..showSnackBar(
+        const SnackBar(
+          content: Text('Došlo je do greške. Pokušajte ponovno.'),
+          backgroundColor: AppTheme.red,
+          duration: Duration(seconds: 3),
+        ),
+      );
   }
 
   Future<void> handleDeleteRound(String roundId) async {
+    if (_isProcessing) return;
+    _isProcessing = true;
     try {
       await roundsService!.deleteRound(roundId);
 
@@ -171,6 +183,8 @@ class _CurrentGameScreenState extends State<CurrentGameScreen> {
       showSuccessMessage('Runda je uspješno obrisana');
     } catch (e) {
       showErrorMessage('Greška pri brisanju runde');
+    } finally {
+      _isProcessing = false;
     }
   }
 
@@ -204,37 +218,12 @@ class _CurrentGameScreenState extends State<CurrentGameScreen> {
     game.teamOneScore = newScoreTeamOne;
     game.teamTwoScore = newScoreTeamTwo;
 
-    final int gameTargetScore = game.gameType ?? 1001;
-
-    final oldFinishedState = game.finished;
+    final oldFinished = game.finished;
     final oldWinner = game.winner;
 
-    if (newScoreTeamOne >= gameTargetScore ||
-        newScoreTeamTwo >= gameTargetScore) {
-      game.finished = true;
-      game.winner = newScoreTeamOne >= gameTargetScore ? 0 : 1;
-    } else {
-      game.finished = false;
-      game.winner = null;
-    }
+    GamesService.updateGameWinState(game, newScoreTeamOne, newScoreTeamTwo);
 
-    if (oldFinishedState != game.finished) {
-      if (game.finished == true) {
-        // Increase team wins
-        if (game.winner == 0) {
-          game.teamOneWins = (game.teamOneWins ?? 0) + 1;
-        } else {
-          game.teamTwoWins = (game.teamTwoWins ?? 0) + 1;
-        }
-      } else {
-        // Decrease team wins
-        if (oldWinner == 0) {
-          game.teamOneWins = max(0, (game.teamOneWins ?? 0) - 1);
-        } else {
-          game.teamTwoWins = max(0, (game.teamTwoWins ?? 0) - 1);
-        }
-      }
-
+    if (oldFinished != game.finished || oldWinner != game.winner) {
       if (widget.updateGamesListCallback != null) {
         widget.updateGamesListCallback!();
       }
@@ -258,7 +247,12 @@ class _CurrentGameScreenState extends State<CurrentGameScreen> {
 
   String? get winningTeam {
     if (!isGameFinished) return null;
-    return teamScore[Team.teamOne]! >= gameTargetScore ? 'Tim 1' : 'Tim 2';
+    final winner = GamesService.determineWinner(
+      teamOneScore: teamScore[Team.teamOne]!,
+      teamTwoScore: teamScore[Team.teamTwo]!,
+      gameTargetScore: gameTargetScore,
+    );
+    return winner == Team.teamOne ? 'Tim 1' : 'Tim 2';
   }
 
   GameStats get gameStats => _aggregateTeamStats();
@@ -343,9 +337,11 @@ class _CurrentGameScreenState extends State<CurrentGameScreen> {
     );
   }
 
-  bool get isGameFinished =>
-      teamScore[Team.teamOne]! >= gameTargetScore ||
-      teamScore[Team.teamTwo]! >= gameTargetScore;
+  bool get isGameFinished => GamesService.isGameFinished(
+      teamOneScore: teamScore[Team.teamOne]!,
+      teamTwoScore: teamScore[Team.teamTwo]!,
+      gameTargetScore: gameTargetScore,
+    );
 
   void _closeStatsPopup() {
     setState(() {
@@ -404,7 +400,12 @@ class _CurrentGameScreenState extends State<CurrentGameScreen> {
       );
     }
 
-    final teamOneWon = teamScore[Team.teamOne]! >= gameTargetScore;
+    final winner = GamesService.determineWinner(
+      teamOneScore: teamScore[Team.teamOne]!,
+      teamTwoScore: teamScore[Team.teamTwo]!,
+      gameTargetScore: gameTargetScore,
+    );
+    final teamOneWon = winner == Team.teamOne;
     final winnerColor = teamOneWon ? AppTheme.orange : AppTheme.blue;
 
     return Scaffold(
@@ -462,6 +463,15 @@ class _CurrentGameScreenState extends State<CurrentGameScreen> {
                       delegate: SliverChildBuilderDelegate(
                         (context, index) {
                           final round = rounds![index];
+                          final sortOrder = settings?.roundSortOrderEnum ?? RoundSortOrder.newestFirst;
+                          final isNewestFirst = sortOrder == RoundSortOrder.newestFirst;
+                          final isLastRound = isNewestFirst
+                              ? index == 0
+                              : index == rounds!.length - 1;
+                          final isLocked = (settings?.lockPreviousRounds ?? false) && !isLastRound;
+                          final displayIndex = isNewestFirst
+                              ? rounds!.length - 1 - index
+                              : index;
                           return AnimatedListItem(
                             index: index,
                             animationType: _skipListAnimation
@@ -478,7 +488,7 @@ class _CurrentGameScreenState extends State<CurrentGameScreen> {
                                 teamOneScore: round.teamOneScore ?? 0,
                                 teamTwoScore: round.teamTwoScore ?? 0,
                                 teamFailed: round.teamFailed ?? false,
-                                roundID: index,
+                                roundID: displayIndex,
                                 teamCalled: Team.values[
                                     round.teamCalled ?? Team.teamOne.index],
                                 us20: round.us20,
@@ -491,15 +501,16 @@ class _CurrentGameScreenState extends State<CurrentGameScreen> {
                                 them100: round.them100,
                                 them150: round.them150,
                                 them200: round.them200,
-                                onDelete: round.id != null
+                                onDelete: isLocked ? null : (round.id != null
                                     ? () => handleDeleteRound(round.id!)
-                                    : null,
-                                onTap: () async {
+                                    : null),
+                                isLocked: isLocked,
+                                onTap: isLocked ? null : () async {
                                   await context
                                       .pushNamed('addround', queryParameters: {
                                     'id': currentGame!.id!,
                                     'roundId': round.id ?? '',
-                                    'roundIndex': index.toString(),
+                                    'roundIndex': displayIndex.toString(),
                                   }, extra: () {
                                     updateCallbackWithGameRecalculation();
                                   });
@@ -528,7 +539,9 @@ class _CurrentGameScreenState extends State<CurrentGameScreen> {
             child: SafeArea(
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(25, 8, 25, 5),
-                child: Hero(
+                child: HeroMode(
+                  enabled: !context.watch<EcoModeNotifier>().isEcoMode,
+                  child: Hero(
                   tag: isGameFinished
                       ? "return_to_main_button"
                       : "add_round_button",
@@ -547,6 +560,7 @@ class _CurrentGameScreenState extends State<CurrentGameScreen> {
                         : handleAddRound,
                     textPadding: 15,
                   ),
+                ),
                 ),
               ),
             ),

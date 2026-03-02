@@ -1,4 +1,6 @@
+import 'package:bela_blok/main.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class AnimatedButton extends StatefulWidget {
   final String text;
@@ -49,14 +51,16 @@ class _AnimatedButtonState extends State<AnimatedButton> {
 
   @override
   Widget build(BuildContext context) {
+    final ecoMode = context.watch<EcoModeNotifier>().isEcoMode;
+
     return GestureDetector(
-      onTapDown: _onTapDown,
-      onTapUp: _onTapUp,
-      onTapCancel: _onTapCancel,
+      onTapDown: ecoMode ? null : _onTapDown,
+      onTapUp: ecoMode ? null : _onTapUp,
+      onTapCancel: ecoMode ? null : _onTapCancel,
       onTap: widget.onTap,
       child: AnimatedScale(
-        scale: _scale,
-        duration: const Duration(milliseconds: 120),
+        scale: ecoMode ? 1.0 : _scale,
+        duration: Duration(milliseconds: ecoMode ? 0 : 120),
         child: Container(
           width: widget.width,
           height: widget.height,

@@ -1,6 +1,7 @@
 import 'package:bela_blok/db/dao/settings_dao.dart';
 import 'package:bela_blok/db/database.dart';
 import 'package:bela_blok/db/models/user_settings_model.dart';
+import 'package:bela_blok/enums/round_sort_order_enum.dart';
 import 'package:bela_blok/enums/theme_mode_enum.dart';
 
 class SettingsService {
@@ -17,7 +18,10 @@ class SettingsService {
         showHelpDialog: false,
         showGameStats: true,
         showSmartCalculator: false,
+        lockPreviousRounds: false,
         themeMode: AppThemeMode.light.index,
+        ecoMode: false,
+        roundSortOrder: RoundSortOrder.newestFirst.index,
       );
       
       await dao.insert(database.settingsTable, settings.toCompanion());
@@ -73,9 +77,42 @@ class SettingsService {
     );
   }
 
+  Future<void> updateLockPreviousRounds(bool lockPreviousRounds) async {
+    final settings = await fetchSettings();
+    settings.lockPreviousRounds = lockPreviousRounds;
+    await dao.update(
+      database.settingsTable,
+      database.settingsTable.id,
+      settings.id!,
+      settings.toCompanion()
+    );
+  }
+
   Future<void> updateThemeMode(AppThemeMode themeMode) async {
     final settings = await fetchSettings();
     settings.themeMode = themeMode.index;
+    await dao.update(
+      database.settingsTable,
+      database.settingsTable.id,
+      settings.id!,
+      settings.toCompanion()
+    );
+  }
+
+  Future<void> updateEcoMode(bool ecoMode) async {
+    final settings = await fetchSettings();
+    settings.ecoMode = ecoMode;
+    await dao.update(
+      database.settingsTable,
+      database.settingsTable.id,
+      settings.id!,
+      settings.toCompanion()
+    );
+  }
+
+  Future<void> updateRoundSortOrder(RoundSortOrder sortOrder) async {
+    final settings = await fetchSettings();
+    settings.roundSortOrder = sortOrder.index;
     await dao.update(
       database.settingsTable,
       database.settingsTable.id,
@@ -99,8 +136,17 @@ class SettingsService {
     if (settings.showSmartCalculator != null) {
       currentSettings.showSmartCalculator = settings.showSmartCalculator;
     }
+    if (settings.lockPreviousRounds != null) {
+      currentSettings.lockPreviousRounds = settings.lockPreviousRounds;
+    }
     if (settings.themeMode != null) {
       currentSettings.themeMode = settings.themeMode;
+    }
+    if (settings.ecoMode != null) {
+      currentSettings.ecoMode = settings.ecoMode;
+    }
+    if (settings.roundSortOrder != null) {
+      currentSettings.roundSortOrder = settings.roundSortOrder;
     }
     
     await dao.update(

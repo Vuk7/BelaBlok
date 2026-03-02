@@ -1,5 +1,6 @@
 import 'package:bela_blok/db/database.dart';
 import 'package:bela_blok/db/models/base_model.dart';
+import 'package:bela_blok/enums/round_sort_order_enum.dart';
 import 'package:bela_blok/enums/theme_mode_enum.dart';
 import 'package:drift/drift.dart';
 
@@ -8,7 +9,10 @@ class UserSettings extends BaseModel {
   bool? showHelpDialog;
   bool? showGameStats;
   bool? showSmartCalculator;
+  bool? lockPreviousRounds;
   int? themeMode;
+  bool? ecoMode;
+  int? roundSortOrder;
 
   UserSettings({
     super.id,
@@ -19,10 +23,14 @@ class UserSettings extends BaseModel {
     this.showHelpDialog,
     this.showGameStats,
     this.showSmartCalculator,
+    this.lockPreviousRounds,
     this.themeMode,
+    this.ecoMode,
+    this.roundSortOrder,
   });
 
   AppThemeMode get themeModeEnum => AppThemeMode.values[themeMode ?? 0];
+  RoundSortOrder get roundSortOrderEnum => RoundSortOrder.values[roundSortOrder ?? 0];
 }
 
 extension UserSettingsMapper on SettingsTableData {
@@ -36,7 +44,10 @@ extension UserSettingsMapper on SettingsTableData {
       showHelpDialog: showHelpDialog,
       showGameStats: showGameStats,
       showSmartCalculator: showSmartCalculator,
+      lockPreviousRounds: lockPreviousRounds,
       themeMode: themeMode,
+      ecoMode: ecoMode,
+      roundSortOrder: roundSortOrder,
     );
   }
 }
@@ -50,7 +61,10 @@ extension UserSettingsModelMapper on UserSettings {
       showHelpDialog: showHelpDialog != null ? Value(showHelpDialog!) : const Value.absent(),
       showGameStats: showGameStats != null ? Value(showGameStats!) : const Value.absent(),
       showSmartCalculator: showSmartCalculator != null ? Value(showSmartCalculator!) : const Value.absent(),
+      lockPreviousRounds: lockPreviousRounds != null ? Value(lockPreviousRounds!) : const Value.absent(),
       themeMode: themeMode != null ? Value(themeMode!) : const Value.absent(),
+      ecoMode: ecoMode != null ? Value(ecoMode!) : const Value.absent(),
+      roundSortOrder: roundSortOrder != null ? Value(roundSortOrder!) : const Value.absent(),
     );
   }
 }

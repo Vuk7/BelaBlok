@@ -13,6 +13,7 @@ class BigButtonInputNumber extends StatelessWidget {
   final double? width;
   final String? suffixText;
   final int maxValue;
+  final bool baseGameOnly;
 
   const BigButtonInputNumber({
     super.key,
@@ -25,6 +26,7 @@ class BigButtonInputNumber extends StatelessWidget {
     this.width,
     this.suffixText,
     this.maxValue = maxManualScoreInput,
+    this.baseGameOnly = false,
   });
 
   @override
@@ -57,7 +59,7 @@ class BigButtonInputNumber extends StatelessWidget {
           keyboardType: TextInputType.number,
           inputFormatters: <TextInputFormatter>[
             FilteringTextInputFormatter.digitsOnly,
-            _MaxValueInputFormatter(maxValue),
+            _MaxValueInputFormatter(maxValue, baseGameOnly: baseGameOnly),
           ],
         ),
       ),
@@ -67,8 +69,9 @@ class BigButtonInputNumber extends StatelessWidget {
 
 class _MaxValueInputFormatter extends TextInputFormatter {
   final int maxValue;
+  final bool baseGameOnly;
 
-  _MaxValueInputFormatter(this.maxValue);
+  _MaxValueInputFormatter(this.maxValue, {this.baseGameOnly = false});
 
   @override
   TextEditingValue formatEditUpdate(
@@ -85,6 +88,11 @@ class _MaxValueInputFormatter extends TextInputFormatter {
     }
 
     if (value > maxValue) {
+      return oldValue;
+    }
+
+    // In base game mode, only 0-162 and 252 are valid
+    if (baseGameOnly && value > maxScore && value != maxManualScoreInput) {
       return oldValue;
     }
 

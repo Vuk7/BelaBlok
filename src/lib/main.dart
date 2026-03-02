@@ -9,6 +9,37 @@ import 'package:provider/provider.dart';
 
 import 'package:bela_blok/routes/routes.dart';
 
+/// Notifier for Eco Mode — disables animations app-wide when enabled.
+class EcoModeNotifier extends ChangeNotifier {
+  bool _isEcoMode = false;
+  late SettingsService _settingsService;
+
+  bool get isEcoMode => _isEcoMode;
+
+  EcoModeNotifier() {
+    _settingsService = SettingsService(AppDatabase());
+    _loadFromDatabase();
+  }
+
+  Future<void> _loadFromDatabase() async {
+    try {
+      final settings = await _settingsService.fetchSettings();
+      _isEcoMode = settings.ecoMode ?? false;
+      notifyListeners();
+    } catch (e) {
+      notifyListeners();
+    }
+  }
+
+  Future<void> setEcoMode(bool value) async {
+    if (_isEcoMode != value) {
+      _isEcoMode = value;
+      notifyListeners();
+      await _settingsService.updateEcoMode(value);
+    }
+  }
+}
+
 class ThemeNotifier extends ChangeNotifier {
   ThemeMode _themeMode = ThemeMode.light;
   late SettingsService _settingsService;
@@ -79,9 +110,21 @@ void main() {
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
   ]);
+  // Edge-to-edge: make system bars transparent
+  SystemChrome.setSystemUIOverlayStyle(
+    const SystemUiOverlayStyle(
+      statusBarColor: Colors.transparent,
+      systemNavigationBarColor: Colors.transparent,
+      systemNavigationBarDividerColor: Colors.transparent,
+    ),
+  );
+  SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
   runApp(
-    ChangeNotifierProvider(
-      create: (_) => ThemeNotifier(),
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => ThemeNotifier()),
+        ChangeNotifierProvider(create: (_) => EcoModeNotifier()),
+      ],
       child: const MyApp(),
     ),
   );
