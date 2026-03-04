@@ -3,7 +3,6 @@
 **Super Bela Blok** je moderna aplikacija za praćenje i bilježenje rezultata u igri kartama **Bela**, osmišljena kako bi igru učinila jednostavnijom, preglednijom i ugodnijom za sve igrače.
 
 <p align="center">
-  <img src="screenshots/play_store.jpg" width="220" />
   <img src="screenshots/main_screen_dark.jpg" width="220" />
   <img src="screenshots/new_game_screen_dark.jpg" width="220" />
   <img src="screenshots/game_screen_dark.jpg" width="220" />
