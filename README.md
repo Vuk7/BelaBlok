@@ -10,6 +10,12 @@
   <img src="screenshots/stats_dark.jpg" width="220" />
 </p>
 
+<p align="center">
+  <a href="https://play.google.com/store/apps/details?id=io.github.vuk7.belablok">
+    <img src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png" alt="Get it on Google Play" height="80" />
+  </a>
+</p>
+
 ### Glavne značajke
 - Praćenje igara u stvarnom vremenu
 - Povijest odigranih igara
