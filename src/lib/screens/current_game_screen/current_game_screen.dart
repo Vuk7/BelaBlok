@@ -92,10 +92,10 @@ class _CurrentGameScreenState extends State<CurrentGameScreen> {
     }
 
     setState(() => currentGame = game);
-    await loadRounds(game.id!);
 
-    // Load settings
+    // Load settings before rounds so sort order is respected
     settings = await settingsService!.fetchSettings();
+    await loadRounds(game.id!);
 
     setState(() => isLoadingGame = false);
 
