@@ -5,7 +5,7 @@ const String databaseName = "bela_blok";
 // App metadata
 const String appName = "Super Bela Blok";
 
-const String appVersion = '0.1.4';
+const String appVersion = '0.1.5';
 const String appRepositoryUrl = "https://github.com/Vuk7/BelaBlok";
 
 // Team display names
