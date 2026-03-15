@@ -6,6 +6,7 @@ import 'package:bela_blok/enums/theme_mode_enum.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:wakelock_plus/wakelock_plus.dart';
 
 import 'package:bela_blok/routes/routes.dart';
 
@@ -105,6 +106,8 @@ class ThemeNotifier extends ChangeNotifier {
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
+  // Keep screen on while app is active
+  WakelockPlus.enable();
   // Lock orientation to portrait only
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
