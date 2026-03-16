@@ -41,6 +41,46 @@ class EcoModeNotifier extends ChangeNotifier {
   }
 }
 
+class KeepScreenOnNotifier extends ChangeNotifier {
+  bool _keepScreenOn = true;
+  late SettingsService _settingsService;
+
+  bool get keepScreenOn => _keepScreenOn;
+
+  KeepScreenOnNotifier() {
+    _settingsService = SettingsService(AppDatabase());
+    _loadFromDatabase();
+  }
+
+  Future<void> _loadFromDatabase() async {
+    try {
+      final settings = await _settingsService.fetchSettings();
+      _keepScreenOn = settings.keepScreenOn ?? true;
+      _applyKeepScreenOn(_keepScreenOn);
+      notifyListeners();
+    } catch (e) {
+      notifyListeners();
+    }
+  }
+
+  Future<void> setKeepScreenOn(bool value) async {
+    if (_keepScreenOn != value) {
+      _keepScreenOn = value;
+      _applyKeepScreenOn(value);
+      notifyListeners();
+      await _settingsService.updateKeepScreenOn(value);
+    }
+  }
+
+  void _applyKeepScreenOn(bool value) {
+    if (value) {
+      WakelockPlus.enable();
+    } else {
+      WakelockPlus.disable();
+    }
+  }
+}
+
 class ThemeNotifier extends ChangeNotifier {
   ThemeMode _themeMode = ThemeMode.light;
   late SettingsService _settingsService;
@@ -106,8 +146,6 @@ class ThemeNotifier extends ChangeNotifier {
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  // Keep screen on while app is active
-  WakelockPlus.enable();
   // Lock orientation to portrait only
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
@@ -127,6 +165,7 @@ void main() {
       providers: [
         ChangeNotifierProvider(create: (_) => ThemeNotifier()),
         ChangeNotifierProvider(create: (_) => EcoModeNotifier()),
+        ChangeNotifierProvider(create: (_) => KeepScreenOnNotifier()),
       ],
       child: const MyApp(),
     ),

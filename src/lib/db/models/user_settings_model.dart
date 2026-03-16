@@ -13,6 +13,7 @@ class UserSettings extends BaseModel {
   int? themeMode;
   bool? ecoMode;
   int? roundSortOrder;
+  bool? keepScreenOn;
 
   UserSettings({
     super.id,
@@ -27,6 +28,7 @@ class UserSettings extends BaseModel {
     this.themeMode,
     this.ecoMode,
     this.roundSortOrder,
+    this.keepScreenOn,
   });
 
   AppThemeMode get themeModeEnum => AppThemeMode.values[themeMode ?? 0];
@@ -48,6 +50,7 @@ extension UserSettingsMapper on SettingsTableData {
       themeMode: themeMode,
       ecoMode: ecoMode,
       roundSortOrder: roundSortOrder,
+      keepScreenOn: keepScreenOn,
     );
   }
 }
@@ -64,6 +67,7 @@ extension UserSettingsModelMapper on UserSettings {
       lockPreviousRounds: lockPreviousRounds != null ? Value(lockPreviousRounds!) : const Value.absent(),
       themeMode: themeMode != null ? Value(themeMode!) : const Value.absent(),
       ecoMode: ecoMode != null ? Value(ecoMode!) : const Value.absent(),
+      keepScreenOn: keepScreenOn != null ? Value(keepScreenOn!) : const Value.absent(),
       roundSortOrder: roundSortOrder != null ? Value(roundSortOrder!) : const Value.absent(),
     );
   }
