@@ -20,6 +20,8 @@ class SettingsTable extends BaseUUIDModel {
       boolean().withDefault(const Constant(false))();
   IntColumn get roundSortOrder =>
       integer().withDefault(Constant(RoundSortOrder.newestFirst.index))();
+  BoolColumn get keepScreenOn => 
+      boolean().withDefault(const Constant(true))();
 
   @override
   String get tableName => 'settings';

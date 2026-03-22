@@ -22,6 +22,7 @@ class SettingsService {
         themeMode: AppThemeMode.light.index,
         ecoMode: false,
         roundSortOrder: RoundSortOrder.newestFirst.index,
+        keepScreenOn: true,
       );
       
       await dao.insert(database.settingsTable, settings.toCompanion());
@@ -113,6 +114,17 @@ class SettingsService {
   Future<void> updateRoundSortOrder(RoundSortOrder sortOrder) async {
     final settings = await fetchSettings();
     settings.roundSortOrder = sortOrder.index;
+    await dao.update(
+      database.settingsTable,
+      database.settingsTable.id,
+      settings.id!,
+      settings.toCompanion()
+    );
+  }
+
+  Future<void> updateKeepScreenOn(bool keepScreenOn) async {
+    final settings = await fetchSettings();
+    settings.keepScreenOn = keepScreenOn;
     await dao.update(
       database.settingsTable,
       database.settingsTable.id,
