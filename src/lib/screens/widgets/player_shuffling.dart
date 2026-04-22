@@ -20,12 +20,12 @@ class PlayerShuffling extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             GestureDetector(
-              onTap: () => onTap(2),
+              onTap: () => onTap(4),
               child: Container(
                 height: 28.0,
                 width: 28.0,
                 decoration: BoxDecoration(
-                  color: (selected == 2) ? selectedColor : AppTheme.gray,
+                  color: (selected == 4) ? selectedColor : AppTheme.gray,
                   borderRadius: BorderRadius.circular(4),
                 ),
                 child: Center(
@@ -38,7 +38,7 @@ class PlayerShuffling extends StatelessWidget {
                         size: 14,
                       ),
                       Text(
-                        "2",
+                        "4",
                         style: TextStyle(
                             color: AppTheme.getInverseTextColor(context),
                             fontWeight: FontWeight.bold,
@@ -140,13 +140,13 @@ class PlayerShuffling extends StatelessWidget {
               width: 30,
             ),
             GestureDetector(
-              onTap: () => onTap(4),
+              onTap: () => onTap(2),
               child: Container(
                 height: 28.0,
                 width: 28.0,
                 decoration: BoxDecoration(
-                  color: (selected == 4) ? selectedColor : AppTheme.gray,
-                  borderRadius: BorderRadius.circular(4),
+                  color: (selected == 2) ? selectedColor : AppTheme.gray,
+                  borderRadius: BorderRadius.circular(2),
                 ),
                 child: Center(
                   child: Column(
@@ -158,7 +158,7 @@ class PlayerShuffling extends StatelessWidget {
                         size: 14,
                       ),
                       Text(
-                        "4",
+                        "2",
                         style: TextStyle(
                             color: AppTheme.getInverseTextColor(context),
                             fontWeight: FontWeight.bold,

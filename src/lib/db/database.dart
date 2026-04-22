@@ -7,6 +7,7 @@ import 'package:bela_blok/db/migrations/migration_v2.dart';
 import 'package:bela_blok/db/migrations/migration_v3.dart';
 import 'package:bela_blok/db/migrations/migration_v4.dart';
 import 'package:bela_blok/db/migrations/migration_v5.dart';
+import 'package:bela_blok/enums/round_sort_order_enum.dart';
 import 'package:bela_blok/enums/theme_mode_enum.dart';
 import 'package:drift/drift.dart';
 import 'package:drift_flutter/drift_flutter.dart';
