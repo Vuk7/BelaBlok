@@ -1948,7 +1948,17 @@ class $SettingsTableTable extends SettingsTable
       'round_sort_order', aliasedName, false,
       type: DriftSqlType.int,
       requiredDuringInsert: false,
-      defaultValue: const Constant(0));
+      defaultValue: Constant(RoundSortOrder.newestFirst.index));
+  static const VerificationMeta _keepScreenOnMeta =
+      const VerificationMeta('keepScreenOn');
+  @override
+  late final GeneratedColumn<bool> keepScreenOn = GeneratedColumn<bool>(
+      'keep_screen_on', aliasedName, false,
+      type: DriftSqlType.bool,
+      requiredDuringInsert: false,
+      defaultConstraints: GeneratedColumn.constraintIsAlways(
+          'CHECK ("keep_screen_on" IN (0, 1))'),
+      defaultValue: const Constant(true));
   @override
   List<GeneratedColumn> get $columns => [
         id,
@@ -1962,7 +1972,8 @@ class $SettingsTableTable extends SettingsTable
         lockPreviousRounds,
         themeMode,
         ecoMode,
-        roundSortOrder
+        roundSortOrder,
+        keepScreenOn
       ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -2031,6 +2042,12 @@ class $SettingsTableTable extends SettingsTable
           roundSortOrder.isAcceptableOrUnknown(
               data['round_sort_order']!, _roundSortOrderMeta));
     }
+    if (data.containsKey('keep_screen_on')) {
+      context.handle(
+          _keepScreenOnMeta,
+          keepScreenOn.isAcceptableOrUnknown(
+              data['keep_screen_on']!, _keepScreenOnMeta));
+    }
     return context;
   }
 
@@ -2064,6 +2081,8 @@ class $SettingsTableTable extends SettingsTable
           .read(DriftSqlType.bool, data['${effectivePrefix}eco_mode'])!,
       roundSortOrder: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}round_sort_order'])!,
+      keepScreenOn: attachedDatabase.typeMapping
+          .read(DriftSqlType.bool, data['${effectivePrefix}keep_screen_on'])!,
     );
   }
 
@@ -2087,6 +2106,7 @@ class SettingsTableData extends DataClass
   final int themeMode;
   final bool ecoMode;
   final int roundSortOrder;
+  final bool keepScreenOn;
   const SettingsTableData(
       {required this.id,
       required this.createdAt,
@@ -2099,7 +2119,8 @@ class SettingsTableData extends DataClass
       required this.lockPreviousRounds,
       required this.themeMode,
       required this.ecoMode,
-      required this.roundSortOrder});
+      required this.roundSortOrder,
+      required this.keepScreenOn});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -2117,6 +2138,7 @@ class SettingsTableData extends DataClass
     map['theme_mode'] = Variable<int>(themeMode);
     map['eco_mode'] = Variable<bool>(ecoMode);
     map['round_sort_order'] = Variable<int>(roundSortOrder);
+    map['keep_screen_on'] = Variable<bool>(keepScreenOn);
     return map;
   }
 
@@ -2136,6 +2158,7 @@ class SettingsTableData extends DataClass
       themeMode: Value(themeMode),
       ecoMode: Value(ecoMode),
       roundSortOrder: Value(roundSortOrder),
+      keepScreenOn: Value(keepScreenOn),
     );
   }
 
@@ -2156,6 +2179,7 @@ class SettingsTableData extends DataClass
       themeMode: serializer.fromJson<int>(json['themeMode']),
       ecoMode: serializer.fromJson<bool>(json['ecoMode']),
       roundSortOrder: serializer.fromJson<int>(json['roundSortOrder']),
+      keepScreenOn: serializer.fromJson<bool>(json['keepScreenOn']),
     );
   }
   @override
@@ -2174,6 +2198,7 @@ class SettingsTableData extends DataClass
       'themeMode': serializer.toJson<int>(themeMode),
       'ecoMode': serializer.toJson<bool>(ecoMode),
       'roundSortOrder': serializer.toJson<int>(roundSortOrder),
+      'keepScreenOn': serializer.toJson<bool>(keepScreenOn),
     };
   }
 
@@ -2189,7 +2214,8 @@ class SettingsTableData extends DataClass
           bool? lockPreviousRounds,
           int? themeMode,
           bool? ecoMode,
-          int? roundSortOrder}) =>
+          int? roundSortOrder,
+          bool? keepScreenOn}) =>
       SettingsTableData(
         id: id ?? this.id,
         createdAt: createdAt ?? this.createdAt,
@@ -2203,6 +2229,7 @@ class SettingsTableData extends DataClass
         themeMode: themeMode ?? this.themeMode,
         ecoMode: ecoMode ?? this.ecoMode,
         roundSortOrder: roundSortOrder ?? this.roundSortOrder,
+        keepScreenOn: keepScreenOn ?? this.keepScreenOn,
       );
   SettingsTableData copyWithCompanion(SettingsTableCompanion data) {
     return SettingsTableData(
@@ -2228,6 +2255,9 @@ class SettingsTableData extends DataClass
       roundSortOrder: data.roundSortOrder.present
           ? data.roundSortOrder.value
           : this.roundSortOrder,
+      keepScreenOn: data.keepScreenOn.present
+          ? data.keepScreenOn.value
+          : this.keepScreenOn,
     );
   }
 
@@ -2245,7 +2275,8 @@ class SettingsTableData extends DataClass
           ..write('lockPreviousRounds: $lockPreviousRounds, ')
           ..write('themeMode: $themeMode, ')
           ..write('ecoMode: $ecoMode, ')
-          ..write('roundSortOrder: $roundSortOrder')
+          ..write('roundSortOrder: $roundSortOrder, ')
+          ..write('keepScreenOn: $keepScreenOn')
           ..write(')'))
         .toString();
   }
@@ -2263,7 +2294,8 @@ class SettingsTableData extends DataClass
       lockPreviousRounds,
       themeMode,
       ecoMode,
-      roundSortOrder);
+      roundSortOrder,
+      keepScreenOn);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -2279,7 +2311,8 @@ class SettingsTableData extends DataClass
           other.lockPreviousRounds == this.lockPreviousRounds &&
           other.themeMode == this.themeMode &&
           other.ecoMode == this.ecoMode &&
-          other.roundSortOrder == this.roundSortOrder);
+          other.roundSortOrder == this.roundSortOrder &&
+          other.keepScreenOn == this.keepScreenOn);
 }
 
 class SettingsTableCompanion extends UpdateCompanion<SettingsTableData> {
@@ -2295,6 +2328,7 @@ class SettingsTableCompanion extends UpdateCompanion<SettingsTableData> {
   final Value<int> themeMode;
   final Value<bool> ecoMode;
   final Value<int> roundSortOrder;
+  final Value<bool> keepScreenOn;
   final Value<int> rowid;
   const SettingsTableCompanion({
     this.id = const Value.absent(),
@@ -2309,6 +2343,7 @@ class SettingsTableCompanion extends UpdateCompanion<SettingsTableData> {
     this.themeMode = const Value.absent(),
     this.ecoMode = const Value.absent(),
     this.roundSortOrder = const Value.absent(),
+    this.keepScreenOn = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   SettingsTableCompanion.insert({
@@ -2324,6 +2359,7 @@ class SettingsTableCompanion extends UpdateCompanion<SettingsTableData> {
     this.themeMode = const Value.absent(),
     this.ecoMode = const Value.absent(),
     this.roundSortOrder = const Value.absent(),
+    this.keepScreenOn = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   static Insertable<SettingsTableData> custom({
@@ -2339,6 +2375,7 @@ class SettingsTableCompanion extends UpdateCompanion<SettingsTableData> {
     Expression<int>? themeMode,
     Expression<bool>? ecoMode,
     Expression<int>? roundSortOrder,
+    Expression<bool>? keepScreenOn,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -2356,6 +2393,7 @@ class SettingsTableCompanion extends UpdateCompanion<SettingsTableData> {
       if (themeMode != null) 'theme_mode': themeMode,
       if (ecoMode != null) 'eco_mode': ecoMode,
       if (roundSortOrder != null) 'round_sort_order': roundSortOrder,
+      if (keepScreenOn != null) 'keep_screen_on': keepScreenOn,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -2373,6 +2411,7 @@ class SettingsTableCompanion extends UpdateCompanion<SettingsTableData> {
       Value<int>? themeMode,
       Value<bool>? ecoMode,
       Value<int>? roundSortOrder,
+      Value<bool>? keepScreenOn,
       Value<int>? rowid}) {
     return SettingsTableCompanion(
       id: id ?? this.id,
@@ -2387,6 +2426,7 @@ class SettingsTableCompanion extends UpdateCompanion<SettingsTableData> {
       themeMode: themeMode ?? this.themeMode,
       ecoMode: ecoMode ?? this.ecoMode,
       roundSortOrder: roundSortOrder ?? this.roundSortOrder,
+      keepScreenOn: keepScreenOn ?? this.keepScreenOn,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -2430,6 +2470,9 @@ class SettingsTableCompanion extends UpdateCompanion<SettingsTableData> {
     if (roundSortOrder.present) {
       map['round_sort_order'] = Variable<int>(roundSortOrder.value);
     }
+    if (keepScreenOn.present) {
+      map['keep_screen_on'] = Variable<bool>(keepScreenOn.value);
+    }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
     }
@@ -2451,6 +2494,7 @@ class SettingsTableCompanion extends UpdateCompanion<SettingsTableData> {
           ..write('themeMode: $themeMode, ')
           ..write('ecoMode: $ecoMode, ')
           ..write('roundSortOrder: $roundSortOrder, ')
+          ..write('keepScreenOn: $keepScreenOn, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -4254,6 +4298,7 @@ typedef $$SettingsTableTableCreateCompanionBuilder = SettingsTableCompanion
   Value<int> themeMode,
   Value<bool> ecoMode,
   Value<int> roundSortOrder,
+  Value<bool> keepScreenOn,
   Value<int> rowid,
 });
 typedef $$SettingsTableTableUpdateCompanionBuilder = SettingsTableCompanion
@@ -4270,6 +4315,7 @@ typedef $$SettingsTableTableUpdateCompanionBuilder = SettingsTableCompanion
   Value<int> themeMode,
   Value<bool> ecoMode,
   Value<int> roundSortOrder,
+  Value<bool> keepScreenOn,
   Value<int> rowid,
 });
 
@@ -4321,6 +4367,9 @@ class $$SettingsTableTableFilterComposer
   ColumnFilters<int> get roundSortOrder => $composableBuilder(
       column: $table.roundSortOrder,
       builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<bool> get keepScreenOn => $composableBuilder(
+      column: $table.keepScreenOn, builder: (column) => ColumnFilters(column));
 }
 
 class $$SettingsTableTableOrderingComposer
@@ -4372,6 +4421,10 @@ class $$SettingsTableTableOrderingComposer
   ColumnOrderings<int> get roundSortOrder => $composableBuilder(
       column: $table.roundSortOrder,
       builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<bool> get keepScreenOn => $composableBuilder(
+      column: $table.keepScreenOn,
+      builder: (column) => ColumnOrderings(column));
 }
 
 class $$SettingsTableTableAnnotationComposer
@@ -4418,6 +4471,9 @@ class $$SettingsTableTableAnnotationComposer
 
   GeneratedColumn<int> get roundSortOrder => $composableBuilder(
       column: $table.roundSortOrder, builder: (column) => column);
+
+  GeneratedColumn<bool> get keepScreenOn => $composableBuilder(
+      column: $table.keepScreenOn, builder: (column) => column);
 }
 
 class $$SettingsTableTableTableManager extends RootTableManager<
@@ -4458,6 +4514,7 @@ class $$SettingsTableTableTableManager extends RootTableManager<
             Value<int> themeMode = const Value.absent(),
             Value<bool> ecoMode = const Value.absent(),
             Value<int> roundSortOrder = const Value.absent(),
+            Value<bool> keepScreenOn = const Value.absent(),
             Value<int> rowid = const Value.absent(),
           }) =>
               SettingsTableCompanion(
@@ -4473,6 +4530,7 @@ class $$SettingsTableTableTableManager extends RootTableManager<
             themeMode: themeMode,
             ecoMode: ecoMode,
             roundSortOrder: roundSortOrder,
+            keepScreenOn: keepScreenOn,
             rowid: rowid,
           ),
           createCompanionCallback: ({
@@ -4488,6 +4546,7 @@ class $$SettingsTableTableTableManager extends RootTableManager<
             Value<int> themeMode = const Value.absent(),
             Value<bool> ecoMode = const Value.absent(),
             Value<int> roundSortOrder = const Value.absent(),
+            Value<bool> keepScreenOn = const Value.absent(),
             Value<int> rowid = const Value.absent(),
           }) =>
               SettingsTableCompanion.insert(
@@ -4503,6 +4562,7 @@ class $$SettingsTableTableTableManager extends RootTableManager<
             themeMode: themeMode,
             ecoMode: ecoMode,
             roundSortOrder: roundSortOrder,
+            keepScreenOn: keepScreenOn,
             rowid: rowid,
           ),
           withReferenceMapper: (p0) => p0

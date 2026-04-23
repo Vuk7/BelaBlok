@@ -380,6 +380,9 @@ class _NewGameScreenState extends State<NewGameScreen> {
                           PlayerShuffling(
                             selected: playerShufflingSelect,
                             selectedColor: AppTheme.red,
+                            direction: playDirectionSelect == 0
+                                ? PlayDirection.clockwise
+                                : PlayDirection.counterClockwise,
                             onTap: (id) =>
                                 setState(() => playerShufflingSelect = id),
                           ),
