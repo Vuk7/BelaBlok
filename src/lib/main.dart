@@ -6,6 +6,7 @@ import 'package:bela_blok/enums/theme_mode_enum.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:wakelock_plus/wakelock_plus.dart';
 
 import 'package:bela_blok/routes/routes.dart';
 
@@ -36,6 +37,46 @@ class EcoModeNotifier extends ChangeNotifier {
       _isEcoMode = value;
       notifyListeners();
       await _settingsService.updateEcoMode(value);
+    }
+  }
+}
+
+class KeepScreenOnNotifier extends ChangeNotifier {
+  bool _keepScreenOn = true;
+  late SettingsService _settingsService;
+
+  bool get keepScreenOn => _keepScreenOn;
+
+  KeepScreenOnNotifier() {
+    _settingsService = SettingsService(AppDatabase());
+    _loadFromDatabase();
+  }
+
+  Future<void> _loadFromDatabase() async {
+    try {
+      final settings = await _settingsService.fetchSettings();
+      _keepScreenOn = settings.keepScreenOn ?? true;
+      _applyKeepScreenOn(_keepScreenOn);
+      notifyListeners();
+    } catch (e) {
+      notifyListeners();
+    }
+  }
+
+  Future<void> setKeepScreenOn(bool value) async {
+    if (_keepScreenOn != value) {
+      _keepScreenOn = value;
+      _applyKeepScreenOn(value);
+      notifyListeners();
+      await _settingsService.updateKeepScreenOn(value);
+    }
+  }
+
+  void _applyKeepScreenOn(bool value) {
+    if (value) {
+      WakelockPlus.enable();
+    } else {
+      WakelockPlus.disable();
     }
   }
 }
@@ -124,6 +165,7 @@ void main() {
       providers: [
         ChangeNotifierProvider(create: (_) => ThemeNotifier()),
         ChangeNotifierProvider(create: (_) => EcoModeNotifier()),
+        ChangeNotifierProvider(create: (_) => KeepScreenOnNotifier()),
       ],
       child: const MyApp(),
     ),

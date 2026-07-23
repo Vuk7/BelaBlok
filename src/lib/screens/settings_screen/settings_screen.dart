@@ -76,6 +76,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
     await _loadSettings();
   }
 
+  Future<void> _updateKeepScreenOn(bool value) async {
+    await _settingsService.updateKeepScreenOn(value);
+    await _loadSettings();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -188,6 +193,18 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   value: (_settings?.roundSortOrderEnum ?? RoundSortOrder.newestFirst) == RoundSortOrder.oldestFirst,
                   onChanged: (value) => _updateRoundSortOrder(!value),
                   secondary: const Icon(Icons.sort),
+                ),
+                const SizedBox(height: 32),
+                Text('Ekran',
+                    style: AppTheme.sectionHeaderTextStyle.copyWith(
+                        color: Theme.of(context).colorScheme.onSurface)),
+                const SizedBox(height: 4),
+                SwitchListTile(
+                  title: const Text('Drži ekran uključenim'),
+                  subtitle: const Text('Ekran se neće gasiti dok si u aplikaciji'),
+                  value: _settings?.keepScreenOn ?? true,
+                  onChanged: _updateKeepScreenOn,
+                  secondary: const Icon(Icons.brightness_high),
                 ),
                 const SizedBox(height: 32),
                 Text('Open Source',

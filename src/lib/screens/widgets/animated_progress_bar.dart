@@ -295,7 +295,103 @@ class _AnimatedProgressBarState extends State<AnimatedProgressBar>
           LayoutBuilder(
             builder: (context, constraints) {
               final availableWidth = constraints.maxWidth;
-              
+              final teamOneLeads = widget.teamOneScore >= widget.teamTwoScore;
+
+              Widget teamOneBar = Builder(
+                builder: (context) {
+                  final ecoMode = context.watch<EcoModeNotifier>().isEcoMode;
+                  if (ecoMode) {
+                    return Container(
+                      height: 30,
+                      width: availableWidth * widget.teamOneProgress,
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: [
+                            widget.teamOneColor.withValues(alpha: 0.8),
+                            widget.teamOneColor,
+                          ],
+                        ),
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                    );
+                  }
+                  return AnimatedBuilder(
+                    animation: _progressAnimation1,
+                    builder: (context, child) {
+                      return Container(
+                        height: 30,
+                        width: availableWidth * _progressAnimation1.value,
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            colors: [
+                              widget.teamOneColor.withValues(alpha: 0.8),
+                              widget.teamOneColor,
+                            ],
+                          ),
+                          borderRadius: BorderRadius.circular(15),
+                          boxShadow: [
+                            BoxShadow(
+                              color: widget.teamOneColor.withValues(alpha: 0.3),
+                              blurRadius: 4,
+                              offset: const Offset(0, 2),
+                            ),
+                          ],
+                        ),
+                      );
+                    },
+                  );
+                },
+              );
+
+              Widget teamTwoBar = Positioned(
+                right: 0,
+                child: Builder(
+                  builder: (context) {
+                    final ecoMode = context.watch<EcoModeNotifier>().isEcoMode;
+                    if (ecoMode) {
+                      return Container(
+                        height: 30,
+                        width: availableWidth * widget.teamTwoProgress,
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            colors: [
+                              widget.teamTwoColor,
+                              widget.teamTwoColor.withValues(alpha: 0.8),
+                            ],
+                          ),
+                          borderRadius: BorderRadius.circular(15),
+                        ),
+                      );
+                    }
+                    return AnimatedBuilder(
+                      animation: _progressAnimation2,
+                      builder: (context, child) {
+                        return Container(
+                          height: 30,
+                          width: availableWidth * _progressAnimation2.value,
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              colors: [
+                                widget.teamTwoColor,
+                                widget.teamTwoColor.withValues(alpha: 0.8),
+                              ],
+                            ),
+                            borderRadius: BorderRadius.circular(15),
+                            boxShadow: [
+                              BoxShadow(
+                                color: widget.teamTwoColor.withValues(alpha: 0.3),
+                                blurRadius: 4,
+                                offset: const Offset(0, 2),
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+                    );
+                  },
+                ),
+              );
+
               return Stack(
                 children: [
                   // Background
@@ -306,101 +402,9 @@ class _AnimatedProgressBarState extends State<AnimatedProgressBar>
                       borderRadius: BorderRadius.circular(15),
                     ),
                   ),
-                  // Team One Progress
-                  Builder(
-                    builder: (context) {
-                      final ecoMode = context.watch<EcoModeNotifier>().isEcoMode;
-                      if (ecoMode) {
-                        return Container(
-                          height: 30,
-                          width: availableWidth * widget.teamOneProgress,
-                          decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                              colors: [
-                                widget.teamOneColor.withValues(alpha: 0.8),
-                                widget.teamOneColor,
-                              ],
-                            ),
-                            borderRadius: BorderRadius.circular(15),
-                          ),
-                        );
-                      }
-                      return AnimatedBuilder(
-                        animation: _progressAnimation1,
-                        builder: (context, child) {
-                          return Container(
-                            height: 30,
-                            width: availableWidth * _progressAnimation1.value,
-                            decoration: BoxDecoration(
-                              gradient: LinearGradient(
-                                colors: [
-                                  widget.teamOneColor.withValues(alpha: 0.8),
-                                  widget.teamOneColor,
-                                ],
-                              ),
-                              borderRadius: BorderRadius.circular(15),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: widget.teamOneColor.withValues(alpha: 0.3),
-                                  blurRadius: 4,
-                                  offset: const Offset(0, 2),
-                                ),
-                              ],
-                            ),
-                          );
-                        },
-                      );
-                    },
-                  ),
-                  // Team Two Progress (from right)
-                  Positioned(
-                    right: 0,
-                    child: Builder(
-                      builder: (context) {
-                        final ecoMode = context.watch<EcoModeNotifier>().isEcoMode;
-                        if (ecoMode) {
-                          return Container(
-                            height: 30,
-                            width: availableWidth * widget.teamTwoProgress,
-                            decoration: BoxDecoration(
-                              gradient: LinearGradient(
-                                colors: [
-                                  widget.teamTwoColor,
-                                  widget.teamTwoColor.withValues(alpha: 0.8),
-                                ],
-                              ),
-                              borderRadius: BorderRadius.circular(15),
-                            ),
-                          );
-                        }
-                        return AnimatedBuilder(
-                          animation: _progressAnimation2,
-                          builder: (context, child) {
-                            return Container(
-                              height: 30,
-                              width: availableWidth * _progressAnimation2.value,
-                              decoration: BoxDecoration(
-                                gradient: LinearGradient(
-                                  colors: [
-                                    widget.teamTwoColor,
-                                    widget.teamTwoColor.withValues(alpha: 0.8),
-                                  ],
-                                ),
-                                borderRadius: BorderRadius.circular(15),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: widget.teamTwoColor.withValues(alpha: 0.3),
-                                    blurRadius: 4,
-                                    offset: const Offset(0, 2),
-                                  ),
-                                ],
-                              ),
-                            );
-                          },
-                        );
-                      },
-                    ),
-                  ),
+                  // Losing team renders first (behind), leading team renders last (on top)
+                  if (teamOneLeads) teamTwoBar else teamOneBar,
+                  if (teamOneLeads) teamOneBar else teamTwoBar,
                
                   Positioned(
                     left: availableWidth * 0.5 - 1,

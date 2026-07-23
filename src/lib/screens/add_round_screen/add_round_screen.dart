@@ -12,6 +12,7 @@ import 'package:bela_blok/services/calculator_service.dart';
 import 'package:bela_blok/screens/add_round_screen/widgets/choose_caller.dart';
 import 'package:bela_blok/screens/add_round_screen/widgets/choose_input_type.dart';
 import 'package:bela_blok/screens/add_round_screen/widgets/show_lost_text.dart';
+import 'package:bela_blok/enums/play_direction_enum.dart';
 import 'package:bela_blok/enums/team_enum.dart';
 import 'package:bela_blok/screens/widgets/big_button_input_number.dart';
 import 'package:bela_blok/screens/widgets/help_dialog.dart';
@@ -1066,6 +1067,9 @@ class _AddRoundScreenState extends State<AddRoundScreen>
                             selectedColor:
                                 Theme.of(context).colorScheme.primary,
                             selected: shuffler,
+                            direction: (gameDirection ?? 0) == 0
+                                ? PlayDirection.clockwise
+                                : PlayDirection.counterClockwise,
                           );
                         },
                       ),
